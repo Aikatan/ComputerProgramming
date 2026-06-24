@@ -81,9 +81,6 @@ App.registerTopic({
         { type: "text", html: "Drag the three slice values. Highlighted boxes are the characters included, numbered in the order they're picked — so you can <i>see</i> exactly what <code>text[start:end:step]</code> produces, including reversed slices with a negative step." },
         { type: "widget", name: "stringSlice", config: { text: "Programming" } },
 
-        { type: "subhead", text: "🟡 Interactive: shifting letters (the Caesar cipher)" },
-        { type: "text", html: "A classic text transform: move every letter forward by <code>x</code> places in the alphabet, wrapping <code>Z→A</code>. Because strings are immutable, the result is a brand-new string. Slide the shift and watch each letter map to its new one." },
-        { type: "widget", name: "stringShift", config: { text: "HELLO", shift: 3 } },
       ],
       live: [
         { title: "Indexing & slicing — change the numbers and re-run", code: "text = \"Programming\"\nprint(\"first :\", text[0])\nprint(\"last  :\", text[-1])\nprint(\"3..7  :\", text[3:7])\nprint(\"every2:\", text[::2])\nprint(\"reverse:\", text[::-1])" },
