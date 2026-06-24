@@ -33,7 +33,7 @@
       case "tabs":
         return tabsBlock(b);
       case "steprun":
-        return App.makeStepRun(b.code, { title: b.title });
+        return App.makeStepRun(b.code, { title: b.title, inputs: b.inputs });
       case "example":
         return staticExample(b);
       default:

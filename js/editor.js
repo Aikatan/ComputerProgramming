@@ -140,7 +140,7 @@ App.makeStepRun = function (code, opts) {
     if (!cm) return;
     stopPlay();
     stepBtn.disabled = true; stepBtn.textContent = "Tracing…";
-    const data = await App.py.trace(cm.getValue(), {});
+    const data = await App.py.trace(cm.getValue(), { inputs: opts.inputs });
     stepBtn.disabled = false; stepBtn.textContent = "▶ Step Run";
     lines = cm.getValue().split("\n");
     steps = data.steps || [];

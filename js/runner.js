@@ -116,30 +116,34 @@ App.py = {
   async trace(code, opts) {
     opts = opts || {};
     const py = await this.ensure();
+    await this._loadPkgs(code);
     this.setStatus("busy", "tracing…");
     const inputs = Array.isArray(opts.inputs) ? opts.inputs.slice() : [];
     py.globals.set("__js_input__", (p) => (inputs.length ? String(inputs.shift()) : ""));
     py.globals.set("__user_src__", code);
     const driver = [
-      "import sys, io, json, builtins, contextlib",
+      "import sys, io, json, builtins, contextlib, types as __types",
       "builtins.input = lambda prompt='': __js_input__(prompt)",
       "__src = __user_src__",
       "__steps = []",
       "__out = io.StringIO()",
       "__MAX = 1000",
+      "__SKIP = (__types.ModuleType, __types.FunctionType, __types.BuiltinFunctionType, __types.MethodType, type)",
       "def __snap(frame):",
       "    d = {}",
       "    for k, v in list(frame.f_locals.items()):",
       "        if k.startswith('__'):",
       "            continue",
-      "        if v is None or isinstance(v, (int, float, str, bool, list, tuple, dict, set)):",
-      "            try:",
-      "                r = repr(v)",
-      "            except Exception:",
-      "                r = '<?>'",
-      "            if len(r) > 80:",
-      "                r = r[:77] + '...'",
-      "            d[k] = r",
+      "        if isinstance(v, __SKIP):",
+      "            continue",
+      "        try:",
+      "            r = repr(v)",
+      "        except Exception:",
+      "            r = '<?>'",
+      "        r = r.replace(chr(10), ' ').replace(chr(13), ' ')",
+      "        if len(r) > 80:",
+      "            r = r[:77] + '...'",
+      "        d[k] = r",
       "    return d",
       "def __tracer(frame, event, arg):",
       "    if frame.f_code.co_filename != '<user>':",
