@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python ComPro Learn</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body data-theme="dark">
+  <header class="topbar">
+    <button id="navToggle" class="icon-btn" title="Menu" aria-label="Toggle menu">&#9776;</button>
+    <a class="brand" href="#/">
+      <span class="brand-mark">&gt;_</span>
+      <span class="brand-text">Python <strong>ComPro</strong> Learn</span>
+    </a>
+    <div class="topbar-spacer"></div>
+    <input id="searchBox" class="search" type="search" placeholder="Search lessons&hellip;" autocomplete="off" />
+    <div id="pyStatus" class="py-status" title="Python engine status">
+      <span class="dot"></span><span class="label">Python: idle</span>
+    </div>
+    <button id="themeToggle" class="icon-btn" title="Toggle theme" aria-label="Toggle theme">&#9788;</button>
+  </header>
+
+  <div class="layout">
+    <aside id="sidebar" class="sidebar">
+      <nav id="sidebarNav" class="sidebar-nav"><!-- built by app.js --></nav>
+    </aside>
+    <main id="view" class="view"><!-- routed content --></main>
+  </div>
+
+  <div id="searchResults" class="search-results hidden"></div>
+
+  <!-- Vendor libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+
+  <!-- App core (bump ?v= when you edit app/content to bypass browser cache) -->
+  <script src="js/core.js?v=3"></script>
+  <script src="js/widgets.js?v=3"></script>
+  <script src="js/editor.js?v=3"></script>
+  <script src="js/runner.js?v=3"></script>
+  <script src="js/lesson.js?v=3"></script>
+
+  <!-- Content -->
+  <script src="js/content/topic00.js?v=3"></script>
+  <script src="js/content/topic01.js?v=3"></script>
+  <script src="js/content/topic02.js?v=3"></script>
+  <script src="js/content/topic03.js?v=3"></script>
+  <script src="js/content/topic04.js?v=3"></script>
+  <script src="js/content/topic05.js?v=3"></script>
+  <script src="js/content/topic06.js?v=3"></script>
+  <script src="js/content/topic07.js?v=3"></script>
+  <script src="js/content/topic08.js?v=3"></script>
+
+  <!-- Boot -->
+  <script src="js/app.js?v=3"></script>
+</body>
+</html>
