@@ -176,11 +176,27 @@ App.widgets.loopViz = function (cfg) {
     title: cfg.title || "Loop tracer",
     steps: cfg.trace,
     render: (s) => {
-      const out = h("div");
-      out.appendChild(App.widgets.codeLines(cfg.code, s.line));
-      out.appendChild(App.widgets.varChips(s.vars || {}));
-      if (s.log != null) out.appendChild(h("div", { class: "step-log" }, "output so far:\n" + s.log));
-      return out;
+      // left: code with a ▸ marker on the current line
+      const codeBox = h("div", { class: "step-code" });
+      cfg.code.forEach((ln, idx) => {
+        const hl = idx === s.line;
+        codeBox.appendChild(h("span", { class: "ln" + (hl ? " hl" : "") },
+          h("span", { class: "marker" }, hl ? "▸ " : "  "),
+          h("span", { html: App.highlight(ln) || "&nbsp;" })));
+      });
+      // right: variables (memory) then output
+      const vars = s.vars || {};
+      const right = h("div");
+      right.appendChild(h("div", { class: "widget-title" }, "Variables now"));
+      if (Object.keys(vars).length) right.appendChild(App.widgets.varChips(vars));
+      else right.appendChild(h("span", { style: "color:var(--text-dim)" }, "(no variables yet)"));
+      if (s.log != null) {
+        right.appendChild(h("div", { class: "widget-title", style: "margin-top:10px" }, "Output so far"));
+        right.appendChild(h("div", { class: "step-out" }, s.log || "(no output yet)"));
+      }
+      return h("div", { class: "steprun-grid" },
+        h("div", null, h("div", { class: "widget-title" }, "Code (▸ = current line)"), codeBox),
+        right);
     },
   });
 };
