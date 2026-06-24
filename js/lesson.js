@@ -115,7 +115,6 @@
       h("a", { href: "#/t/" + topic.id }, topic.title)));
     root.appendChild(h("h1", { class: "lesson-title" }, lesson.title));
     if (lesson.sub) root.appendChild(h("p", { class: "lesson-sub" }, lesson.sub));
-    if (lesson.slides) root.appendChild(h("div", { class: "slide-ref" }, "📑 Slides " + lesson.slides));
 
     /* --- Section 1: Concept & Visuals --- */
     if (lesson.learn && lesson.learn.length) {

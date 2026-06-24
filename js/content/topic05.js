@@ -102,6 +102,9 @@
             ] },
           { type: "widget", name: "stepper", config: {} /* replaced below */ },
           { type: "deepdive", title: "The call stack is real memory (and it can overflow)", html: "<p>Each function call pushes a <b>stack frame</b> holding its local variables and where to return to. Deep recursion piles up frames; in C this region is the literal 'stack', and overrunning it is a <i>stack overflow</i>. Python guards against this with a recursion limit (~1000) and raises <code>RecursionError</code> instead of crashing — try a huge number below to see it.</p>" },
+          { type: "subhead", text: "▶ Run it yourself — line by line" },
+          { type: "text", html: "Step through real execution. Watch it dive deeper into <code>factorial</code> on the way down (each call shows <i>inside factorial()</i> with its own <code>n</code>), hit the base case, then unwind back up — multiplying as each call returns." },
+          { type: "steprun", title: "factorial(3) — step into each recursive call", code: "def factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n - 1)\n\nanswer = factorial(3)\nprint(answer)" },
         ],
         live: [
           { title: "Run factorial and push it too far", code: "def factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial(5))     # 120\nprint(factorial(20))    # works — Python has big ints\n# print(factorial(5000))  # uncomment to trigger RecursionError" },

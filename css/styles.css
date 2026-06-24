@@ -276,8 +276,8 @@ table.tt tr.hl td { background: rgba(77,171,247,.13); }
 .step-vars { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
 .var-chip { background: var(--bg-2); border: 1px solid var(--border); border-radius: 7px; padding: 5px 10px; font-family: ui-monospace, monospace; font-size: 13px; }
 .var-chip b { color: var(--accent); }
-.step-code { font-family: ui-monospace, monospace; font-size: 13px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
-.step-code .ln { display: block; padding: 1px 6px; border-radius: 4px; }
+.step-code { font-family: ui-monospace, monospace; font-size: 13px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px; overflow-x: auto; }
+.step-code .ln { display: block; padding: 1px 6px; border-radius: 4px; white-space: pre; }
 .step-code .ln.hl { background: rgba(77,171,247,.18); }
 .step-log { font-family: ui-monospace, monospace; font-size: 13px; color: var(--accent-2); margin-top: 8px; white-space: pre-wrap; }
 
