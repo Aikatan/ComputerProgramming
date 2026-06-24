@@ -64,7 +64,9 @@
     const head = h("div", { class: "codeblock-head" },
       h("span", { class: "lang" }, b.lang || "python"),
       b.caption ? h("span", null, "— " + b.caption) : null);
-    const pre = h("pre", { html: App.highlight(b.code) });
+    // Python highlighter only fits Python; show other languages as plain escaped text
+    const isPy = !b.lang || b.lang === "python";
+    const pre = h("pre", { html: isPy ? App.highlight(b.code) : App.esc(b.code) });
     const parts = [head, pre];
     if (b.output != null) {
       parts.push(h("div", { class: "code-out" }, h("span", { class: "ot" }, "Output"), b.output));
