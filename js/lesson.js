@@ -36,6 +36,8 @@
         return App.makeStepRun(b.code, { title: b.title, inputs: b.inputs });
       case "livecode":
         return App.makeLive(b.code, { title: b.title });
+      case "practiceq":
+        return App.makePractice(b);
       case "example":
         return staticExample(b);
       default:

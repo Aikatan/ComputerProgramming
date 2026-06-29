@@ -63,6 +63,84 @@ App.makeLive = function (code, opts) {
 };
 
 /* ============================================================
+   makePractice — a "write code to…" question with Run + Check
+   cfg: { prompt(html), starter, expected, inputs?, hint? }
+   ============================================================ */
+App.makePractice = function (cfg) {
+  const wrap = App.h("div", { class: "practiceq" });
+  wrap.appendChild(App.h("div", { class: "pq-prompt", html: cfg.prompt }));
+  if (cfg.expected != null) {
+    wrap.appendChild(App.h("div", { class: "pq-target" },
+      App.h("span", { class: "pq-label" }, "🎯 Target output"),
+      App.h("pre", null, cfg.expected)));
+  }
+  const editorWrap = App.h("div", { class: "live" });
+  const head = App.h("div", { class: "live-head" }, App.h("span", { class: "title" }, "Your code"));
+  const spacer = App.h("span", { class: "spacer" });
+  const resetBtn = App.h("button", { class: "btn ghost" }, "Reset");
+  const runBtn = App.h("button", { class: "btn ghost" }, "▶ Run");
+  const checkBtn = App.h("button", { class: "btn" }, "✓ Check");
+  head.append(spacer, resetBtn, runBtn, checkBtn);
+  const taHost = App.h("div");
+  const out = App.h("div", { class: "live-out muted" }, "Write your solution, then Run to test it or Check to grade it.");
+  const badge = App.h("div", { class: "pq-badge hidden" });
+  editorWrap.append(head, taHost, out);
+  wrap.append(editorWrap, badge);
+
+  const starter = cfg.starter != null ? cfg.starter : "# Write your code here\n";
+  let cm;
+  requestAnimationFrame(() => {
+    cm = CodeMirror(taHost, {
+      value: starter, mode: "python",
+      theme: document.body.dataset.theme === "light" ? "default" : "material-darker",
+      lineNumbers: true, indentUnit: 4, viewportMargin: Infinity,
+      extraKeys: { "Shift-Enter": () => doRun(), Tab: (c) => c.replaceSelection("    ") },
+    });
+    editorWrap._cm = cm;
+  });
+
+  const norm = (s) => String(s).replace(/\r/g, "").split("\n").map((l) => l.replace(/\s+$/, "")).join("\n").replace(/^\n+|\n+$/g, "");
+
+  async function collect() {
+    let buf = "";
+    const res = await App.py.run(cm.getValue(), { inputs: cfg.inputs, sink: (t) => { buf += t; }, onImage: () => {} });
+    return { buf, ok: res.ok, error: res.error };
+  }
+
+  async function doRun() {
+    if (!cm) return;
+    runBtn.disabled = checkBtn.disabled = true; runBtn.textContent = "Running…";
+    badge.className = "pq-badge hidden";
+    const { buf } = await collect();
+    out.className = "live-out";
+    out.textContent = buf || "(no output)";
+    runBtn.disabled = checkBtn.disabled = false; runBtn.textContent = "▶ Run";
+  }
+
+  async function doCheck() {
+    if (!cm) return;
+    runBtn.disabled = checkBtn.disabled = true; checkBtn.textContent = "Checking…";
+    const { buf, ok, error } = await collect();
+    out.className = "live-out"; out.textContent = buf || "(no output)";
+    badge.classList.remove("hidden");
+    if (ok && norm(buf) === norm(cfg.expected)) {
+      badge.className = "pq-badge ok";
+      badge.textContent = "✓ Correct! Your output matches the target.";
+    } else {
+      badge.className = "pq-badge no";
+      badge.innerHTML = "✗ Not quite yet. Compare your output with the target above" + (error ? " (your code errored)" : "") + ".";
+      if (cfg.hint) badge.appendChild(App.h("div", { style: "font-weight:400;margin-top:6px;color:var(--text)" }, "Hint: " + cfg.hint));
+    }
+    runBtn.disabled = checkBtn.disabled = false; checkBtn.textContent = "✓ Check";
+  }
+
+  runBtn.addEventListener("click", doRun);
+  checkBtn.addEventListener("click", doCheck);
+  resetBtn.addEventListener("click", () => { if (cm) cm.setValue(starter); out.className = "live-out muted"; out.textContent = "Write your solution, then Run to test it or Check to grade it."; badge.className = "pq-badge hidden"; });
+  return wrap;
+};
+
+/* ============================================================
    makeStepRun — run real Python line by line, step through it
    ============================================================ */
 App.makeStepRun = function (code, opts) {
