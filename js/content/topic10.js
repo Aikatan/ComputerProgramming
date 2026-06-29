@@ -1,185 +1,239 @@
-/* ===================== Topic 10 — Algorithms & Efficiency ===================== */
+/* ===================== Topic 10 — Programming in C ===================== */
 App.registerTopic({
   id: "t10",
-  title: "Algorithms & Efficiency",
-  short: "Algorithms & Efficiency",
-  blurb: "Beyond the course: algorithmic thinking, Big-O, searching & sorting, and writing code that respects CPU and memory limits.",
-  intro: "Two programs can give the same answer yet differ by a million times in speed. This advanced topic is about thinking like an engineer: measuring the cost of an algorithm, recognising growth rates (Big-O), stepping through classic searching and sorting algorithms, and choosing data structures and Python idioms that work with the hardware instead of against it.",
+  title: "Programming in C",
+  short: "Programming in C",
+  blurb: "Take everything you learned in Python into a lower-level language. A from-scratch C course for Python programmers — types you must declare, pointers, arrays, and manual memory.",
+  intro: "You already know how to think like a programmer — variables, loops, functions, data. This topic teaches you to express those same ideas in C, a compiled language that sits much closer to the hardware. C makes you state things Python decided for you (types, sizes, memory), which is exactly why it's fast and why learning it deepens your understanding. Assumes no prior C. Note: C examples here are for reading and study — the in-browser engine runs Python, so each C snippet is paired with a runnable Python equivalent where it helps.",
   lessons: [
     {
-      id: "what-is-algorithm",
-      title: "What is an algorithm?",
-      sub: "A recipe with a cost — correctness AND efficiency.",
-      keywords: "algorithm correctness efficiency time space cost steps",
+      id: "why-c",
+      title: "Why C, and how a C program runs",
+      sub: "Compiling, the structure of a program, and your first build.",
+      keywords: "c compiled gcc main include header compile link executable hello",
       learn: [
-        { type: "text", html: "An <span class='term'>algorithm</span> is a finite, unambiguous sequence of steps that solves a problem. Two things matter: it must be <b>correct</b> (right answer for every valid input), and it should be <b>efficient</b> (not waste time or memory)." },
-        { type: "widget", name: "diagram", config: { title: "Two costs to watch", layout: "row", boxes: [
-          { title: "Time complexity", body: "How the number of <i>operations</i> grows as the input grows. This is usually the bottleneck — it decides whether your program finishes in a second or a year." },
-          { title: "Space complexity", body: "How much extra <i>memory</i> the algorithm needs as the input grows. Matters on big data and constrained devices." },
+        { type: "text", html: "<span class='term'>C</span> (1972) is the language the modern world is built on — operating systems, databases, Python's own interpreter, embedded devices. It's <b>compiled</b>: you write source, a compiler turns it into a machine-code executable, and the CPU runs that directly. No interpreter, almost no run-time safety net — fast, but you are responsible for the details Python handled for you." },
+        { type: "widget", name: "diagram", config: { title: "Python vs C — the same idea, different contract", layout: "row", boxes: [
+          { title: "Python (you've used)", body: "Interpreted. No type declarations. Memory managed for you. Bounds checked. Runs anywhere with Python. Slower." },
+          { title: "C (you're learning)", body: "Compiled to a native executable. You declare every type and size. You manage memory by hand. No bounds checking. Platform-specific. Very fast." },
         ] } },
-        { type: "text", html: "We don't count nanoseconds (those vary by machine). We count <b>how the work grows with input size n</b>. Summing a list of n numbers does ~n additions; comparing every pair does ~n² — and that difference is everything once n is large." },
-        { type: "example", caption: "same task, very different growth", code:
-"# A) does ~n operations  (linear)\ntotal = 0\nfor x in data:\n    total += x\n\n# B) does ~n*n operations (quadratic) — every pair\nfor a in data:\n    for b in data:\n        compare(a, b)",
-          annot: [
-            { c: "one loop", e: "Work grows in step with n — double the data, double the work." },
-            { c: "nested loops", e: "Work grows with n²  — double the data, <b>quadruple</b> the work." },
-          ] },
-        { type: "note", html: "Goal of this topic: be able to look at code and estimate how it will scale — then pick a better approach <i>before</i> it becomes a problem." },
-      ],
-      live: [
-        { title: "Feel the difference: count the operations", code: "def linear_ops(n):\n    ops = 0\n    for i in range(n):\n        ops += 1\n    return ops\n\ndef quadratic_ops(n):\n    ops = 0\n    for i in range(n):\n        for j in range(n):\n            ops += 1\n    return ops\n\nfor n in [10, 100, 1000]:\n    print(f\"n={n:>4}:  linear={linear_ops(n):>7,}   quadratic={quadratic_ops(n):>9,}\")" },
-      ],
-      quiz: [
-        { q: "An algorithm must always be…", choices: ["Written in C", "Correct for every valid input", "Recursive", "Less than 10 lines"], answer: 1, explain: "Correctness is non-negotiable; efficiency is the second goal." },
-        { q: "Two nested loops over n items do roughly how many steps?", choices: ["n", "2n", "n²", "log n"], answer: 2, explain: "Each of n outer iterations runs n inner iterations → n×n = n² steps." },
-      ],
-    },
-    {
-      id: "big-o",
-      title: "Big-O notation",
-      sub: "The language of how fast cost grows.",
-      keywords: "big o notation complexity constant logarithmic linear quadratic exponential growth",
-      learn: [
-        { type: "text", html: "<span class='term'>Big-O</span> describes the <b>growth rate</b> of an algorithm's cost as input size n grows, ignoring constants and small terms. <code>O(2n + 5)</code> is just <code>O(n)</code> — what matters at scale is the <i>shape</i> of the curve." },
-        { type: "widget", name: "diagram", config: { title: "The common complexity classes, best to worst", boxes: [
-          { title: "O(1) — constant", body: "Same cost regardless of n. e.g. <code>list[i]</code>, <code>dict[key]</code>. The dream." },
-          { title: "O(log n) — logarithmic", body: "Cost grows very slowly; doubling n adds one step. e.g. binary search. Excellent." },
-          { title: "O(n) — linear", body: "Cost grows with n. e.g. scanning a list once. Usually fine." },
-          { title: "O(n log n) — linearithmic", body: "The best general sorting can do. e.g. Python's <code>sorted()</code>. Good." },
-          { title: "O(n²) — quadratic", body: "Every pair. e.g. bubble sort, nested loops over the same data. Slow on big n." },
-          { title: "O(2ⁿ) — exponential", body: "Doubling with each extra item. e.g. naive recursive Fibonacci. Unusable beyond tiny n." },
-        ] } },
-        { type: "list", title: "Why the shape dominates", items: [
-          "At n = 1,000,000: <b>O(log n)</b> ≈ 20 steps, <b>O(n)</b> = 1,000,000, <b>O(n²)</b> = 1,000,000,000,000.",
-          "A faster computer shifts the line up a little; a better Big-O changes the whole curve.",
-          "Constants still matter in practice — but only after you've picked the right growth class.",
+        { type: "subhead", text: "The shape of a C program" },
+        { type: "text", html: "Every C program starts at a function called <code>main</code>. Lines end in semicolons <code>;</code>, blocks use curly braces <code>{ }</code> (not indentation), and you bring in library features with <code>#include</code> headers. Returning <code>0</code> from <code>main</code> means 'success'." },
+        { type: "example", lang: "c", caption: "hello.c — your first C program", code:
+"#include <stdio.h>     // brings in input/output, e.g. puts()\n\nint main(void) {       // execution starts here\n    puts(\"Hello, World!\");   // print a line of text\n    return 0;          // 0 = program finished successfully\n}" },
+        { type: "list", title: "How you build and run it (in a terminal)", items: [
+          "<b>Compile:</b> <code>gcc hello.c -o hello</code> — turns source into an executable named <code>hello</code>.",
+          "<b>Run:</b> <code>./hello</code> (or <code>hello.exe</code> on Windows).",
+          "Change the code? You must <b>recompile</b> before running again — there's no interpreter reading it live.",
         ] },
-        { type: "note", title: "Best / average / worst", html: "Big-O usually describes the <b>worst case</b>. Some algorithms have a great average but a bad worst case (e.g. quicksort). Knowing which case you're quoting matters." },
+        { type: "note", title: "Output in C", html: "<code>puts(\"text\")</code> prints a line. C's general-purpose output function is <code>printf</code>, which uses <i>format specifiers</i> — <code>%d</code> for an int, <code>%f</code> for a float, <code>%c</code> for a char, <code>%s</code> for a string — e.g. conceptually 'print the value of x as an integer'. We'll describe results in comments so you can focus on the concepts." },
+        { type: "deepdive", title: "What 'compiled' buys and costs", html: "<p>The compiler checks types and produces optimised machine code <i>once</i>, so running is pure CPU work — no per-line translation, no type checks, no garbage collector. That's the speed. The cost: a build step every change, errors that are sometimes cryptic, and full responsibility for memory and bounds. Python traded all that away for convenience; C hands it back for control.</p>" },
       ],
       live: [
-        { title: "Plot the growth curves yourself (Matplotlib)", code: "import matplotlib.pyplot as plt\nimport math\n\nns = list(range(1, 31))\nplt.plot(ns, [1]*len(ns),            label=\"O(1)\")\nplt.plot(ns, [math.log2(n) for n in ns], label=\"O(log n)\")\nplt.plot(ns, ns,                      label=\"O(n)\")\nplt.plot(ns, [n*math.log2(n) for n in ns], label=\"O(n log n)\")\nplt.plot(ns, [n*n for n in ns],       label=\"O(n^2)\")\nplt.ylim(0, 300)\nplt.title(\"How cost grows with input size\")\nplt.xlabel(\"n\"); plt.ylabel(\"operations\")\nplt.legend(); plt.grid(True)\nplt.show()" },
+        { title: "The same program in Python (for comparison)", code: "# The Python you already know does the same job in one line:\nprint(\"Hello, World!\")\n# No #include, no main(), no types, no compile step." },
       ],
       quiz: [
-        { q: "Which complexity is best for large n?", choices: ["O(n²)", "O(n)", "O(log n)", "O(2ⁿ)"], answer: 2, explain: "O(log n) grows slowest of these — doubling n adds just one step." },
-        { q: "`O(3n + 100)` simplifies to…", choices: ["O(3n)", "O(n)", "O(100)", "O(n²)"], answer: 1, explain: "Big-O drops constant factors and lower-order terms: O(3n+100) = O(n)." },
-        { q: "Naive recursive Fibonacci is famously…", choices: ["O(1)", "O(n)", "O(n log n)", "O(2ⁿ) exponential"], answer: 3, explain: "It recomputes the same subproblems, branching exponentially — O(2ⁿ)." },
+        { q: "Where does a C program begin executing?", choices: ["The first line of the file", "The main() function", "The #include", "The last function"], answer: 1, explain: "Execution starts at main(); other functions run only when called." },
+        { q: "After editing C source you must…", choices: ["Nothing, it re-reads itself", "Recompile before running", "Restart the computer", "Convert it to Python"], answer: 1, explain: "C is compiled — changes require a fresh compile to a new executable." },
       ],
     },
     {
-      id: "searching",
-      title: "Searching: linear vs binary",
-      sub: "Step through both and see O(n) vs O(log n).",
-      keywords: "linear search binary search sorted halving log n algorithm steprun",
+      id: "types",
+      title: "Variables & types in C",
+      sub: "The big change from Python: you declare the type, and it's fixed.",
+      keywords: "c type int char float double declare size cast variable constant",
       learn: [
-        { type: "text", html: "Finding an item in a list is the simplest place to feel Big-O. <span class='term'>Linear search</span> checks every element — O(n). <span class='term'>Binary search</span> repeatedly halves a <b>sorted</b> list — O(log n) — but it only works if the data is already sorted." },
-        { type: "example", caption: "linear search — check each in turn", code:
-"def linear_search(data, target):\n    for i, value in enumerate(data):\n        if value == target:\n            return i        # found at index i\n    return -1               # not found",
-          annot: [
-            { c: "for ... in data", e: "Worst case visits every element → O(n)." },
-          ] },
-        { type: "subhead", text: "▶ Step through binary search" },
-        { type: "text", html: "Watch <code>low</code>, <code>high</code> and <code>mid</code> close in on the target. Each step throws away <i>half</i> the remaining list — that's why even a million items take only ~20 steps." },
-        { type: "steprun", title: "binary search for 23 in a sorted list", code: "def binary_search(data, target):\n    low = 0\n    high = len(data) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if data[mid] == target:\n            return mid\n        elif data[mid] < target:\n            low = mid + 1      # target is in the right half\n        else:\n            high = mid - 1     # target is in the left half\n    return -1\n\nnums = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]\nprint(\"found at index:\", binary_search(nums, 23))" },
-        { type: "note", variant: "warn", title: "Binary search needs sorted data", html: "The halving logic only works if the list is ordered. If your data changes a lot, the cost of keeping it sorted may outweigh the faster search — engineering is about trade-offs." },
-      ],
-      live: [
-        { title: "Race them: steps taken by each", code: "def linear_steps(data, target):\n    steps = 0\n    for v in data:\n        steps += 1\n        if v == target:\n            break\n    return steps\n\ndef binary_steps(data, target):\n    steps = 0\n    low, high = 0, len(data) - 1\n    while low <= high:\n        steps += 1\n        mid = (low + high) // 2\n        if data[mid] == target: break\n        elif data[mid] < target: low = mid + 1\n        else: high = mid - 1\n    return steps\n\ndata = list(range(1, 1_000_001))   # 1,000,000 sorted numbers\ntarget = 999_999\nprint(\"linear search steps:\", linear_steps(data, target))\nprint(\"binary search steps:\", binary_steps(data, target))" },
-      ],
-      quiz: [
-        { q: "Binary search on 1,000,000 sorted items takes about how many steps (worst case)?", choices: ["1,000,000", "1,000", "20", "1"], answer: 2, explain: "log2(1,000,000) ≈ 20 — each step halves the search space." },
-        { q: "Binary search requires the data to be…", choices: ["Small", "Sorted", "Unique", "Numbers only"], answer: 1, explain: "Halving by comparison only works on ordered data." },
-      ],
-    },
-    {
-      id: "sorting",
-      title: "Sorting: bubble sort & beyond",
-      sub: "Step through an O(n²) sort, then meet Python's fast one.",
-      keywords: "sorting bubble sort selection comparison swap timsort sorted n log n steprun",
-      learn: [
-        { type: "text", html: "Sorting reorders data — and it's where Big-O really bites. <span class='term'>Bubble sort</span> is the simplest to understand: repeatedly walk the list swapping neighbours that are out of order, so big values 'bubble' to the end. It's O(n²) — fine to learn, too slow for real data." },
-        { type: "subhead", text: "▶ Step through bubble sort" },
-        { type: "text", html: "Watch the inner loop compare neighbours and swap. Notice how many comparisons it takes for just 5 numbers — then imagine a million." },
-        { type: "steprun", title: "bubble sort a small list", code: "def bubble_sort(data):\n    n = len(data)\n    for i in range(n - 1):\n        for j in range(n - 1 - i):\n            if data[j] > data[j + 1]:\n                data[j], data[j + 1] = data[j + 1], data[j]  # swap\n    return data\n\nnums = [5, 1, 4, 2, 8]\nprint(bubble_sort(nums))" },
-        { type: "note", title: "Don't write your own sort in real code", html: "Python's built-in <code>sorted()</code> and <code>list.sort()</code> use <b>Timsort</b> — an O(n log n) algorithm tuned in C. It is dramatically faster and well-tested. Hand-written sorts are for <i>learning</i> the ideas." },
-        { type: "example", caption: "the right way in practice", code:
-"nums = [5, 1, 4, 2, 8]\nprint(sorted(nums))                       # [1, 2, 4, 5, 8]\nprint(sorted(nums, reverse=True))         # [8, 5, 4, 2, 1]\nwords = ['pear', 'fig', 'banana']\nprint(sorted(words, key=len))             # ['fig', 'pear', 'banana']",
-          output: "[1, 2, 4, 5, 8]\n[8, 5, 4, 2, 1]\n['fig', 'pear', 'banana']" },
-      ],
-      live: [
-        { title: "Count the comparisons bubble sort makes", code: "def bubble_count(data):\n    comparisons = 0\n    n = len(data)\n    for i in range(n - 1):\n        for j in range(n - 1 - i):\n            comparisons += 1\n            if data[j] > data[j + 1]:\n                data[j], data[j + 1] = data[j + 1], data[j]\n    return comparisons\n\nfor size in [5, 10, 50, 100]:\n    import random\n    sample = [random.randint(0, 999) for _ in range(size)]\n    print(f\"n={size:>3}:  {bubble_count(sample):>5,} comparisons\")" },
-      ],
-      quiz: [
-        { q: "Bubble sort's time complexity is…", choices: ["O(1)", "O(log n)", "O(n)", "O(n²)"], answer: 3, explain: "Two nested loops over the data → O(n²)." },
-        { q: "In real Python code you should sort with…", choices: ["Your own bubble sort", "sorted() / list.sort() (Timsort)", "a while loop", "recursion only"], answer: 1, explain: "Built-in sort is O(n log n), C-optimised, and battle-tested." },
-      ],
-    },
-    {
-      id: "data-structures",
-      title: "Choosing the right data structure",
-      sub: "The same task can be O(n) or O(1) — by picking list vs set/dict.",
-      keywords: "list set dict membership lookup hashing o(1) o(n) complexity choice",
-      learn: [
-        { type: "text", html: "Often the biggest speed-up isn't a cleverer loop — it's a better <b>container</b>. Checking 'is x in here?' is O(n) for a list (it scans) but O(1) for a set or dict (it hashes straight to the answer)." },
-        { type: "widget", name: "diagram", config: { title: "Cost of common operations", boxes: [
-          { title: "list", body: "Index <code>lst[i]</code>: O(1). Membership <code>x in lst</code>: <b>O(n)</b> — scans every element. Great for ordered sequences you iterate." },
-          { title: "set", body: "Membership <code>x in s</code>: <b>O(1)</b> average (hashing). No duplicates, no order. Perfect for 'have I seen this?' checks." },
-          { title: "dict", body: "Lookup <code>d[key]</code>: <b>O(1)</b> average. Key → value mapping. The workhorse for counting, indexing, caching." },
+        { type: "text", html: "In Python a variable is just a name and the type follows the value. In C you must <b>declare</b> each variable's type up front, and that type is <b>fixed</b> for its whole life. The type decides how many bytes it takes and what it can hold." },
+        { type: "example", lang: "c", caption: "declaring typed variables", code:
+"int    age   = 25;       // whole number, usually 4 bytes\ndouble price = 19.99;    // 64-bit decimal, high precision\nfloat  ratio = 0.5f;     // 32-bit decimal (note the f)\nchar   grade = 'A';      // a single character (1 byte) — single quotes!\n\nage = 26;        // OK: same type\n// age = \"hello\"; // ERROR: can't put text in an int (compiler refuses)" },
+        { type: "widget", name: "diagram", config: { title: "The core C types", boxes: [
+          { title: "int", body: "Whole numbers, typically 4 bytes (about ±2.1 billion). Variants: <code>short</code>, <code>long</code>, and <code>unsigned</code> (non-negative, doubles the positive range)." },
+          { title: "float / double", body: "Decimals. <code>float</code> ≈ 7 digits (4 bytes); <code>double</code> ≈ 15 digits (8 bytes). Use <code>double</code> unless memory is tight." },
+          { title: "char", body: "One character / one byte, stored as its ASCII number ('A' is 65). Written with single quotes. (A whole string is an array of char — later lesson.)" },
+          { title: "_Bool / bool", body: "True or false (0 or 1). With <code>#include &lt;stdbool.h&gt;</code> you can write <code>bool</code>, <code>true</code>, <code>false</code>." },
         ] } },
-        { type: "example", caption: "same result, very different cost", code:
-"# Slow: 'in' on a list scans — O(n) per check, O(n*m) overall\nseen = []\nfor x in items:\n    if x not in seen:      # O(n) each time!\n        seen.append(x)\n\n# Fast: 'in' on a set hashes — O(1) per check, O(n) overall\nseen = set()\nfor x in items:\n    if x not in seen:      # O(1)\n        seen.add(x)",
-          annot: [
-            { c: "x not in seen  (list)", e: "Re-scans the whole list every time — quadratic overall." },
-            { c: "x not in seen  (set)", e: "Hashes directly to the bucket — near-constant time." },
-          ] },
-        { type: "deepdive", title: "Why hashing is O(1) (and the hardware angle)", html: "<p>A set/dict computes a <b>hash</b> of the key to jump straight to a memory slot, instead of comparing against every stored item. It trades a little extra memory for a huge time win — a recurring engineering theme. The cost: hashing scatters data across memory, so iterating a set is less cache-friendly than walking a contiguous list. Right tool, right job.</p>" },
+        { type: "subhead", text: "Fixed size means limits" },
+        { type: "text", html: "Because each type has a fixed width, values have hard limits and can <b>overflow</b> (wrap around) silently — the constraint that makes you think about ranges. Decimals also do integer division surprises just like Python 2." },
+        { type: "example", lang: "c", caption: "casting and integer division", code:
+"int a = 7, b = 2;\nint   q = a / b;          // 3  — integer division drops the remainder\ndouble exact = (double)a / b;  // 3.5 — cast a to double first\n\nunsigned char small = 255;\nsmall = small + 1;        // wraps to 0 — overflow, no warning!" },
+        { type: "note", variant: "warn", title: "C is statically typed", html: "Types are checked at <i>compile</i> time. Many bugs that Python only discovers when the line runs, C catches before the program even starts — a real benefit of declaring types." },
       ],
       live: [
-        { title: "Time it: list membership vs set membership", code: "import time\n\nbig_list = list(range(100_000))\nbig_set  = set(big_list)\ntargets  = [99_999, 50_000, 0, 75_321]\n\nstart = time.perf_counter()\nfor _ in range(2000):\n    for t in targets:\n        t in big_list      # O(n) each\nlist_time = time.perf_counter() - start\n\nstart = time.perf_counter()\nfor _ in range(2000):\n    for t in targets:\n        t in big_set       # O(1) each\nset_time = time.perf_counter() - start\n\nprint(f\"list 'in': {list_time:.4f}s\")\nprint(f\"set  'in': {set_time:.4f}s\")\nprint(f\"set was ~{list_time/set_time:.0f}x faster\")" },
+        { title: "Python equivalents — see the same operations", code: "# integer division and float division (Python 3):\nprint(7 // 2)        # 3   (like C's int / int)\nprint(7 / 2)         # 3.5 (Python auto-floats; C needs a cast)\n\n# a char is just a number:\nprint(ord('A'))      # 65  (C stores 'A' as 65 too)\nprint(chr(66))       # 'B'" },
       ],
       quiz: [
-        { q: "Checking `x in collection` is O(1) for a…", choices: ["list", "set or dict", "tuple", "string"], answer: 1, explain: "Sets and dicts hash the value for near-constant-time membership; lists/tuples scan (O(n))." },
-        { q: "To deduplicate while checking membership efficiently, use a…", choices: ["list", "set", "string", "nested loop"], answer: 1, explain: "A set gives O(1) membership, turning an O(n²) dedupe into O(n)." },
+        { q: "In C, after `int x = 5;`, can x later hold \"hello\"?", choices: ["Yes, like Python", "No — its type is fixed at int", "Only with quotes", "Only if global"], answer: 1, explain: "C variables have a fixed declared type; the compiler rejects assigning a string to an int." },
+        { q: "`int q = 7 / 2;` gives q = …", choices: ["3.5", "3", "4", "error"], answer: 1, explain: "Integer division drops the fraction — 3. Cast to double for 3.5." },
+        { q: "A single character in C is written with…", choices: ["double quotes \"A\"", "single quotes 'A'", "backticks", "no quotes"], answer: 1, explain: "'A' is a char (single quotes); \"A\" is a string (an array of char)." },
       ],
     },
     {
-      id: "efficient-python",
-      title: "Writing efficient Python",
-      sub: "Work with the interpreter and the hardware, not against them.",
-      keywords: "efficiency comprehension generator join memoization cache numpy locality optimization",
+      id: "control-flow",
+      title: "Control flow in C",
+      sub: "if/else, switch, while, for — same logic, new punctuation.",
+      keywords: "c if else switch while for loop braces semicolon condition",
       learn: [
-        { type: "text", html: "Once your Big-O is right, these habits squeeze out the constants — and respect the CPU and memory you're running on." },
-        { type: "tabs", tabs: [
-          { label: "Don't repeat work", blocks: [
-            { type: "text", html: "Hoist anything that doesn't change out of the loop, and avoid rebuilding the same thing each pass." },
-            { type: "example", caption: "compute once, not every iteration", code:
-"# slower: len(data) and the lookup recomputed each pass\nfor i in range(len(data)):\n    if data[i] > threshold * factor:\n        ...\n\n# better: compute the constant once\nlimit = threshold * factor\nfor value in data:\n    if value > limit:\n        ..." },
+        { type: "text", html: "The control structures are the same ideas you used in Python (Topic 03). The differences are punctuation: conditions go in <code>( )</code>, blocks go in <code>{ }</code>, and statements end with <code>;</code>. Indentation is for humans only — it doesn't define blocks." },
+        { type: "example", lang: "c", caption: "if / else if / else", code:
+"int score = 73;\nif (score >= 80) {\n    grade = 'A';\n} else if (score >= 70) {\n    grade = 'B';\n} else {\n    grade = 'C';\n}",
+          annot: [
+            { c: "if (score >= 80) {", e: "Condition in parentheses; body in braces. Compare with Python's <code>if score &gt;= 80:</code> + indentation." },
+            { c: "} else if (...) {", e: "C writes <code>else if</code> (two words) where Python writes <code>elif</code>." },
           ] },
-          { label: "Use built-ins", blocks: [
-            { type: "text", html: "Built-ins and comprehensions run in optimised C, far faster than an equivalent hand-written Python loop." },
-            { type: "example", caption: "comprehension over manual append", code:
-"# slower\nsquares = []\nfor n in range(1000):\n    squares.append(n * n)\n\n# faster and clearer\nsquares = [n * n for n in range(1000)]\n\n# and use built-ins\ntotal = sum(squares)\nbiggest = max(squares)" },
+        { type: "example", lang: "c", caption: "while and for loops", code:
+"// while: same as Python\nint i = 0;\nwhile (i < 5) {\n    i = i + 1;\n}\n\n// for: C's for is a counter in three parts — (init; condition; update)\nfor (int j = 0; j < 5; j = j + 1) {\n    // runs for j = 0,1,2,3,4\n}",
+          annot: [
+            { c: "for (int j = 0; j < 5; j++)", e: "Three parts: start, keep-going test, and step. Python hides this inside <code>range()</code>." },
           ] },
-          { label: "Strings & memory", blocks: [
-            { type: "text", html: "Building a string with <code>+=</code> in a loop creates a new string every time (O(n²)). Collect pieces and <code>join</code> once. For huge sequences, a <b>generator</b> streams items instead of building a giant list in memory." },
-            { type: "example", caption: "join, and generators for memory", code:
-"# slow: quadratic string building\ns = \"\"\nfor w in words:\n    s += w\n\n# fast: O(n)\ns = \"\".join(words)\n\n# memory: sum a billion squares WITHOUT building the list\ntotal = sum(n*n for n in range(1_000_000))   # generator — constant memory" },
-          ] },
-          { label: "Cache results", blocks: [
-            { type: "text", html: "If a function recomputes the same answers (like naive recursive Fibonacci, O(2ⁿ)), <b>memoize</b> it — store results and reuse them. One decorator turns exponential into linear." },
-            { type: "example", caption: "memoization with functools.lru_cache", code:
-"from functools import lru_cache\n\n@lru_cache(maxsize=None)\ndef fib(n):\n    if n < 2:\n        return n\n    return fib(n - 1) + fib(n - 2)\n\nprint(fib(100))   # instant — each value computed once" },
-          ] },
-        ] },
-        { type: "deepdive", title: "The hardware angle: locality & NumPy", html: "<p>The CPU reads memory in <b>cache lines</b>, so data that sits together is read together. Walking a contiguous array is far faster than chasing references scattered across the heap — even with the same Big-O. That's why <b>NumPy</b> (contiguous C arrays + operations in compiled C) can be 10–100× faster than a Python loop for number crunching. Choosing the right representation is a hardware decision, not just a style one.</p>" },
+        { type: "note", title: "switch — a tidy multi-way branch", html: "C has <code>switch</code> for choosing among many constant values (Python got <code>match</code> only recently). Each <code>case</code> needs a <code>break;</code> or it 'falls through' to the next — a classic beginner bug." },
+        { type: "example", lang: "c", caption: "switch statement", code:
+"switch (day) {\n    case 1:  /* Monday    */  break;\n    case 6:\n    case 7:  /* Weekend   */  break;\n    default: /* a weekday  */  break;   // when nothing else matched\n}" },
+        { type: "deepdive", title: "Braces vs indentation — a real bug", html: "<p>In Python indentation <i>is</i> the block, so it can't lie. In C, indentation is cosmetic — only braces group statements. A missing pair of braces (<code>if (x) doA(); doB();</code> where you meant both to be conditional) compiles fine but does the wrong thing. Always brace your blocks.</p>" },
       ],
       live: [
-        { title: "Memoization: O(2ⁿ) vs O(n) on Fibonacci", code: "import time\nfrom functools import lru_cache\n\ndef slow_fib(n):\n    if n < 2: return n\n    return slow_fib(n-1) + slow_fib(n-2)\n\n@lru_cache(maxsize=None)\ndef fast_fib(n):\n    if n < 2: return n\n    return fast_fib(n-1) + fast_fib(n-2)\n\nstart = time.perf_counter()\nslow_fib(30)\nprint(f\"naive fib(30): {time.perf_counter()-start:.3f}s\")\n\nstart = time.perf_counter()\nfast_fib(100)\nprint(f\"memoized fib(100): {time.perf_counter()-start:.5f}s (and far bigger n)\")" },
-        { title: "String join vs += (watch the gap grow)", code: "import time\nwords = [\"x\"] * 50_000\n\nstart = time.perf_counter()\ns = \"\"\nfor w in words:\n    s += w\nplus_time = time.perf_counter() - start\n\nstart = time.perf_counter()\ns = \"\".join(words)\njoin_time = time.perf_counter() - start\n\nprint(f\"+=   : {plus_time:.4f}s\")\nprint(f\"join : {join_time:.4f}s\")" },
+        { title: "The same grade logic in Python", code: "score = 73\nif score >= 80:\n    grade = 'A'\nelif score >= 70:\n    grade = 'B'\nelse:\n    grade = 'C'\nprint(grade)   # B\n\n# C's for(j=0;j<5;j++) is just:\nfor j in range(5):\n    print(j, end=' ')" },
       ],
       quiz: [
-        { q: "Building a big string with `+=` in a loop is slow because…", choices: ["Strings are immutable, so each += makes a new copy", "Python can't add strings", "It uses the GPU", "Strings are too small"], answer: 0, explain: "Immutability means += rebuilds the whole string each time — O(n²). Use ''.join()." },
-        { q: "Memoizing naive Fibonacci changes its complexity from…", choices: ["O(n) to O(1)", "O(2ⁿ) to O(n)", "O(n²) to O(n log n)", "It stays the same"], answer: 1, explain: "Caching each result means every n is computed once: exponential becomes linear." },
-        { q: "NumPy is fast for numbers mainly because it…", choices: ["Skips the answer", "Stores data contiguously and runs in compiled C (cache-friendly)", "Uses more RAM", "Avoids loops by luck"], answer: 1, explain: "Contiguous memory + C operations = cache-friendly, vectorised speed." },
+        { q: "In C, what marks a block of code?", choices: ["Indentation", "Curly braces { }", "Colons", "Parentheses"], answer: 1, explain: "Braces { } group statements in C; indentation is only for readability." },
+        { q: "C's `for (init; condition; update)` corresponds to Python's…", choices: ["while True", "for x in range(...)", "if/else", "def"], answer: 1, explain: "The C for-loop is a counting loop, like iterating a range in Python." },
+        { q: "Forgetting `break;` in a switch case causes…", choices: ["A syntax error", "Fall-through into the next case", "The program to stop", "Nothing"], answer: 1, explain: "Without break, execution falls through into the following case(s)." },
+      ],
+    },
+    {
+      id: "functions",
+      title: "Functions in C",
+      sub: "Typed parameters, a return type, and declare-before-use.",
+      keywords: "c function prototype return type parameter pass by value void",
+      learn: [
+        { type: "text", html: "A C function declares the <b>type it returns</b> and the <b>type of each parameter</b>. Like Python, you define it once and call it many times — but the compiler must know about it <i>before</i> the call, so functions are defined above <code>main</code> (or declared with a <i>prototype</i>)." },
+        { type: "example", lang: "c", caption: "a typed function", code:
+"// return type ─┐     ┌─ parameter types\n//              int   (int, int)\nint add(int a, int b) {\n    int sum = a + b;\n    return sum;        // must return an int, as promised\n}\n\nint main(void) {\n    int result = add(3, 4);   // result is 7\n    return 0;\n}",
+          annot: [
+            { c: "int add(int a, int b)", e: "Returns an int; takes two ints. Python's <code>def add(a, b):</code> names nothing's type." },
+            { c: "return sum;", e: "The returned value's type must match the declared return type." },
+          ] },
+        { type: "note", title: "void = returns nothing", html: "A function that returns no value has return type <code>void</code> (like a Python function with no <code>return</code>). <code>main</code> returns <code>int</code> — the program's exit code." },
+        { type: "subhead", text: "Pass by value" },
+        { type: "text", html: "By default C copies each argument into the function (<b>pass by value</b>) — changing a parameter inside does <i>not</i> change the caller's variable. To let a function modify the caller's data, you pass its <b>address</b> (a pointer — next lesson). Python behaves differently again: it passes references, so mutating a passed list is visible outside." },
+        { type: "example", lang: "c", caption: "the copy doesn't escape", code:
+"void try_change(int x) {\n    x = 99;        // changes only the local copy\n}\nint main(void) {\n    int n = 5;\n    try_change(n);  // n is STILL 5 afterward\n    return 0;\n}" },
+        { type: "deepdive", title: "Prototypes", html: "<p>If you want to define helper functions <i>below</i> main, you put a <b>prototype</b> (the signature plus a semicolon) near the top so the compiler knows the function exists: <code>int add(int, int);</code>. This 'declare before use' rule is why C headers (<code>.h</code> files) exist — they're collections of prototypes.</p>" },
+      ],
+      live: [
+        { title: "Same function in Python — note what's missing", code: "def add(a, b):       # no types declared\n    return a + b\n\nprint(add(3, 4))     # 7\n\n# Pass-by-value vs Python references:\ndef try_change(x):\n    x = 99           # rebinds local name only\nn = 5\ntry_change(n)\nprint(n)             # still 5 (ints are immutable)" },
+      ],
+      quiz: [
+        { q: "A C function must declare…", choices: ["Only its name", "Its return type and parameter types", "Nothing", "Its line count"], answer: 1, explain: "C functions state the return type and each parameter's type." },
+        { q: "With pass-by-value, changing a parameter inside a function…", choices: ["Changes the caller's variable", "Affects only the local copy", "Is illegal", "Returns automatically"], answer: 1, explain: "C copies arguments; the original is untouched unless you pass an address." },
+      ],
+    },
+    {
+      id: "pointers",
+      title: "Pointers",
+      sub: "Variables that hold addresses — C's defining feature.",
+      keywords: "c pointer address dereference ampersand asterisk pass by reference indirection",
+      learn: [
+        { type: "text", html: "A <span class='term'>pointer</span> is a variable whose value is the <b>memory address</b> of another variable. This is the idea Python hides completely. Two operators: <code>&x</code> gives 'the address of x', and <code>*p</code> means 'the value stored at the address p holds' (called <i>dereferencing</i>)." },
+        { type: "example", lang: "c", caption: "a pointer to an int", code:
+"int  x = 42;     // x lives at some address, say 0x1000\nint *p = &x;     // p holds 0x1000 — 'the address of x'\n\nint  value = *p; // value = 42  — follow p to read x\n*p = 99;         // follow p and write — now x == 99 too\n\n// p   is an address (0x1000)\n// *p  is the value there (99)\n// &x  is x's address (0x1000)",
+          annot: [
+            { c: "int *p = &x;", e: "The <code>*</code> in a declaration means 'p is a pointer to int'. <code>&x</code> is x's address." },
+            { c: "*p = 99;", e: "Dereference and assign — reaches all the way back to x." },
+          ] },
+        { type: "widget", name: "memoryModel", config: { title: "x and a pointer to it, in memory", columns: [
+          { head: "Address → contents", cells: [
+            { addr: "0x1000", name: "x (int)", val: "99" },
+            { addr: "0x1004", name: "p (int*)", val: "0x1000", kind: "ptr", note: "p does not hold 99 — it holds the ADDRESS where 99 lives. Following p (*p) reaches x." },
+          ] },
+        ] } },
+        { type: "subhead", text: "The killer use: let a function change your variable" },
+        { type: "text", html: "Because C passes copies, a function can only modify your variable if you hand it the <b>address</b>. This is how C does 'pass by reference'." },
+        { type: "example", lang: "c", caption: "modifying the caller's variable via a pointer", code:
+"void set_to_99(int *ptr) {\n    *ptr = 99;       // write through the pointer\n}\nint main(void) {\n    int n = 5;\n    set_to_99(&n);   // pass the ADDRESS of n\n    // n is now 99\n    return 0;\n}" },
+        { type: "note", variant: "danger", title: "Pointers are powerful and dangerous", html: "A pointer aimed at the wrong place — uninitialised, freed (<i>dangling</i>), or <code>NULL</code> — crashes the program (segfault) or silently corrupts memory. This power-with-risk is exactly why beginner languages hide pointers." },
+        { type: "deepdive", title: "Python's references are the same idea, hidden", html: "<p>You never write <code>*</code> or <code>&</code> in Python, yet every variable is secretly a reference (an address) to a heap object. <code>b = a</code> copies the reference, so <code>b.append(x)</code> changes the one shared list. Learning C pointers makes Python's 'spooky action at a distance' suddenly obvious — see it run on the right.</p>" },
+      ],
+      live: [
+        { title: "Python references behave like hidden pointers", code: "a = [1, 2, 3]\nb = a                  # copies the REFERENCE, not the list\nprint(id(a) == id(b))  # True — same object/address\nb.append(99)\nprint(\"a is now:\", a)  # a changed too — both names point to one list\n\nc = a.copy()           # to truly copy, ask for a copy\nc.append(0)\nprint(\"a:\", a, \" c:\", c)" },
+      ],
+      quiz: [
+        { q: "If `int *p = &x;`, what does `*p` give you?", choices: ["The address of x", "The value stored in x", "A copy of p", "Zero"], answer: 1, explain: "Dereferencing (*p) reads the value at the address p holds — x's value." },
+        { q: "Why pass `&n` to a function?", choices: ["To make it faster", "So the function can modify the caller's n", "To copy n", "Pointers are required everywhere"], answer: 1, explain: "Passing the address lets the function write through the pointer to the original variable." },
+      ],
+    },
+    {
+      id: "arrays-strings",
+      title: "Arrays & strings in C",
+      sub: "Contiguous memory, and why C strings hide a zero at the end.",
+      keywords: "c array contiguous index pointer arithmetic string null terminator buffer overflow",
+      learn: [
+        { type: "text", html: "An <span class='term'>array</span> is a fixed-size block of equal elements stored <b>contiguously</b> (back-to-back). Indexing is instant because <code>arr[i]</code> is computed as 'start address + i × element size'. The array's name is essentially a pointer to its first element." },
+        { type: "example", lang: "c", caption: "an array of ints", code:
+"int arr[4] = {10, 20, 30, 40};  // 4 ints, side by side\nint first = arr[0];   // 10\narr[2] = 99;          // change the third element\n\nint *p = arr;         // arr decays to a pointer to arr[0]\n// arr[2] is the same as *(p + 2)  — 'pointer arithmetic'",
+          annot: [
+            { c: "int arr[4]", e: "Size is fixed at declaration — you can't grow it like a Python list." },
+            { c: "*(p + 2)", e: "Adding to a pointer moves it by whole elements; identical to arr[2]." },
+          ] },
+        { type: "widget", name: "memoryModel", config: { title: "int arr[4] = {10,20,30,40} — one contiguous block", columns: [
+          { head: "Address → element", cells: [
+            { addr: "0x2000", name: "arr[0]", val: "10" },
+            { addr: "0x2004", name: "arr[1]", val: "20" },
+            { addr: "0x2008", name: "arr[2]", val: "30" },
+            { addr: "0x200C", name: "arr[3]", val: "40", note: "Each int is 4 bytes, so addresses step by 4. arr[i] = base + i*4 — that's why indexing is O(1)." },
+          ] },
+        ] } },
+        { type: "subhead", text: "Strings are arrays of char ending in '\\0'" },
+        { type: "text", html: "C has no built-in string type. A string is an <b>array of <code>char</code></b> with a hidden <span class='term'>NUL terminator</span> (<code>'\\0'</code>, value 0) marking the end — that's how functions know where the text stops." },
+        { type: "example", lang: "c", caption: "a C string", code:
+"char name[6] = \"Hello\";  // actually 6 chars: 'H' 'e' 'l' 'l' 'o' '\\0'\n// name[0] == 'H',  name[5] == '\\0'\n// string functions (strlen, strcpy...) live in <string.h>" },
+        { type: "note", variant: "danger", title: "No bounds checking → buffer overflow", html: "C does not check that an index is valid. Writing <code>arr[10]</code> on a 4-element array overwrites whatever bytes follow — a crash, or a security exploit. Python lists raise <code>IndexError</code> instead; in C, staying in bounds is <i>your</i> job." },
+        { type: "deepdive", title: "Why this layout makes C (and NumPy) fast", html: "<p>Contiguous memory is <b>cache-friendly</b>: the CPU loads nearby bytes together, so marching through an array is very fast. A Python list stores scattered object references instead, so iterating it chases pointers around the heap. This is exactly why NumPy (C-style contiguous arrays) crushes a Python loop for number-crunching — the hardware lesson from Topic 09.</p>" },
+      ],
+      live: [
+        { title: "Python lists are bounds-checked and growable (C arrays are neither)", code: "arr = [10, 20, 30, 40]\nprint(arr[2])          # 30\narr.append(50)         # Python lists grow; C arrays are fixed size\nprint(arr)\ntry:\n    print(arr[99])     # C would read garbage; Python protects you\nexcept IndexError as e:\n    print(\"IndexError:\", e)" },
+      ],
+      quiz: [
+        { q: "Why is `arr[i]` an O(1) operation?", choices: ["Arrays are sorted", "Address = base + i × element size, one calculation", "The CPU searches", "Arrays are short"], answer: 1, explain: "Contiguous layout means any element's address is a single arithmetic step." },
+        { q: "What marks the end of a C string?", choices: ["A space", "A newline", "A NUL byte '\\0'", "255"], answer: 2, explain: "C strings are NUL-terminated — a hidden '\\0' signals the end." },
+        { q: "Writing past the end of a C array…", choices: ["Raises IndexError", "Grows the array", "Corrupts memory / buffer overflow", "Is impossible"], answer: 2, explain: "C has no bounds checking — out-of-range writes corrupt memory." },
+      ],
+    },
+    {
+      id: "memory",
+      title: "Memory: the stack & the heap",
+      sub: "Automatic locals vs memory you allocate and must free.",
+      keywords: "c stack heap malloc free memory leak dangling pointer stack overflow sizeof",
+      learn: [
+        { type: "text", html: "A running C program has two working regions. The <span class='term'>stack</span> is automatic and fast; the <span class='term'>heap</span> is manual and flexible. Knowing the difference is the heart of writing correct C." },
+        { type: "widget", name: "memoryModel", config: { title: "Stack vs Heap", columns: [
+          { head: "Stack (automatic)", cells: [
+            { name: "main() frame", val: "n = 5", kind: "frame" },
+            { name: "f() frame", val: "i = 10", kind: "frame", note: "Each function call pushes a frame holding its locals; returning pops it automatically. Fast, but limited — deep recursion overflows it." },
+          ] },
+          { head: "Heap (manual)", cells: [
+            { addr: "0x9000", name: "malloc(40)", val: "[ … 40 bytes … ]", kind: "ptr", note: "You request memory explicitly and must free() it yourself. Big and flexible, but you own the cleanup." },
+          ] },
+        ] } },
+        { type: "list", title: "Stack vs heap", items: [
+          "<b>Stack</b>: local variables and call frames. Allocated and freed <i>automatically</i> as functions enter and return. Very fast, but small — unbounded recursion causes a <b>stack overflow</b>.",
+          "<b>Heap</b>: memory whose size or lifetime you decide at run time. You <code>malloc</code> it and must <code>free</code> it. Large, but mismanagement causes leaks and dangling pointers.",
+        ] },
+        { type: "example", lang: "c", caption: "allocating and freeing heap memory", code:
+"#include <stdlib.h>   // for malloc / free\n\nint *make_array(int n) {\n    int *block = malloc(n * sizeof(int));  // ask for n ints on the heap\n    return block;                          // hand back the pointer\n}\nint main(void) {\n    int *data = make_array(10);\n    data[0] = 7;          // use it\n    free(data);           // you MUST return heap memory\n    // using data after free() = dangling pointer (undefined behaviour)\n    return 0;\n}",
+          annot: [
+            { c: "malloc(n * sizeof(int))", e: "Request enough bytes for n ints; <code>sizeof</code> gives a type's byte size." },
+            { c: "free(data);", e: "Forgetting this is a memory leak; using data afterwards is a dangling-pointer bug." },
+          ] },
+        { type: "note", variant: "warn", title: "This is what Python does for you", html: "Python objects live on the heap too, but you never call <code>malloc</code>/<code>free</code>. Reference counting plus a garbage collector reclaim memory automatically. Convenient and safe — and part of why Python is slower than C. Stack overflow still exists: it's the <code>RecursionError</code> from Topic 05." },
+        { type: "deepdive", title: "The full memory picture", html: "<p>A C program's address space has: the <b>stack</b> (grows down, holds call frames), the <b>heap</b> (grows up, holds malloc'd data), a <b>global/static</b> area (lives the whole run), and the <b>code</b> itself. Bugs like leaks (heap never freed), use-after-free (dangling), and overflows (stack or buffer) are the price of manual control — and the reason memory-safe languages exist.</p>" },
+      ],
+      live: [
+        { title: "Watch Python manage memory automatically", code: "import sys\na = [1, 2, 3]\nprint(\"references to the list:\", sys.getrefcount(a) - 1)\nb = a\nprint(\"after b = a:\", sys.getrefcount(a) - 1)\ndel b\nprint(\"after del b:\", sys.getrefcount(a) - 1)\nprint(\"bytes used by the list object:\", sys.getsizeof(a))\n# No malloc, no free — Python frees the list when nothing references it." },
+      ],
+      quiz: [
+        { q: "Where do a function's local variables normally live?", choices: ["The heap", "The stack", "ROM", "The disk"], answer: 1, explain: "Locals live in the function's stack frame, freed automatically on return." },
+        { q: "In C, forgetting `free()` after `malloc()` causes a…", choices: ["Syntax error", "Memory leak", "Faster program", "Stack overflow"], answer: 1, explain: "Heap memory you never free accumulates — a memory leak." },
+        { q: "Python avoids manual free() by using…", choices: ["A bigger stack", "Reference counting + garbage collection", "The GPU", "Compiling to C"], answer: 1, explain: "CPython reclaims objects automatically via reference counting and a cycle collector." },
       ],
     },
   ],

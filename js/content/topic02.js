@@ -74,25 +74,7 @@ App.registerTopic({
             { c: "x = 5", e: "Python sees an integer literal, so <code>x</code> refers to an int." },
             { c: "x = \"Ten\"", e: "Re-binding <code>x</code> to a string is allowed — Python is dynamically typed." },
           ] },
-        { type: "subhead", text: "What's actually happening in memory" },
-        { type: "widget", name: "binaryConverter", config: {} },
-        { type: "list", title: "The building blocks", items: [
-          "<b>Bit</b> — a single 0 or 1.",
-          "<b>Byte</b> — 8 bits; the smallest addressable unit. One byte holds 0–255.",
-          "<b>Memory is byte-addressable</b> — every byte has its own numeric <i>address</i>.",
-          "Text uses <b>ASCII</b>: <code>'A'</code> is stored as the number <code>65</code> (try it above).",
-        ] },
-        { type: "deepdive", title: "C view: variables, addresses & types you must declare", html:
-"<p>In Python a variable is a <i>label</i> attached to an object somewhere in memory. In <b>C</b>, a variable <i>is</i> a fixed chunk of memory whose size you choose up front by declaring a type:</p>" +
-"<p style='font-family:monospace;background:var(--code-bg);padding:10px;border-radius:8px'>int age = 25;&nbsp;&nbsp;// reserves 4 bytes<br>char grade = 'A';&nbsp;// reserves 1 byte, stores 65</p>" +
-"<p>If <code>age</code> starts at address <code>0x1000</code> and takes 4 bytes, the next free address is <code>0x1004</code>. Python hides all of this — convenient, but it's why Python uses more memory per number and is slower than C for tight numeric loops.</p>",
-          widget: { name: "memoryModel", config: { title: "C: two variables laid out in memory", columns: [
-            { head: "Address → value", cells: [
-              { addr: "0x1000", name: "age (int, 4B)", val: "25" },
-              { addr: "0x1004", name: "grade (char,1B)", val: "65 ('A')" },
-              { addr: "0x1005", name: "(next free)", val: "…" },
-            ] },
-          ], note: "Each variable occupies a fixed, contiguous block whose size is fixed by its type." } } },
+        { type: "note", html: "But what <i>is</i> a value underneath — how is it stored, and what limits does that put on your code? The next two lessons, <b>How values are stored in memory</b> and <b>How Python stores variables</b>, answer exactly that. They sit right here because understanding storage is what lets you reason about memory and speed." },
         { type: "subhead", text: "Naming rules & style" },
         { type: "list", items: [
           "Use descriptive <code>snake_case</code>: <code>user_name</code>, <code>total_score</code>.",
@@ -109,6 +91,77 @@ App.registerTopic({
         { q: "How many values can a single byte represent?", choices: ["8", "64", "256", "1024"], answer: 2, explain: "8 bits → 2^8 = 256 distinct values (0–255)." },
         { q: "In Python, can a variable change type after assignment?", choices: ["No, never", "Yes — it's dynamically typed", "Only between int and float", "Only inside functions"], answer: 1, explain: "Python is dynamically typed; a name can be re-bound to any type." },
         { q: "'A' is stored as which number (ASCII)?", choices: ["41", "65", "97", "26"], answer: 1, explain: "Uppercase 'A' is ASCII 65; lowercase 'a' is 97." },
+      ],
+    },
+    {
+      id: "values-in-memory",
+      title: "How values are stored in memory",
+      sub: "Bits, bytes, addresses — and the constraints that shape efficient code.",
+      keywords: "memory bit byte word address binary two's complement overflow ascii storage constraint",
+      learn: [
+        { type: "text", html: "Knowing <i>how</i> a value sits in memory isn't trivia — it's what lets you reason about <b>limits and efficiency</b>. Memory is one long row of <span class='term'>bytes</span>, each with a numeric <span class='term'>address</span>. Every value is ultimately a pattern of bits in some of those bytes." },
+        { type: "list", title: "The units", items: [
+          "<b>Bit</b> — one 0 or 1.",
+          "<b>Byte</b> — 8 bits; holds 0–255. The smallest <i>addressable</i> unit.",
+          "<b>Word</b> — the CPU's natural chunk (4 bytes on 32-bit, 8 on 64-bit machines).",
+          "Memory is <b>byte-addressable</b>: every byte has its own address (like <code>0x1000</code>).",
+        ] },
+        { type: "subhead", text: "Play with the bits" },
+        { type: "text", html: "Type a character or a number and watch its 8-bit pattern. Text uses <b>ASCII</b>: <code>'A'</code> is the number 65, which is <code>01000001</code>." },
+        { type: "widget", name: "binaryConverter", config: {} },
+        { type: "subhead", text: "Negative numbers: two's complement" },
+        { type: "text", html: "With only 0s and 1s, how do you store <code>-5</code>? The standard trick is <span class='term'>two's complement</span>: to negate, flip every bit and add 1; the top bit becomes a sign. This lets one ADD circuit handle both positive and negative numbers." },
+        { type: "subhead", text: "Why this matters for your code" },
+        { type: "text", html: "A typed value has a <b>fixed width</b>, so it has a hard range — and exceeding it <b>overflows</b> (wraps around). In a fixed-size language this is a real bug source. Python sidesteps it by letting integers grow without limit — convenient, but each int is a full heap object, which costs memory and speed. That trade-off is the whole reason NumPy uses fixed-size C numbers for big data." },
+        { type: "widget", name: "memoryModel", config: { title: "Two fixed-size values laid out in memory (C-style)", columns: [
+          { head: "Address → value", cells: [
+            { addr: "0x1000", name: "age (int, 4 bytes)", val: "25" },
+            { addr: "0x1004", name: "grade (char, 1 byte)", val: "65 ('A')" },
+            { addr: "0x1005", name: "(next free byte)", val: "…", note: "Each value takes a fixed, contiguous block decided by its type — so the next value starts right after." },
+          ] },
+        ] } },
+        { type: "note", title: "Takeaway", html: "Smaller types use less memory and fit more per cache line (faster); fixed types can overflow; Python's flexible ints trade speed for never overflowing. Choosing representations <i>is</i> performance work." },
+      ],
+      live: [
+        { title: "See the bits, the wrap, and Python's big integers", code: "x = 13\nprint(\"13 in binary :\", bin(x))            # 0b1101\nprint(\"'A' is        :\", ord('A'), bin(ord('A')))\n# two's complement of -5 in a single byte:\nprint(\"-5 as a byte  :\", format((-5) & 0xFF, '08b'))\n# a fixed 8-bit value would wrap; Python ints never do:\nprint(\"255 + 1 (8-bit):\", (255 + 1) & 0xFF)   # 0  (simulated wrap)\nprint(\"Python big int :\", 2 ** 200)\nprint(\"floats inexact :\", 0.1 + 0.2)" },
+      ],
+      quiz: [
+        { q: "How many distinct values fit in one byte?", choices: ["8", "16", "256", "1024"], answer: 2, explain: "8 bits → 2^8 = 256 values (0–255 unsigned)." },
+        { q: "A fixed 8-bit unsigned value at 255, plus 1, becomes…", choices: ["256", "0 (it wraps)", "-1", "an error"], answer: 1, explain: "Fixed-width integers wrap on overflow — 255 + 1 → 0." },
+        { q: "Why can choosing a smaller numeric type make code faster?", choices: ["It can't", "Less memory, more values per cache line", "It uses the GPU", "Smaller numbers compute faster intrinsically"], answer: 1, explain: "Compact data is more cache-friendly, so the CPU streams it faster — a key efficiency lever." },
+      ],
+    },
+    {
+      id: "python-memory",
+      title: "How Python stores variables",
+      sub: "Names, objects, references — and the bugs that hide there.",
+      keywords: "reference object id is equality mutable immutable interning aliasing memory model getsizeof",
+      learn: [
+        { type: "text", html: "Now the Python-specific picture. A Python variable is not a box holding a value — it's a <b>name bound to an object</b> that lives on the heap. The name is effectively a managed pointer. <code>id(x)</code> reveals the object's identity. This one idea explains a whole class of surprising bugs." },
+        { type: "example", caption: "names vs objects", code:
+"a = [1, 2, 3]\nb = a          # b points at the SAME list object\nc = a.copy()   # c points at a NEW list with the same values\nprint(a is b)  # True  — same object\nprint(a is c)  # False — different objects\nprint(a == c)  # True  — == compares values, 'is' compares identity",
+          annot: [
+            { c: "a is b", e: "<code>is</code> asks 'same object/address?' — True, they're aliases." },
+            { c: "a == c", e: "<code>==</code> asks 'same value?' — True even for different objects." },
+          ] },
+        { type: "note", variant: "warn", title: "Aliasing bug", html: "Because <code>b = a</code> shares the object, mutating through one name is visible through the other. To get an independent copy, use <code>a.copy()</code> (or <code>list(a)</code>, <code>dict(a)</code>, etc.)." },
+        { type: "note", variant: "danger", title: "The mutable default trap", html: "A mutable default argument (<code>def f(x, items=[])</code>) is created <b>once</b> and reused across every call, so it accumulates between calls — a famous bug. Use <code>None</code> and create a fresh container inside." },
+        { type: "subhead", text: "Mutable vs immutable, and memory cost" },
+        { type: "list", items: [
+          "<b>Immutable</b> (int, float, str, tuple): can't be changed in place — operations make new objects.",
+          "<b>Mutable</b> (list, dict, set): can change in place, which is why aliasing matters.",
+          "<code>sys.getsizeof(x)</code> shows an object's byte cost — handy when memory matters.",
+        ] },
+        { type: "deepdive", title: "Small-int & string interning", html: "<p>For speed, CPython pre-creates the small integers <b>−5 to 256</b> and reuses them, so a freshly built 256 <code>is</code> the cached one while a freshly built 257 is a separate object. (Writing both as literals on one line can fool you — the compiler folds equal constants — so build them with <code>int(\"257\")</code> to really see it.) Lesson: use <code>==</code> for values; reserve <code>is</code> for identity, typically <code>x is None</code>.</p>" },
+      ],
+      live: [
+        { title: "Identity vs equality — inspect with id()", code: "a = [1, 2, 3]\nb = a\nc = list(a)\nprint(\"id(a):\", id(a))\nprint(\"id(b):\", id(b), \"-> a is b:\", a is b)\nprint(\"id(c):\", id(c), \"-> a is c:\", a is c, \" a == c:\", a == c)\n\nsmall = 256\nx = int(\"256\")\nprint(\"256 cached?\", x is small)   # True\nbig = 257\ny = int(\"257\")\nprint(\"257 cached?\", y is big)     # False" },
+        { title: "The mutable-default trap (and the fix)", code: "def buggy(item, bag=[]):      # created ONCE, reused every call\n    bag.append(item)\n    return bag\nprint(buggy(\"a\"))   # ['a']\nprint(buggy(\"b\"))   # ['a', 'b']  <-- surprise!\n\ndef fixed(item, bag=None):\n    if bag is None:\n        bag = []\n    bag.append(item)\n    return bag\nprint(fixed(\"a\"))   # ['a']\nprint(fixed(\"b\"))   # ['b']  correct" },
+      ],
+      quiz: [
+        { q: "What does `is` compare?", choices: ["Values", "Object identity (same object)", "Types", "Lengths"], answer: 1, explain: "`is` checks identity — same object. Use `==` for values." },
+        { q: "After `b = a` (a is a list), `b.append(9)`…", choices: ["Leaves a unchanged", "Also changes a — same object", "Raises an error", "Copies the list first"], answer: 1, explain: "b and a reference the same list, so the change shows through both names." },
+        { q: "Why is a mutable default argument dangerous?", choices: ["It's slow", "It's created once and shared across calls", "It raises an error", "It can't be changed"], answer: 1, explain: "The default object is made a single time at definition and reused, so mutations persist." },
       ],
     },
     {
