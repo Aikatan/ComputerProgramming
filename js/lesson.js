@@ -34,6 +34,8 @@
         return tabsBlock(b);
       case "steprun":
         return App.makeStepRun(b.code, { title: b.title, inputs: b.inputs });
+      case "livecode":
+        return App.makeLive(b.code, { title: b.title });
       case "example":
         return staticExample(b);
       default:

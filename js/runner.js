@@ -21,9 +21,12 @@ App.py = {
     this.setStatus("loading", "loading…");
     this._loading = (async () => {
       const pyodide = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/" });
-      // capture print() into JS callback
-      pyodide.setStdout({ batched: (s) => App.py._emit(s + "\n") });
-      pyodide.setStderr({ batched: (s) => App.py._emit(s + "\n", true) });
+      // capture print() into JS callback. Pyodide's batched callback delivers
+      // one line at a time WITHOUT its trailing newline. We join chunks with a
+      // deferred newline so the final (possibly partial) line has no extra blank
+      // line, while still flushing partials (see the newline write in run()).
+      pyodide.setStdout({ batched: (s) => { if (App.py._pendingNL) App.py._emit("\n"); App.py._emit(s); App.py._pendingNL = true; } });
+      pyodide.setStderr({ batched: (s) => { if (App.py._pendingNL) { App.py._emit("\n"); App.py._pendingNL = false; } App.py._emit(s + "\n", true); } });
       this._pyodide = pyodide;
       this.setStatus("ready", "ready");
       return pyodide;
@@ -53,6 +56,7 @@ App.py = {
     const py = await this.ensure();
     await this._loadPkgs(code);
     this._sink = opts.sink || (() => {});
+    this._pendingNL = false;
     this.setStatus("busy", "running…");
 
     // queued inputs for input()
@@ -93,6 +97,11 @@ App.py = {
         "__plt_capture.close('all')\n";
       py.globals.set("__js_image__", (url) => { if (opts.onImage) opts.onImage(url); });
     }
+
+    // Force Pyodide to emit any buffered partial line (e.g. print(..., end=" ")
+    // with no trailing newline). A newline write triggers the batched callback;
+    // the deferred-newline handler keeps this from adding a visible blank line.
+    wrapped += "__sys.stdout.write('\\n')\n";
 
     try {
       await py.runPythonAsync(wrapped);
