@@ -1,12 +1,10 @@
 /* ============================================================
-   zz-examples.js — appends "Worked examples — easy → harder" to
-   EACH sub-topic (lesson) so every sub-topic carries its own
-   graded code examples. Keyed by "tNN.lesson-id".
+   zz-examples.js — appends an "Examples" section to EACH sub-topic
+   (lesson) so every sub-topic carries its own runnable code examples,
+   ordered simplest-first. Keyed by "tNN.lesson-id".
    Loaded after all topics + zz-steprun, before zz-practice/app.js.
    ============================================================ */
 (function () {
-  const DIFF = ["Easy", "Medium", "Harder", "Harder"];
-
   // key: "topicId.lessonId" -> array of examples
   // Python example: { t, code }.  C example: { t, c, py }
   const E = {
@@ -200,14 +198,13 @@
     const lesson = findLesson(key);
     if (!lesson || !lesson.learn) return;
     if (lesson.learn.some((b) => b.__examples)) return; // idempotent
-    lesson.learn.push({ type: "subhead", text: "\u{1F4A1} Worked examples — easy → harder", __examples: true });
-    E[key].forEach((ex, i) => {
-      const diff = DIFF[i] || "Harder";
+    lesson.learn.push({ type: "subhead", text: "Examples", __examples: true });
+    E[key].forEach((ex) => {
       if (ex.c) {
-        lesson.learn.push({ type: "example", lang: "c", caption: diff + " — " + ex.t, code: ex.c });
-        if (ex.py) lesson.learn.push({ type: "livecode", title: diff + " · the same idea in Python — run it", code: ex.py });
+        lesson.learn.push({ type: "example", lang: "c", caption: ex.t, code: ex.c });
+        if (ex.py) lesson.learn.push({ type: "livecode", title: ex.t + " (Python)", code: ex.py });
       } else {
-        lesson.learn.push({ type: "livecode", title: diff + " · " + ex.t, code: ex.code });
+        lesson.learn.push({ type: "livecode", title: ex.t, code: ex.code });
       }
     });
   });

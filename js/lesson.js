@@ -124,19 +124,19 @@
 
     /* --- Section 1: Concept & Visuals --- */
     if (lesson.learn && lesson.learn.length) {
-      root.appendChild(h("div", { class: "section-tag tag-learn" }, "① Concept & Visuals"));
+      root.appendChild(h("div", { class: "section-tag tag-learn" }, "Concept"));
       lesson.learn.forEach((b) => root.appendChild(block(b)));
     }
 
     /* --- Section 2: Try it Live --- */
     if (lesson.live && lesson.live.length) {
-      root.appendChild(h("div", { class: "section-tag tag-live" }, "② Try it Live — real Python in your browser"));
+      root.appendChild(h("div", { class: "section-tag tag-live" }, "Try it Live"));
       lesson.live.forEach((lv) => root.appendChild(App.makeLive(lv.code, { title: lv.title })));
     }
 
     /* --- Section 3: Quiz --- */
     if (lesson.quiz && lesson.quiz.length) {
-      root.appendChild(h("div", { class: "section-tag tag-quiz" }, "③ Check yourself"));
+      root.appendChild(h("div", { class: "section-tag tag-quiz" }, "Check yourself"));
       root.appendChild(quizBlock(lesson.quiz));
     }
 

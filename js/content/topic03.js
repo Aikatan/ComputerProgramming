@@ -62,7 +62,7 @@ App.registerTopic({
             { c: "else", e: "Nothing matched, so the else block runs." },
           ] },
         { type: "note", variant: "danger", title: "Indentation matters", html: "Inconsistent indentation raises <code>IndentationError</code>. Pick 4 spaces and stick with it." },
-        { type: "subhead", text: "▶ Run it yourself — line by line" },
+        { type: "subhead", text: "Step through it line by line" },
         { type: "text", html: "Press <b>Step Run</b>, then <b>Next</b> (or <b>Play</b>) to execute one line at a time and watch <i>which branch is taken</i>. Change <code>age</code> and step again to see a different path light up." },
         { type: "steprun", title: "if / elif / else — watch the branch that runs", code: "age = 6\nif age > 20:\n    message = \"ADULT\"\nelif age > 10:\n    message = \"TEENAGER\"\nelse:\n    message = \"CHILD\"\nprint(message)" },
       ],
@@ -121,7 +121,7 @@ App.registerTopic({
             { line: 3, vars: { total: 6 }, log: "6" },
           ],
         } },
-        { type: "subhead", text: "▶ Run it yourself — line by line" },
+        { type: "subhead", text: "Step through it line by line" },
         { type: "text", html: "The tracer above is hand-drawn. This one runs your <b>real</b> code: press <b>Step Run</b>, then <b>Next</b> (or <b>Play</b>) to execute one line at a time. The current line is marked <code>▸</code>, and you see every variable update and the output as it happens. Edit the loop and step through your own version." },
         { type: "steprun", title: "for loop — step through real execution", code: "total = 0\nfor i in range(1, 4):\n    total = total + i\n    print(\"i =\", i, \"-> total =\", total)\nprint(\"final total:\", total)" },
         { type: "tabs", tabs: [
@@ -177,7 +177,7 @@ App.registerTopic({
         { type: "example", caption: "loop-else for a search", code:
 "numbers = [2, 5, 7, 11, 12]\nfor i in numbers:\n    if i == 10:\n        print(\"Found 10!\")\n        break\nelse:\n    print(\"10 is not in the list.\")",
           output: "10 is not in the list." },
-        { type: "subhead", text: "▶ Run it yourself — line by line" },
+        { type: "subhead", text: "Step through it line by line" },
         { type: "text", html: "Step through to see exactly how <code>continue</code> jumps back to the loop header without reaching <code>print</code>, and how <code>break</code> would leave the loop entirely." },
         { type: "steprun", title: "continue — skip the even numbers", code: "for i in range(6):\n    if i % 2 == 0:\n        continue\n    print(\"odd:\", i)\nprint(\"done\")" },
       ],

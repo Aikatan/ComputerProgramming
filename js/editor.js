@@ -71,7 +71,7 @@ App.makePractice = function (cfg) {
   wrap.appendChild(App.h("div", { class: "pq-prompt", html: cfg.prompt }));
   if (cfg.expected != null) {
     wrap.appendChild(App.h("div", { class: "pq-target" },
-      App.h("span", { class: "pq-label" }, "🎯 Target output"),
+      App.h("span", { class: "pq-label" }, "Target output"),
       App.h("pre", null, cfg.expected)));
   }
   const editorWrap = App.h("div", { class: "live" });

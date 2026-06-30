@@ -73,11 +73,11 @@ App.registerTopic({
           ] },
         ] },
 
-        { type: "subhead", text: "🔵 Interactive: indexing" },
+        { type: "subhead", text: "Indexing" },
         { type: "text", html: "Type any text and an index (try negatives). The selected box shows what <code>text[i]</code> returns; the small numbers are the positive index (top) and negative index (bottom)." },
         { type: "widget", name: "stringIndex", config: { text: "Python" } },
 
-        { type: "subhead", text: "🟢 Interactive: slicing" },
+        { type: "subhead", text: "Slicing" },
         { type: "text", html: "Drag the three slice values. Highlighted boxes are the characters included, numbered in the order they're picked — so you can <i>see</i> exactly what <code>text[start:end:step]</code> produces, including reversed slices with a negative step." },
         { type: "widget", name: "stringSlice", config: { text: "Programming" } },
 

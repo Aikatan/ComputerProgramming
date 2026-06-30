@@ -87,8 +87,8 @@
     // avoid duplicates if this runs twice
     if (lesson.learn.some((b) => b.type === "steprun")) return;
     const d = demos[key];
-    lesson.learn.push({ type: "subhead", text: "▶ Run it yourself — line by line" });
+    lesson.learn.push({ type: "subhead", text: "Step through it line by line" });
     if (d.intro) lesson.learn.push({ type: "text", html: d.intro });
-    lesson.learn.push({ type: "steprun", title: "Step through real execution — watch each variable update", code: d.code, inputs: d.inputs });
+    lesson.learn.push({ type: "steprun", title: "Step through the code", code: d.code, inputs: d.inputs });
   });
 })();

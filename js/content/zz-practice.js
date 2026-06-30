@@ -57,12 +57,12 @@
   };
 
   function buildLesson(qs) {
-    const learn = [{ type: "text", html: "<b>Put the whole topic together.</b> These mixed tasks combine ideas from every sub-topic above. For each one, write code in the box to produce the <b>target output</b> shown, then press <b>Check</b> — it marks you correct when your output matches the target. (Press <b>Run</b> to just see your output.) There's often more than one correct way." }];
+    const learn = [{ type: "text", html: "Tasks combining the whole topic. Write code to produce each target output, then press Check." }];
     qs.forEach((q, i) => {
       learn.push({ type: "subhead", text: "Task " + (i + 1) });
       learn.push({ type: "practiceq", prompt: q.prompt, starter: q.starter, expected: q.expected, inputs: q.inputs, hint: q.hint });
     });
-    return { id: "coding-practice", title: "Mixed Practice", sub: "Integrate everything from this topic — write code to hit each target, then Check.", learn };
+    return { id: "coding-practice", title: "Mixed Practice", sub: "Tasks that combine the whole topic.", learn };
   }
 
   Object.keys(Q).forEach((tid) => {
