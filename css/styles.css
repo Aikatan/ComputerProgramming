@@ -319,27 +319,34 @@ table.tt tr.hl td { background: rgba(77,171,247,.13); }
 .subtab-panel > .note { margin-top: 12px; }
 
 /* ---------- Slide / presentation mode ---------- */
-.deck { max-width: 940px; margin: 0 auto; }
+.deck { max-width: 1120px; margin: 0 auto; }
 .deck-stage { min-height: calc(100vh - 220px); }
+.slide-split { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+.slide-col { min-width: 0; }
+@media (max-width: 860px) { .slide-split { grid-template-columns: 1fr; gap: 16px; } }
 .slide { animation: slidein .22s ease; }
 @keyframes slidein { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
-.slide-kicker { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 6px 0 12px; }
-.slide-title { font-size: 30px; line-height: 1.2; margin: 0 0 20px; }
+.slide-kicker { font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 6px 0 14px; }
+.slide-title { font-size: 38px; line-height: 1.15; margin: 0 0 24px; }
 .slide-cover { text-align: center; padding-top: 9vh; }
-.slide-cover .slide-title { font-size: 42px; }
-.slide-sub { font-size: 21px; color: var(--text-dim); max-width: 40ch; margin: 0 auto; }
-/* bigger, clearer text inside slides */
-.slide .card { background: transparent; border: none; padding: 0; margin: 0 0 14px; }
-.slide .card p, .slide p, .slide li { font-size: 20px; line-height: 1.7; }
-.slide .card h4 { font-size: 21px; }
-.slide .note { font-size: 18.5px; padding: 14px 18px; }
-.slide .codeblock pre, .slide pre { font-size: 16px; line-height: 1.6; }
-.slide .code-out, .slide .live-out, .slide .step-out { font-size: 15px; }
-.slide .CodeMirror { font-size: 15.5px; }
-.slide .annot code { font-size: 15px; }
-.slide .quiz-q { font-size: 19px; }
-.slide .quiz-q .q { font-size: 21px; }
-.slide .subtabs { font-size: 18px; }
+.slide-cover .slide-title { font-size: 52px; }
+.slide-sub { font-size: 26px; color: var(--text-dim); max-width: 44ch; margin: 0 auto; }
+/* extra-large, clear text inside slides */
+.slide .card { background: transparent; border: none; padding: 0; margin: 0 0 16px; }
+.slide .card, .slide .card p, .slide p, .slide li { font-size: 24px; line-height: 1.75; }
+.slide .card h4 { font-size: 24px; }
+.slide .note { font-size: 22px; padding: 16px 20px; }
+.slide .codeblock pre, .slide pre { font-size: 19px; line-height: 1.6; }
+.slide .code-out, .slide .live-out, .slide .step-out { font-size: 17px; }
+.slide .CodeMirror { font-size: 17px; }
+.slide .annot code { font-size: 17px; }
+.slide .annot .ex { font-size: 18px; }
+.slide .quiz-q .q { font-size: 26px; }
+.slide .quiz-opt { font-size: 21px; padding: 12px 16px; }
+.slide .subtabs { font-size: 20px; }
+/* split columns can lower slightly so both sides fit */
+.slide-split .card, .slide-split .card p, .slide-split li { font-size: 21px; }
+.slide-split .slide-title { font-size: 32px; }
 .deck-nav { position: sticky; bottom: 0; display: flex; align-items: center; gap: 12px; padding: 14px 0 10px; background: linear-gradient(transparent, var(--bg) 45%); }
 .deck-progress { flex: 1; height: 6px; background: var(--bg-3); border-radius: 4px; overflow: hidden; }
 .deck-progress > span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .2s; }

@@ -24,12 +24,24 @@
     return slides;
   }
 
+  const render1 = (b) => (b.__quiz ? App.renderQuizItem(b.__quiz) : App.renderBlock(b));
+  const isText = (b) => !b.__quiz && (b.type === "text" || b.type === "note" || b.type === "list");
+
   function renderSlide(s) {
     const el = h("div", { class: "slide" + (s.cover ? " slide-cover" : "") });
     el.appendChild(h("div", { class: "slide-kicker" }, s.kicker));
     if (s.title) el.appendChild(h("h2", { class: "slide-title" }, s.title));
     if (s.sub) el.appendChild(h("p", { class: "slide-sub" }, s.sub));
-    s.blocks.forEach((b) => el.appendChild(b.__quiz ? App.renderQuizItem(b.__quiz) : App.renderBlock(b)));
+    const texts = s.blocks.filter(isText);
+    const feats = s.blocks.filter((b) => !isText(b));
+    // Side-by-side: explanation on the left, the visual/example on the right.
+    if (!s.cover && texts.length && feats.length) {
+      const left = h("div", { class: "slide-col" }); texts.forEach((b) => left.appendChild(render1(b)));
+      const right = h("div", { class: "slide-col" }); feats.forEach((b) => right.appendChild(render1(b)));
+      el.appendChild(h("div", { class: "slide-split" }, left, right));
+    } else {
+      s.blocks.forEach((b) => el.appendChild(render1(b)));
+    }
     return el;
   }
 

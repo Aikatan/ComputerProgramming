@@ -86,7 +86,7 @@
     let m;
     if ((m = hash.match(/^#\/l\/([^\/]+)(?:\/(\d+))?$/))) {
       const key = m[1], si = m[2] ? +m[2] : 0;
-      if ((localStorage.getItem("pcl_view") || "slides") === "slides" && App.renderDeck) App.renderDeck(key, si);
+      if ((localStorage.getItem("pcl_view") || "scroll") === "slides" && App.renderDeck) App.renderDeck(key, si);
       else App.renderLesson(key);
     }
     else if ((m = hash.match(/^#\/t\/(.+)$/))) renderTopic(m[1]);
@@ -98,9 +98,9 @@
 
   /* ---------- Slides / Scroll view toggle ---------- */
   const viewBtn = document.getElementById("viewToggle");
-  function syncViewBtn() { const v = localStorage.getItem("pcl_view") || "slides"; viewBtn.textContent = v === "slides" ? "▤" : "▦"; viewBtn.title = v === "slides" ? "Switch to scroll view" : "Switch to slide view"; }
+  function syncViewBtn() { const v = localStorage.getItem("pcl_view") || "scroll"; viewBtn.textContent = v === "slides" ? "▤" : "▦"; viewBtn.title = v === "slides" ? "Switch to scroll view" : "Switch to slide view"; }
   viewBtn.addEventListener("click", () => {
-    const v = (localStorage.getItem("pcl_view") || "slides") === "slides" ? "scroll" : "slides";
+    const v = (localStorage.getItem("pcl_view") || "scroll") === "slides" ? "scroll" : "slides";
     localStorage.setItem("pcl_view", v); syncViewBtn();
     // strip any slide index from the hash, then re-render
     const key = (location.hash.match(/^#\/l\/([^\/]+)/) || [])[1];
