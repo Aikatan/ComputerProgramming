@@ -359,6 +359,124 @@ App.widgets.listViz = function (cfg) {
 };
 
 /* ============================================================
+   funcCall — animated "function machine": argument balls fly into
+   parameter slots, the body computes, the result returns to (or is
+   discarded by) the caller. Click-stepped with animated ball flight.
+   ============================================================ */
+App.widgets.funcCall = function () {
+  // fixed stage coordinates (centres for balls, boxes by top-left)
+  const stage = h("div", { class: "fa-stage" });
+
+  function box(left, top, w, hh, label) {
+    const b = h("div", { class: "fa-box", style: `left:${left}px;top:${top}px;width:${w}px;height:${hh}px;` });
+    if (label) b.appendChild(h("span", { class: "fa-lbl" }, label));
+    b.__c = [left + w / 2, top + hh / 2];
+    return b;
+  }
+  function ball(v) {
+    const b = h("div", { class: "fa-ball" }, String(v));
+    b.__put = (cx, cy) => { b.classList.remove("hidden"); b.style.left = cx - 19 + "px"; b.style.top = cy - 19 + "px"; };
+    b.__hide = (cx, cy) => { if (cx != null) { b.style.left = cx - 19 + "px"; b.style.top = cy - 19 + "px"; } b.classList.add("hidden"); };
+    return b;
+  }
+
+  const boxA = box(30, 20, 84, 44, "caller: a");
+  const expr = h("div", { class: "fa-expr", style: "left:130px;top:30px;" }, "a = area(10, 20)");
+  const head = h("div", { class: "fa-head" }, "area(x, y)");
+  const body = h("div", { class: "fa-body" }, "return x + 2*y");
+  const machine = h("div", { class: "fa-machine", style: "left:175px;top:108px;width:210px;" }, head, body);
+  machine.__c = [280, 150];
+  const slotX = box(190, 250, 74, 44, "x");
+  const slotY = box(300, 250, 74, 44, "y");
+  const boxRet = box(420, 145, 100, 44, "return box (z)");
+  const b10 = ball(10), b20 = ball(20), bRes = ball(50);
+  stage.append(boxA, expr, machine, slotX, slotY, boxRet, b10, b20, bRes);
+
+  const CALL10 = [250, 86], CALL20 = [300, 86];
+  let receive = true;
+
+  // step definitions (functions apply the target state; safe to re-run for Prev)
+  function steps() {
+    return [
+      { cap: "You call <b>area(10, 20)</b>. The two argument values wait at the call site.", f() {
+        b10.__put(...CALL10); b20.__put(...CALL20); bRes.__hide(...boxRet.__c);
+        clearFill(); body.textContent = "return x + 2*y"; machine.classList.remove("hl");
+      } },
+      { cap: "The <b>first</b> value 10 drops into the <b>first</b> slot <code>x</code> — arguments match parameters <b>by position</b>.", f() {
+        b10.__put(...slotX.__c); b20.__put(...CALL20); bRes.__hide(...boxRet.__c);
+        fill(slotX, true); hlOnly(slotX); body.textContent = "return x + 2*y";
+      } },
+      { cap: "The <b>second</b> value 20 drops into the <b>second</b> slot <code>y</code>.", f() {
+        b10.__put(...slotX.__c); b20.__put(...slotY.__c); bRes.__hide(...boxRet.__c);
+        fill(slotX, true); fill(slotY, true); hlOnly(slotY);
+      } },
+      { cap: "The body runs using the slot values: <code>10 + 2*20 = 50</code>.", f() {
+        b10.__put(...slotX.__c); b20.__put(...slotY.__c); bRes.__hide(...boxRet.__c);
+        fill(slotX, true); fill(slotY, true); clearHl(); machine.classList.add("hl");
+        body.innerHTML = "10 + 2*20 = <b>50</b>";
+      } },
+      { cap: "<code>return 50</code> — the result is placed in the return box.", f() {
+        b10.__put(...slotX.__c); b20.__put(...slotY.__c); bRes.__put(...boxRet.__c);
+        machine.classList.remove("hl"); fill(boxRet, true); hlOnly(boxRet);
+      } },
+      { cap: receive
+          ? "The caller <b>catches</b> it: <code>a = 50</code>."
+          : "Nothing catches the result, so <b>50 is discarded</b> (the return box is thrown away).",
+        f() {
+          b10.__put(...slotX.__c); b20.__put(...slotY.__c);
+          if (receive) { bRes.__put(...boxA.__c); fill(boxA, true); hlOnly(boxA); }
+          else { bRes.__hide(boxRet.__c[0], boxRet.__c[1] + 130); clearHl(); fill(boxRet, false); }
+        } },
+    ];
+  }
+  function fill(bx, on) { bx.classList.toggle("filled", on); }
+  function clearFill() { [slotX, slotY, boxRet, boxA].forEach((b) => b.classList.remove("filled")); }
+  function clearHl() { [slotX, slotY, boxRet, boxA, machine].forEach((b) => b.classList.remove("hl")); }
+  function hlOnly(bx) { clearHl(); bx.classList.add("hl"); }
+
+  // controls
+  const caption = h("div", { class: "step-log", style: "text-align:center;min-height:20px" });
+  const prev = h("button", { class: "w-btn" }, "‹ Prev");
+  const play = h("button", { class: "w-btn on" }, "▶ Play");
+  const next = h("button", { class: "w-btn" }, "Next ›");
+  const reset = h("button", { class: "w-btn" }, "⟲");
+  const counter = h("span", { class: "mono", style: "color:var(--text-dim)" });
+  const recBtn = h("button", { class: "w-btn on" }, "a = area(10, 20)");
+  const disBtn = h("button", { class: "w-btn" }, "area(10, 20)");
+  const toggle = h("div", { class: "w-row", style: "justify-content:center;margin-bottom:8px" },
+    h("span", { style: "color:var(--text-dim);font-size:12px" }, "Caller:"), recBtn, disBtn);
+
+  let i = 0, timer = null, S = steps();
+  function draw() {
+    S = steps();
+    S[i].f();
+    caption.innerHTML = (i + 1) + ". " + S[i].cap;
+    counter.textContent = " step " + (i + 1) + " / " + S.length;
+    prev.disabled = i === 0; next.disabled = i === S.length - 1;
+  }
+  function go(n) { i = Math.max(0, Math.min(steps().length - 1, n)); draw(); if (i === steps().length - 1) stop(); }
+  function stop() { if (timer) { clearInterval(timer); timer = null; play.textContent = "▶ Play"; } }
+  prev.addEventListener("click", () => { stop(); go(i - 1); });
+  next.addEventListener("click", () => { stop(); go(i + 1); });
+  reset.addEventListener("click", () => { stop(); go(0); });
+  play.addEventListener("click", () => {
+    if (timer) { stop(); return; }
+    if (i === S.length - 1) i = 0;
+    play.textContent = "⏸ Pause";
+    draw();
+    timer = setInterval(() => { if (i >= steps().length - 1) stop(); else go(i + 1); }, 1400);
+  });
+  function setMode(r) { receive = r; recBtn.classList.toggle("on", r); disBtn.classList.toggle("on", !r); expr.textContent = r ? "a = area(10, 20)" : "area(10, 20)"; boxA.style.opacity = r ? "1" : ".4"; stop(); go(0); }
+  recBtn.addEventListener("click", () => setMode(true));
+  disBtn.addEventListener("click", () => setMode(false));
+
+  const controls = h("div", { class: "w-row", style: "justify-content:center;margin-top:10px" }, prev, play, next, reset, counter);
+  requestAnimationFrame(draw); // first paint with correct initial positions
+  return widgetShell("How a function call works — press Play",
+    h("div", null, toggle, h("div", { class: "fa-wrap" }, stage), caption, controls));
+};
+
+/* ============================================================
    stringIndex — show a string with positive & negative indices,
    highlight s[i] as you change i. (interactive process demo)
    config: { text }

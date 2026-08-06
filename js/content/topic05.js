@@ -52,6 +52,9 @@
               { c: "greet(\"Pokpong\")", e: "The call. <code>\"Pokpong\"</code> becomes <code>name</code> inside." },
             ] },
           { type: "note", variant: "warn", title: "Define before you call", html: "Python reads top to bottom — a function must be defined <i>above</i> the line that calls it." },
+          { type: "subhead", text: "How a call works" },
+          { type: "text", html: "Think of a function as a machine with named slots. Press <b>Play</b> (or <b>Next</b>) to watch <code>a = area(10, 20)</code> run: the argument values drop into the parameter slots <i>by position</i>, the body computes, and <code>return</code> sends the result back — which the caller either catches or discards (toggle it)." },
+          { type: "widget", name: "funcCall", config: {} },
         ],
         live: [
           { title: "Write once, call many times", code: "def concessions():\n    print(\"Popcorn: $8-10\")\n    print(\"Candy: $3-5\")\n\nconcessions()\nconcessions()  # reuse — no rewriting" },
