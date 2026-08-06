@@ -108,6 +108,10 @@
     return wrap;
   }
 
+  // exposed for the slide/presentation renderer
+  App.renderBlock = block;
+  App.renderQuizItem = function (q) { return quizBlock([q]); };
+
   App.renderLesson = function (key) {
     const rec = App.getLesson(key);
     const view = document.getElementById("view");

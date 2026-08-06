@@ -82,14 +82,31 @@
   /* ---------- Router ---------- */
   function route() {
     const hash = location.hash || "#/";
+    App._deckNav = null;
     let m;
-    if ((m = hash.match(/^#\/l\/(.+)$/))) App.renderLesson(m[1]);
+    if ((m = hash.match(/^#\/l\/([^\/]+)(?:\/(\d+))?$/))) {
+      const key = m[1], si = m[2] ? +m[2] : 0;
+      if ((localStorage.getItem("pcl_view") || "slides") === "slides" && App.renderDeck) App.renderDeck(key, si);
+      else App.renderLesson(key);
+    }
     else if ((m = hash.match(/^#\/t\/(.+)$/))) renderTopic(m[1]);
     else renderHome();
     App.buildSidebar();
     document.body.classList.remove("nav-open");
   }
   window.addEventListener("hashchange", route);
+
+  /* ---------- Slides / Scroll view toggle ---------- */
+  const viewBtn = document.getElementById("viewToggle");
+  function syncViewBtn() { const v = localStorage.getItem("pcl_view") || "slides"; viewBtn.textContent = v === "slides" ? "▤" : "▦"; viewBtn.title = v === "slides" ? "Switch to scroll view" : "Switch to slide view"; }
+  viewBtn.addEventListener("click", () => {
+    const v = (localStorage.getItem("pcl_view") || "slides") === "slides" ? "scroll" : "slides";
+    localStorage.setItem("pcl_view", v); syncViewBtn();
+    // strip any slide index from the hash, then re-render
+    const key = (location.hash.match(/^#\/l\/([^\/]+)/) || [])[1];
+    if (key) { App._deckNav = null; if (v === "slides") App.renderDeck(key, 0); else App.renderLesson(key); }
+  });
+  syncViewBtn();
 
   /* ---------- Theme ---------- */
   const savedTheme = localStorage.getItem("pcl_theme");
