@@ -55,6 +55,9 @@
           { type: "subhead", text: "How a call works" },
           { type: "text", html: "Think of a function as a machine with named slots. Press <b>Play</b> (or <b>Next</b>) to watch <code>a = area(10, 20)</code> run: the argument values drop into the parameter slots <i>by position</i>, the body computes, and <code>return</code> sends the result back — which the caller either catches or discards (toggle it)." },
           { type: "widget", name: "funcCall", config: {} },
+          { type: "subhead", text: "A function calling a function" },
+          { type: "text", html: "When one function calls another, each gets its <b>own</b> slots. The colour shows which function a box belongs to — so even if both use the names <code>a</code> and <code>b</code>, they are <b>different boxes</b>. This is the key to not getting confused by reused names." },
+          { type: "widget", name: "funcNested", config: {} },
         ],
         live: [
           { title: "Write once, call many times", code: "def concessions():\n    print(\"Popcorn: $8-10\")\n    print(\"Candy: $3-5\")\n\nconcessions()\nconcessions()  # reuse — no rewriting" },
@@ -81,6 +84,9 @@
             ] },
           ], note: "Keeping variables local avoids accidental clashes — a big reason functions make code safer." } },
           { type: "note", variant: "danger", title: "The global keyword", html: "To <i>modify</i> a global from inside a function you must declare <code>global x</code> first. Use it sparingly — too many globals make bugs hard to trace." },
+          { type: "subhead", text: "Watch scope come and go" },
+          { type: "text", html: "The amber box is the <b>global</b> <code>x</code>; the blue box is a <b>local</b> <code>x</code> created only while <code>f()</code> runs. Same name, different colour = different box. Toggle <code>global x</code> to see the local box disappear and the assignment write straight into the global instead." },
+          { type: "widget", name: "funcScope", config: {} },
         ],
         live: [
           { title: "Local stays local", code: "x = 20            # global\n\ndef show():\n    y = 10        # local — only exists here\n    print(\"inside:\", x, y)\n\nshow()\nprint(\"outside:\", x)\n# print(y)  # would raise NameError" },
@@ -133,6 +139,9 @@
           { type: "example", caption: "*args and **kwargs", code:
 "def sum_numbers(*args):\n    return sum(args)\n\ndef print_info(**kwargs):\n    for key, value in kwargs.items():\n        print(f\"{key}: {value}\")\n\nprint(sum_numbers(1, 2, 3))   # 6\nprint_info(a=1, b=2)          # a: 1 / b: 2" },
           { type: "note", html: "A function can return multiple values at once: <code>return 10, 20</code>, then <code>x, y = get_coords()</code>." },
+          { type: "subhead", text: "How arguments reach the slots" },
+          { type: "text", html: "Switch between <b>Positional</b>, <b>Keyword</b>, and <b>Default</b> and press Play. Positional fills slots by order; keyword routes each value to its <i>named</i> slot (order-free); a default ball sits in the slot until an argument replaces it." },
+          { type: "widget", name: "funcArgs", config: {} },
         ],
         live: [
           { title: "Mix them", code: "def order(item, qty=1, *extras, **notes):\n    print(f\"{qty} x {item}\")\n    if extras: print(\"  extras:\", extras)\n    if notes:  print(\"  notes :\", notes)\n\norder(\"coffee\", 2, \"sugar\", \"milk\", size=\"large\")" },

@@ -477,6 +477,161 @@ App.widgets.funcCall = function () {
 };
 
 /* ============================================================
+   Shared helpers + funcNested / funcArgs / funcScope animations
+   ============================================================ */
+(function () {
+  const CLR = { blue: "#4dabf7", green: "#3bc9a4", amber: "#ffb454" };
+  function mkBox(x, y, w, hh, label, color) {
+    const b = h("div", { class: "fa-box", style: `left:${x}px;top:${y}px;width:${w}px;height:${hh}px;` });
+    if (color) b.style.borderColor = color;
+    if (label) b.appendChild(h("span", { class: "fa-lbl", style: color ? "color:" + color : "" }, label));
+    b.__c = [x + w / 2, y + hh / 2];
+    b.__fill = (on) => { b.classList.toggle("filled", on); b.style.background = on && color ? color + "22" : ""; if (color) b.style.borderColor = color; };
+    b.__hl = (on) => b.classList.toggle("hl", on);
+    b.__show = (on) => (b.style.display = on ? "" : "none");
+    return b;
+  }
+  function mkBall(v, color, wide) {
+    const b = h("div", { class: "fa-ball" + (wide ? " wide" : "") }, String(v));
+    if (color) b.style.background = color;
+    b.__put = (cx, cy) => { b.classList.remove("hidden"); b.style.left = cx - 19 + "px"; b.style.top = cy - 19 + "px"; };
+    b.__hide = (cx, cy) => { if (cx != null) { b.style.left = cx - 19 + "px"; b.style.top = cy - 19 + "px"; } b.classList.add("hidden"); };
+    b.__set = (t) => (b.textContent = t);
+    return b;
+  }
+  function faScene(title, stage, getSteps, buildToggles) {
+    const caption = h("div", { class: "step-log", style: "text-align:center;min-height:20px" });
+    const prev = h("button", { class: "w-btn" }, "‹ Prev");
+    const play = h("button", { class: "w-btn on" }, "▶ Play");
+    const next = h("button", { class: "w-btn" }, "Next ›");
+    const reset = h("button", { class: "w-btn" }, "⟲");
+    const counter = h("span", { class: "mono", style: "color:var(--text-dim)" });
+    let i = 0, timer = null;
+    function draw() { const S = getSteps(); S[i].f(); caption.innerHTML = (i + 1) + ". " + S[i].cap; counter.textContent = " step " + (i + 1) + " / " + S.length; prev.disabled = i === 0; next.disabled = i === S.length - 1; }
+    function go(n) { const L = getSteps().length; i = Math.max(0, Math.min(L - 1, n)); draw(); if (i === L - 1) stop(); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; play.textContent = "▶ Play"; } }
+    prev.addEventListener("click", () => { stop(); go(i - 1); });
+    next.addEventListener("click", () => { stop(); go(i + 1); });
+    reset.addEventListener("click", () => { stop(); go(0); });
+    play.addEventListener("click", () => { if (timer) { stop(); return; } if (i === getSteps().length - 1) i = 0; play.textContent = "⏸ Pause"; draw(); timer = setInterval(() => { if (i >= getSteps().length - 1) stop(); else go(i + 1); }, 1500); });
+    const ctrls = h("div", { class: "w-row", style: "justify-content:center;margin-top:10px" }, prev, play, next, reset, counter);
+    const restart = () => { stop(); go(0); };
+    const toggleRow = buildToggles ? buildToggles(restart) : null;
+    requestAnimationFrame(draw);
+    const parts = [];
+    if (toggleRow) parts.push(toggleRow);
+    parts.push(h("div", { class: "fa-wrap" }, stage), caption, ctrls);
+    return widgetShell(title, h("div", null, ...parts));
+  }
+
+  /* ---- funcNested: outer() calls inner(); colour = which function owns the box ---- */
+  App.widgets.funcNested = function () {
+    const stage = h("div", { class: "fa-stage", style: "height:400px" });
+    const G = CLR.green, B = CLR.blue;
+    const boxR = mkBox(30, 14, 84, 38, "caller: r");
+    const expr = h("div", { class: "fa-expr", style: "left:130px;top:22px" }, "r = outer(3, 4)");
+    const outM = h("div", { class: "fa-machine", style: "left:120px;top:56px;width:210px" },
+      h("div", { class: "fa-head", style: "background:" + G }, "outer(a, b)"),
+      h("div", { class: "fa-body small" }, "z = inner(a, b)"), h("div", { class: "fa-body small", style: "padding-top:0" }, "return z * 2"));
+    const oa = mkBox(150, 150, 60, 38, "a", G), ob = mkBox(235, 150, 60, 38, "b", G);
+    const oz = mkBox(360, 92, 74, 38, "z", G), oret = mkBox(450, 150, 95, 38, "returns", G);
+    const inM = h("div", { class: "fa-machine", style: "left:120px;top:236px;width:210px;border-color:" + B },
+      h("div", { class: "fa-head", style: "background:" + B }, "inner(a, b)"),
+      h("div", { class: "fa-body small" }, "return a + b"));
+    const ia = mkBox(150, 312, 60, 38, "a", B), ib = mkBox(235, 312, 60, 38, "b", B);
+    const iret = mkBox(360, 268, 90, 38, "return", B);
+    const o3 = mkBall(3, G), o4 = mkBall(4, G), i3 = mkBall(3, B), i4 = mkBall(4, B), r7 = mkBall(7, B), r14 = mkBall(14, G);
+    stage.append(boxR, expr, outM, oa, ob, oz, oret, inM, ia, ib, iret, o3, o4, i3, i4, r7, r14);
+    const CALL = [[210, 46], [255, 46]];
+    function base() { [i3, i4, r7, r14].forEach((b) => b.__hide()); [oa, ob, oz, oret, ia, ib, iret, boxR].forEach((b) => { b.__fill(false); b.__hl(false); }); inM.classList.remove("hl"); }
+    const steps = [
+      { cap: "Call <b>outer(3, 4)</b>. The two values wait at the call site.", f() { base(); o3.__put(...CALL[0]); o4.__put(...CALL[1]); } },
+      { cap: "3 and 4 fill <b>outer</b>'s slots <code>a</code>, <code>b</code> (green).", f() { base(); o3.__put(...oa.__c); o4.__put(...ob.__c); oa.__fill(true); ob.__fill(true); } },
+      { cap: "outer calls <b>inner(a, b)</b>. inner gets its <b>own</b> a, b (blue) — <b>same names, different boxes</b>.", f() { o3.__put(...oa.__c); o4.__put(...ob.__c); oa.__fill(true); ob.__fill(true); i3.__put(...ia.__c); i4.__put(...ib.__c); ia.__fill(true); ib.__fill(true); inM.classList.add("hl"); } },
+      { cap: "inner computes <code>3 + 4 = 7</code> and returns it.", f() { o3.__put(...oa.__c); o4.__put(...ob.__c); oa.__fill(true); ob.__fill(true); ia.__fill(true); ib.__fill(true); r7.__put(...iret.__c); iret.__fill(true); iret.__hl(true); } },
+      { cap: "7 flies back into <b>outer</b>'s <code>z</code> (green scope).", f() { oa.__fill(true); ob.__fill(true); r7.__put(...oz.__c); oz.__fill(true); oz.__hl(true); } },
+      { cap: "outer computes <code>z * 2 = 14</code> and returns it.", f() { oa.__fill(true); ob.__fill(true); oz.__fill(true); r14.__put(...oret.__c); oret.__fill(true); oret.__hl(true); } },
+      { cap: "The caller catches it: <code>r = 14</code>.", f() { r14.__put(...boxR.__c); boxR.__fill(true); boxR.__hl(true); } },
+    ];
+    return faScene("A function calling a function — colour shows the owner", stage, () => steps);
+  };
+
+  /* ---- funcArgs: positional / keyword / default ---- */
+  App.widgets.funcArgs = function () {
+    let mode = "pos";
+    const B = CLR.blue;
+    const stage = h("div", { class: "fa-stage", style: "height:240px" });
+    const expr = h("div", { class: "fa-expr", style: "left:150px;top:14px" }, "");
+    const body = h("div", { class: "fa-body small" }, "");
+    const mach = h("div", { class: "fa-machine", style: "left:150px;top:44px;width:240px;border-color:" + B },
+      h("div", { class: "fa-head", style: "background:" + B }, "describe(pet, kind)"), body);
+    const sPet = mkBox(165, 150, 100, 40, "pet", B), sKind = mkBox(295, 150, 100, 40, "kind", B);
+    const bPet = mkBall("Rex", B, true), bKind = mkBall("cat", B, true), bDef = mkBall("dog", "#888", true);
+    bDef.classList.add("ghost");
+    stage.append(expr, mach, sPet, sKind, bPet, bKind, bDef);
+    function base() { [sPet, sKind].forEach((b) => { b.__fill(false); b.__hl(false); }); [bPet, bKind, bDef].forEach((b) => b.__hide()); body.textContent = ""; }
+    function getSteps() {
+      if (mode === "pos") return [
+        { cap: "Call <code>describe(\"Rex\", \"cat\")</code>. Two values wait, in order.", f() { base(); bPet.__set("Rex"); bKind.__set("cat"); bPet.__put(210, 34); bKind.__put(320, 34); } },
+        { cap: "<b>By position:</b> the 1st value → <code>pet</code>, the 2nd → <code>kind</code>.", f() { base(); bPet.__set("Rex"); bKind.__set("cat"); bPet.__put(...sPet.__c); bKind.__put(...sKind.__c); sPet.__fill(true); sKind.__fill(true); body.textContent = 'pet="Rex", kind="cat"'; } },
+      ];
+      if (mode === "kw") return [
+        { cap: "Call <code>describe(kind=\"cat\", pet=\"Rex\")</code> — order is swapped, but each is <b>named</b>.", f() { base(); bKind.__set("kind=cat"); bPet.__set("pet=Rex"); bKind.__put(210, 34); bPet.__put(330, 34); } },
+        { cap: "<b>By name:</b> each value goes to <b>its own</b> slot — <code>kind=\"cat\"</code>→kind, <code>pet=\"Rex\"</code>→pet, crossing over.", f() { base(); bKind.__set("cat"); bPet.__set("Rex"); bPet.__put(...sPet.__c); bKind.__put(...sKind.__c); sPet.__fill(true); sKind.__fill(true); body.textContent = 'pet="Rex", kind="cat"'; } },
+      ];
+      return [ // default
+        { cap: "<code>def describe(pet, kind=\"dog\")</code>. The <code>kind</code> slot has a <b>default</b> ball preloaded (faint).", f() { base(); bDef.__set("dog"); bDef.__put(...sKind.__c); } },
+        { cap: "Call <code>describe(\"Rex\")</code> — only <code>pet</code> is supplied.", f() { bDef.__set("dog"); bDef.__put(...sKind.__c); bPet.__set("Rex"); bPet.__put(210, 34); } },
+        { cap: "\"Rex\" → <code>pet</code>. Nothing given for <code>kind</code>, so the <b>default \"dog\" stays</b>.", f() { bDef.__set("dog"); bDef.__put(...sKind.__c); sKind.__fill(true); bPet.__set("Rex"); bPet.__put(...sPet.__c); sPet.__fill(true); body.textContent = 'pet="Rex", kind="dog"'; } },
+      ];
+    }
+    function buildToggles(restart) {
+      function b(m, label) { const btn = h("button", { class: "w-btn" + (mode === m ? " on" : "") }, label); btn.addEventListener("click", () => { mode = m; row.querySelectorAll(".w-btn").forEach((x) => x.classList.remove("on")); btn.classList.add("on"); restart(); }); return btn; }
+      const row = h("div", { class: "w-row", style: "justify-content:center;margin-bottom:8px" }, h("span", { style: "color:var(--text-dim);font-size:12px" }, "Style:"), b("pos", "Positional"), b("kw", "Keyword"), b("def", "Default"));
+      return row;
+    }
+    return faScene("How arguments reach the slots", stage, getSteps, buildToggles);
+  };
+
+  /* ---- funcScope: local vs global ---- */
+  App.widgets.funcScope = function () {
+    let mode = "local";
+    const G = CLR.amber, L = CLR.blue;
+    const stage = h("div", { class: "fa-stage", style: "height:260px" });
+    const gx = mkBox(390, 24, 130, 44, "global  x", G);
+    const gxBall = mkBall(10, G); gxBall.__put(...gx.__c);
+    const out = h("div", { class: "fa-tag", style: "left:390px;top:110px;color:var(--accent-2)" }, "");
+    const body = h("div", { class: "fa-body small" }, "");
+    const mach = h("div", { class: "fa-machine", style: "left:40px;top:40px;width:210px;border-color:" + L },
+      h("div", { class: "fa-head", style: "background:" + L }, "f()"), body);
+    const lx = mkBox(90, 150, 110, 44, "local  x", L);
+    const lxBall = mkBall(5, L);
+    stage.append(gx, gxBall, mach, lx, lxBall, out);
+    function getSteps() {
+      if (mode === "local") return [
+        { cap: "A <b>global</b> <code>x = 10</code> lives in the amber box.", f() { gxBall.__set(10); gxBall.__put(...gx.__c); gx.__fill(true); gx.__hl(false); lx.__show(false); lxBall.__hide(); out.textContent = ""; body.innerHTML = "x = 5<br>print(x)"; } },
+        { cap: "Call <code>f()</code>. A new <b>local</b> frame gets its <b>own</b> <code>x</code> (blue) — same name, different box.", f() { gx.__fill(true); lx.__show(true); lx.__fill(true); lx.__hl(true); lxBall.__set(5); lxBall.__put(...lx.__c); } },
+        { cap: "Inside f, <code>print(x)</code> reads the <b>local</b> x = 5 (blue).", f() { gx.__fill(true); lx.__show(true); lx.__fill(true); lx.__hl(true); lxBall.__put(...lx.__c); out.textContent = "output: 5"; } },
+        { cap: "<code>f()</code> returns — the local frame is <b>destroyed</b>.", f() { gx.__fill(true); lx.__hl(false); lx.__show(false); lxBall.__hide(); out.textContent = ""; } },
+        { cap: "Outside, <code>print(x)</code> reads the <b>global</b> x = 10 (amber) — untouched.", f() { gx.__fill(true); gx.__hl(true); out.style.color = CLR.amber; out.textContent = "output: 10"; } },
+      ];
+      return [ // global keyword
+        { cap: "Global <code>x = 10</code>. This time f() declares <code>global x</code>.", f() { gxBall.__set(10); gxBall.__put(...gx.__c); gx.__fill(true); gx.__hl(false); lx.__show(false); lxBall.__hide(); out.textContent = ""; body.innerHTML = "global x<br>x = 5"; } },
+        { cap: "Call <code>f()</code>. <code>global x</code> means <b>no new box</b> — it targets the amber global.", f() { gx.__fill(true); gx.__hl(true); lx.__show(false); } },
+        { cap: "<code>x = 5</code> writes into the <b>global</b> box: 10 → 5.", f() { gx.__fill(true); gx.__hl(true); gxBall.__set(5); gxBall.__put(...gx.__c); } },
+        { cap: "Outside, <code>print(x)</code> is now <b>5</b> — the global was changed. Use <code>global</code> sparingly!", f() { gx.__fill(true); gx.__hl(true); out.style.color = CLR.amber; out.textContent = "output: 5"; } },
+      ];
+    }
+    function buildToggles(restart) {
+      function b(m, label) { const btn = h("button", { class: "w-btn" + (mode === m ? " on" : "") }, label); btn.addEventListener("click", () => { mode = m; row.querySelectorAll(".w-btn").forEach((x) => x.classList.remove("on")); btn.classList.add("on"); restart(); }); return btn; }
+      const row = h("div", { class: "w-row", style: "justify-content:center;margin-bottom:8px" }, h("span", { style: "color:var(--text-dim);font-size:12px" }, "Inside f:"), b("local", "local x = 5"), b("global", "global x; x = 5"));
+      return row;
+    }
+    return faScene("Local vs global — colour shows the scope", stage, getSteps, buildToggles);
+  };
+})();
+
+/* ============================================================
    stringIndex — show a string with positive & negative indices,
    highlight s[i] as you change i. (interactive process demo)
    config: { text }
