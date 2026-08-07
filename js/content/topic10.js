@@ -217,15 +217,19 @@ App.registerTopic({
       keywords: "c stack heap malloc free memory leak dangling pointer stack overflow sizeof",
       learn: [
         { type: "text", html: "A running C program has two working regions. The <span class='term'>stack</span> is automatic and fast; the <span class='term'>heap</span> is manual and flexible. Knowing the difference is the heart of writing correct C." },
-        { type: "widget", name: "memoryModel", config: { title: "Stack vs Heap", columns: [
-          { head: "Stack (automatic)", cells: [
-            { name: "main() frame", val: "n = 5", kind: "frame" },
-            { name: "f() frame", val: "i = 10", kind: "frame", note: "Each function call pushes a frame holding its locals; returning pops it automatically. Fast, but limited — deep recursion overflows it." },
-          ] },
-          { head: "Heap (manual)", cells: [
-            { addr: "0x9000", name: "malloc(40)", val: "[ … 40 bytes … ]", kind: "ptr", note: "You request memory explicitly and must free() it yourself. Big and flexible, but you own the cleanup." },
-          ] },
-        ] } },
+        { type: "subhead", text: "Watch malloc and free in action" },
+        { type: "widget", name: "heapViz", config: {
+          title: "make_array(10): frames push and pop, a heap block is allocated then freed",
+          steps: [
+            { stack: [{ name: "main()", val: "data = ?" }], heap: [], note: "main() starts. Its frame holds the local <code>data</code>." },
+            { stack: [{ name: "main()", val: "data = ?" }, { name: "make_array()", val: "n = 10", active: true }], heap: [], note: "Call <code>make_array(10)</code>: a new frame is pushed on the stack." },
+            { stack: [{ name: "main()", val: "data = ?" }, { name: "make_array()", val: "n = 10" }], heap: [{ addr: "0x9000", label: "40 bytes (10 ints)", active: true }], note: "<code>malloc</code> asks the heap for 40 bytes. It returns the address 0x9000." },
+            { stack: [{ name: "main()", val: "data = 0x9000", active: true }], heap: [{ addr: "0x9000", label: "40 bytes" }], note: "<code>return block</code> pops make_array's frame. <code>data</code> now holds the heap address." },
+            { stack: [{ name: "main()", val: "data = 0x9000" }], heap: [{ addr: "0x9000", label: "[7, …]", active: true }], note: "<code>data[0] = 7</code> writes into the heap block through the pointer." },
+            { stack: [{ name: "main()", val: "data = 0x9000" }], heap: [{ addr: "0x9000", label: "freed", freed: true, active: true }], note: "<code>free(data)</code> returns the block to the heap. Forgetting this is a <b>memory leak</b>." },
+            { stack: [{ name: "main()", val: "data → freed" }], heap: [{ addr: "0x9000", label: "freed", freed: true }], note: "Using <code>data</code> after free() is a <b>dangling pointer</b>: undefined behaviour." },
+          ],
+        } },
         { type: "list", title: "Stack vs heap", items: [
           "<b>Stack</b>: local variables and call frames. Allocated and freed <i>automatically</i> as functions enter and return. Very fast, but small — unbounded recursion causes a <b>stack overflow</b>.",
           "<b>Heap</b>: memory whose size or lifetime you decide at run time. You <code>malloc</code> it and must <code>free</code> it. Large, but mismanagement causes leaks and dangling pointers.",

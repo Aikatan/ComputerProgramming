@@ -51,8 +51,11 @@ _Working dir: `python-compro-learn/` (git repo, branch `main`). Static no-build 
 - **t10 pointers ✅ (ptrViz — p holds x's address, *p follows the arrow to read/write)**. Replaced the static memoryModel in the pointers lesson.
 - NEXT candidates (all optional polish now — every topic has an animation): t10 memory lesson (stack/heap malloc/free animation), t10 arrays-strings (contiguous cells + NUL terminator), a visual searchViz / bubble-sort swap animation for t09 (they have steprun already).
 
+- **t10 memory ✅ (heapViz — stack frames push/pop + heap malloc/free/dangling)**. Replaced static memoryModel.
+
 ## Every topic now has at least one real animation. Widgets added this session:
-tryFlow, fileFlow, arrayOp, dfFilter, csvFlow, bigOViz, ptrViz (7 total). All built on `stepper`, all verified in-browser, slide sizes honor the 24px floor.
+tryFlow, fileFlow, arrayOp, dfFilter, csvFlow, bigOViz, ptrViz, heapViz (8 total). All built on `stepper`, all verified in-browser, slide sizes honor the 24px floor.
+Remaining optional polish: t10 arrays-strings (contiguous cells + NUL terminator animation); a visual bubble-sort / binary-search animation for t09 (has steprun already).
 - `csvFlow` widget (widgets.js): write phase builds comma-separated lines from a table; read phase splits lines back into rows. Built on stepper, reuses .dftbl + .ff-* styles.
 - `dfFilter` widget (widgets.js): pandas table filter (rows tested → keep ✓ / drop ✗) and sort (reorder + highlight sorted column). Scenario buttons. Verified: Age>28 keeps Bob/Char; sort desc → 35,30,25.
 

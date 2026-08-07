@@ -1147,3 +1147,29 @@ App.widgets.ptrViz = function (cfg) {
     },
   });
 };
+
+/* ============================================================
+   heapViz — animate the stack vs heap: frames push/pop, malloc
+   adds a heap block, free() releases it (dangling afterwards).
+   config: { title, steps:[{ stack:[{name,val,active}],
+             heap:[{addr,label,active,freed}], note }] }
+   ============================================================ */
+App.widgets.heapViz = function (cfg) {
+  return App.widgets.stepper({
+    title: cfg.title || "Stack frames and heap blocks over time",
+    steps: cfg.steps,
+    render: (s) => {
+      const stackCol = h("div", { class: "hv-col" }, h("h5", null, "Stack (automatic)"));
+      if (!s.stack || !s.stack.length) stackCol.appendChild(h("div", { class: "hv-empty" }, "(empty)"));
+      (s.stack || []).forEach((fr) => stackCol.appendChild(h("div", { class: "hv-frame" + (fr.active ? " active" : "") },
+        h("div", { class: "hv-name" }, fr.name), h("div", { class: "hv-val" }, fr.val || ""))));
+      const heapCol = h("div", { class: "hv-col" }, h("h5", null, "Heap (manual)"));
+      if (!s.heap || !s.heap.length) heapCol.appendChild(h("div", { class: "hv-empty" }, "(nothing allocated)"));
+      (s.heap || []).forEach((bl) => heapCol.appendChild(h("div", { class: "hv-block" + (bl.active ? " active" : "") + (bl.freed ? " freed" : "") },
+        bl.addr ? h("div", { class: "hv-addr" }, bl.addr) : null, h("div", { class: "hv-val" }, bl.label || ""))));
+      return h("div", { class: "fileflow" },
+        h("div", { class: "hv-cols" }, stackCol, heapCol),
+        h("div", { class: "tf-note", html: s.note || "" }));
+    },
+  });
+};
