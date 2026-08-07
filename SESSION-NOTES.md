@@ -40,8 +40,9 @@ _Working dir: `python-compro-learn/` (git repo, branch `main`). Static no-build 
 ## "go dev" directives (current task)
 - Every topic should have its OWN animation/visualization. Visual > text (except syntax).
 - Examples must vary easy → harder.
-- Progress: **t07 exceptions ✅ (tryFlow)**, **t08 file-handling ✅ (fileFlow)**, **t08 numpy ✅ (arrayOp)**.
-- NEXT: **t08 pandas** (build a DataFrame filter/sort animation — a table with rows highlighting/dropping on a boolean condition). Then **t00** (light, only 2 widgets). Then review t01–t05, t09, t10 for a signature animation + graded examples each. Also csv-json lesson (t08) has no animation.
+- Progress: **t07 exceptions ✅ (tryFlow)**, **t08 file-handling ✅ (fileFlow)**, **t08 numpy ✅ (arrayOp)**, **t08 pandas ✅ (dfFilter — filter + sort)**.
+- NEXT: **t00** (light, only 2 widgets). Then **t08 csv-json** (no animation). Then review t01–t05, t09, t10 for a signature animation + graded examples each.
+- `dfFilter` widget (widgets.js): pandas table filter (rows tested → keep ✓ / drop ✗) and sort (reorder + highlight sorted column). Scenario buttons. Verified: Age>28 keeps Bob/Char; sort desc → 35,30,25.
 
 ## Reusable animation widgets available (widgets.js)
 diagram, cpuCycle, binaryConverter, truthTable, stepper (generic step driver), varChips, codeLines, loopViz (line+vars+log tracer), memoryModel, flowchart, listViz, funcCall/funcNested/funcArgs/funcScope, stringIndex/stringSlice/stringShift, flowExec, **tryFlow**, **fileFlow**, **arrayOp**. Prefer building new ones on top of `stepper` (like loopViz/fileFlow/arrayOp do).

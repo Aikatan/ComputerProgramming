@@ -964,3 +964,79 @@ App.widgets.arrayOp = function (cfg) {
     },
   });
 };
+
+/* ============================================================
+   dfFilter — animate a pandas DataFrame filter / sort.
+   config: {
+     title, columns:[names], rows:[[...]],
+     scenarios:[{ label, filter:{col,op,value} } | { label, sort:{col,dir} }]
+   }
+   ============================================================ */
+App.widgets.dfFilter = function (cfg) {
+  const cols = cfg.columns, rows = cfg.rows;
+  const ci = (name) => cols.indexOf(name);
+  const cmp = (v, op, val) => op === ">" ? v > val : op === ">=" ? v >= val : op === "<" ? v < val : op === "<=" ? v <= val : op === "==" ? v == val : false;
+  const idAll = rows.map((_, idx) => idx);
+
+  function buildSteps(s) {
+    if (s.filter) {
+      const c = ci(s.filter.col), steps = [];
+      for (let k = 0; k <= rows.length; k++) {
+        const marks = rows.map((r, idx) => idx < k ? (cmp(r[c], s.filter.op, s.filter.value) ? "keep" : "drop") : (idx === k ? "test" : ""));
+        const testing = k < rows.length;
+        const note = testing
+          ? (s.filter.col + " = " + rows[k][c] + ".  Is " + rows[k][c] + " " + s.filter.op + " " + s.filter.value + " ? " + (cmp(rows[k][c], s.filter.op, s.filter.value) ? "keep" : "drop"))
+          : "Kept only the rows where " + s.filter.col + " " + s.filter.op + " " + s.filter.value + ".";
+        steps.push({ order: idAll, marks, finalKeepOnly: !testing, note });
+      }
+      return steps;
+    }
+    if (s.sort) {
+      const c = ci(s.sort.col), dir = s.sort.dir === "desc" ? -1 : 1;
+      const order = idAll.slice().sort((x, y) => (rows[x][c] > rows[y][c] ? 1 : rows[x][c] < rows[y][c] ? -1 : 0) * dir);
+      return [
+        { order: idAll, marks: rows.map(() => ""), note: "Before: original row order.", sortedCol: c },
+        { order, marks: rows.map(() => ""), note: "After: sorted by " + s.sort.col + " (" + (s.sort.dir || "asc") + ").", sortedCol: c },
+      ];
+    }
+    return [{ order: idAll, marks: rows.map(() => ""), note: "" }];
+  }
+
+  let sc = 0, i = 0, steps = buildSteps(cfg.scenarios[0]);
+  const table = h("table", { class: "dftbl" });
+  const note = h("div", { class: "tf-note" });
+  const counter = h("span", { class: "mono", style: "color:var(--text-dim)" });
+  const prev = h("button", { class: "w-btn" }, "‹ Prev");
+  const next = h("button", { class: "w-btn on" }, "Next ›");
+  const reset = h("button", { class: "w-btn" }, "⟲");
+
+  const scRow = h("div", { class: "w-row", style: "margin-bottom:12px" });
+  cfg.scenarios.forEach((s, idx) => {
+    const btn = h("button", { class: "w-btn" + (idx === 0 ? " on" : "") }, s.label);
+    btn.addEventListener("click", () => { sc = idx; i = 0; steps = buildSteps(s); scRow.querySelectorAll(".w-btn").forEach((x) => x.classList.remove("on")); btn.classList.add("on"); draw(); });
+    scRow.appendChild(btn);
+  });
+
+  function draw() {
+    const st = steps[i];
+    table.innerHTML = "";
+    table.appendChild(h("tr", null, h("th", null, ""), ...cols.map((c, idx) => h("th", { class: st.sortedCol === idx ? "sortcol" : "" }, c))));
+    st.order.forEach((ri) => {
+      const mark = st.marks[ri];
+      if (st.finalKeepOnly && mark !== "keep") return;
+      const tr = h("tr", { class: "df-" + (mark || "none") },
+        h("td", { class: "df-mark" }, mark === "keep" ? "✓" : mark === "drop" ? "✗" : mark === "test" ? "→" : ""));
+      cols.forEach((c, k) => tr.appendChild(h("td", { class: st.sortedCol === k ? "sortcol" : "" }, String(rows[ri][k]))));
+      table.appendChild(tr);
+    });
+    note.textContent = st.note || "";
+    counter.textContent = " step " + (i + 1) + " / " + steps.length;
+    prev.disabled = i === 0; next.disabled = i === steps.length - 1;
+  }
+  prev.addEventListener("click", () => { if (i > 0) { i--; draw(); } });
+  next.addEventListener("click", () => { if (i < steps.length - 1) { i++; draw(); } });
+  reset.addEventListener("click", () => { i = 0; draw(); });
+  draw();
+  return widgetShell(cfg.title || "Filter and sort a DataFrame",
+    h("div", null, scRow, table, note, h("div", { class: "w-row", style: "margin-top:12px" }, prev, next, reset, counter)));
+};

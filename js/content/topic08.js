@@ -133,23 +133,37 @@ App.registerTopic({
       slides: "08:25–37",
       keywords: "pandas dataframe series read_csv head describe loc iloc sort filter",
       learn: [
-        { type: "text", html: "<span class='term'>pandas</span> adds the <b>Series</b> (a labelled 1-D column) and the <b>DataFrame</b> (a 2-D table with named columns). Convention: <code>import pandas as pd</code>." },
+        { type: "text", html: "<span class='term'>pandas</span> adds two things:<br>a <b>Series</b> (one labelled column) and a <b>DataFrame</b> (a table with named columns).<br>Convention: <code>import pandas as pd</code>." },
+
+        { type: "subhead", text: "Filter and sort a table" },
+        { type: "widget", name: "dfFilter", config: {
+          title: "Step through a filter, then a sort",
+          columns: ["Name", "Age", "City"],
+          rows: [["Ali", 25, "New York"], ["Bob", 30, "LA"], ["Char", 35, "Chicago"]],
+          scenarios: [
+            { label: "df[df['Age'] > 28]", filter: { col: "Age", op: ">", value: 28 } },
+            { label: "sort_values('Age', desc)", sort: { col: "Age", dir: "desc" } },
+          ],
+        } },
+
         { type: "example", caption: "build and inspect a DataFrame", code:
 "import pandas as pd\ndata = {\n    'Name': ['Ali', 'Bob', 'Char'],\n    'Age':  [25, 30, 35],\n    'City': ['New York', 'LA', 'Chicago'],\n}\ndf = pd.DataFrame(data)\nprint(df)\nprint(df[df['Age'] > 28])   # rows where Age > 28",
           annot: [
             { c: "pd.DataFrame(data)", e: "Turns a dict of columns into a table." },
-            { c: "df['Age'] > 28", e: "Boolean filtering — keep only matching rows." },
+            { c: "df['Age'] > 28", e: "Boolean filter. Keeps only matching rows." },
           ] },
-        { type: "list", title: "Everyday pandas", items: [
-          "Read/write: <code>pd.read_csv(...)</code>, <code>df.to_csv(...)</code> (also excel, json).",
-          "Inspect: <code>df.head()</code>, <code>df.info()</code>, <code>df.describe()</code>.",
-          "Select: <code>df['col']</code>, <code>df.loc[label]</code>, <code>df.iloc[0]</code>.",
-          "Sort: <code>df.sort_values(by='Age')</code>.  Group: <code>df.groupby('dept')['salary'].mean()</code>.",
+        { type: "deflist", title: "Everyday pandas", items: [
+          { t: "Read / write", d: "<code>pd.read_csv(...)</code>, <code>df.to_csv(...)</code> (also excel, json)." },
+          { t: "Inspect", d: "<code>df.head()</code>, <code>df.info()</code>, <code>df.describe()</code>." },
+          { t: "Select", d: "<code>df['col']</code>, <code>df.loc[label]</code>, <code>df.iloc[0]</code>." },
+          { t: "Sort", d: "<code>df.sort_values(by='Age')</code>." },
+          { t: "Group", d: "<code>df.groupby('dept')['salary'].mean()</code>." },
         ] },
       ],
       live: [
-        { title: "DataFrame: create, sort, filter, average", code: "import pandas as pd\ndata = {'Name': ['Alice','Bob','Charlie'],\n        'Age':  [25, 30, 35],\n        'Score':[88, 72, 95]}\ndf = pd.DataFrame(data)\nprint(df)\nprint(\"\\nSorted by Score:\")\nprint(df.sort_values(by='Score', ascending=False))\nprint(\"\\nAverage score:\", df['Score'].mean())" },
-        { title: "Group by department (practice idea)", code: "import pandas as pd\nstaff = pd.DataFrame({\n    'name': ['A','B','C','D'],\n    'dept': ['IT','HR','IT','HR'],\n    'salary': [50000, 45000, 60000, 47000],\n})\nprint(staff.groupby('dept')['salary'].mean())" },
+        { title: "Easy: build and print a DataFrame", code: "import pandas as pd\ndf = pd.DataFrame({'Name': ['Alice', 'Bob', 'Charlie'],\n                   'Score': [88, 72, 95]})\nprint(df)" },
+        { title: "Medium: sort by score, then average", code: "import pandas as pd\ndata = {'Name': ['Alice','Bob','Charlie'],\n        'Age':  [25, 30, 35],\n        'Score':[88, 72, 95]}\ndf = pd.DataFrame(data)\nprint(df.sort_values(by='Score', ascending=False))\nprint(\"\\nAverage score:\", df['Score'].mean())" },
+        { title: "Harder: average salary per department (groupby)", code: "import pandas as pd\nstaff = pd.DataFrame({\n    'name': ['A','B','C','D'],\n    'dept': ['IT','HR','IT','HR'],\n    'salary': [50000, 45000, 60000, 47000],\n})\nprint(staff.groupby('dept')['salary'].mean())" },
       ],
       quiz: [
         { q: "A pandas DataFrame is most like a…", choices: ["single number", "table / spreadsheet", "text file", "for loop"], answer: 1, explain: "A DataFrame is a 2-D labelled table — rows and named columns." },
