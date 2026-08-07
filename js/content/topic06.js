@@ -4,106 +4,111 @@ App.registerTopic({
   title: "Strings, Lists & Dictionaries",
   short: "Strings, Lists, Dicts",
   blurb: "The everyday data containers: text, ordered lists, and key-value dictionaries.",
-  intro: "Most real programs shuffle collections of data around. Here are the three you'll reach for daily — with animations that show them changing as your code runs.",
+  intro: "Most programs move collections of data around.<br>Here are the three you use daily, with live animations.",
   lessons: [
     {
       id: "strings",
       title: "Strings in depth",
-      sub: "How text is stored, indexed, sliced, transformed — and shifted.",
+      sub: "How text is stored, indexed, sliced, and shifted.",
       slides: "06:4–12",
       keywords: "string slice index method upper lower strip replace split find format fstring len immutable caesar shift",
       learn: [
-        { type: "text", html: "A <span class='term'>string</span> is an <b>ordered sequence of characters</b>. Because it's ordered, every character has a numbered position; because it's a sequence, indexing and slicing work exactly like they do on lists. The reading below is organised into tabs — skim what you need, then play with the interactive demos underneath." },
+        { type: "text", html: "A <span class='term'>string</span> is an <b>ordered sequence of characters</b>.<br>Every character has a numbered position." },
 
         { type: "tabs", tabs: [
           { label: "Creating", blocks: [
-            { type: "text", html: "You can write a string with single, double, or triple quotes. Triple quotes span multiple lines and are also used for docstrings." },
+            { type: "text", html: "Write a string with single, double, or triple quotes.<br>Triple quotes span multiple lines." },
             { type: "example", caption: "three ways to quote", code:
 "single = 'Hello'\ndouble = \"World\"\nmulti  = '''line one\nline two'''\nprint(single, double)\nprint(multi)",
               output: "Hello World\nline one\nline two" },
-            { type: "note", html: "Use double quotes when the text contains an apostrophe (<code>\"it's\"</code>), and single quotes when it contains double quotes (<code>'He said \"hi\"'</code>). Either way they're the same type — <code>str</code>." },
+            { type: "note", html: "Double quotes when the text has an apostrophe (<code>\"it's\"</code>).<br>Single quotes when it has double quotes (<code>'He said \"hi\"'</code>).<br>Both are the same type: <code>str</code>." },
           ] },
           { label: "Indexing", blocks: [
-            { type: "text", html: "Each character has a position called an <span class='term'>index</span>, starting at <b>0</b> on the left. <b>Negative</b> indices count from the right, starting at <code>-1</code> for the last character. Asking for an index that doesn't exist raises an <code>IndexError</code>." },
+            { type: "text", html: "Each character has a position called an <span class='term'>index</span>.<br>Counting starts at <b>0</b> on the left.<br><b>Negative</b> indices count from the right, from <code>-1</code>.<br>A missing index raises <code>IndexError</code>." },
             { type: "example", caption: "positive and negative indexing", code:
 "text = \"Python\"\nprint(text[0])   # 'P'  (first)\nprint(text[5])   # 'n'  (last)\nprint(text[-1])  # 'n'  (last, from the right)\nprint(text[-6])  # 'P'  (first, from the right)",
               output: "P\nn\nn\nP" },
-            { type: "note", html: "Play with the <b>String indexing</b> demo below to see the positive (blue) and negative (orange) index of every character at once." },
+            { type: "note", html: "Every character has <b>two</b> indexes: a positive one from the left and a negative one from the right." },
           ] },
           { label: "Slicing", blocks: [
-            { type: "text", html: "A <span class='term'>slice</span> <code>text[start:end:step]</code> extracts a substring. <b>start</b> is included, <b>end</b> is excluded, and the optional <b>step</b> is how far to jump each time. Any of the three can be left out to use its default (<code>0</code>, <code>len</code>, <code>1</code>)." },
+            { type: "text", html: "A <span class='term'>slice</span> <code>text[start:end:step]</code> pulls out a substring." },
+            { type: "deflist", title: "The three slice numbers", items: [
+              { t: "<code>start</code>", d: "First index to include. Default <code>0</code>." },
+              { t: "<code>end</code>", d: "Stop before this index. Default is the length." },
+              { t: "<code>step</code>", d: "How far to jump each time. Default <code>1</code>." },
+            ] },
             { type: "example", caption: "the three slice numbers", code:
 "text = \"Programming\"\nprint(text[0:6])   # 'Progra'   start..end-1\nprint(text[3:])    # 'gramming' to the end\nprint(text[:4])    # 'Prog'     from the start\nprint(text[::2])   # 'Pormig'   every 2nd char\nprint(text[::-1])  # 'gnimmargorP'  reversed (step -1)",
               annot: [
-                { c: "text[0:6]", e: "indices 0,1,2,3,4,5 — the 6 is excluded." },
-                { c: "text[::2]", e: "empty start/end means whole string; step 2 takes every other character." },
-                { c: "text[::-1]", e: "a negative step walks backwards, reversing the string — a very common idiom." },
+                { c: "text[0:6]", e: "Indices 0,1,2,3,4,5. The 6 is excluded." },
+                { c: "text[::2]", e: "Empty start/end means the whole string. Step 2 takes every other character." },
+                { c: "text[::-1]", e: "Negative step walks backwards. Reverses the string. A common idiom." },
               ] },
-            { type: "note", html: "Slicing <b>never errors</b> on out-of-range numbers — it just clamps. <code>\"Hi\"[0:999]</code> is simply <code>\"Hi\"</code>. The <b>String slicing</b> demo below lets you drag start/end/step and watch the selection change." },
+            { type: "note", html: "Slicing <b>never errors</b> on out-of-range numbers. It just clamps.<br><code>\"Hi\"[0:999]</code> is simply <code>\"Hi\"</code>." },
           ] },
           { label: "Methods", blocks: [
-            { type: "text", html: "Strings come with dozens of built-in <span class='term'>methods</span> — functions you call with a dot. They <b>return a new string</b> (the original is never changed)." },
-            { type: "list", title: "The ones you'll use daily", items: [
-              "<code>.upper()</code> / <code>.lower()</code> — change case.",
-              "<code>.strip()</code> — remove leading/trailing whitespace.",
-              "<code>.replace(old, new)</code> — swap every occurrence of a substring.",
-              "<code>.split(sep)</code> — break the string into a <i>list</i> of pieces.",
-              "<code>.find(sub)</code> — index of the first match (or <code>-1</code> if absent).",
-              "<code>.count(sub)</code> — how many times a substring appears.",
-              "<code>.startswith(x)</code> / <code>.endswith(x)</code> — boolean checks.",
-              "<code>len(s)</code> — number of characters (spaces and punctuation count too).",
+            { type: "text", html: "Methods are functions you call with a dot.<br>They <b>return a new string</b>. The original never changes." },
+            { type: "deflist", title: "Methods you use daily", items: [
+              { t: "<code>.upper()</code> / <code>.lower()</code>", d: "Change case." },
+              { t: "<code>.strip()</code>", d: "Remove leading and trailing spaces." },
+              { t: "<code>.replace(old, new)</code>", d: "Swap every occurrence." },
+              { t: "<code>.split(sep)</code>", d: "Break into a <i>list</i> of pieces." },
+              { t: "<code>.find(sub)</code>", d: "Index of the first match, or <code>-1</code>." },
+              { t: "<code>.count(sub)</code>", d: "How many times it appears." },
+              { t: "<code>.startswith(x)</code> / <code>.endswith(x)</code>", d: "True or False checks." },
+              { t: "<code>len(s)</code>", d: "Number of characters." },
             ] },
             { type: "example", caption: "chaining methods", code:
 "raw = \"  Hello, World!  \"\nprint(raw.strip().lower())          # 'hello, world!'\nprint(raw.strip().split(\",\"))       # ['Hello', ' World!']\nprint(\"banana\".count(\"a\"))          # 3",
               output: "hello, world!\n['Hello', ' World!']\n3" },
           ] },
           { label: "Formatting", blocks: [
-            { type: "text", html: "An <span class='term'>f-string</span> (prefix <code>f</code>) lets you embed variables and expressions directly inside text using <code>{ }</code>. You can also format numbers — e.g. <code>{value:.2f}</code> for two decimals." },
+            { type: "text", html: "An <span class='term'>f-string</span> (prefix <code>f</code>) drops variables into text with <code>{ }</code>.<br>Format numbers too, e.g. <code>{value:.2f}</code> for two decimals." },
             { type: "example", caption: "f-strings with formatting", code:
 "name = \"Alice\"\nscore = 87.5\nprint(f\"{name} scored {score}\")\nprint(f\"{name} scored {score:.0f}%\")     # no decimals\nprint(f\"{'pad':>8}|\")                    # right-align in 8 cols",
               output: "Alice scored 87.5\nAlice scored 88%\n     pad|" },
-            { type: "note", html: "The older <code>\"{} {}\".format(a, b)</code> style still works, but f-strings read top-to-bottom in order and are almost always clearer." },
+            { type: "note", html: "The older <code>\"{} {}\".format(a, b)</code> style still works.<br>f-strings read in order and are usually clearer." },
           ] },
           { label: "Immutability", blocks: [
-            { type: "text", html: "Strings are <span class='term'>immutable</span> — once created, you cannot change a character in place. Instead you build a <b>new</b> string. This is why operations like 'shift every letter' produce a fresh string rather than editing the old one." },
+            { type: "text", html: "Strings are <span class='term'>immutable</span>.<br>You cannot change a character in place.<br>Instead you build a <b>new</b> string." },
             { type: "example", caption: "you can't edit, only rebuild", code:
 "text = \"hello\"\n# text[0] = \"H\"      # TypeError: does not support item assignment\ntext = \"H\" + text[1:]  # build a new string instead\nprint(text)            # 'Hello'",
               output: "Hello" },
-            { type: "deepdive", title: "Why immutable? (and the C contrast)", html: "<p>In <b>C</b>, a string is a mutable array of bytes ending in a <code>\\0</code> — you can poke any byte directly, and it's your job not to overrun the buffer. Python trades that raw control for safety: because strings can't change, they can be shared freely, used as dictionary keys, and cached. The cost is that building a string character-by-character creates many temporaries — which is why you usually collect pieces in a list and <code>\"\".join(...)</code> them at the end.</p>" },
+            { type: "deepdive", title: "Why immutable? (and the C contrast)", html: "<p>In <b>C</b>, a string is a mutable array of bytes ending in <code>\\0</code>. You can poke any byte, and it is your job not to overrun the buffer.</p><p>Python trades that raw control for safety. Because strings cannot change, they can be shared freely, used as dictionary keys, and cached.</p><p>The cost: building a string one character at a time makes many temporaries. So collect pieces in a list and <code>\"\".join(...)</code> at the end.</p>" },
           ] },
         ] },
 
         { type: "subhead", text: "Indexing" },
-        { type: "text", html: "Type any text and an index (try negatives). The selected box shows what <code>text[i]</code> returns; the small numbers are the positive index (top) and negative index (bottom)." },
+        { type: "text", html: "<code>text[i]</code> returns the character at position <code>i</code>.<br>Positive index counts from the left (<code>0</code> is first).<br>Negative index counts from the right (<code>-1</code> is last)." },
         { type: "widget", name: "stringIndex", config: { text: "Python" } },
 
         { type: "subhead", text: "Slicing" },
-        { type: "text", html: "Drag the three slice values. Highlighted boxes are the characters included, numbered in the order they're picked — so you can <i>see</i> exactly what <code>text[start:end:step]</code> produces, including reversed slices with a negative step." },
+        { type: "text", html: "A slice keeps characters from <code>start</code> up to (but not including) <code>end</code>, jumping by <code>step</code>.<br>A negative <code>step</code> walks backwards and reverses." },
         { type: "widget", name: "stringSlice", config: { text: "Programming" } },
 
       ],
       live: [
-        { title: "Indexing & slicing — change the numbers and re-run", code: "text = \"Programming\"\nprint(\"first :\", text[0])\nprint(\"last  :\", text[-1])\nprint(\"3..7  :\", text[3:7])\nprint(\"every2:\", text[::2])\nprint(\"reverse:\", text[::-1])" },
+        { title: "Indexing & slicing: change the numbers and re-run", code: "text = \"Programming\"\nprint(\"first :\", text[0])\nprint(\"last  :\", text[-1])\nprint(\"3..7  :\", text[3:7])\nprint(\"every2:\", text[::2])\nprint(\"reverse:\", text[::-1])" },
         { title: "Method tour", code: "s = \"  Hello, World!  \"\nprint(s.strip())\nprint(s.upper())\nprint(s.replace(\"World\", \"Python\"))\nprint(s.strip().split(\",\"))\nprint(\"length:\", len(s))\nprint(\"count l:\", s.count('l'))" },
         { title: "Build your own Caesar cipher", code: "def caesar(text, shift):\n    result = \"\"\n    for ch in text:\n        if ch.isupper():\n            result += chr((ord(ch) - 65 + shift) % 26 + 65)\n        elif ch.islower():\n            result += chr((ord(ch) - 97 + shift) % 26 + 97)\n        else:\n            result += ch          # leave spaces/punctuation alone\n    return result\n\nsecret = caesar(\"Hello, World!\", 3)\nprint(secret)                 # Khoor, Zruog!\nprint(caesar(secret, -3))     # decrypt back" },
       ],
       quiz: [
         { q: "`\"Python\"[-2]` is…", choices: ["P", "o", "h", "n"], answer: 1, explain: "Index -2 is the second character from the right: 'o'." },
-        { q: "`\"ComPro\"[::-1]` gives…", choices: ["ComPro", "orPmoC", "CmPo", "Error"], answer: 1, explain: "Step −1 walks backwards, reversing the string: orPmoC." },
-        { q: "What does `\"Programming\"[2:5]` return?", choices: ["'rog'", "'ogr'", "'rogr'", "'Pro'"], answer: 0, explain: "Indices 2,3,4 → 'r','o','g'. The 5 is excluded." },
-        { q: "Why can't you do `text[0] = 'H'`?", choices: ["Index 0 is reserved", "Strings are immutable", "You need text[0.0]", "It actually works"], answer: 1, explain: "Strings can't be changed in place — build a new one instead." },
+        { q: "`\"ComPro\"[::-1]` gives…", choices: ["ComPro", "orPmoC", "CmPo", "Error"], answer: 1, explain: "Step -1 walks backwards, reversing the string: orPmoC." },
+        { q: "What does `\"Programming\"[2:5]` return?", choices: ["'rog'", "'ogr'", "'rogr'", "'Pro'"], answer: 0, explain: "Indices 2,3,4 give 'r','o','g'. The 5 is excluded." },
+        { q: "Why can't you do `text[0] = 'H'`?", choices: ["Index 0 is reserved", "Strings are immutable", "You need text[0.0]", "It actually works"], answer: 1, explain: "Strings can't be changed in place. Build a new one instead." },
         { q: "In a Caesar shift of 1, 'Z' becomes…", choices: ["'[' (next ASCII)", "'A' (wraps around)", "'Y'", "Error"], answer: 1, explain: "The modulo-26 wrap takes 'Z' back to 'A'." },
       ],
     },
     {
       id: "lists",
       title: "Lists",
-      sub: "Ordered, mutable collections — watch them change.",
+      sub: "Ordered, mutable collections.",
       slides: "06:13–21",
       keywords: "list append insert extend remove pop clear index slice mutable",
       learn: [
-        { type: "text", html: "A <span class='term'>list</span> is an <b>ordered, mutable</b> collection in square brackets: <code>[1, 2, 3]</code>. It can hold mixed types and resizes automatically." },
-        { type: "subhead", text: "Watch modifications happen" },
+        { type: "text", html: "A <span class='term'>list</span> is an <b>ordered, mutable</b> collection in square brackets: <code>[1, 2, 3]</code>.<br>It holds mixed types and resizes automatically." },
+        { type: "subhead", text: "How a list changes" },
         { type: "widget", name: "listViz", config: {
           kind: "list",
           title: "Building and trimming a list",
@@ -117,11 +122,11 @@ App.registerTopic({
             { items: [], caption: "my_list.clear()  → empties the list" },
           ],
         } },
-        { type: "list", title: "Key operations", items: [
-          "Access/slice like strings: <code>my_list[0]</code>, <code>my_list[1:4]</code>, <code>my_list[::-1]</code>.",
-          "Add: <code>append(x)</code>, <code>insert(i, x)</code>, <code>extend([...])</code>.",
-          "Remove: <code>remove(x)</code>, <code>pop(i)</code>, <code>clear()</code>.",
-          "Aggregate: <code>sum()</code>, <code>min()</code>, <code>max()</code>, <code>len()</code>.",
+        { type: "deflist", title: "Key operations", items: [
+          { t: "Access / slice", d: "<code>my_list[0]</code>, <code>my_list[1:4]</code>, <code>my_list[::-1]</code>." },
+          { t: "Add", d: "<code>append(x)</code>, <code>insert(i, x)</code>, <code>extend([...])</code>." },
+          { t: "Remove", d: "<code>remove(x)</code>, <code>pop(i)</code>, <code>clear()</code>." },
+          { t: "Aggregate", d: "<code>sum()</code>, <code>min()</code>, <code>max()</code>, <code>len()</code>." },
         ] },
       ],
       live: [
@@ -129,7 +134,7 @@ App.registerTopic({
         { title: "Mutate a list", code: "tasks = [\"Project\", \"Groceries\", \"Read\"]\ntasks.append(\"Exercise\")\ntasks.remove(\"Groceries\")\nprint(tasks)" },
       ],
       quiz: [
-        { q: "Which adds a single item to the end of a list?", choices: ["extend", "append", "insert", "pop"], answer: 1, explain: "append(x) adds one item at the end; extend adds each item from an iterable." },
+        { q: "Which adds a single item to the end of a list?", choices: ["extend", "append", "insert", "pop"], answer: 1, explain: "append(x) adds one item at the end. extend adds each item from an iterable." },
         { q: "Lists are…", choices: ["Immutable", "Ordered and mutable", "Key-value pairs", "Always sorted"], answer: 1, explain: "Lists keep insertion order and can be changed after creation." },
       ],
     },
@@ -140,7 +145,11 @@ App.registerTopic({
       slides: "06:22–34",
       keywords: "dict dictionary key value get pop items keys values lookup hash",
       learn: [
-        { type: "text", html: "A <span class='term'>dictionary</span> stores <b>key → value</b> pairs in curly braces: <code>{\"name\": \"Alice\", \"age\": 25}</code>. Keys must be unique and immutable; lookup by key is very fast (it uses hashing)." },
+        { type: "text", html: "A <span class='term'>dictionary</span> stores <b>key → value</b> pairs in curly braces:<br><code>{\"name\": \"Alice\", \"age\": 25}</code>." },
+        { type: "list", title: "Two rules to remember", items: [
+          "Keys are unique and immutable.",
+          "Lookup by key is very fast (it uses hashing).",
+        ] },
         { type: "widget", name: "listViz", config: {
           kind: "dict",
           title: "Adding, updating, and removing keys",
@@ -152,12 +161,15 @@ App.registerTopic({
             { items: { name: "Alice" }, caption: "person.popitem()  → remove the last pair" },
           ],
         } },
-        { type: "list", title: "Access & iterate", items: [
-          "<code>d['key']</code> — errors if missing.  <code>d.get('key', default)</code> — safe.",
-          "Loop keys: <code>for k in d:</code> / values: <code>for v in d.values():</code> / both: <code>for k, v in d.items():</code>.",
-          "Remove: <code>del d['k']</code>, <code>d.pop('k', default)</code>, <code>d.clear()</code>.",
+        { type: "deflist", title: "Access & iterate", items: [
+          { t: "<code>d['key']</code>", d: "Direct read. Errors if the key is missing." },
+          { t: "<code>d.get('key', default)</code>", d: "Safe read. Returns the default if missing." },
+          { t: "<code>for k in d:</code>", d: "Loop over keys." },
+          { t: "<code>for v in d.values():</code>", d: "Loop over values." },
+          { t: "<code>for k, v in d.items():</code>", d: "Loop over pairs." },
+          { t: "<code>del d['k']</code> / <code>d.pop('k', default)</code>", d: "Remove a key." },
         ] },
-        { type: "example", caption: "counting words — a classic dict pattern", code:
+        { type: "example", caption: "counting words (a classic dict pattern)", code:
 "text = \"apple banana apple orange banana apple\"\nwords = text.split()\ncount = {}\nfor word in words:\n    count[word] = count.get(word, 0) + 1\nprint(count)",
           output: "{'apple': 3, 'banana': 2, 'orange': 1}" },
       ],
@@ -177,10 +189,10 @@ App.registerTopic({
       keywords: "list dictionary comparison index key lookup speed",
       learn: [
         { type: "widget", name: "diagram", config: { layout: "row", title: "Two containers, different jobs", boxes: [
-          { title: "List", body: "Indexed by <b>position</b> (0,1,2…). Allows duplicates. Lookup by value is slower. Use when <i>order</i> matters and items are a sequence." },
-          { title: "Dictionary", body: "Indexed by <b>key</b> (\"name\", \"age\"). Keys unique. Lookup is fast (hashing). Use when each item has a <i>label</i>." },
+          { title: "List", body: "Indexed by <b>position</b> (0,1,2…).<br>Allows duplicates.<br>Lookup by value is slower.<br>Use when order matters." },
+          { title: "Dictionary", body: "Indexed by <b>key</b> (\"name\", \"age\").<br>Keys are unique.<br>Fast lookup (hashing).<br>Use when each item has a label." },
         ] } },
-        { type: "note", html: "Rule of thumb: reaching for items by a meaningful name → dict. Walking through an ordered sequence → list." },
+        { type: "note", html: "Rule of thumb:<br>Reach items by a meaningful name → dict.<br>Walk through an ordered sequence → list." },
       ],
       live: [
         { title: "Same data, two shapes", code: "# As a list (order)\nscores_list = [85, 92, 78]\nprint(scores_list[0])\n\n# As a dict (labels)\nscores_dict = {\"math\": 85, \"sci\": 92, \"eng\": 78}\nprint(scores_dict[\"sci\"])" },

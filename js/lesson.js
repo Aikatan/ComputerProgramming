@@ -22,6 +22,13 @@
         return h("div", { class: "card" },
           b.title ? h("h4", null, b.title) : null,
           h("ul", null, ...b.items.map((it) => h("li", { html: it }))));
+      case "deflist":
+        // term on its own line, meaning indented below (avoids "label: value" on one line)
+        return h("div", { class: "card deflist" },
+          b.title ? h("h4", null, b.title) : null,
+          ...b.items.map((it) => h("div", { class: "def" },
+            h("div", { class: "dt", html: it.t }),
+            h("div", { class: "dd", html: it.d }))));
       case "deepdive":
         return h("details", { class: "deepdive" },
           h("summary", null, b.title || "Under the hood (C / memory view)"),

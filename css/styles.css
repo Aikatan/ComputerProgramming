@@ -89,6 +89,9 @@ a:hover { text-decoration: underline; }
 .sidebar-nav { padding: 12px 8px 40px; }
 .view { flex: 1; min-width: 0; padding: 28px clamp(16px, 4vw, 48px); }
 
+/* Desktop: collapse the sidebar (☰ toggle, and auto in slide mode) */
+body.nav-collapsed .sidebar { display: none; }
+
 .nav-topic > .nav-topic-head {
   display: flex; align-items: center; gap: 8px;
   padding: 9px 10px; border-radius: 8px; cursor: pointer; color: var(--text-dim);
@@ -193,12 +196,21 @@ a:hover { text-decoration: underline; }
 .tok-fn { color: #82aaff; }
 .tok-builtin { color: #ffcb6b; }
 
-/* annotated explanation list */
+/* annotated explanation list — term on its own line, meaning indented below */
 .annot { list-style: none; padding: 0; margin: 10px 0; }
-.annot li { display: grid; grid-template-columns: auto 1fr; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.annot li { display: block; padding: 8px 0; border-bottom: 1px solid var(--border); }
 .annot li:last-child { border-bottom: none; }
-.annot code { background: var(--code-bg); border: 1px solid var(--border); padding: 1px 7px; border-radius: 5px; font-size: 13px; color: var(--text); white-space: nowrap; }
-.annot .ex { color: var(--text-dim); font-size: 14px; }
+.annot code { display: inline-block; background: var(--code-bg); border: 1px solid var(--border); padding: 1px 7px; border-radius: 5px; font-size: 13px; color: var(--text); white-space: nowrap; }
+.annot .ex { display: block; margin-top: 5px; padding-left: 1.6em; color: var(--text-dim); font-size: 14px; }
+
+/* definition list — term on its own line, meaning indented below */
+.deflist .def { padding: 7px 0; border-bottom: 1px solid var(--border); }
+.deflist .def:last-child { border-bottom: none; }
+.deflist .dt { font-weight: 700; color: var(--text); }
+.deflist .dt code { color: var(--accent); }
+.deflist .dd { padding-left: 1.6em; margin-top: 4px; color: var(--text-dim); }
+.slide .deflist .dt { font-size: 32px; }
+.slide .deflist .dd { font-size: 28px; }
 
 /* ---------- Live editor ---------- */
 .live { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 14px 0; }
@@ -321,31 +333,60 @@ table.tt tr.hl td { background: rgba(77,171,247,.13); }
 /* ---------- Slide / presentation mode ---------- */
 .deck { max-width: 1120px; margin: 0 auto; }
 .deck-stage { min-height: calc(100vh - 220px); }
+
+/* Full-screen slide mode: use the whole width, keep visuals large */
+body.slide-mode .view { padding: 20px clamp(16px, 3vw, 40px); }
+body.slide-mode .deck { max-width: min(1600px, 95vw); }
+/* Flowcharts and their step panel stack, so the diagram gets the full column
+   and its SVG text scales up with it (SVG text is sized in viewBox units). */
+body.slide-mode .flow-wrap { grid-template-columns: 1fr; gap: 22px; }
+body.slide-mode .flow { display: flex; justify-content: center; }
+body.slide-mode .flow svg { width: auto; height: min(62vh, 560px); max-width: 100%; }
+/* SVG text is in viewBox units (~1.3–1.6x on-screen at this size); 18u keeps
+   flowchart labels rendering at roughly the 24px slide floor. */
+body.slide-mode .flow text { font-size: 18px; }
+body.slide-mode .flow .flbl { font-size: 18px; }
 .slide-split { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
 .slide-col { min-width: 0; }
 @media (max-width: 860px) { .slide-split { grid-template-columns: 1fr; gap: 16px; } }
-.slide { animation: slidein .22s ease; }
+.slide { animation: slidein .22s ease; font-size: 24px; }  /* 24px floor: inherited text stays >= 24 */
 @keyframes slidein { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
-.slide-kicker { font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 6px 0 14px; }
+.slide-kicker { font-size: 24px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 6px 0 14px; }
 .slide-title { font-size: 38px; line-height: 1.15; margin: 0 0 24px; }
 .slide-cover { text-align: center; padding-top: 9vh; }
 .slide-cover .slide-title { font-size: 52px; }
-.slide-sub { font-size: 26px; color: var(--text-dim); max-width: 44ch; margin: 0 auto; }
-/* extra-large, clear text inside slides */
+.slide-sub { font-size: 28px; color: var(--text-dim); max-width: 44ch; margin: 0 auto; }
+/* Slide type scale — 24 / 28 / 32 only, never below 24 (code included). */
 .slide .card { background: transparent; border: none; padding: 0; margin: 0 0 16px; }
-.slide .card, .slide .card p, .slide p, .slide li { font-size: 24px; line-height: 1.75; }
-.slide .card h4 { font-size: 24px; }
-.slide .note { font-size: 22px; padding: 16px 20px; }
-.slide .codeblock pre, .slide pre { font-size: 19px; line-height: 1.6; }
-.slide .code-out, .slide .live-out, .slide .step-out { font-size: 17px; }
-.slide .CodeMirror { font-size: 17px; }
-.slide .annot code { font-size: 17px; }
-.slide .annot .ex { font-size: 18px; }
-.slide .quiz-q .q { font-size: 26px; }
-.slide .quiz-opt { font-size: 21px; padding: 12px 16px; }
-.slide .subtabs { font-size: 20px; }
-/* split columns can lower slightly so both sides fit */
-.slide-split .card, .slide-split .card p, .slide-split li { font-size: 21px; }
+.slide .card, .slide .card p, .slide p, .slide li { font-size: 32px; line-height: 1.7; }
+.slide .card h4 { font-size: 32px; }
+.slide .note { font-size: 28px; padding: 18px 22px; }
+.slide .codeblock pre, .slide pre { font-size: 24px; line-height: 1.55; }
+.slide .code-out, .slide .live-out, .slide .step-out { font-size: 24px; }
+.slide .CodeMirror { font-size: 24px; }
+.slide .annot code { font-size: 24px; }
+.slide .annot .ex { font-size: 24px; }
+.slide .quiz-q .q { font-size: 28px; }
+.slide .quiz-opt { font-size: 24px; padding: 12px 16px; }
+.slide .subtabs { font-size: 24px; }
+/* widget internals that ship small — lift to the 24px floor on slides */
+.slide .step-code, .slide .step-code .ln, .slide .var-chip, .slide .cell,
+.slide .dia-box p, .slide table.tt th, .slide table.tt td { font-size: 24px; }
+.slide .dia-box h5 { font-size: 28px; }
+/* interactive-widget chrome: title, buttons, inputs, output line */
+.slide .widget-title { font-size: 24px; margin-bottom: 16px; }
+.slide .w-btn { font-size: 24px; padding: 8px 18px; }
+.slide .w-input { font-size: 24px; padding: 8px 12px; }
+.slide input.w-input[placeholder] { width: 7ch !important; }      /* start / end / step boxes */
+.slide input.w-input:not([placeholder]) { width: 15ch !important; } /* the text = ... box */
+.slide .step-log, .slide .lv-item { font-size: 24px; }
+/* string index / slice / shift visualizer cells */
+.slide .sgrid { gap: 8px; }
+.slide .scell { min-width: 64px; padding: 8px 10px; }
+.slide .scell .sch { font-size: 36px; line-height: 1.15; }
+.slide .scell small { font-size: 24px; }
+/* split columns: body one step down (28), title stays 32 */
+.slide-split .card, .slide-split .card p, .slide-split li { font-size: 28px; }
 .slide-split .slide-title { font-size: 32px; }
 .deck-nav { position: sticky; bottom: 0; display: flex; align-items: center; gap: 12px; padding: 14px 0 10px; background: linear-gradient(transparent, var(--bg) 45%); }
 .deck-progress { flex: 1; height: 6px; background: var(--bg-3); border-radius: 4px; overflow: hidden; }
@@ -359,8 +400,8 @@ table.tt tr.hl td { background: rgba(77,171,247,.13); }
 .deck-outline .okick { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--accent-2); }
 .deck-outline .oitem.cur .okick { color: #00131f; }
 @media (max-width: 700px) {
-  .slide-title { font-size: 24px; } .slide-cover .slide-title { font-size: 30px; }
-  .slide .card p, .slide p, .slide li { font-size: 17px; }
+  .slide-title { font-size: 28px; } .slide-cover .slide-title { font-size: 32px; }
+  .slide .card p, .slide p, .slide li { font-size: 24px; }
   .deck-stage { min-height: calc(100vh - 200px); }
 }
 
@@ -440,6 +481,52 @@ table.tt tr.hl td { background: rgba(77,171,247,.13); }
 .cpu-stage .st { flex:1; min-width:120px; background:var(--bg-2); border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center; font-size:13px; transition: all .3s; }
 .cpu-stage .st.on { border-color: var(--accent); background: rgba(77,171,247,.15); transform: translateY(-3px); }
 .cpu-stage .st b { display:block; color: var(--accent); }
+
+/* try / except / finally flow animation (tryFlow widget) */
+.tryflow { display: flex; flex-direction: column; gap: 8px; }
+.tf-box { border: 1px solid var(--border); border-radius: 10px; background: var(--bg-2); overflow: hidden; opacity: .5; transition: opacity .25s, box-shadow .25s, border-color .25s; }
+.tf-box.on { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(77,171,247,.28); }
+.tf-box.raised { border-color: var(--danger); }
+.tf-box.raised.on { box-shadow: 0 0 0 3px rgba(255,107,107,.3); }
+.tf-head { display: flex; align-items: center; gap: 10px; padding: 6px 12px; background: var(--bg-3); border-bottom: 1px solid var(--border); font-family: ui-monospace, monospace; font-weight: 700; color: var(--accent); }
+.tf-box.tf-except .tf-head { color: var(--accent-2); }
+.tf-box.tf-finally .tf-head { color: var(--warn); }
+.tf-badge { margin-left: auto; font-size: 12px; font-weight: 700; }
+.tf-badge.show { padding: 2px 10px; border-radius: 999px; background: rgba(255,107,107,.16); color: var(--danger); border: 1px solid var(--danger); }
+.tf-code { margin: 0; padding: 8px 12px; font-family: ui-monospace, monospace; font-size: 13.5px; line-height: 1.55; white-space: pre; overflow-x: auto; }
+.tf-note { margin-top: 12px; color: var(--text-dim); min-height: 22px; }
+/* slide mode: honor the 24px floor */
+.slide .tf-head, .slide .tf-code, .slide .tf-note, .slide .tf-badge { font-size: 24px; }
+
+/* file lifecycle animation (fileFlow widget) */
+.ff-cols { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: start; }
+.ff-arrow { align-self: center; font-family: ui-monospace, monospace; color: var(--warn); font-weight: 700; }
+.ff-file { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--bg-2); transition: box-shadow .25s, border-color .25s; }
+.ff-file.flow-write { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(77,171,247,.25); }
+.ff-file.flow-read { border-color: var(--accent-2); box-shadow: 0 0 0 3px rgba(59,201,164,.22); }
+.ff-fhead { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--bg-3); border-bottom: 1px solid var(--border); font-size: 13px; }
+.ff-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
+.ff-dot.open { background: var(--accent-2); }
+.ff-dot.closed { background: var(--danger); }
+.ff-mode { font-family: ui-monospace, monospace; color: var(--accent); }
+.ff-status { margin-left: auto; color: var(--text-dim); text-transform: uppercase; font-size: 11px; letter-spacing: .05em; }
+.ff-body { padding: 10px 12px; font-family: ui-monospace, monospace; font-size: 13px; min-height: 62px; }
+.ff-line { padding: 1px 0; animation: flash .5s; }
+.ff-empty { color: var(--text-dim); }
+@media (max-width: 700px) { .ff-cols { grid-template-columns: 1fr; } .ff-arrow { transform: rotate(90deg); } }
+.slide .ff-fhead, .slide .ff-body, .slide .ff-arrow, .slide .ff-status, .slide .ff-mode { font-size: 24px; }
+.slide .ff-dot { width: 14px; height: 14px; }
+
+/* NumPy element-wise / broadcast animation (arrayOp widget) */
+.ao-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; flex-wrap: wrap; }
+.ao-label { width: 2ch; font-family: ui-monospace, monospace; color: var(--text-dim); }
+.ao-cell { min-width: 46px; padding: 8px 10px; text-align: center; font-family: ui-monospace, monospace; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-2); transition: transform .2s, border-color .2s, background .2s; }
+.ao-cell.cur { border-color: var(--accent); background: rgba(77,171,247,.18); transform: translateY(-3px); }
+.ao-cell.done { border-color: var(--accent-2); }
+.ao-cell.faded { opacity: .55; }
+.ao-op, .ao-eq { font-family: ui-monospace, monospace; color: var(--warn); font-weight: 700; margin-left: calc(2ch + 8px); }
+.slide .ao-cell, .slide .ao-label, .slide .ao-op, .slide .ao-eq { font-size: 24px; }
+.slide .ao-cell { min-width: 60px; }
 
 @media (max-width: 820px) {
   .sidebar { position: fixed; left: 0; top: 56px; z-index: 40; transform: translateX(-100%); transition: transform .2s; box-shadow: var(--shadow); }

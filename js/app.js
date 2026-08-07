@@ -83,28 +83,37 @@
   function route() {
     const hash = location.hash || "#/";
     App._deckNav = null;
-    let m;
+    let m, isDeck = false;
     if ((m = hash.match(/^#\/l\/([^\/]+)(?:\/(\d+))?$/))) {
       const key = m[1], si = m[2] ? +m[2] : 0;
-      if ((localStorage.getItem("pcl_view") || "scroll") === "slides" && App.renderDeck) App.renderDeck(key, si);
+      if ((localStorage.getItem("pcl_view") || "slides") === "slides" && App.renderDeck) { App.renderDeck(key, si); isDeck = true; }
       else App.renderLesson(key);
     }
     else if ((m = hash.match(/^#\/t\/(.+)$/))) renderTopic(m[1]);
     else renderHome();
     App.buildSidebar();
     document.body.classList.remove("nav-open");
+    // Slide mode fills the screen: mark the body and hide the sidebar by default
+    // (reopen it any time with the ☰ button). Scroll view keeps the sidebar.
+    document.body.classList.toggle("slide-mode", isDeck);
+    document.body.classList.toggle("nav-collapsed", isDeck);
   }
   window.addEventListener("hashchange", route);
 
   /* ---------- Slides / Scroll view toggle ---------- */
   const viewBtn = document.getElementById("viewToggle");
-  function syncViewBtn() { const v = localStorage.getItem("pcl_view") || "scroll"; viewBtn.textContent = v === "slides" ? "▤" : "▦"; viewBtn.title = v === "slides" ? "Switch to scroll view" : "Switch to slide view"; }
+  function syncViewBtn() { const v = localStorage.getItem("pcl_view") || "slides"; viewBtn.textContent = v === "slides" ? "▤" : "▦"; viewBtn.title = v === "slides" ? "Switch to scroll view" : "Switch to slide view"; }
   viewBtn.addEventListener("click", () => {
-    const v = (localStorage.getItem("pcl_view") || "scroll") === "slides" ? "scroll" : "slides";
+    const v = (localStorage.getItem("pcl_view") || "slides") === "slides" ? "scroll" : "slides";
     localStorage.setItem("pcl_view", v); syncViewBtn();
     // strip any slide index from the hash, then re-render
     const key = (location.hash.match(/^#\/l\/([^\/]+)/) || [])[1];
-    if (key) { App._deckNav = null; if (v === "slides") App.renderDeck(key, 0); else App.renderLesson(key); }
+    if (key) {
+      App._deckNav = null;
+      if (v === "slides") App.renderDeck(key, 0); else App.renderLesson(key);
+      document.body.classList.toggle("slide-mode", v === "slides" && !!key);
+      document.body.classList.toggle("nav-collapsed", v === "slides" && !!key);
+    }
   });
   syncViewBtn();
 
@@ -119,8 +128,11 @@
     document.querySelectorAll(".live").forEach((el) => { if (el._cm) el._cm.setOption("theme", next === "light" ? "default" : "material-darker"); });
   });
 
-  /* ---------- Nav toggle (mobile) ---------- */
-  document.getElementById("navToggle").addEventListener("click", () => document.body.classList.toggle("nav-open"));
+  /* ---------- Nav toggle: slide-in on mobile, collapse on desktop ---------- */
+  document.getElementById("navToggle").addEventListener("click", () => {
+    if (window.matchMedia("(max-width: 820px)").matches) document.body.classList.toggle("nav-open");
+    else document.body.classList.toggle("nav-collapsed");
+  });
 
   /* ---------- Search ---------- */
   const box = document.getElementById("searchBox");

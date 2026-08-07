@@ -13,25 +13,53 @@ App.registerTopic({
       slides: "08:4–11",
       keywords: "file open read write close with mode os module append",
       learn: [
-        { type: "text", html: "<span class='term'>File handling</span> lets a program save data that outlives a single run (remember: RAM forgets, disk remembers). You <code>open()</code> a file in a <b>mode</b>, work with it, and close it." },
-        { type: "list", title: "File modes", items: [
-          "<code>'r'</code> read (default) — errors if missing.",
-          "<code>'w'</code> write — creates or <b>truncates</b> (wipes) the file.",
-          "<code>'a'</code> append — adds to the end.",
-          "<code>'x'</code> create — errors if it already exists.",
-          "Add <code>'b'</code> for binary (images etc.); <code>'t'</code> text is the default.",
+        { type: "text", html: "<span class='term'>File handling</span> saves data that outlives one run.<br>RAM forgets, disk remembers.<br>You <code>open()</code> a file in a <b>mode</b>, use it, then close it." },
+
+        { type: "subhead", text: "The life of a file" },
+        { type: "widget", name: "fileFlow", config: {
+          filename: "notes.txt",
+          title: "Open, write, close, then reopen to read",
+          code: [
+            "with open('notes.txt', 'w') as f:",
+            "    f.write('first line')",
+            "    f.writelines(['second', 'third'])",
+            "",
+            "with open('notes.txt', 'r') as f:",
+            "    text = f.read()",
+            "    print(text)",
+          ],
+          steps: [
+            { line: 0, mode: "w", status: "open", content: [], exists: true, note: "<code>open('notes.txt', 'w')</code> creates the file and opens it. Mode <code>'w'</code> starts empty." },
+            { line: 1, mode: "w", status: "open", content: ["first line"], flow: "write", note: "<code>f.write</code> adds one line." },
+            { line: 2, mode: "w", status: "open", content: ["first line", "second", "third"], flow: "write", note: "<code>f.writelines</code> adds several lines." },
+            { line: 3, status: "closed", content: ["first line", "second", "third"], note: "The <b>with</b> block ends. The file closes on its own." },
+            { line: 4, mode: "r", status: "open", content: ["first line", "second", "third"], note: "Reopen the same file in read mode <code>'r'</code>." },
+            { line: 5, mode: "r", status: "open", content: ["first line", "second", "third"], flow: "read", note: "<code>f.read()</code> pulls the whole file into <code>text</code>." },
+            { line: 6, mode: "r", status: "open", content: ["first line", "second", "third"], flow: "read", out: "first line\nsecond\nthird", note: "<code>print(text)</code> shows what we read." },
+            { line: 6, status: "closed", content: ["first line", "second", "third"], out: "first line\nsecond\nthird", note: "The block ends. The file closes again." },
+          ],
+        } },
+
+        { type: "deflist", title: "File modes", items: [
+          { t: "<code>'r'</code> read", d: "Default. Errors if the file is missing." },
+          { t: "<code>'w'</code> write", d: "Creates the file, or wipes it if it exists." },
+          { t: "<code>'a'</code> append", d: "Adds to the end. Keeps what is there." },
+          { t: "<code>'x'</code> create", d: "Errors if the file already exists." },
+          { t: "<code>'b'</code> / <code>'t'</code>", d: "Binary or text. Text is the default." },
         ] },
         { type: "example", caption: "the with statement closes the file for you", code:
 "with open('example.txt', 'w') as file:\n    file.write('Hello, World!\\n')\n    file.writelines(['Line 1\\n', 'Line 2\\n'])\n\nwith open('example.txt', 'r') as file:\n    print(file.read())",
           annot: [
-            { c: "with open(...) as file", e: "Auto-closes the file even if an error happens — always prefer this." },
+            { c: "with open(...) as file", e: "Auto-closes the file even if an error happens." },
             { c: "'w'", e: "Write mode wipes any existing content first." },
-            { c: ".read()", e: "Reads the whole file as one string. (Also: readline, readlines.)" },
+            { c: ".read()", e: "Reads the whole file as one string." },
           ] },
-        { type: "note", title: "The os module", html: "<code>import os</code> gives <code>os.getcwd()</code>, <code>os.listdir(path)</code>, <code>os.mkdir(path)</code>, <code>os.remove(path)</code> for working with files and folders." },
+        { type: "note", title: "The os module", html: "<code>import os</code> gives file and folder tools:<br><code>os.getcwd()</code>, <code>os.listdir(path)</code>, <code>os.mkdir(path)</code>, <code>os.remove(path)</code>." },
       ],
       live: [
-        { title: "Write then read a file (virtual FS — really runs)", code: "with open('notes.txt', 'w') as f:\n    f.write('first line\\n')\n    f.writelines(['second\\n', 'third\\n'])\n\nwith open('notes.txt', 'r') as f:\n    print(f.read())\n\nimport os\nprint('files here:', [x for x in os.listdir('.') if x.endswith('.txt')])" },
+        { title: "Easy: write one line, read it back", code: "with open('hi.txt', 'w') as f:\n    f.write('Hello, file!\\n')\n\nwith open('hi.txt', 'r') as f:\n    print(f.read())" },
+        { title: "Medium: write many lines, then list .txt files", code: "with open('notes.txt', 'w') as f:\n    f.write('first line\\n')\n    f.writelines(['second\\n', 'third\\n'])\n\nwith open('notes.txt', 'r') as f:\n    print(f.read())\n\nimport os\nprint('files here:', [x for x in os.listdir('.') if x.endswith('.txt')])" },
+        { title: "Harder: append keeps old content ('a' vs 'w')", code: "with open('log.txt', 'w') as f:\n    f.write('line 1\\n')\n\nwith open('log.txt', 'a') as f:\n    f.write('line 2\\n')\n\nwith open('log.txt', 'r') as f:\n    print(f.read())" },
       ],
       quiz: [
         { q: "Opening a file in 'w' mode when it exists…", choices: ["Appends to it", "Truncates (wipes) it", "Raises an error", "Reads it"], answer: 1, explain: "'w' truncates the file. Use 'a' to append instead." },
@@ -67,22 +95,31 @@ App.registerTopic({
       slides: "08:16–24",
       keywords: "numpy array ndarray shape dtype slicing elementwise sum mean ufunc",
       learn: [
-        { type: "text", html: "<span class='term'>NumPy</span> provides the <code>ndarray</code>: a grid of numbers, all the same type, that supports fast <b>element-wise</b> maths. Convention: <code>import numpy as np</code>." },
+        { type: "text", html: "<span class='term'>NumPy</span> gives the <code>ndarray</code>: a grid of numbers, all one type.<br>It runs fast <b>element-wise</b> maths.<br>Convention: <code>import numpy as np</code>." },
+
+        { type: "subhead", text: "Element-wise, all at once" },
+        { type: "widget", name: "arrayOp", config: { title: "a + b  (matching positions add)", a: [1, 2, 3], b: [4, 5, 6], op: "+" } },
+        { type: "widget", name: "arrayOp", config: { title: "a * 2  (broadcasting: the scalar spreads to every element)", a: [1, 2, 3], b: 2, op: "*" } },
+
         { type: "example", caption: "element-wise operations", code:
 "import numpy as np\na = np.array([1, 2, 3])\nb = np.array([4, 5, 6])\nprint(a + b)   # [5 7 9]\nprint(a * b)   # [ 4 10 18]\nprint(np.sum(a), np.mean(a))   # 6 2.0",
           annot: [
-            { c: "a + b", e: "Adds matching elements — no loop needed." },
+            { c: "a + b", e: "Adds matching elements. No loop needed." },
             { c: "np.sum(a)", e: "Aggregations like sum/mean/max run in fast C code." },
           ] },
-        { type: "list", title: "Array attributes", items: [
-          "<code>a.ndim</code> dimensions, <code>a.shape</code> size per axis, <code>a.size</code> total, <code>a.dtype</code> element type.",
-          "Index multi-D with commas: <code>a[1, 2]</code>. Slice like lists: <code>a[1:4]</code>.",
+        { type: "deflist", title: "Array attributes", items: [
+          { t: "<code>a.ndim</code>", d: "Number of dimensions." },
+          { t: "<code>a.shape</code>", d: "Size along each axis." },
+          { t: "<code>a.size</code>", d: "Total number of elements." },
+          { t: "<code>a.dtype</code>", d: "Element type." },
+          { t: "Index / slice", d: "<code>a[1, 2]</code> for multi-D, <code>a[1:4]</code> like lists." },
         ] },
-        { type: "deepdive", title: "Why NumPy is fast (C arrays under Python)", html: "<p>A Python <code>list</code> stores <i>pointers</i> to scattered objects; looping over it in pure Python is slow. A NumPy array stores raw numbers <b>packed contiguously</b> — exactly like a C array — so the CPU can stream them through cache and the math runs in compiled C. This is the convenience-vs-speed trade-off from Topic 00 resolved: write Python, get C speed for bulk numbers.</p>" },
+        { type: "deepdive", title: "Why NumPy is fast (C arrays under Python)", html: "<p>A Python <code>list</code> stores pointers to scattered objects. Looping it in pure Python is slow.</p><p>A NumPy array packs raw numbers <b>contiguously</b>, like a C array.</p><p>The CPU streams them through cache and the math runs in compiled C. Write Python, get C speed for bulk numbers.</p>" },
       ],
       live: [
-        { title: "Array maths", code: "import numpy as np\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(\"shape:\", a.shape)\nprint(\"a[1,2]:\", a[1, 2])\nprint(\"row sums:\", a.sum(axis=1))\nprint(\"max:\", a.max())" },
-        { title: "Identity-ish array (practice idea)", code: "import numpy as np\nm = np.zeros((4, 4))\nfor i in range(4):\n    m[i, i] = 1\nprint(m)" },
+        { title: "Easy: element-wise add and multiply", code: "import numpy as np\na = np.array([1, 2, 3])\nb = np.array([4, 5, 6])\nprint(a + b)\nprint(a * 2)" },
+        { title: "Medium: 2-D array, shape, row sums", code: "import numpy as np\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(\"shape:\", a.shape)\nprint(\"a[1,2]:\", a[1, 2])\nprint(\"row sums:\", a.sum(axis=1))\nprint(\"max:\", a.max())" },
+        { title: "Harder: build a 4x4 identity with a loop", code: "import numpy as np\nm = np.zeros((4, 4))\nfor i in range(4):\n    m[i, i] = 1\nprint(m)" },
       ],
       quiz: [
         { q: "`np.array([1,2,3]) * np.array([4,5,6])` gives…", choices: ["[5 7 9]", "[4 10 18]", "32", "Error"], answer: 1, explain: "Multiplication is element-wise: 1·4, 2·5, 3·6." },

@@ -812,3 +812,155 @@ App.widgets.flowExec = function (cfg) {
   const grid = h("div", { class: "flow-wrap" }, h("div", { class: "flow" }, svg), h("div", null, stepper));
   return widgetShell(cfg.title || "Run the flowchart step by step", grid);
 };
+
+/* ============================================================
+   tryFlow — animate try / except / finally control flow.
+   Pick an input; step through and watch control jump to the
+   matching except, then always land in finally.
+   config: {
+     title,
+     blocks:   [{ id, label, code }],   // stacked boxes, top to bottom
+     scenarios:[{ label, steps:[{ active, note, out, badge, badgeOn, raised }] }]
+   }
+   ============================================================ */
+App.widgets.tryFlow = function (cfg) {
+  let sc = 0, i = 0;
+  const boxes = {};
+  const boxWrap = h("div", { class: "tryflow" });
+  cfg.blocks.forEach((b) => {
+    const badge = h("span", { class: "tf-badge" });
+    const box = h("div", { class: "tf-box tf-" + b.id.split(":")[0] },
+      h("div", { class: "tf-head" }, h("span", null, b.label), badge),
+      h("pre", { class: "tf-code", html: App.highlight(b.code) }));
+    boxes[b.id] = { box, badge };
+    boxWrap.appendChild(box);
+  });
+
+  const note = h("div", { class: "tf-note" });
+  const out = h("div", { class: "step-out" });
+  const counter = h("span", { class: "mono", style: "color:var(--text-dim)" });
+  const prev = h("button", { class: "w-btn" }, "‹ Prev");
+  const next = h("button", { class: "w-btn on" }, "Next ›");
+  const reset = h("button", { class: "w-btn" }, "⟲");
+
+  const scRow = h("div", { class: "w-row", style: "margin-bottom:12px" });
+  cfg.scenarios.forEach((s, idx) => {
+    const btn = h("button", { class: "w-btn" + (idx === 0 ? " on" : "") }, s.label);
+    btn.addEventListener("click", () => {
+      sc = idx; i = 0;
+      scRow.querySelectorAll(".w-btn").forEach((x) => x.classList.remove("on"));
+      btn.classList.add("on"); draw();
+    });
+    scRow.appendChild(btn);
+  });
+
+  function draw() {
+    const steps = cfg.scenarios[sc].steps, st = steps[i];
+    Object.values(boxes).forEach((o) => { o.box.classList.remove("on", "raised"); o.badge.textContent = ""; o.badge.className = "tf-badge"; });
+    // Re-apply badges from every step up to now, so an error mark stays visible.
+    for (let k = 0; k <= i; k++) {
+      const s = steps[k];
+      if (!s.badge) continue;
+      const o = boxes[s.badgeOn || s.active]; if (!o) continue;
+      o.badge.textContent = s.badge; o.badge.classList.add("show");
+      if (s.raised) o.box.classList.add("raised");
+    }
+    const cur = boxes[st.active]; if (cur) cur.box.classList.add("on");
+    note.innerHTML = st.note || "";
+    out.textContent = st.out != null ? st.out : "";
+    counter.textContent = " step " + (i + 1) + " / " + steps.length;
+    prev.disabled = i === 0; next.disabled = i === steps.length - 1;
+  }
+  prev.addEventListener("click", () => { if (i > 0) { i--; draw(); } });
+  next.addEventListener("click", () => { if (i < cfg.scenarios[sc].steps.length - 1) { i++; draw(); } });
+  reset.addEventListener("click", () => { i = 0; draw(); });
+  draw();
+
+  return widgetShell(cfg.title || "try / except / finally flow",
+    h("div", null, scRow, boxWrap, note,
+      h("div", { class: "widget-title", style: "margin-top:10px" }, "Output"), out,
+      h("div", { class: "w-row", style: "margin-top:12px" }, prev, next, reset, counter)));
+};
+
+/* ============================================================
+   fileFlow — animate a file's life: open, write/read, close.
+   config: {
+     title, filename, code:[lines],
+     steps:[{ line, mode, status:'open'|'closed', content:[lines],
+              flow:'write'|'read', exists, note, out }]
+   }
+   ============================================================ */
+App.widgets.fileFlow = function (cfg) {
+  const code = cfg.code || [];
+  return App.widgets.stepper({
+    title: cfg.title || "Watch a file open, fill, and close",
+    steps: cfg.steps,
+    render: (s) => {
+      const codeBox = h("div", { class: "step-code" });
+      code.forEach((ln, idx) => {
+        const hl = idx === s.line;
+        codeBox.appendChild(h("span", { class: "ln" + (hl ? " hl" : "") },
+          h("span", { class: "marker" }, hl ? "▸ " : "  "),
+          h("span", { html: App.highlight(ln) || "&nbsp;" })));
+      });
+      const dotCls = s.status === "open" ? "open" : s.status === "closed" ? "closed" : "";
+      const body = (s.content && s.content.length)
+        ? h("div", null, ...s.content.map((l) => h("div", { class: "ff-line" }, l)))
+        : h("div", { class: "ff-empty" }, s.exists === false ? "(no file yet)" : "(empty)");
+      const fhead = h("div", { class: "ff-fhead" },
+        h("span", { class: "ff-dot " + dotCls }),
+        h("span", { class: "mono" }, cfg.filename || "file.txt"),
+        s.mode ? h("span", { class: "ff-mode" }, "'" + s.mode + "'") : null,
+        h("span", { class: "ff-status" }, s.status || ""));
+      const fileBox = h("div", { class: "ff-file" + (s.flow ? " flow-" + s.flow : "") }, fhead, h("div", { class: "ff-body" }, body));
+      const arrow = h("div", { class: "ff-arrow" }, s.flow === "write" ? "write →" : s.flow === "read" ? "← read" : "·");
+      const cols = h("div", { class: "ff-cols" },
+        h("div", { class: "ff-prog" }, h("div", { class: "widget-title" }, "Program"), codeBox),
+        arrow, fileBox);
+      const wrap = h("div", { class: "fileflow" }, cols, h("div", { class: "tf-note", html: s.note || "" }));
+      if (s.out != null) {
+        wrap.appendChild(h("div", { class: "widget-title", style: "margin-top:10px" }, "Output"));
+        wrap.appendChild(h("div", { class: "step-out" }, s.out));
+      }
+      return wrap;
+    },
+  });
+};
+
+/* ============================================================
+   arrayOp — animate a NumPy element-wise op (and broadcasting).
+   config: { title, a:[nums], b:[nums]|number, op:'+'|'-'|'*'|'/' }
+   ============================================================ */
+App.widgets.arrayOp = function (cfg) {
+  const a = cfg.a, opSym = cfg.op || "+", n = a.length;
+  const scalar = typeof cfg.b === "number";
+  const b = scalar ? a.map(() => cfg.b) : cfg.b;
+  const f = (x, y) => (opSym === "-" ? x - y : opSym === "*" ? x * y : opSym === "/" ? x / y : x + y);
+  const result = a.map((x, i) => f(x, b[i]));
+  const steps = []; for (let k = 0; k <= n; k++) steps.push({ k });
+  const row = (label, vals, k, faded) => {
+    const r = h("div", { class: "ao-row" }, h("span", { class: "ao-label" }, label));
+    vals.forEach((v, i) => r.appendChild(h("div", {
+      class: "ao-cell" + (i < k ? " done" : "") + (i === k ? " cur" : "") + (faded ? " faded" : "")
+    }, String(v))));
+    return r;
+  };
+  return App.widgets.stepper({
+    title: cfg.title || "Element-wise on the whole array at once",
+    steps,
+    render: (s) => {
+      const k = s.k;
+      const box = h("div", { class: "arrayop" },
+        row("a", a, k),
+        h("div", { class: "ao-op" }, opSym + (scalar ? "   " + cfg.b + "  (broadcast to every element)" : "")),
+        row(scalar ? String(cfg.b) : "b", b, k, scalar),
+        h("div", { class: "ao-eq" }, "="),
+        row("", a.map((_, i) => (i < k ? result[i] : "·")), k));
+      const note = k < n
+        ? ("Position " + k + ":  " + a[k] + " " + opSym + " " + b[k] + " = " + result[k])
+        : "Done. One line of code, every element computed together, no loop.";
+      box.appendChild(h("div", { class: "tf-note" }, note));
+      return box;
+    },
+  });
+};

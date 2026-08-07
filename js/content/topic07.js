@@ -59,25 +59,57 @@ App.registerTopic({
       slides: "07:12–20",
       keywords: "exception try except else finally error handling valueerror zerodivision filenotfound",
       learn: [
-        { type: "text", html: "An <span class='term'>exception</span> is a runtime event that disrupts normal flow (bad input, missing file, divide-by-zero). Instead of crashing, wrap risky code in <span class='kw'>try</span>/<span class='kw'>except</span> to handle it gracefully." },
-        { type: "example", caption: "catching specific errors", code:
-"try:\n    num = int(input(\"Enter a number: \"))\n    result = 10 / num\n    print(result)\nexcept ValueError:\n    print(\"That wasn't a valid number.\")\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero.\")",
+        { type: "text", html: "An <span class='term'>exception</span> is a runtime error that stops normal flow.<br>Causes: bad input, a missing file, divide by zero.<br>Wrap risky code in <span class='kw'>try</span> / <span class='kw'>except</span> so the error is handled instead of crashing." },
+
+        { type: "subhead", text: "How control flows" },
+        { type: "widget", name: "tryFlow", config: {
+          title: "Pick an input and step through the flow",
+          blocks: [
+            { id: "try", label: "try:", code: "num = int(input())\nresult = 10 / num\nprint(result)" },
+            { id: "except:val", label: "except ValueError:", code: "print(\"Not a valid number.\")" },
+            { id: "except:zero", label: "except ZeroDivisionError:", code: "print(\"Cannot divide by zero.\")" },
+            { id: "finally", label: "finally:", code: "print(\"Done.\")" },
+          ],
+          scenarios: [
+            { label: "num = 5", steps: [
+              { active: "try", note: "<code>int('5')</code> gives 5.", out: "" },
+              { active: "try", note: "<code>result = 10 / 5</code> gives 2.0.", out: "" },
+              { active: "try", note: "<code>print(result)</code>.", out: "2.0" },
+              { active: "finally", note: "No error was raised, so no <b>except</b> runs. <b>finally</b> still runs.", out: "2.0\nDone." },
+            ] },
+            { label: "num = 0", steps: [
+              { active: "try", note: "<code>int('0')</code> gives 0. Fine so far.", out: "" },
+              { active: "try", note: "<code>10 / 0</code> raises an error.", out: "", badge: "⚡ ZeroDivisionError", badgeOn: "try", raised: true },
+              { active: "except:zero", note: "<b>ValueError</b> is skipped. Control jumps to the matching <b>except</b>.", out: "Cannot divide by zero." },
+              { active: "finally", note: "<b>finally</b> runs no matter what.", out: "Cannot divide by zero.\nDone." },
+            ] },
+            { label: "num = 'abc'", steps: [
+              { active: "try", note: "<code>int('abc')</code> raises an error right away.", out: "", badge: "⚡ ValueError", badgeOn: "try", raised: true },
+              { active: "except:val", note: "The rest of <b>try</b> is skipped. <b>except ValueError</b> handles it.", out: "Not a valid number." },
+              { active: "finally", note: "<b>finally</b> always runs.", out: "Not a valid number.\nDone." },
+            ] },
+          ],
+        } },
+
+        { type: "example", caption: "catch specific errors", code:
+"try:\n    num = int(input(\"Enter a number: \"))\n    result = 10 / num\n    print(result)\nexcept ValueError:\n    print(\"Not a valid number.\")\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero.\")",
           annot: [
             { c: "try:", e: "Code that might fail goes here." },
-            { c: "except ValueError", e: "Runs only if int() got something non-numeric." },
-            { c: "except ZeroDivisionError", e: "Runs only if num was 0. Catch specific types when you can." },
+            { c: "except ValueError", e: "Runs if int() got something non-numeric." },
+            { c: "except ZeroDivisionError", e: "Runs if num was 0. Catch specific types when you can." },
           ] },
-        { type: "list", title: "The full shape", items: [
-          "<b>try</b> — the risky code.",
-          "<b>except</b> — handle a particular error type (or <code>except Exception as e</code> for any).",
-          "<b>else</b> — runs only if no exception occurred.",
-          "<b>finally</b> — always runs (cleanup), exception or not.",
+        { type: "deflist", title: "The full shape", items: [
+          { t: "<span class='kw'>try</span>", d: "The risky code." },
+          { t: "<span class='kw'>except</span>", d: "Handle one error type. <code>except Exception as e</code> catches any." },
+          { t: "<span class='kw'>else</span>", d: "Runs only if no exception occurred." },
+          { t: "<span class='kw'>finally</span>", d: "Always runs. Good for cleanup." },
         ] },
-        { type: "note", title: "raise & assert", html: "<code>raise ValueError(\"msg\")</code> triggers an exception on purpose (e.g. to reject invalid input). <code>assert condition, \"msg\"</code> checks something that should always be true while debugging." },
+        { type: "note", title: "raise & assert", html: "<code>raise ValueError(\"msg\")</code> triggers an exception on purpose.<br><code>assert condition, \"msg\"</code> checks something that must be true while debugging." },
       ],
       live: [
-        { title: "Safe division — try entering 0 or 'abc'", code: "try:\n    num = int(input(\"Enter a number: \"))\n    print(\"10 /\", num, \"=\", 10 / num)\nexcept ValueError:\n    print(\"Error: not a valid integer.\")\nexcept ZeroDivisionError:\n    print(\"Error: cannot divide by zero.\")\nfinally:\n    print(\"Done.\")" },
-        { title: "raise your own exception", code: "def check_age(age):\n    if age < 0:\n        raise ValueError(\"Age cannot be negative.\")\n    print(f\"Age is {age}.\")\n\ntry:\n    check_age(-5)\nexcept ValueError as e:\n    print(\"Caught:\", e)" },
+        { title: "Easy: catch a divide-by-zero", code: "try:\n    print(10 / 0)\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero.\")" },
+        { title: "Medium: many errors + finally (try 0 or 'abc')", code: "try:\n    num = int(input(\"Enter a number: \"))\n    print(\"10 /\", num, \"=\", 10 / num)\nexcept ValueError:\n    print(\"Error: not a valid integer.\")\nexcept ZeroDivisionError:\n    print(\"Error: cannot divide by zero.\")\nfinally:\n    print(\"Done.\")" },
+        { title: "Harder: raise your own, then else", code: "def check_age(age):\n    if age < 0:\n        raise ValueError(\"Age cannot be negative.\")\n    print(f\"Age is {age}.\")\n\ntry:\n    check_age(-5)\nexcept ValueError as e:\n    print(\"Caught:\", e)\nelse:\n    print(\"No error.\")" },
       ],
       quiz: [
         { q: "Which block always runs, error or not?", choices: ["try", "except", "else", "finally"], answer: 3, explain: "finally always runs — perfect for cleanup like closing files." },
