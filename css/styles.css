@@ -511,8 +511,10 @@ body.slide-mode .flow .flbl { font-size: 18px; }
 .ff-mode { font-family: ui-monospace, monospace; color: var(--accent); }
 .ff-status { margin-left: auto; color: var(--text-dim); text-transform: uppercase; font-size: 11px; letter-spacing: .05em; }
 .ff-body { padding: 10px 12px; font-family: ui-monospace, monospace; font-size: 13px; min-height: 62px; }
-.ff-line { padding: 1px 0; animation: flash .5s; }
+.ff-line { padding: 1px 4px; animation: flash .5s; border-radius: 4px; }
+.ff-line.cur { background: rgba(77,171,247,.2); }
 .ff-empty { color: var(--text-dim); }
+.csvtext { line-height: 1.7; }
 @media (max-width: 700px) { .ff-cols { grid-template-columns: 1fr; } .ff-arrow { transform: rotate(90deg); } }
 .slide .ff-fhead, .slide .ff-body, .slide .ff-arrow, .slide .ff-status, .slide .ff-mode { font-size: 24px; }
 .slide .ff-dot { width: 14px; height: 14px; }

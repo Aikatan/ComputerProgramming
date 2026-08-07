@@ -41,7 +41,10 @@ _Working dir: `python-compro-learn/` (git repo, branch `main`). Static no-build 
 - Every topic should have its OWN animation/visualization. Visual > text (except syntax).
 - Examples must vary easy → harder.
 - Progress: **t07 exceptions ✅ (tryFlow)**, **t08 file-handling ✅ (fileFlow)**, **t08 numpy ✅ (arrayOp)**, **t08 pandas ✅ (dfFilter — filter + sort)**.
-- NEXT: **t00** (light, only 2 widgets). Then **t08 csv-json** (no animation). Then review t01–t05, t09, t10 for a signature animation + graded examples each.
+- **t08 csv-json ✅ (csvFlow — table↔CSV text round-trip)**. t08 is now FULLY animated (all 5 lessons).
+- t00 SKIPPED (intro only, per user).
+- NEXT: review t01–t05, t09, t10 for a signature animation + graded examples each. Check which lessons already have a real animation vs just static diagrams/lists.
+- `csvFlow` widget (widgets.js): write phase builds comma-separated lines from a table; read phase splits lines back into rows. Built on stepper, reuses .dftbl + .ff-* styles.
 - `dfFilter` widget (widgets.js): pandas table filter (rows tested → keep ✓ / drop ✗) and sort (reorder + highlight sorted column). Scenario buttons. Verified: Age>28 keeps Bob/Char; sort desc → 35,30,25.
 
 ## Reusable animation widgets available (widgets.js)

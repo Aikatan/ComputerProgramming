@@ -1040,3 +1040,43 @@ App.widgets.dfFilter = function (cfg) {
   return widgetShell(cfg.title || "Filter and sort a DataFrame",
     h("div", null, scRow, table, note, h("div", { class: "w-row", style: "margin-top:12px" }, prev, next, reset, counter)));
 };
+
+/* ============================================================
+   csvFlow — animate CSV round-trip: a table becomes comma-
+   separated text (write), then text is split back into rows (read).
+   config: { title, columns:[names], rows:[[...]] }
+   ============================================================ */
+App.widgets.csvFlow = function (cfg) {
+  const columns = cfg.columns, rows = cfg.rows;
+  const header = columns.join(",");
+  const dataLines = rows.map((r) => r.join(","));
+  const allLines = [header].concat(dataLines);
+  const steps = [];
+  steps.push({ phase: "write", tableActive: "header", textLines: [header], textActive: 0, arrow: "write", note: "writerow(header): the column names become one comma-separated line." });
+  rows.forEach((r, i) => steps.push({ phase: "write", tableActive: i, textLines: [header].concat(dataLines.slice(0, i + 1)), textActive: i + 1, arrow: "write", note: "writerow(row " + i + "): its values join with commas." }));
+  allLines.forEach((ln, j) => steps.push({ phase: "read", textLines: allLines, textActive: j, arrow: "read", readRows: j, tableActive: j === 0 ? "header" : j - 1, note: j === 0 ? "reader reads the header line, split on commas." : "reader splits line " + j + " back into a list of values." }));
+
+  return App.widgets.stepper({
+    title: cfg.title || "CSV: a table becomes text, and back",
+    steps,
+    render: (s) => {
+      const tbl = h("table", { class: "dftbl" });
+      tbl.appendChild(h("tr", null, ...columns.map((c) => h("th", { class: s.tableActive === "header" ? "df-test" : "" }, c))));
+      const nRows = s.phase === "read" ? s.readRows : rows.length;
+      for (let i = 0; i < nRows; i++) {
+        const tr = h("tr", { class: s.tableActive === i ? "df-test" : "" });
+        columns.forEach((c, k) => tr.appendChild(h("td", null, String(rows[i][k]))));
+        tbl.appendChild(tr);
+      }
+      const txt = h("div", { class: "ff-body csvtext" });
+      s.textLines.forEach((ln, idx) => txt.appendChild(h("div", { class: "ff-line" + (idx === s.textActive ? " cur" : "") }, ln)));
+      const fileBox = h("div", { class: "ff-file flow-" + s.arrow },
+        h("div", { class: "ff-fhead" }, h("span", { class: "ff-dot open" }), h("span", { class: "mono" }, cfg.filename || "data.csv")), txt);
+      const arrow = h("div", { class: "ff-arrow" }, s.arrow === "write" ? "write →" : "← read");
+      const cols = h("div", { class: "ff-cols" },
+        h("div", null, h("div", { class: "widget-title" }, s.phase === "write" ? "Table in memory" : "Table rebuilt from text"), tbl),
+        arrow, fileBox);
+      return h("div", { class: "fileflow" }, cols, h("div", { class: "tf-note", html: s.note || "" }));
+    },
+  });
+};

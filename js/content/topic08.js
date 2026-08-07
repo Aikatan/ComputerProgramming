@@ -73,16 +73,27 @@ App.registerTopic({
       slides: "08:12–15",
       keywords: "csv json writer reader dump load serialize",
       learn: [
-        { type: "list", title: "Two modules", items: [
-          "<b>csv</b> — comma-separated tables: <code>csv.writer(f).writerow([...])</code> and <code>csv.reader(f)</code>.",
-          "<b>json</b> — structured data: <code>json.dump(data, f)</code> to write, <code>json.load(f)</code> to read. Works directly with dicts and lists.",
+        { type: "text", html: "Two file formats you meet everywhere:<br><b>CSV</b> is a table as comma-separated text.<br><b>JSON</b> is structured data (dicts and lists) as text." },
+
+        { type: "subhead", text: "CSV: a table becomes text, and back" },
+        { type: "widget", name: "csvFlow", config: {
+          filename: "data.csv",
+          columns: ["Name", "Age", "City"],
+          rows: [["Alice", 30, "New York"], ["Bob", 25, "SF"]],
+        } },
+
+        { type: "deflist", title: "Two modules", items: [
+          { t: "<b>csv</b>", d: "<code>csv.writer(f).writerow([...])</code> to write, <code>csv.reader(f)</code> to read rows." },
+          { t: "<b>json</b>", d: "<code>json.dump(data, f)</code> to write, <code>json.load(f)</code> to read. Works directly with dicts and lists." },
         ] },
         { type: "example", caption: "round-tripping JSON", code:
 "import json\ndata = {'name': 'Alice', 'age': 30}\nwith open('data.json', 'w') as f:\n    json.dump(data, f)\n\nwith open('data.json', 'r') as f:\n    print(json.load(f))",
           output: "{'name': 'Alice', 'age': 30}" },
       ],
       live: [
-        { title: "CSV write & read", code: "import csv\nwith open('data.csv', 'w', newline='') as f:\n    w = csv.writer(f)\n    w.writerow(['Name', 'Age', 'City'])\n    w.writerow(['Alice', 30, 'New York'])\n    w.writerow(['Bob', 25, 'San Francisco'])\n\nwith open('data.csv', 'r') as f:\n    for row in csv.reader(f):\n        print(row)" },
+        { title: "Easy: JSON round-trip (dict to file and back)", code: "import json\ndata = {'name': 'Alice', 'age': 30, 'skills': ['py', 'sql']}\nwith open('data.json', 'w') as f:\n    json.dump(data, f)\n\nwith open('data.json', 'r') as f:\n    print(json.load(f))" },
+        { title: "Medium: CSV write & read", code: "import csv\nwith open('data.csv', 'w', newline='') as f:\n    w = csv.writer(f)\n    w.writerow(['Name', 'Age', 'City'])\n    w.writerow(['Alice', 30, 'New York'])\n    w.writerow(['Bob', 25, 'San Francisco'])\n\nwith open('data.csv', 'r') as f:\n    for row in csv.reader(f):\n        print(row)" },
+        { title: "Harder: read CSV rows into dicts", code: "import csv\nwith open('data.csv', 'w', newline='') as f:\n    w = csv.writer(f)\n    w.writerow(['Name', 'Age'])\n    w.writerow(['Alice', 30])\n    w.writerow(['Bob', 25])\n\nwith open('data.csv', 'r') as f:\n    for row in csv.DictReader(f):\n        print(dict(row))" },
       ],
       quiz: [
         { q: "Which module serializes a Python dict to a file directly?", choices: ["csv", "json", "os", "math"], answer: 1, explain: "json.dump() writes dicts/lists; json.load() reads them back." },
