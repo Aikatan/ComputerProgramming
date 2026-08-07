@@ -1080,3 +1080,37 @@ App.widgets.csvFlow = function (cfg) {
     },
   });
 };
+
+/* ============================================================
+   bigOViz — animate how each complexity class grows as n rises.
+   config: { title, ns:[input sizes] }
+   ============================================================ */
+App.widgets.bigOViz = function (cfg) {
+  const ns = cfg.ns || [1, 2, 4, 8, 16, 32, 64];
+  const l2 = (n) => Math.max(1, Math.round(Math.log2(n)) || 0);
+  const classes = [
+    { key: "O(1)", f: () => 1, color: "var(--accent-2)" },
+    { key: "O(log n)", f: (n) => l2(n), color: "var(--accent)" },
+    { key: "O(n)", f: (n) => n, color: "#82aaff" },
+    { key: "O(n log n)", f: (n) => Math.max(n, n * l2(n)), color: "var(--warn)" },
+    { key: "O(n²)", f: (n) => n * n, color: "var(--danger)" },
+  ];
+  return App.widgets.stepper({
+    title: cfg.title || "How work grows as the input grows",
+    steps: ns.map((n) => ({ n })),
+    render: (s) => {
+      const n = s.n;
+      const vals = classes.map((c) => ({ key: c.key, color: c.color, v: c.f(n) }));
+      const max = Math.max.apply(null, vals.map((v) => v.v));
+      const box = h("div", { class: "bigo" }, h("div", { class: "bigo-n" }, "n = " + n));
+      vals.forEach((v) => {
+        box.appendChild(h("div", { class: "bigo-row" },
+          h("span", { class: "bigo-key" }, v.key),
+          h("div", { class: "bigo-track" }, h("div", { class: "bigo-bar", style: "width:" + Math.max(2, v.v / max * 100) + "%;background:" + v.color })),
+          h("span", { class: "bigo-val" }, v.v.toLocaleString())));
+      });
+      box.appendChild(h("div", { class: "tf-note" }, "At n = " + n + ": O(1) stays at 1 while O(n²) needs " + (n * n).toLocaleString() + " operations."));
+      return box;
+    },
+  });
+};

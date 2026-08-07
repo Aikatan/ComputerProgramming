@@ -40,7 +40,11 @@ App.registerTopic({
       sub: "The language of how fast cost grows.",
       keywords: "big o notation complexity constant logarithmic linear quadratic exponential growth",
       learn: [
-        { type: "text", html: "<span class='term'>Big-O</span> describes the <b>growth rate</b> of an algorithm's cost as input size n grows, ignoring constants and small terms. <code>O(2n + 5)</code> is just <code>O(n)</code> — what matters at scale is the <i>shape</i> of the curve." },
+        { type: "text", html: "<span class='term'>Big-O</span> describes the <b>growth rate</b> of an algorithm's cost as input size n grows.<br>It ignores constants and small terms: <code>O(2n + 5)</code> is just <code>O(n)</code>.<br>What matters at scale is the <i>shape</i> of the curve." },
+
+        { type: "subhead", text: "Watch the classes pull apart" },
+        { type: "widget", name: "bigOViz", config: { title: "Operations needed as n doubles", ns: [1, 2, 4, 8, 16, 32, 64] } },
+
         { type: "widget", name: "diagram", config: { title: "The common complexity classes, best to worst", boxes: [
           { title: "O(1) — constant", body: "Same cost regardless of n. e.g. <code>list[i]</code>, <code>dict[key]</code>. The dream." },
           { title: "O(log n) — logarithmic", body: "Cost grows very slowly; doubling n adds one step. e.g. binary search. Excellent." },
