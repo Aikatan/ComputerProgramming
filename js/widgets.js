@@ -1173,3 +1173,29 @@ App.widgets.heapViz = function (cfg) {
     },
   });
 };
+
+/* ============================================================
+   arrViz — animate a contiguous array/string: each cell's address
+   is base + i*size; step across it. NUL-terminator aware for strings.
+   config: { title, base, elemSize, cells:[{val, nul}] }
+   ============================================================ */
+App.widgets.arrViz = function (cfg) {
+  const base = cfg.base || 0, size = cfg.elemSize || 1, cells = cfg.cells;
+  const hex = (n) => "0x" + n.toString(16).toUpperCase();
+  return App.widgets.stepper({
+    title: cfg.title || "Contiguous memory, addressed by index",
+    steps: cells.map((c, i) => ({ i })),
+    render: (s) => {
+      const row = h("div", { class: "av-row" });
+      cells.forEach((c, i) => row.appendChild(h("div", { class: "av-cell" + (i === s.i ? " cur" : "") + (c.nul ? " nul" : "") },
+        h("div", { class: "av-val" }, c.val),
+        h("div", { class: "av-ix" }, "[" + i + "]"),
+        h("div", { class: "av-addr" }, hex(base + i * size)))));
+      const i = s.i, c = cells[i];
+      const note = c.nul
+        ? "Index " + i + ": the hidden <code>'\\0'</code> NUL terminator marks the end of the string."
+        : "Index " + i + ": address = base + " + i + "×" + size + " = " + hex(base + i * size) + ". One calculation, so <code>arr[" + i + "]</code> is O(1).";
+      return h("div", { class: "arrviz" }, row, h("div", { class: "tf-note", html: note }));
+    },
+  });
+};

@@ -186,18 +186,21 @@ App.registerTopic({
             { c: "int arr[4]", e: "Size is fixed at declaration — you can't grow it like a Python list." },
             { c: "*(p + 2)", e: "Adding to a pointer moves it by whole elements; identical to arr[2]." },
           ] },
-        { type: "widget", name: "memoryModel", config: { title: "int arr[4] = {10,20,30,40} — one contiguous block", columns: [
-          { head: "Address → element", cells: [
-            { addr: "0x2000", name: "arr[0]", val: "10" },
-            { addr: "0x2004", name: "arr[1]", val: "20" },
-            { addr: "0x2008", name: "arr[2]", val: "30" },
-            { addr: "0x200C", name: "arr[3]", val: "40", note: "Each int is 4 bytes, so addresses step by 4. arr[i] = base + i*4 — that's why indexing is O(1)." },
-          ] },
-        ] } },
+        { type: "subhead", text: "Step across the block" },
+        { type: "widget", name: "arrViz", config: {
+          title: "int arr[4] = {10, 20, 30, 40} — addresses step by 4 bytes",
+          base: 0x2000, elemSize: 4,
+          cells: [{ val: "10" }, { val: "20" }, { val: "30" }, { val: "40" }],
+        } },
         { type: "subhead", text: "Strings are arrays of char ending in '\\0'" },
         { type: "text", html: "C has no built-in string type. A string is an <b>array of <code>char</code></b> with a hidden <span class='term'>NUL terminator</span> (<code>'\\0'</code>, value 0) marking the end — that's how functions know where the text stops." },
         { type: "example", lang: "c", caption: "a C string", code:
 "char name[6] = \"Hello\";  // actually 6 chars: 'H' 'e' 'l' 'l' 'o' '\\0'\n// name[0] == 'H',  name[5] == '\\0'\n// string functions (strlen, strcpy...) live in <string.h>" },
+        { type: "widget", name: "arrViz", config: {
+          title: "char name[6] = \"Hello\" — 5 letters plus a hidden '\\0'",
+          base: 0x3000, elemSize: 1,
+          cells: [{ val: "H" }, { val: "e" }, { val: "l" }, { val: "l" }, { val: "o" }, { val: "\\0", nul: true }],
+        } },
         { type: "note", variant: "danger", title: "No bounds checking → buffer overflow", html: "C does not check that an index is valid. Writing <code>arr[10]</code> on a 4-element array overwrites whatever bytes follow — a crash, or a security exploit. Python lists raise <code>IndexError</code> instead; in C, staying in bounds is <i>your</i> job." },
         { type: "deepdive", title: "Why this layout makes C (and NumPy) fast", html: "<p>Contiguous memory is <b>cache-friendly</b>: the CPU loads nearby bytes together, so marching through an array is very fast. A Python list stores scattered object references instead, so iterating it chases pointers around the heap. This is exactly why NumPy (C-style contiguous arrays) crushes a Python loop for number-crunching — the hardware lesson from Topic 09.</p>" },
       ],
