@@ -1114,3 +1114,36 @@ App.widgets.bigOViz = function (cfg) {
     },
   });
 };
+
+/* ============================================================
+   ptrViz — animate a C pointer: p holds x's address (an arrow),
+   and *p follows the arrow to read or write x.
+   config: { title, code:[lines], target:{addr,name}, pointer:{addr,name},
+             steps:[{ line, xval, pval, arrow, deref:'read'|'write', note }] }
+   ============================================================ */
+App.widgets.ptrViz = function (cfg) {
+  const code = cfg.code || [], T = cfg.target, P = cfg.pointer;
+  return App.widgets.stepper({
+    title: cfg.title || "A pointer holds an address; * follows it",
+    steps: cfg.steps,
+    render: (s) => {
+      const codeBox = h("div", { class: "step-code" });
+      code.forEach((ln, idx) => codeBox.appendChild(h("span", { class: "ln" + (idx === s.line ? " hl" : "") },
+        h("span", { class: "marker" }, idx === s.line ? "▸ " : "  "),
+        h("span", { html: App.highlight(ln) || "&nbsp;" }))));
+      const pcell = h("div", { class: "pv-cell pv-ptr" + (s.deref ? " deref" : "") },
+        h("div", { class: "pv-name" }, P.name), h("div", { class: "pv-addr" }, P.addr),
+        h("div", { class: "pv-val" }, s.pval != null ? s.pval : "?"));
+      const xcell = h("div", { class: "pv-cell" + (s.deref ? " hit" : "") },
+        h("div", { class: "pv-name" }, T.name), h("div", { class: "pv-addr" }, T.addr),
+        h("div", { class: "pv-val" + (s.deref === "write" ? " flash" : "") }, String(s.xval)));
+      const arrow = h("div", { class: "pv-arrow" + (s.arrow ? " on" : "") + (s.deref ? " deref" : "") }, s.arrow ? "─▶" : "");
+      const diagram = h("div", { class: "pv-diagram" }, pcell, arrow, xcell);
+      return h("div", { class: "fileflow" },
+        h("div", { class: "steprun-grid" },
+          h("div", null, h("div", { class: "widget-title" }, "Code"), codeBox),
+          h("div", null, h("div", { class: "widget-title" }, "Memory"), diagram)),
+        h("div", { class: "tf-note", html: s.note || "" }));
+    },
+  });
+};

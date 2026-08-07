@@ -140,12 +140,24 @@ App.registerTopic({
             { c: "int *p = &x;", e: "The <code>*</code> in a declaration means 'p is a pointer to int'. <code>&x</code> is x's address." },
             { c: "*p = 99;", e: "Dereference and assign — reaches all the way back to x." },
           ] },
-        { type: "widget", name: "memoryModel", config: { title: "x and a pointer to it, in memory", columns: [
-          { head: "Address → contents", cells: [
-            { addr: "0x1000", name: "x (int)", val: "99" },
-            { addr: "0x1004", name: "p (int*)", val: "0x1000", kind: "ptr", note: "p does not hold 99 — it holds the ADDRESS where 99 lives. Following p (*p) reaches x." },
-          ] },
-        ] } },
+        { type: "subhead", text: "Watch the pointer follow the arrow" },
+        { type: "widget", name: "ptrViz", config: {
+          title: "p holds x's address; *p follows the arrow to x",
+          target: { addr: "0x1000", name: "x (int)" },
+          pointer: { addr: "0x1004", name: "p (int*)" },
+          code: [
+            "int  x = 42;",
+            "int *p = &x;",
+            "int  value = *p;",
+            "*p = 99;",
+          ],
+          steps: [
+            { line: 0, xval: 42, pval: null, arrow: false, note: "<code>x = 42</code> lives at address 0x1000." },
+            { line: 1, xval: 42, pval: "0x1000", arrow: true, note: "<code>p = &x</code>: p holds x's address. The arrow <b>is</b> the pointer." },
+            { line: 2, xval: 42, pval: "0x1000", arrow: true, deref: "read", note: "<code>*p</code> follows the arrow and reads 42." },
+            { line: 3, xval: 99, pval: "0x1000", arrow: true, deref: "write", note: "<code>*p = 99</code> writes through the arrow. x is now 99." },
+          ],
+        } },
         { type: "subhead", text: "The killer use: let a function change your variable" },
         { type: "text", html: "Because C passes copies, a function can only modify your variable if you hand it the <b>address</b>. This is how C does 'pass by reference'." },
         { type: "example", lang: "c", caption: "modifying the caller's variable via a pointer", code:

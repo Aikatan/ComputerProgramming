@@ -48,7 +48,11 @@ _Working dir: `python-compro-learn/` (git repo, branch `main`). Static no-build 
   - t01: cpuCycle (anim) + static diagrams. t02: binaryConverter/stringIndex/stringSlice (anim) + memoryModel. t03: loopViz (anim) + truthTable. t04: flowchart/flowExec (anim). t05: funcCall/funcNested/funcScope/funcArgs (anim). All have real animation.
   - t09: searching + sorting already have `steprun`; big-o now has bigOViz. Remaining static-only lessons: what-is-algorithm, data-structures, efficient-python (lower priority; conceptual).
   - t10 (Programming in C): why-c, types, control-flow, functions, arrays-strings use static diagram; pointers/arrays/memory use memoryModel (static illustration). NO stepped animation. Biggest remaining gap = t10 could use a pointer/memory animation (stack frames, pointer dereference) and control-flow could reuse flowExec/steprun.
-- NEXT candidates: t10 pointer/stack animation; optionally a visual searchViz for t09 searching (currently steprun only); t09 sorting could get a visual bubble-sort swap animation.
+- **t10 pointers ✅ (ptrViz — p holds x's address, *p follows the arrow to read/write)**. Replaced the static memoryModel in the pointers lesson.
+- NEXT candidates (all optional polish now — every topic has an animation): t10 memory lesson (stack/heap malloc/free animation), t10 arrays-strings (contiguous cells + NUL terminator), a visual searchViz / bubble-sort swap animation for t09 (they have steprun already).
+
+## Every topic now has at least one real animation. Widgets added this session:
+tryFlow, fileFlow, arrayOp, dfFilter, csvFlow, bigOViz, ptrViz (7 total). All built on `stepper`, all verified in-browser, slide sizes honor the 24px floor.
 - `csvFlow` widget (widgets.js): write phase builds comma-separated lines from a table; read phase splits lines back into rows. Built on stepper, reuses .dftbl + .ff-* styles.
 - `dfFilter` widget (widgets.js): pandas table filter (rows tested → keep ✓ / drop ✗) and sort (reorder + highlight sorted column). Scenario buttons. Verified: Age>28 keeps Bob/Char; sort desc → 35,30,25.
 
