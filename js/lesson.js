@@ -1,5 +1,5 @@
 /* ============================================================
-   lesson.js — render a lesson into the two-section layout
+   lesson.js - render a lesson into the two-section layout
    lesson = { id, title, sub, slides,
               learn:[blocks], live:[{code,title}], quiz:[{q,choices,answer,explain}] }
    ============================================================ */
@@ -74,7 +74,7 @@
   function staticExample(b) {
     const head = h("div", { class: "codeblock-head" },
       h("span", { class: "lang" }, b.lang || "python"),
-      b.caption ? h("span", null, "— " + b.caption) : null);
+      b.caption ? h("span", null, " · " + b.caption) : null);
     // Python highlighter only fits Python; show other languages as plain escaped text
     const isPy = !b.lang || b.lang === "python";
     const pre = h("pre", { html: isPy ? App.highlight(b.code) : App.esc(b.code) });

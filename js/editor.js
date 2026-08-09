@@ -1,5 +1,5 @@
 /* ============================================================
-   editor.js — runnable code block (CodeMirror + Pyodide).
+   editor.js - runnable code block (CodeMirror + Pyodide).
    Every editor has BOTH "Run" (output) and "Step Run" (line-by-line).
    ============================================================ */
 App.makeLive = function (code, opts) {
@@ -126,7 +126,7 @@ App.makeLive = function (code, opts) {
 };
 
 /* ============================================================
-   makePractice — a "write code to…" question with Run + Check
+   makePractice - a "write code to…" question with Run + Check
    cfg: { prompt(html), starter, expected, inputs?, hint? }
    ============================================================ */
 App.makePractice = function (cfg) {
@@ -203,5 +203,5 @@ App.makePractice = function (cfg) {
   return wrap;
 };
 
-/* makeStepRun — the unified editor already has a Step Run button. */
+/* makeStepRun - the unified editor already has a Step Run button. */
 App.makeStepRun = App.makeLive;

@@ -1,5 +1,5 @@
 /* ============================================================
-   app.js — boot, router, sidebar, home, theme, search
+   app.js - boot, router, sidebar, home, theme, search
    ============================================================ */
 (function () {
   const h = App.h;
@@ -36,7 +36,7 @@
     view.innerHTML = "";
     const hero = h("div", { class: "home-hero" },
       h("h1", null, "Computer Programming with Python"),
-      h("p", null, "An interactive companion to the 010711301 course. Every lesson pairs a visual, animated explanation with a real Python playground that runs in your browser — no install needed."),
+      h("p", null, "An interactive companion to the 010711301 course. Every lesson pairs a visual, animated explanation with a real Python playground that runs in your browser - no install needed."),
       h("p", { style: "color:var(--text-dim);font-size:13.5px" }, "Pick a topic to begin. Your progress is saved on this device."));
     view.appendChild(hero);
     const grid = h("div", { class: "topic-grid" });

@@ -1,5 +1,5 @@
 /* ============================================================
-   present.js — Slide / lecture mode. Auto-segments a lesson into
+   present.js - Slide / lecture mode. Auto-segments a lesson into
    one-idea-per-slide and shows a navigable deck (arrows / click).
    ============================================================ */
 (function () {
@@ -85,8 +85,10 @@
     }
     function goPrev() {
       if (i > 0) { i--; draw(); return; }
+      // Cross-topic back-nav lands on the PREVIOUS lesson's LAST slide (finish the
+      // thought), not slide 1. renderDeck clamps a large index down to the last slide.
       const flat = App.flatLessons(), idx = flat.findIndex((f) => f.key === key);
-      if (idx > 0) location.hash = "#/l/" + flat[idx - 1].key + "/0";
+      if (idx > 0) location.hash = "#/l/" + flat[idx - 1].key + "/9999";
     }
     prev.addEventListener("click", goPrev);
     next.addEventListener("click", goNext);
@@ -99,7 +101,7 @@
   };
 
   function openOutline(slides, cur, jump) {
-    const panel = h("div", { class: "panel" }, h("div", { class: "widget-title", style: "padding:4px 10px" }, "Slides — click to jump"));
+    const panel = h("div", { class: "panel" }, h("div", { class: "widget-title", style: "padding:4px 10px" }, "Slides - click to jump"));
     slides.forEach((s, n) => {
       const label = (s.cover ? s.title : (s.title ? s.title : s.kicker));
       const it = h("div", { class: "oitem" + (n === cur ? " cur" : "") },

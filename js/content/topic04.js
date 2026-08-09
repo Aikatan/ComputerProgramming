@@ -1,9 +1,9 @@
-/* ===================== Topic 04 — Flowchart & Pseudocode ===================== */
+/* ===================== Topic 04 - Flowchart & Pseudocode ===================== */
 App.registerTopic({
   id: "t04",
   title: "Flowchart & Pseudocode",
   short: "Flowchart & Pseudocode",
-  blurb: "Plan programs visually with flowcharts and in plain language with pseudocode — then map them to Python.",
+  blurb: "Plan programs visually with flowcharts and in plain language with pseudocode - then map them to Python.",
   intro: "Before coding, designers sketch the logic. Flowcharts show it as a diagram; pseudocode writes it as plain steps. Both translate directly into the if/else and loops you already know.",
   lessons: [
     {
@@ -27,7 +27,7 @@ App.registerTopic({
         { title: "The simplest 'flowchart' as code", code: "# START -> x = 1 -> x = x + 2 -> DISPLAY x -> END\nx = 1\nx = x + 2\nprint(x)   # 3" },
       ],
       quiz: [
-        { q: "Which shape represents a yes/no decision?", choices: ["Rectangle", "Rounded terminator", "Diamond", "Parallelogram"], answer: 2, explain: "The diamond is the decision symbol — it branches into True/False paths." },
+        { q: "Which shape represents a yes/no decision?", choices: ["Rectangle", "Rounded terminator", "Diamond", "Parallelogram"], answer: 2, explain: "The diamond is the decision symbol - it branches into True/False paths." },
       ],
     },
     {
@@ -79,7 +79,7 @@ App.registerTopic({
           map: { input: [0, 2], dec: [1], disp: [3] },
         } },
         { type: "subhead", text: "▶ Run the flowchart step by step" },
-        { type: "text", html: "Hovering shows which code matches which shape — but a flowchart's real job is to show <i>execution order</i>. Press <b>Next</b> to follow the arrows for the input <code>x = 12</code> and watch the active shape light up, with the variable state at each step." },
+        { type: "text", html: "A flowchart shows <b>execution order</b>.<br>Follow the arrows for the input <code>x = 12</code>.<br>Each step marks the active shape and the variable state." },
         { type: "widget", name: "flowExec", config: {
           width: 320, height: 360,
           title: "Tracing if x > 10 with x = 12",
@@ -98,18 +98,18 @@ App.registerTopic({
             { from: "dec", to: "end", side: "right", label: "False" },
           ],
           trace: [
-            { node: "start", vars: {}, note: "START — the program begins." },
+            { node: "start", vars: {}, note: "START - the program begins." },
             { node: "input", vars: { x: 12 }, note: "Read input. The user enters 12, so x = 12." },
             { node: "dec", vars: { x: 12 }, note: "Decision: is x > 10? 12 > 10 is True, so follow the 'True' arrow." },
             { node: "disp", vars: { x: 12 }, note: "DISPLAY x → prints 12. (If x had been ≤ 10, we'd have skipped straight to END.)" },
-            { node: "end", vars: { x: 12 }, note: "END — finished. Output was: 12" },
+            { node: "end", vars: { x: 12 }, note: "END - finished. Output was: 12" },
           ],
         } },
         { type: "note", title: "Same result, two ways", html: "The slides note logical equivalences: <code>A &gt;= B</code> is the same as <code>not (A &lt; B)</code>, and <code>A == B</code> is <code>not (A != B)</code>. Useful when a flowchart phrases a condition the opposite way to your code." },
         { type: "note", variant: "danger", title: "Bad flowcharts to avoid", html: "An <b>unreachable condition</b> (checking <code>x &gt; 15</code> only after you already handled <code>x &gt; 10</code>) and an <b>infinite loop</b> (a counter that never advances) are classic logic bugs the slides warn about." },
       ],
       live: [
-        { title: "Multiple conditions — elif mirrors a nested decision", code: "x = 17\nif x > 15:\n    print(\"Hi-value\")\nelif x > 10:\n    print(x)\nelse:\n    print(\"low\")" },
+        { title: "Multiple conditions - elif mirrors a nested decision", code: "x = 17\nif x > 15:\n    print(\"Hi-value\")\nelif x > 10:\n    print(x)\nelse:\n    print(\"low\")" },
       ],
       quiz: [
         { q: "A diamond with a 'False' arrow looping back to an earlier step is…", choices: ["An if statement", "A while loop", "A function call", "Output"], answer: 1, explain: "Looping back on a condition is exactly what a while loop does." },
@@ -130,13 +130,22 @@ App.registerTopic({
         ] },
         { type: "example", lang: "text", caption: "even-or-odd in pseudocode", code:
 "Start\n  Get number\n  If number modulo 2 equals 0\n      Display \"Number is even\"\n  Else\n      Display \"Number is odd\"\nEnd" },
-        { type: "note", html: "Notice how each line drops almost unchanged into Python — that's the point of pseudocode." },
+        { type: "subhead", text: "Pseudocode → Python" },
+        { type: "text", html: "Each pseudocode line maps to one Python line.<br>Keywords translate directly." },
+        { type: "widget", name: "pseudoMap", config: { title: "Even or odd, line by line", rows: [
+          { pseudo: "Get number", code: "number = int(input())", note: "Read input, convert to int." },
+          { pseudo: "If number modulo 2 equals 0", code: "if number % 2 == 0:", note: "modulo → <code>%</code>, equals → <code>==</code>." },
+          { pseudo: "    Display \"even\"", code: "    print(\"even\")", note: "Indented block runs when the condition is True." },
+          { pseudo: "Else", code: "else:", note: "The otherwise branch." },
+          { pseudo: "    Display \"odd\"", code: "    print(\"odd\")", note: "Runs when the condition is False." },
+        ] } },
+        { type: "note", html: "Notice how each line drops almost unchanged into Python - that's the point of pseudocode." },
       ],
       live: [
         { title: "The pseudocode above, now in Python", code: "number = int(input(\"Enter a number: \"))\nif number % 2 == 0:\n    print(\"Number is even\")\nelse:\n    print(\"Number is odd\")" },
       ],
       quiz: [
-        { q: "Pseudocode is bound to one programming language's syntax.", choices: ["True", "False"], answer: 1, explain: "False — pseudocode is deliberately language-independent plain text." },
+        { q: "Pseudocode is bound to one programming language's syntax.", choices: ["True", "False"], answer: 1, explain: "False - pseudocode is deliberately language-independent plain text." },
       ],
     },
     {

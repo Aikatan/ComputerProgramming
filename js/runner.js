@@ -1,5 +1,5 @@
 /* ============================================================
-   runner.js — in-browser Python via Pyodide
+   runner.js - in-browser Python via Pyodide
    Lazy-loaded on first Run. Supports stdin (input), stdout,
    matplotlib (PNG capture) and pandas/numpy.
    ============================================================ */

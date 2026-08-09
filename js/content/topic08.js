@@ -1,10 +1,10 @@
-/* ===================== Topic 08 — Data Processing ===================== */
+/* ===================== Topic 08 - Data Processing ===================== */
 App.registerTopic({
   id: "t08",
   title: "Data Processing",
   short: "Files, NumPy & Pandas",
   blurb: "Read and write files, crunch numbers with NumPy, and analyse tables with pandas.",
-  intro: "The capstone: making data persist (files), compute fast (NumPy), and analyse cleanly (pandas). Every example runs live — files are created in an in-browser virtual filesystem.",
+  intro: "The capstone: making data persist (files), compute fast (NumPy), and analyse cleanly (pandas). Every example runs live - files are created in an in-browser virtual filesystem.",
   lessons: [
     {
       id: "file-handling",
@@ -177,7 +177,7 @@ App.registerTopic({
         { title: "Harder: average salary per department (groupby)", code: "import pandas as pd\nstaff = pd.DataFrame({\n    'name': ['A','B','C','D'],\n    'dept': ['IT','HR','IT','HR'],\n    'salary': [50000, 45000, 60000, 47000],\n})\nprint(staff.groupby('dept')['salary'].mean())" },
       ],
       quiz: [
-        { q: "A pandas DataFrame is most like a…", choices: ["single number", "table / spreadsheet", "text file", "for loop"], answer: 1, explain: "A DataFrame is a 2-D labelled table — rows and named columns." },
+        { q: "A pandas DataFrame is most like a…", choices: ["single number", "table / spreadsheet", "text file", "for loop"], answer: 1, explain: "A DataFrame is a 2-D labelled table - rows and named columns." },
         { q: "Which gives the average salary per department?", choices: ["df.mean()", "df.groupby('dept')['salary'].mean()", "df.sort_values('salary')", "df.head()"], answer: 1, explain: "groupby('dept') then .mean() on salary aggregates per group." },
       ],
     },

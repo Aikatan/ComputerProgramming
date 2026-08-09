@@ -1,5 +1,5 @@
 /* ============================================================
-   zz-steprun.js — adds line-by-line "Step Run" demos to many
+   zz-steprun.js - adds line-by-line "Step Run" demos to many
    lessons so students can watch variables update.
    Loaded AFTER all topicNN.js and BEFORE app.js.
    (Lessons that already have a Step Run are not listed here.)
@@ -11,7 +11,7 @@
       code: 'name = "ComPro"\nyear = 2025\ngreeting = "Welcome to " + name\nprint(greeting)\nprint("Year:", year)',
     },
     "t02.errors": {
-      intro: "A <i>logical error</i> runs without crashing but gives the wrong answer. Step through and watch <code>result</code> — the precedence bug computes <code>a + (b/2)</code>, not <code>(a+b)/2</code>.",
+      intro: "A <i>logical error</i> runs without crashing but gives the wrong answer. Step through and watch <code>result</code> - the precedence bug computes <code>a + (b/2)</code>, not <code>(a+b)/2</code>.",
       code: 'a = 10\nb = 20\nresult = a + b / 2     # bug: only b is divided\nprint("buggy:", result)\nresult = (a + b) / 2   # fixed with parentheses\nprint("fixed:", result)',
     },
     "t02.input-output": {
@@ -20,7 +20,7 @@
       inputs: ["Alice", "25"],
     },
     "t02.variables": {
-      intro: "See how one name can change value — and even type — as the program runs.",
+      intro: "See how one name can change value - and even type - as the program runs.",
       code: 'x = 5\ny = "!"\nx = x + 3\nx = str(x) + y\nprint(x)',
     },
     "t02.data-types": {
@@ -28,7 +28,7 @@
       code: 'samples = [42, 3.14, True, "hi"]\nfor s in samples:\n    t = type(s).__name__\n    print(s, "->", t)',
     },
     "t02.strings-numbers": {
-      intro: "Each slice result becomes its own variable — step through to see them appear one by one.",
+      intro: "Each slice result becomes its own variable - step through to see them appear one by one.",
       code: 'text = "Programming"\nfirst = text[0]\nlast = text[-1]\nmiddle = text[3:7]\nreverse = text[::-1]\nprint(first, last, middle, reverse)',
     },
     "t05.defining": {
@@ -44,15 +44,15 @@
       code: 'def total(*args):\n    s = 0\n    for n in args:\n        s = s + n\n    return s\n\nprint(total(1, 2, 3, 4))',
     },
     "t05.modules": {
-      intro: "Imported modules aren't shown as variables — watch your own <code>r</code> and <code>area</code> instead.",
+      intro: "Imported modules aren't shown as variables - watch your own <code>r</code> and <code>area</code> instead.",
       code: 'import math\nr = 5\narea = math.pi * r ** 2\nprint(round(area, 2))',
     },
     "t06.strings": {
-      intro: "Each string method returns a <b>new</b> string into its own variable — the original <code>s</code> never changes.",
+      intro: "Each string method returns a <b>new</b> string into its own variable - the original <code>s</code> never changes.",
       code: 's = "hello"\nup = s.upper()\nrep = s.replace("l", "L")\nn = len(s)\nprint(up, rep, n)',
     },
     "t06.lists": {
-      intro: "Lists are mutable — watch <code>nums</code> change in place on every line.",
+      intro: "Lists are mutable - watch <code>nums</code> change in place on every line.",
       code: 'nums = [1, 2]\nnums.append(3)\nnums.insert(1, 9)\nnums.remove(2)\nlast = nums.pop()\nprint("nums:", nums)\nprint("popped:", last)',
     },
     "t06.dictionaries": {
@@ -60,7 +60,7 @@
       code: 'text = "apple banana apple cherry banana apple"\ncount = {}\nfor word in text.split():\n    count[word] = count.get(word, 0) + 1\nprint(count)',
     },
     "t07.exceptions": {
-      intro: "Watch execution jump from <code>try</code> straight into <code>except</code> the moment <code>n</code> is 0 — then carry on with the next item.",
+      intro: "Watch execution jump from <code>try</code> straight into <code>except</code> the moment <code>n</code> is 0 - then carry on with the next item.",
       code: 'nums = [10, 0, 5]\nfor n in nums:\n    try:\n        r = 100 / n\n        print("ok:", r)\n    except ZeroDivisionError:\n        print("skip: cannot divide by zero")',
     },
     "t08.file-handling": {

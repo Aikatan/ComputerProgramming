@@ -1,10 +1,10 @@
-/* ===================== Topic 03 — Decisions & Boolean Logic ===================== */
+/* ===================== Topic 03 - Decisions & Boolean Logic ===================== */
 App.registerTopic({
   id: "t03",
   title: "Decisions & Boolean Logic",
   short: "Decisions & Loops",
   blurb: "Booleans, comparisons, if/elif/else, and loops with break/continue/pass/else.",
-  intro: "Programs make choices and repeat work. This topic gives you both: boolean logic to decide, and loops to repeat — with interactive truth tables and a step-by-step loop tracer.",
+  intro: "Programs make choices and repeat work. This topic gives you both: boolean logic to decide, and loops to repeat - with interactive truth tables and a step-by-step loop tracer.",
   lessons: [
     {
       id: "boolean",
@@ -13,12 +13,14 @@ App.registerTopic({
       slides: "03:4",
       keywords: "bool true false truthy falsy none empty",
       learn: [
-        { type: "text", html: "A <span class='term'>boolean</span> is either <span class='kw'>True</span> or <span class='kw'>False</span> — note the capital letters. Other values are <i>truthy</i> or <i>falsy</i> when used in a condition." },
+        { type: "text", html: "A <span class='term'>boolean</span> is either <span class='kw'>True</span> or <span class='kw'>False</span> - note the capital letters. Other values are <i>truthy</i> or <i>falsy</i> when used in a condition." },
         { type: "list", title: "The rules", items: [
           "<b>Falsy</b>: <code>0</code>, <code>0.0</code>, <code>\"\"</code> (empty string), <code>None</code>, empty collections.",
           "<b>Truthy</b>: any non-zero number, any non-empty string, etc.",
           "Booleans are numbers underneath: <code>int(True)</code> is 1, <code>int(False)</code> is 0.",
         ] },
+        { type: "example", caption: "truthy and falsy values", code:
+"# falsy\nbool(0)        # False\nbool(\"\")       # False\nbool(None)     # False\nbool([])       # False\n\n# truthy\nbool(42)       # True\nbool(\" \")      # True   (a space is not empty)\nbool([0])      # True   (non-empty list)" },
       ],
       live: [
         { title: "Test truthiness", code: "print(bool(0))      # False\nprint(bool(0.01))   # True\nprint(bool(\"\"))     # False\nprint(bool(\" \"))    # True (a space is non-empty!)\nprint(bool(None))   # False\nprint(int(True) + int(True))  # 2" },
@@ -53,7 +55,7 @@ App.registerTopic({
       slides: "03:8–10",
       keywords: "if elif else condition indentation branch nested",
       learn: [
-        { type: "text", html: "An <span class='kw'>if</span> statement runs its block only when the condition is <code>True</code>. Add <span class='kw'>elif</span> for more cases and <span class='kw'>else</span> for the fallback. <b>Indentation (4 spaces) defines the block</b> — Python has no curly braces." },
+        { type: "text", html: "An <span class='kw'>if</span> statement runs its block only when the condition is <code>True</code>. Add <span class='kw'>elif</span> for more cases and <span class='kw'>else</span> for the fallback. <b>Indentation (4 spaces) defines the block</b> - Python has no curly braces." },
         { type: "example", caption: "first matching branch wins", code:
 "age = 6\nif age > 20:\n    message = \"You are an ADULT!\"\nelif age > 10:\n    message = \"You are a TEENAGER!\"\nelse:\n    message = \"You are a CHILD!\"\nprint(message)   # You are a CHILD!",
           annot: [
@@ -62,12 +64,33 @@ App.registerTopic({
             { c: "else", e: "Nothing matched, so the else block runs." },
           ] },
         { type: "note", variant: "danger", title: "Indentation matters", html: "Inconsistent indentation raises <code>IndentationError</code>. Pick 4 spaces and stick with it." },
+        { type: "subhead", text: "Which branch runs" },
+        { type: "text", html: "Conditions are checked top to bottom.<br>The first True branch runs.<br>The rest are skipped." },
+        { type: "widget", name: "predict", config: {
+          question: "<code>age = 6</code>, with <code>if age &gt; 20</code> / <code>elif age &gt; 10</code> / <code>else</code>.<br>Which branch runs?",
+          options: [{ label: "else → CHILD", correct: true }, { label: "elif → TEENAGER" }, { label: "if → ADULT" }],
+          explain: "6 is not &gt; 20 and not &gt; 10, so the else branch runs.",
+        } },
+        { type: "widget", name: "branchViz", config: {
+          title: "First matching branch runs",
+          var: "age",
+          branches: [
+            { kw: "if", cond: "age > 20", label: "message = 'ADULT'" },
+            { kw: "elif", cond: "age > 10", label: "message = 'TEENAGER'" },
+            { kw: "else", else: true, label: "message = 'CHILD'" },
+          ],
+          scenarios: [
+            { value: 6, evals: [false, false] },
+            { value: 15, evals: [false, true] },
+            { value: 25, evals: [true] },
+          ],
+        } },
         { type: "subhead", text: "Step through it line by line" },
-        { type: "text", html: "Press <b>Step Run</b>, then <b>Next</b> (or <b>Play</b>) to execute one line at a time and watch <i>which branch is taken</i>. Change <code>age</code> and step again to see a different path light up." },
-        { type: "steprun", title: "if / elif / else — watch the branch that runs", code: "age = 6\nif age > 20:\n    message = \"ADULT\"\nelif age > 10:\n    message = \"TEENAGER\"\nelse:\n    message = \"CHILD\"\nprint(message)" },
+        { type: "text", html: "Real execution, one line at a time.<br>Only the first matching branch runs.<br>Change <code>age</code> to reach a different branch." },
+        { type: "steprun", title: "if / elif / else - watch the branch that runs", code: "age = 6\nif age > 20:\n    message = \"ADULT\"\nelif age > 10:\n    message = \"TEENAGER\"\nelse:\n    message = \"CHILD\"\nprint(message)" },
       ],
       live: [
-        { title: "Grade classifier — change the score", code: "score = 73\nif score >= 80:\n    grade = \"A\"\nelif score >= 70:\n    grade = \"B\"\nelif score >= 60:\n    grade = \"C\"\nelif score >= 50:\n    grade = \"D\"\nelse:\n    grade = \"F\"\nprint(\"Score\", score, \"=> grade\", grade)" },
+        { title: "Grade classifier - change the score", code: "score = 73\nif score >= 80:\n    grade = \"A\"\nelif score >= 70:\n    grade = \"B\"\nelif score >= 60:\n    grade = \"C\"\nelif score >= 50:\n    grade = \"D\"\nelse:\n    grade = \"F\"\nprint(\"Score\", score, \"=> grade\", grade)" },
       ],
       quiz: [
         { q: "In if/elif/else, how many blocks run for one pass?", choices: ["All of them", "At most one", "Exactly two", "None"], answer: 1, explain: "Only the first matching branch runs; the rest are skipped." },
@@ -77,14 +100,14 @@ App.registerTopic({
     {
       id: "loops",
       title: "while & for loops",
-      sub: "Repeat work — with a live step-by-step tracer.",
+      sub: "Repeat work - with a live step-by-step tracer.",
       slides: "03:12–14",
       keywords: "while for loop range iterate nested counter",
       learn: [
         { type: "text", html: "A <span class='kw'>while</span> loop repeats <i>as long as</i> a condition is true. A <span class='kw'>for</span> loop iterates over a sequence (a string, list, or <code>range</code>)." },
         { type: "subhead", text: "Step through a while loop" },
         { type: "widget", name: "loopViz", config: {
-          title: "while value < 5 — press Next to advance",
+          title: "while value < 5 - press Next to advance",
           code: ["value = 0", "while value < 5:", "    print(value)", "    value = value + 1"],
           trace: [
             { line: 0, vars: { value: 0 }, log: "" },
@@ -97,7 +120,7 @@ App.registerTopic({
             { line: 1, vars: { value: 2 }, log: "0\n1" },
             { line: 2, vars: { value: 2 }, log: "0\n1\n2" },
             { line: 3, vars: { value: 5 }, log: "0\n1\n2\n3\n4" },
-            { line: 1, vars: { value: 5 }, log: "0\n1\n2\n3\n4  (5 < 5 is False — loop ends)" },
+            { line: 1, vars: { value: 5 }, log: "0\n1\n2\n3\n4  (5 < 5 is False - loop ends)" },
           ],
         } },
         { type: "example", caption: "for with range(start, stop, step)", code:
@@ -117,19 +140,19 @@ App.registerTopic({
             { line: 2, vars: { total: 3, i: 2 }, log: "" },
             { line: 1, vars: { total: 3, i: 3 }, log: "" },
             { line: 2, vars: { total: 6, i: 3 }, log: "" },
-            { line: 1, vars: { total: 6, i: "—" }, log: "(range exhausted — loop ends)" },
+            { line: 1, vars: { total: 6, i: "-" }, log: "(range exhausted - loop ends)" },
             { line: 3, vars: { total: 6 }, log: "6" },
           ],
         } },
         { type: "subhead", text: "Step through it line by line" },
-        { type: "text", html: "The tracer above is hand-drawn. This one runs your <b>real</b> code: press <b>Step Run</b>, then <b>Next</b> (or <b>Play</b>) to execute one line at a time. The current line is marked <code>▸</code>, and you see every variable update and the output as it happens. Edit the loop and step through your own version." },
-        { type: "steprun", title: "for loop — step through real execution", code: "total = 0\nfor i in range(1, 4):\n    total = total + i\n    print(\"i =\", i, \"-> total =\", total)\nprint(\"final total:\", total)" },
+        { type: "text", html: "Runs your <b>real</b> code, one line at a time.<br>The current line is marked <code>▸</code>.<br>Edit the loop and step through your own version." },
+        { type: "steprun", title: "for loop - step through real execution", code: "total = 0\nfor i in range(1, 4):\n    total = total + i\n    print(\"i =\", i, \"-> total =\", total)\nprint(\"final total:\", total)" },
         { type: "tabs", tabs: [
           { label: "while vs for", blocks: [
             { type: "list", items: [
               "Use <b>for</b> when you know the sequence to walk (a range, a list, a string).",
               "Use <b>while</b> when you repeat until some condition changes and you don't know how many times (e.g. 'keep asking until the password is right').",
-              "Any for loop can be rewritten as a while loop with a manual counter — for is just shorter and safer.",
+              "Any for loop can be rewritten as a while loop with a manual counter - for is just shorter and safer.",
             ] },
           ] },
           { label: "Accumulator pattern", blocks: [
@@ -138,7 +161,7 @@ App.registerTopic({
 "total = 0\nfor n in [4, 8, 15, 16]:\n    total += n          # accumulate a sum\nprint(total)            # 43\n\nsquares = []\nfor n in range(1, 5):\n    squares.append(n*n) # accumulate a list\nprint(squares)          # [1, 4, 9, 16]" },
           ] },
           { label: "Looping with index", blocks: [
-            { type: "text", html: "Sometimes you need both the position and the value. <code>enumerate()</code> gives you both at once — cleaner than managing a counter by hand." },
+            { type: "text", html: "Sometimes you need both the position and the value. <code>enumerate()</code> gives you both at once - cleaner than managing a counter by hand." },
             { type: "example", caption: "enumerate", code:
 "colors = ['red', 'green', 'blue']\nfor index, color in enumerate(colors):\n    print(index, color)",
               output: "0 red\n1 green\n2 blue" },
@@ -148,7 +171,7 @@ App.registerTopic({
       ],
       live: [
         { title: "for over a range", code: "for i in range(1, 6):\n    print(\"i =\", i, \" square =\", i*i)" },
-        { title: "Nested loops — a tiny clock", code: "for hour in range(8, 10):\n    for minute in range(0, 60, 30):\n        print(f\"{hour}:{minute:02d}\")" },
+        { title: "Nested loops - a tiny clock", code: "for hour in range(8, 10):\n    for minute in range(0, 60, 30):\n        print(f\"{hour}:{minute:02d}\")" },
       ],
       quiz: [
         { q: "`range(0, 20, 5)` produces…", choices: ["0 5 10 15 20", "0 5 10 15", "5 10 15 20", "0 to 20"], answer: 1, explain: "The stop value (20) is excluded: 0, 5, 10, 15." },
@@ -163,10 +186,10 @@ App.registerTopic({
       keywords: "break continue pass else loop control placeholder",
       learn: [
         { type: "list", title: "The four tools", items: [
-          "<b>break</b> — exit the loop immediately.",
-          "<b>continue</b> — skip the rest of this iteration, jump to the next.",
-          "<b>pass</b> — do nothing; a placeholder where code is syntactically required.",
-          "<b>loop else</b> — runs only if the loop finished <i>without</i> hitting a break.",
+          "<b>break</b> - exit the loop immediately.",
+          "<b>continue</b> - skip the rest of this iteration, jump to the next.",
+          "<b>pass</b> - do nothing; a placeholder where code is syntactically required.",
+          "<b>loop else</b> - runs only if the loop finished <i>without</i> hitting a break.",
         ] },
         { type: "example", caption: "continue skips even numbers", code:
 "for i in range(10):\n    if i % 2 == 0:\n        continue      # skip evens\n    print(i)          # 1 3 5 7 9",
@@ -179,7 +202,7 @@ App.registerTopic({
           output: "10 is not in the list." },
         { type: "subhead", text: "Step through it line by line" },
         { type: "text", html: "Step through to see exactly how <code>continue</code> jumps back to the loop header without reaching <code>print</code>, and how <code>break</code> would leave the loop entirely." },
-        { type: "steprun", title: "continue — skip the even numbers", code: "for i in range(6):\n    if i % 2 == 0:\n        continue\n    print(\"odd:\", i)\nprint(\"done\")" },
+        { type: "steprun", title: "continue - skip the even numbers", code: "for i in range(6):\n    if i % 2 == 0:\n        continue\n    print(\"odd:\", i)\nprint(\"done\")" },
       ],
       live: [
         { title: "break out early", code: "i = 10\nwhile i >= 0:\n    i -= 1\n    if i == 5:\n        break\n    print(i)   # 9 8 7 6" },
@@ -206,9 +229,9 @@ App.registerTopic({
         ] },
       ],
       live: [
-        { title: "Problem 3 (solved) — password loop", code: "while True:\n    pw = input(\"Password: \")\n    if pw == \"1234\":\n        print(\"เข้าสู่ระบบสำเร็จ\")\n        break\n    print(\"รหัสผิด กรุณาลองใหม่\")" },
-        { title: "Problem 4 — sum of 5 numbers (your turn)", code: "total = 0\nfor _ in range(5):\n    total += int(input(\"Number: \"))\nprint(\"Sum =\", total)" },
-        { title: "Problem 5 — 1..30 with 'Go' for multiples of 3", code: "for n in range(1, 31):\n    if n % 3 == 0:\n        print(\"Go\")\n    else:\n        print(n)" },
+        { title: "Problem 3 (solved) - password loop", code: "while True:\n    pw = input(\"Password: \")\n    if pw == \"1234\":\n        print(\"เข้าสู่ระบบสำเร็จ\")\n        break\n    print(\"รหัสผิด กรุณาลองใหม่\")" },
+        { title: "Problem 4 - sum of 5 numbers (your turn)", code: "total = 0\nfor _ in range(5):\n    total += int(input(\"Number: \"))\nprint(\"Sum =\", total)" },
+        { title: "Problem 5 - 1..30 with 'Go' for multiples of 3", code: "for n in range(1, 31):\n    if n % 3 == 0:\n        print(\"Go\")\n    else:\n        print(n)" },
       ],
     },
   ],

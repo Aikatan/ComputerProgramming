@@ -1,5 +1,5 @@
 /* ============================================================
-   zz-examples.js — appends an "Examples" section to EACH sub-topic
+   zz-examples.js - appends an "Examples" section to EACH sub-topic
    (lesson) so every sub-topic carries its own runnable code examples,
    ordered simplest-first (>= 3 each). Keyed by "tNN.lesson-id".
    Every example editor has both Run and Step Run.
@@ -7,7 +7,7 @@
 (function () {
   // Python example: { t, code }.  C example: { t, c, py }
   const E = {
-    /* ---------- Topic 02 — Basics ---------- */
+    /* ---------- Topic 02 - Basics ---------- */
     "t02.errors": [
       { t: "Fix a TypeError", code: 'print("Age: " + str(25))   # str() makes the int joinable' },
       { t: "Spot a logical error (precedence)", code: 'print(10 + 20 / 2)     # wrong: 20.0\nprint((10 + 20) / 2)   # right: 15.0' },
@@ -31,7 +31,7 @@
     "t02.python-memory": [
       { t: "is vs ==", code: 'a = [1, 2]\nb = a\nc = [1, 2]\nprint(a is b, a is c, a == c)' },
       { t: "Alias vs copy", code: 'a = [1, 2, 3]\nb = a\nb.append(9)\nprint("alias changed a:", a)\nc = a.copy()\nc.append(0)\nprint("copy left a:", a)' },
-      { t: "Immutable ints rebind", code: 'a = 5\nb = a\na += 1\nprint(a, b)   # 6 5 — b is unaffected' },
+      { t: "Immutable ints rebind", code: 'a = 5\nb = a\na += 1\nprint(a, b)   # 6 5 - b is unaffected' },
     ],
     "t02.data-types": [
       { t: "Inspect types", code: 'for v in [42, 3.14, "hi", True, [1]]:\n    print(v, "->", type(v).__name__)' },
@@ -44,7 +44,7 @@
       { t: "String methods", code: 's = "Hello, World"\nprint(s.upper())\nprint(s.lower())\nprint(s.replace("o", "0"))' },
     ],
 
-    /* ---------- Topic 03 — Decisions & Loops ---------- */
+    /* ---------- Topic 03 - Decisions & Loops ---------- */
     "t03.boolean": [
       { t: "Truthiness of values", code: 'for v in [0, 1, "", "hi", None, []]:\n    print(repr(v), "->", bool(v))' },
       { t: "Booleans are numbers", code: 'print(True + True + False)   # 2\nprint(int(5 > 3))' },
@@ -71,7 +71,7 @@
       { t: "pass as a placeholder", code: 'for i in range(3):\n    if i == 1:\n        pass   # do nothing for now\n    print(i)' },
     ],
 
-    /* ---------- Topic 04 — Flowchart & Pseudocode ---------- */
+    /* ---------- Topic 04 - Flowchart & Pseudocode ---------- */
     "t04.flowchart-to-code": [
       { t: "Largest of two", code: 'a, b = 12, 8\nprint(max(a, b))' },
       { t: "Countdown loop", code: 'x = 3\nwhile x > 0:\n    print(x)\n    x -= 1\nprint("Go!")' },
@@ -83,7 +83,7 @@
       { t: "Sum a list", code: 'nums = [3, 5, 2]\ns = 0\nfor n in nums:\n    s += n\nprint(s)' },
     ],
 
-    /* ---------- Topic 05 — Functions & Modules ---------- */
+    /* ---------- Topic 05 - Functions & Modules ---------- */
     "t05.defining": [
       { t: "Return a value", code: 'def square(n):\n    return n * n\n\nprint(square(7))' },
       { t: "Return two values", code: 'def stats(nums):\n    return min(nums), max(nums)\n\nlo, hi = stats([4, 9, 1, 7])\nprint(lo, hi)' },
@@ -110,7 +110,7 @@
       { t: "ceil and floor", code: 'import math\nprint(math.ceil(4.2), math.floor(4.8))' },
     ],
 
-    /* ---------- Topic 06 — Strings, Lists, Dicts ---------- */
+    /* ---------- Topic 06 - Strings, Lists, Dicts ---------- */
     "t06.strings": [
       { t: "Clean up text", code: 's = "  Hello  "\nprint(s.strip().upper())' },
       { t: "count and replace", code: 't = "banana"\nprint(t.count("a"), t.replace("a", "A"))' },
@@ -132,7 +132,7 @@
       { t: "Build a dict from two lists", code: 'keys = ["a", "b"]\nvals = [1, 2]\nprint(dict(zip(keys, vals)))' },
     ],
 
-    /* ---------- Topic 07 — Plots & Exceptions ---------- */
+    /* ---------- Topic 07 - Plots & Exceptions ---------- */
     "t07.matplotlib-basics": [
       { t: "A line plot", code: 'import matplotlib.pyplot as plt\nplt.plot([1, 2, 3], [1, 4, 9])\nplt.show()' },
       { t: "Style the line", code: 'import matplotlib.pyplot as plt\nplt.plot([1,2,3], [2,1,3], marker="o", color="r", linestyle="--")\nplt.title("Demo"); plt.grid(True)\nplt.show()' },
@@ -149,7 +149,7 @@
       { t: "Catch several error types", code: 'for v in ["5", "x"]:\n    try:\n        print(10 / int(v))\n    except (ValueError, ZeroDivisionError) as e:\n        print("error:", type(e).__name__)' },
     ],
 
-    /* ---------- Topic 08 — Files, NumPy & Pandas ---------- */
+    /* ---------- Topic 08 - Files, NumPy & Pandas ---------- */
     "t08.file-handling": [
       { t: "Write then read", code: 'with open("a.txt", "w") as f:\n    f.write("hi\\n")\nwith open("a.txt") as f:\n    print(f.read())' },
       { t: "Sum numbers from a file", code: 'with open("n.txt", "w") as f:\n    for i in range(1, 6):\n        f.write(f"{i}\\n")\ntotal = sum(int(line) for line in open("n.txt"))\nprint(total)' },
@@ -171,7 +171,7 @@
       { t: "Group and sum", code: 'import pandas as pd\ndf = pd.DataFrame({"d": ["x", "y", "x"], "v": [1, 2, 3]})\nprint(df.groupby("d")["v"].sum())' },
     ],
 
-    /* ---------- Topic 09 — Algorithms & Efficiency ---------- */
+    /* ---------- Topic 09 - Algorithms & Efficiency ---------- */
     "t09.what-is-algorithm": [
       { t: "Linear vs quadratic work", code: 'n = 50\nprint("linear   :", n)\nprint("quadratic:", n * n)' },
       { t: "Count steps in nested loops", code: 'steps = 0\nfor i in range(5):\n    for j in range(5):\n        steps += 1\nprint(steps)' },
@@ -203,7 +203,7 @@
       { t: "Generator for memory", code: 'print(sum(n * n for n in range(1, 6)))' },
     ],
 
-    /* ---------- Topic 10 — Programming in C (C + Python twin) ---------- */
+    /* ---------- Topic 10 - Programming in C (C + Python twin) ---------- */
     "t10.why-c": [
       { t: "Hello world", c: '#include <stdio.h>\nint main(void) {\n    puts("Hello, World!");\n    return 0;\n}', py: 'print("Hello, World!")' },
       { t: "Exit code from main", c: 'int main(void) {\n    return 0;   // 0 = success\n}', py: '# Python returns 0 automatically when it finishes\nprint("done")' },
@@ -212,7 +212,7 @@
     "t10.types": [
       { t: "Declare and add typed numbers", c: 'int    a = 7, b = 2;\nint    q = a / b;             // 3 (integer division)\ndouble exact = (double)a / b; // 3.5', py: 'a, b = 7, 2\nprint(a // b)   # 3\nprint(a / b)    # 3.5' },
       { t: "A character is a number", c: "char c = 'A';   // stored as 65\nint  n = c + 1; // 66 -> 'B'", py: "print(ord('A'))\nprint(chr(ord('A') + 1))" },
-      { t: "Fixed size overflows", c: 'unsigned char x = 255;\nx = x + 1;   // wraps to 0', py: 'print((255 + 1) % 256)   # 0 — simulated wrap' },
+      { t: "Fixed size overflows", c: 'unsigned char x = 255;\nx = x + 1;   // wraps to 0', py: 'print((255 + 1) % 256)   # 0 - simulated wrap' },
     ],
     "t10.control-flow": [
       { t: "Sum 1..5 with a for loop", c: 'int total = 0;\nfor (int i = 1; i <= 5; i++) {\n    total = total + i;   // ends at 15\n}', py: 'total = 0\nfor i in range(1, 6):\n    total += i\nprint(total)' },

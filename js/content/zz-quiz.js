@@ -1,5 +1,5 @@
 /* ============================================================
-   zz-quiz.js — tops up each sub-topic's "Check yourself" quiz to 5
+   zz-quiz.js - tops up each sub-topic's "Check yourself" quiz to 5
    questions. Keyed by "tNN.lesson-id"; appends from the pool only
    until the lesson has 5 (naturally idempotent).
    Loaded after all topics, before app.js.
@@ -50,7 +50,7 @@
     ],
     /* ---------- Topic 02 ---------- */
     "t02.errors": [
-      { q: "A missing ) is what kind of error?", choices: ["Runtime", "Logical", "Syntax", "None"], answer: 2, explain: "Bad grammar is a syntax error — caught before running." },
+      { q: "A missing ) is what kind of error?", choices: ["Runtime", "Logical", "Syntax", "None"], answer: 2, explain: "Bad grammar is a syntax error - caught before running." },
       { q: "Using an undefined name raises…", choices: ["ValueError", "NameError", "KeyError", "IndexError"], answer: 1, explain: "An undefined name raises NameError." },
       { q: "Which line of a traceback is usually most useful?", choices: ["The first", "The last (error type/message)", "The middle", "None"], answer: 1, explain: "Read the bottom line: the error type and message." },
     ],
@@ -219,7 +219,7 @@
     "t09.big-o": [
       { q: "Best growth for large n?", choices: ["O(n²)", "O(n)", "O(log n)", "O(2ⁿ)"], answer: 2, explain: "O(log n) grows slowest here." },
       { q: "`O(2n+5)` simplifies to…", choices: ["O(2n)", "O(n)", "O(5)", "O(n²)"], answer: 1, explain: "Drop constants → O(n)." },
-      { q: "Naive recursive Fibonacci is…", choices: ["O(1)", "O(n)", "O(2ⁿ)", "O(log n)"], answer: 2, explain: "Exponential — it recomputes subproblems." },
+      { q: "Naive recursive Fibonacci is…", choices: ["O(1)", "O(n)", "O(2ⁿ)", "O(log n)"], answer: 2, explain: "Exponential - it recomputes subproblems." },
     ],
     "t09.searching": [
       { q: "Binary search needs data that is…", choices: ["Small", "Sorted", "Unique", "Numeric"], answer: 1, explain: "Halving by comparison needs order." },
@@ -241,7 +241,7 @@
       { q: "Memoizing naive Fibonacci changes it from…", choices: ["O(n)→O(1)", "O(2ⁿ)→O(n)", "O(n²)→O(n)", "no change"], answer: 1, explain: "Caching makes each n computed once." },
       { q: "A generator helps mainly with…", choices: ["Speed only", "Memory (streams items)", "Sorting", "Plotting"], answer: 1, explain: "It avoids building a big list in memory." },
     ],
-    /* ---------- Topic 10 — C ---------- */
+    /* ---------- Topic 10 - C ---------- */
     "t10.why-c": [
       { q: "C is…", choices: ["Interpreted", "Compiled to machine code", "Run in a browser", "A database"], answer: 1, explain: "A compiler builds a native executable." },
       { q: "Execution starts at…", choices: ["The top line", "main()", "#include", "the last function"], answer: 1, explain: "C programs start at main()." },
@@ -270,7 +270,7 @@
     "t10.arrays-strings": [
       { q: "`arr[i]` is O(1) because…", choices: ["arrays are sorted", "address = base + i×size", "the CPU searches", "arrays are small"], answer: 1, explain: "One address calculation." },
       { q: "A C string ends with…", choices: ["a space", "newline", "'\\0' (NUL)", "255"], answer: 2, explain: "NUL-terminated." },
-      { q: "Writing past an array's end…", choices: ["Raises IndexError", "Grows it", "Corrupts memory", "Is impossible"], answer: 2, explain: "C has no bounds checking — buffer overflow." },
+      { q: "Writing past an array's end…", choices: ["Raises IndexError", "Grows it", "Corrupts memory", "Is impossible"], answer: 2, explain: "C has no bounds checking - buffer overflow." },
     ],
     "t10.memory": [
       { q: "Local variables live on the…", choices: ["heap", "stack", "ROM", "disk"], answer: 1, explain: "Stack frames hold locals." },
@@ -289,7 +289,7 @@
   const EXTRA = {
     "t00.first-run": { q: "Comments in Python start with…", choices: ["//", "#", "/*", "--"], answer: 1, explain: "# begins a comment in Python." },
     "t03.boolean": { q: "`bool(0.0)` is…", choices: ["True", "False"], answer: 1, explain: "Zero (any numeric 0) is falsy." },
-    "t03.loops": { q: "`for c in 'hi':` runs how many times?", choices: ["1", "2", "3", "0"], answer: 1, explain: "Once per character — 'h','i' → 2 times." },
+    "t03.loops": { q: "`for c in 'hi':` runs how many times?", choices: ["1", "2", "3", "0"], answer: 1, explain: "Once per character - 'h','i' → 2 times." },
     "t04.flowchart-symbols": { q: "An arrow (flowline) shows…", choices: ["a value", "the order of steps", "an error", "memory"], answer: 1, explain: "Flowlines show the sequence of steps." },
     "t04.pseudocode": { q: "Good pseudocode is…", choices: ["Tied to Python", "Easy to read and to code", "Machine code", "Binary"], answer: 1, explain: "It reads plainly yet maps cleanly to code." },
     "t05.scope": { q: "Reading a global inside a function (without assigning) is…", choices: ["Allowed", "An error", "Requires global", "Impossible"], answer: 0, explain: "You can read a global directly; you only need `global` to reassign it." },

@@ -1,4 +1,4 @@
-/* ===================== Topic 06 — Strings, Lists & Dictionaries ===================== */
+/* ===================== Topic 06 - Strings, Lists & Dictionaries ===================== */
 App.registerTopic({
   id: "t06",
   title: "Strings, Lists & Dictionaries",
@@ -107,19 +107,32 @@ App.registerTopic({
       slides: "06:13–21",
       keywords: "list append insert extend remove pop clear index slice mutable",
       learn: [
-        { type: "text", html: "A <span class='term'>list</span> is an <b>ordered, mutable</b> collection in square brackets: <code>[1, 2, 3]</code>.<br>It holds mixed types and resizes automatically." },
-        { type: "subhead", text: "How a list changes" },
-        { type: "widget", name: "listViz", config: {
-          kind: "list",
-          title: "Building and trimming a list",
+        { type: "text", html: "A <span class='term'>list</span> is an <b>ordered, mutable</b> collection.<br>Square brackets: <code>[1, 2, 3]</code>.<br>Holds mixed types. Resizes automatically." },
+        { type: "subhead", text: "Element and index" },
+        { type: "text", html: "Each <b>element</b> has an <b>index</b>.<br>Index starts at <code>0</code>.<br>Negative index counts from the end: <code>-1</code> is last." },
+        { type: "widget", name: "predict", config: {
+          question: "<code>nums = [10, 20, 30]</code><br>After <code>nums.append(40)</code>, what is <code>nums[3]</code>?",
+          options: [{ label: "40", correct: true }, { label: "30" }, { label: "IndexError" }],
+          explain: "append adds 40 at the end, so index 3 is 40.",
+        } },
+        { type: "widget", name: "boxTrain", config: {
+          title: "List operations, step by step",
+          name: "nums",
+          code: [
+            "nums = [10, 20, 30]",
+            "nums.append(40)",
+            "nums.insert(1, 99)",
+            "a = nums[1]",
+            "b = nums.pop()",
+            "nums.remove(99)",
+          ],
           steps: [
-            { items: [1, 2], caption: "my_list = [1, 2]" },
-            { items: [1, 2, 3], flash: [2], caption: "my_list.append(3)  → adds 3 to the end" },
-            { items: [1, 2, 2, 3], flash: [1], caption: "my_list.insert(1, 2)  → inserts 2 at index 1" },
-            { items: [1, 2, 2, 3, 4, 5], flash: [4, 5], caption: "my_list.extend([4, 5])  → appends each element" },
-            { items: [1, 2, 3, 4, 5], flash: [1], caption: "my_list.remove(2)  → removes the FIRST 2" },
-            { items: [1, 3, 4, 5], caption: "my_list.pop(1)  → removes & returns index 1" },
-            { items: [], caption: "my_list.clear()  → empties the list" },
+            { items: [10, 20, 30], line: 0, enter: [0, 1, 2], caption: "3 elements, index 0 to 2" },
+            { items: [10, 20, 30, 40], line: 1, enter: [3], caption: "add 40 at the end, index 3" },
+            { items: [10, 99, 20, 30, 40], line: 2, enter: [1], caption: "insert 99 at index 1; later elements shift right" },
+            { items: [10, 99, 20, 30, 40], line: 3, lift: [1], assign: { name: "a", value: 99 }, caption: "read index 1 into a" },
+            { items: [10, 99, 20, 30], line: 4, leave: { value: 40 }, assign: { name: "b", value: 40 }, caption: "remove the last element into b" },
+            { items: [10, 20, 30], line: 5, caption: "remove the first 99; index re-numbers" },
           ],
         } },
         { type: "deflist", title: "Key operations", items: [
@@ -145,20 +158,36 @@ App.registerTopic({
       slides: "06:22–34",
       keywords: "dict dictionary key value get pop items keys values lookup hash",
       learn: [
-        { type: "text", html: "A <span class='term'>dictionary</span> stores <b>key → value</b> pairs in curly braces:<br><code>{\"name\": \"Alice\", \"age\": 25}</code>." },
-        { type: "list", title: "Two rules to remember", items: [
-          "Keys are unique and immutable.",
-          "Lookup by key is very fast (it uses hashing).",
+        { type: "text", html: "A <span class='term'>dictionary</span> stores <b>key</b> → <b>value</b> pairs.<br>Curly braces:<br><code>{\"name\": \"Alice\", \"age\": 25}</code>." },
+        { type: "list", title: "Two rules", items: [
+          "Each <b>key</b> is unique.",
+          "Lookup by <b>key</b> is fast (hashing).",
         ] },
-        { type: "widget", name: "listViz", config: {
-          kind: "dict",
-          title: "Adding, updating, and removing keys",
+        { type: "subhead", text: "Access by key" },
+        { type: "text", html: "Each <b>key</b> maps to one <b>value</b>.<br>Read, add, or update a value by its key.<br>No index." },
+        { type: "widget", name: "predict", config: {
+          question: "<code>person = {'name': 'Alice', 'age': 25}</code><br>What does <code>person.get('email', 'n/a')</code> return?",
+          options: [{ label: "'n/a'", correct: true }, { label: "None" }, { label: "KeyError" }],
+          explain: "The key 'email' is missing, so get returns the default: 'n/a'.",
+        } },
+        { type: "widget", name: "dictTrain", config: {
+          title: "Dictionary operations, step by step",
+          name: "person",
+          code: [
+            "person = {'name': 'Alice', 'age': 25}",
+            "person['age'] = 26",
+            "person['city'] = 'Bangkok'",
+            "c = person['city']",
+            "e = person.get('email', 'n/a')",
+            "del person['age']",
+          ],
           steps: [
-            { items: { name: "Alice", age: 25 }, caption: "person = {'name': 'Alice', 'age': 25}" },
-            { items: { name: "Alice", age: 26 }, flash: ["age"], caption: "person['age'] = 26  → update existing key" },
-            { items: { name: "Alice", age: 26, gender: "Female" }, flash: ["gender"], caption: "person['gender'] = 'Female'  → add new key" },
-            { items: { name: "Alice", gender: "Female" }, caption: "del person['age']  → remove a key" },
-            { items: { name: "Alice" }, caption: "person.popitem()  → remove the last pair" },
+            { pairs: [["name", "Alice"], ["age", 25]], line: 0, caption: "2 key–value pairs" },
+            { pairs: [["name", "Alice"], ["age", 26]], line: 1, flash: ["age"], caption: "update the value for key 'age'" },
+            { pairs: [["name", "Alice"], ["age", 26], ["city", "Bangkok"]], line: 2, flash: ["city"], caption: "new key adds a new pair" },
+            { pairs: [["name", "Alice"], ["age", 26], ["city", "Bangkok"]], line: 3, probe: "city", assign: { name: "c", value: "Bangkok" }, caption: "read the value by key into c" },
+            { pairs: [["name", "Alice"], ["age", 26], ["city", "Bangkok"]], line: 4, miss: "email", assign: { name: "e", value: "n/a" }, caption: "key missing, return the default into e" },
+            { pairs: [["name", "Alice"], ["city", "Bangkok"]], line: 5, caption: "remove key 'age' and its value" },
           ],
         } },
         { type: "deflist", title: "Access & iterate", items: [
@@ -188,11 +217,11 @@ App.registerTopic({
       slides: "06:34",
       keywords: "list dictionary comparison index key lookup speed",
       learn: [
-        { type: "widget", name: "diagram", config: { layout: "row", title: "Two containers, different jobs", boxes: [
-          { title: "List", body: "Indexed by <b>position</b> (0,1,2…).<br>Allows duplicates.<br>Lookup by value is slower.<br>Use when order matters." },
-          { title: "Dictionary", body: "Indexed by <b>key</b> (\"name\", \"age\").<br>Keys are unique.<br>Fast lookup (hashing).<br>Use when each item has a label." },
+        { type: "widget", name: "diagram", config: { layout: "row", title: "List vs dictionary", boxes: [
+          { title: "List", body: "Access by <b>index</b> (0, 1, 2…).<br>Duplicates allowed.<br>Order matters." },
+          { title: "Dictionary", body: "Access by <b>key</b> (\"name\", \"age\").<br>Each key unique.<br>Fast lookup by key." },
         ] } },
-        { type: "note", html: "Rule of thumb:<br>Reach items by a meaningful name → dict.<br>Walk through an ordered sequence → list." },
+        { type: "note", html: "Access by <b>index</b> → list.<br>Access by <b>key</b> → dictionary." },
       ],
       live: [
         { title: "Same data, two shapes", code: "# As a list (order)\nscores_list = [85, 92, 78]\nprint(scores_list[0])\n\n# As a dict (labels)\nscores_dict = {\"math\": 85, \"sci\": 92, \"eng\": 78}\nprint(scores_dict[\"sci\"])" },

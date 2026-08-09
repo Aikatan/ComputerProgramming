@@ -1,5 +1,5 @@
 /* ============================================================
-   widgets.js — interactive visuals & animations
+   widgets.js - interactive visuals & animations
    Each function returns a DOM element. Driven by declarative
    config so content files stay readable.
    ============================================================ */
@@ -13,7 +13,7 @@ function widgetShell(title, body) {
 }
 
 /* ============================================================
-   infocards — always-visible reading cards (NOT interactive)
+   infocards - always-visible reading cards (NOT interactive)
    config: { title, layout:'row'|'col', boxes:[{title, body}] }
    ============================================================ */
 App.widgets.diagram = function (cfg) {
@@ -29,7 +29,7 @@ App.widgets.diagram = function (cfg) {
 App.widgets.infocards = App.widgets.diagram;
 
 /* ============================================================
-   cpuCycle — animated fetch/decode/execute/store
+   cpuCycle - animated fetch/decode/execute/store
    ============================================================ */
 App.widgets.cpuCycle = function (cfg) {
   const stages = (cfg && cfg.stages) || [
@@ -53,14 +53,14 @@ App.widgets.cpuCycle = function (cfg) {
       els.forEach((e) => e.classList.remove("on"));
       i = (i + 1) % stages.length;
       els[i].classList.add("on");
-      caption.textContent = (i + 1) + ". " + stages[i].k + " — " + stages[i].d;
+      caption.textContent = (i + 1) + ". " + stages[i].k + " - " + stages[i].d;
     }, 1100);
   });
   return widgetShell("The CPU instruction cycle", h("div", null, stRow, h("div", { class: "w-row", style: "margin-top:12px" }, play), caption));
 };
 
 /* ============================================================
-   binaryConverter — char/number <-> 8-bit binary + ASCII
+   binaryConverter - char/number <-> 8-bit binary + ASCII
    ============================================================ */
 App.widgets.binaryConverter = function () {
   let value = 65; // 'A'
@@ -93,7 +93,7 @@ App.widgets.binaryConverter = function () {
 };
 
 /* ============================================================
-   truthTable — interactive, with operator selector
+   truthTable - interactive, with operator selector
    ============================================================ */
 App.widgets.truthTable = function (cfg) {
   const ops = (cfg && cfg.ops) || [
@@ -126,11 +126,11 @@ App.widgets.truthTable = function (cfg) {
     tableHost.appendChild(h("table", { class: "tt" }, head, ...rows));
   }
   render();
-  return widgetShell("Truth table — pick an operator", h("div", null, sel, h("div", { style: "margin-top:12px" }, tableHost)));
+  return widgetShell("Truth table - pick an operator", h("div", null, sel, h("div", { style: "margin-top:12px" }, tableHost)));
 };
 
 /* ============================================================
-   stepper — generic previous/next state machine
+   stepper - generic previous/next state machine
    config: { title, steps:[...], render(step, idx)->node/html, autoLabel }
    ============================================================ */
 App.widgets.stepper = function (cfg) {
@@ -169,7 +169,7 @@ App.widgets.codeLines = function (lines, hlIndex) {
   return box;
 };
 
-/* loopViz — convenience over stepper for line+vars+log traces
+/* loopViz - convenience over stepper for line+vars+log traces
    config: { title, code:[lines], trace:[{line, vars, log}] } */
 App.widgets.loopViz = function (cfg) {
   return App.widgets.stepper({
@@ -202,7 +202,7 @@ App.widgets.loopViz = function (cfg) {
 };
 
 /* ============================================================
-   memoryModel — stack frames / pointers (C-style illustration)
+   memoryModel - stack frames / pointers (C-style illustration)
    config: { title, columns:[{ head, cells:[{addr,name,val,kind,note}] }], note }
    ============================================================ */
 App.widgets.memoryModel = function (cfg) {
@@ -223,7 +223,7 @@ App.widgets.memoryModel = function (cfg) {
 };
 
 /* ============================================================
-   flowchart — SVG flowchart with code sync
+   flowchart - SVG flowchart with code sync
    config: { nodes:[{id,type,text,x,y,w,h}], edges:[{from,to,label}],
              code:[lines], map:{ nodeId:[lineIdx...] } }
    types: terminator | process | decision | io | call
@@ -321,12 +321,12 @@ App.widgets.flowchart = function (cfg) {
 
   const grid = h("div", { class: "flow-wrap" },
     h("div", { class: "flow" }, svg),
-    h("div", null, h("div", { class: "widget-title" }, "Equivalent Python — hover to link"), codeBox));
+    h("div", null, h("div", { class: "widget-title" }, "Equivalent Python - hover to link"), codeBox));
   return widgetShell(cfg.title || "Flowchart ↔ code (hover to connect)", grid);
 };
 
 /* ============================================================
-   listViz — animate a sequence of list/dict states
+   listViz - animate a sequence of list/dict states
    config: { title, steps:[{ items:[...]|obj, caption, flash:[idx] }], kind:'list'|'dict' }
    ============================================================ */
 App.widgets.listViz = function (cfg) {
@@ -359,7 +359,7 @@ App.widgets.listViz = function (cfg) {
 };
 
 /* ============================================================
-   funcCall — animated "function machine": argument balls fly into
+   funcCall - animated "function machine": argument balls fly into
    parameter slots, the body computes, the result returns to (or is
    discarded by) the caller. Click-stepped with animated ball flight.
    ============================================================ */
@@ -402,7 +402,7 @@ App.widgets.funcCall = function () {
         b10.__put(...CALL10); b20.__put(...CALL20); bRes.__hide(...boxRet.__c);
         clearFill(); body.textContent = "return x + 2*y"; machine.classList.remove("hl");
       } },
-      { cap: "The <b>first</b> value 10 drops into the <b>first</b> slot <code>x</code> — arguments match parameters <b>by position</b>.", f() {
+      { cap: "The <b>first</b> value 10 drops into the <b>first</b> slot <code>x</code> - arguments match parameters <b>by position</b>.", f() {
         b10.__put(...slotX.__c); b20.__put(...CALL20); bRes.__hide(...boxRet.__c);
         fill(slotX, true); hlOnly(slotX); body.textContent = "return x + 2*y";
       } },
@@ -415,7 +415,7 @@ App.widgets.funcCall = function () {
         fill(slotX, true); fill(slotY, true); clearHl(); machine.classList.add("hl");
         body.innerHTML = "10 + 2*20 = <b>50</b>";
       } },
-      { cap: "<code>return 50</code> — the result is placed in the return box.", f() {
+      { cap: "<code>return 50</code> - the result is placed in the return box.", f() {
         b10.__put(...slotX.__c); b20.__put(...slotY.__c); bRes.__put(...boxRet.__c);
         machine.classList.remove("hl"); fill(boxRet, true); hlOnly(boxRet);
       } },
@@ -472,7 +472,7 @@ App.widgets.funcCall = function () {
 
   const controls = h("div", { class: "w-row", style: "justify-content:center;margin-top:10px" }, prev, play, next, reset, counter);
   requestAnimationFrame(draw); // first paint with correct initial positions
-  return widgetShell("How a function call works — press Play",
+  return widgetShell("How a function call works - press Play",
     h("div", null, toggle, h("div", { class: "fa-wrap" }, stage), caption, controls));
 };
 
@@ -547,13 +547,13 @@ App.widgets.funcCall = function () {
     const steps = [
       { cap: "Call <b>outer(3, 4)</b>. The two values wait at the call site.", f() { base(); o3.__put(...CALL[0]); o4.__put(...CALL[1]); } },
       { cap: "3 and 4 fill <b>outer</b>'s slots <code>a</code>, <code>b</code> (green).", f() { base(); o3.__put(...oa.__c); o4.__put(...ob.__c); oa.__fill(true); ob.__fill(true); } },
-      { cap: "outer calls <b>inner(a, b)</b>. inner gets its <b>own</b> a, b (blue) — <b>same names, different boxes</b>.", f() { o3.__put(...oa.__c); o4.__put(...ob.__c); oa.__fill(true); ob.__fill(true); i3.__put(...ia.__c); i4.__put(...ib.__c); ia.__fill(true); ib.__fill(true); inM.classList.add("hl"); } },
+      { cap: "outer calls <b>inner(a, b)</b>. inner gets its <b>own</b> a, b (blue) - <b>same names, different boxes</b>.", f() { o3.__put(...oa.__c); o4.__put(...ob.__c); oa.__fill(true); ob.__fill(true); i3.__put(...ia.__c); i4.__put(...ib.__c); ia.__fill(true); ib.__fill(true); inM.classList.add("hl"); } },
       { cap: "inner computes <code>3 + 4 = 7</code> and returns it.", f() { o3.__put(...oa.__c); o4.__put(...ob.__c); oa.__fill(true); ob.__fill(true); ia.__fill(true); ib.__fill(true); r7.__put(...iret.__c); iret.__fill(true); iret.__hl(true); } },
       { cap: "7 flies back into <b>outer</b>'s <code>z</code> (green scope).", f() { oa.__fill(true); ob.__fill(true); r7.__put(...oz.__c); oz.__fill(true); oz.__hl(true); } },
       { cap: "outer computes <code>z * 2 = 14</code> and returns it.", f() { oa.__fill(true); ob.__fill(true); oz.__fill(true); r14.__put(...oret.__c); oret.__fill(true); oret.__hl(true); } },
       { cap: "The caller catches it: <code>r = 14</code>.", f() { r14.__put(...boxR.__c); boxR.__fill(true); boxR.__hl(true); } },
     ];
-    return faScene("A function calling a function — colour shows the owner", stage, () => steps);
+    return faScene("A function calling a function - colour shows the owner", stage, () => steps);
   };
 
   /* ---- funcArgs: positional / keyword / default ---- */
@@ -576,12 +576,12 @@ App.widgets.funcCall = function () {
         { cap: "<b>By position:</b> the 1st value → <code>pet</code>, the 2nd → <code>kind</code>.", f() { base(); bPet.__set("Rex"); bKind.__set("cat"); bPet.__put(...sPet.__c); bKind.__put(...sKind.__c); sPet.__fill(true); sKind.__fill(true); body.textContent = 'pet="Rex", kind="cat"'; } },
       ];
       if (mode === "kw") return [
-        { cap: "Call <code>describe(kind=\"cat\", pet=\"Rex\")</code> — order is swapped, but each is <b>named</b>.", f() { base(); bKind.__set("kind=cat"); bPet.__set("pet=Rex"); bKind.__put(210, 34); bPet.__put(330, 34); } },
-        { cap: "<b>By name:</b> each value goes to <b>its own</b> slot — <code>kind=\"cat\"</code>→kind, <code>pet=\"Rex\"</code>→pet, crossing over.", f() { base(); bKind.__set("cat"); bPet.__set("Rex"); bPet.__put(...sPet.__c); bKind.__put(...sKind.__c); sPet.__fill(true); sKind.__fill(true); body.textContent = 'pet="Rex", kind="cat"'; } },
+        { cap: "Call <code>describe(kind=\"cat\", pet=\"Rex\")</code> - order is swapped, but each is <b>named</b>.", f() { base(); bKind.__set("kind=cat"); bPet.__set("pet=Rex"); bKind.__put(210, 34); bPet.__put(330, 34); } },
+        { cap: "<b>By name:</b> each value goes to <b>its own</b> slot - <code>kind=\"cat\"</code>→kind, <code>pet=\"Rex\"</code>→pet, crossing over.", f() { base(); bKind.__set("cat"); bPet.__set("Rex"); bPet.__put(...sPet.__c); bKind.__put(...sKind.__c); sPet.__fill(true); sKind.__fill(true); body.textContent = 'pet="Rex", kind="cat"'; } },
       ];
       return [ // default
         { cap: "<code>def describe(pet, kind=\"dog\")</code>. The <code>kind</code> slot has a <b>default</b> ball preloaded (faint).", f() { base(); bDef.__set("dog"); bDef.__put(...sKind.__c); } },
-        { cap: "Call <code>describe(\"Rex\")</code> — only <code>pet</code> is supplied.", f() { bDef.__set("dog"); bDef.__put(...sKind.__c); bPet.__set("Rex"); bPet.__put(210, 34); } },
+        { cap: "Call <code>describe(\"Rex\")</code> - only <code>pet</code> is supplied.", f() { bDef.__set("dog"); bDef.__put(...sKind.__c); bPet.__set("Rex"); bPet.__put(210, 34); } },
         { cap: "\"Rex\" → <code>pet</code>. Nothing given for <code>kind</code>, so the <b>default \"dog\" stays</b>.", f() { bDef.__set("dog"); bDef.__put(...sKind.__c); sKind.__fill(true); bPet.__set("Rex"); bPet.__put(...sPet.__c); sPet.__fill(true); body.textContent = 'pet="Rex", kind="dog"'; } },
       ];
     }
@@ -610,16 +610,16 @@ App.widgets.funcCall = function () {
     function getSteps() {
       if (mode === "local") return [
         { cap: "A <b>global</b> <code>x = 10</code> lives in the amber box.", f() { gxBall.__set(10); gxBall.__put(...gx.__c); gx.__fill(true); gx.__hl(false); lx.__show(false); lxBall.__hide(); out.textContent = ""; body.innerHTML = "x = 5<br>print(x)"; } },
-        { cap: "Call <code>f()</code>. A new <b>local</b> frame gets its <b>own</b> <code>x</code> (blue) — same name, different box.", f() { gx.__fill(true); lx.__show(true); lx.__fill(true); lx.__hl(true); lxBall.__set(5); lxBall.__put(...lx.__c); } },
+        { cap: "Call <code>f()</code>. A new <b>local</b> frame gets its <b>own</b> <code>x</code> (blue) - same name, different box.", f() { gx.__fill(true); lx.__show(true); lx.__fill(true); lx.__hl(true); lxBall.__set(5); lxBall.__put(...lx.__c); } },
         { cap: "Inside f, <code>print(x)</code> reads the <b>local</b> x = 5 (blue).", f() { gx.__fill(true); lx.__show(true); lx.__fill(true); lx.__hl(true); lxBall.__put(...lx.__c); out.textContent = "output: 5"; } },
-        { cap: "<code>f()</code> returns — the local frame is <b>destroyed</b>.", f() { gx.__fill(true); lx.__hl(false); lx.__show(false); lxBall.__hide(); out.textContent = ""; } },
-        { cap: "Outside, <code>print(x)</code> reads the <b>global</b> x = 10 (amber) — untouched.", f() { gx.__fill(true); gx.__hl(true); out.style.color = CLR.amber; out.textContent = "output: 10"; } },
+        { cap: "<code>f()</code> returns - the local frame is <b>destroyed</b>.", f() { gx.__fill(true); lx.__hl(false); lx.__show(false); lxBall.__hide(); out.textContent = ""; } },
+        { cap: "Outside, <code>print(x)</code> reads the <b>global</b> x = 10 (amber) - untouched.", f() { gx.__fill(true); gx.__hl(true); out.style.color = CLR.amber; out.textContent = "output: 10"; } },
       ];
       return [ // global keyword
         { cap: "Global <code>x = 10</code>. This time f() declares <code>global x</code>.", f() { gxBall.__set(10); gxBall.__put(...gx.__c); gx.__fill(true); gx.__hl(false); lx.__show(false); lxBall.__hide(); out.textContent = ""; body.innerHTML = "global x<br>x = 5"; } },
-        { cap: "Call <code>f()</code>. <code>global x</code> means <b>no new box</b> — it targets the amber global.", f() { gx.__fill(true); gx.__hl(true); lx.__show(false); } },
+        { cap: "Call <code>f()</code>. <code>global x</code> means <b>no new box</b> - it targets the amber global.", f() { gx.__fill(true); gx.__hl(true); lx.__show(false); } },
         { cap: "<code>x = 5</code> writes into the <b>global</b> box: 10 → 5.", f() { gx.__fill(true); gx.__hl(true); gxBall.__set(5); gxBall.__put(...gx.__c); } },
-        { cap: "Outside, <code>print(x)</code> is now <b>5</b> — the global was changed. Use <code>global</code> sparingly!", f() { gx.__fill(true); gx.__hl(true); out.style.color = CLR.amber; out.textContent = "output: 5"; } },
+        { cap: "Outside, <code>print(x)</code> is now <b>5</b> - the global was changed. Use <code>global</code> sparingly!", f() { gx.__fill(true); gx.__hl(true); out.style.color = CLR.amber; out.textContent = "output: 5"; } },
       ];
     }
     function buildToggles(restart) {
@@ -627,12 +627,12 @@ App.widgets.funcCall = function () {
       const row = h("div", { class: "w-row", style: "justify-content:center;margin-bottom:8px" }, h("span", { style: "color:var(--text-dim);font-size:12px" }, "Inside f:"), b("local", "local x = 5"), b("global", "global x; x = 5"));
       return row;
     }
-    return faScene("Local vs global — colour shows the scope", stage, getSteps, buildToggles);
+    return faScene("Local vs global - colour shows the scope", stage, getSteps, buildToggles);
   };
 })();
 
 /* ============================================================
-   stringIndex — show a string with positive & negative indices,
+   stringIndex - show a string with positive & negative indices,
    highlight s[i] as you change i. (interactive process demo)
    config: { text }
    ============================================================ */
@@ -664,7 +664,7 @@ App.widgets.stringIndex = function (cfg) {
   textIn.addEventListener("input", () => { text = textIn.value || " "; render(); });
   idxIn.addEventListener("input", () => { i = parseInt(idxIn.value, 10) || 0; render(); });
   render();
-  return widgetShell("String indexing — top number is the index, bottom is the negative index",
+  return widgetShell("String indexing - top number is the index, bottom is the negative index",
     h("div", null,
       h("div", { class: "w-row" }, h("span", { class: "mono" }, "text ="), textIn, h("span", { class: "mono" }, "index"), idxIn,
         h("span", { style: "color:var(--text-dim);font-size:12px" }, "(or click a box)")),
@@ -672,7 +672,7 @@ App.widgets.stringIndex = function (cfg) {
 };
 
 /* ============================================================
-   stringSlice — interactive start:end:step, highlights selection
+   stringSlice - interactive start:end:step, highlights selection
    config: { text }
    ============================================================ */
 App.widgets.stringSlice = function (cfg) {
@@ -712,7 +712,7 @@ App.widgets.stringSlice = function (cfg) {
   [sIn, eIn, stIn].forEach((el) => el.addEventListener("input", render));
   textIn.addEventListener("input", () => { text = textIn.value || " "; render(); });
   render();
-  return widgetShell("String slicing — try start, end, step (leave blank for default; negatives allowed)",
+  return widgetShell("String slicing - try start, end, step (leave blank for default; negatives allowed)",
     h("div", null,
       h("div", { class: "w-row" }, h("span", { class: "mono" }, "text ="), textIn),
       h("div", { class: "w-row", style: "margin-top:8px" }, h("span", { class: "mono" }, "text ["), sIn, h("span", { class: "mono" }, ":"), eIn, h("span", { class: "mono" }, ":"), stIn, h("span", { class: "mono" }, "]")),
@@ -720,7 +720,7 @@ App.widgets.stringSlice = function (cfg) {
 };
 
 /* ============================================================
-   stringShift — Caesar cipher: shift each letter by x, animated
+   stringShift - Caesar cipher: shift each letter by x, animated
    config: { text, shift }
    ============================================================ */
 App.widgets.stringShift = function (cfg) {
@@ -756,7 +756,7 @@ App.widgets.stringShift = function (cfg) {
   range.addEventListener("input", () => { shift = parseInt(range.value, 10); lbl.textContent = "shift = " + shift; render(); });
   textIn.addEventListener("input", () => { text = textIn.value || " "; render(); });
   render();
-  return widgetShell("String shift — each letter moves forward x places in the alphabet",
+  return widgetShell("String shift - each letter moves forward x places in the alphabet",
     h("div", null,
       h("div", { class: "w-row" }, h("span", { class: "mono" }, "text ="), textIn),
       h("div", { class: "w-row", style: "margin-top:8px" }, range, lbl),
@@ -764,7 +764,7 @@ App.widgets.stringShift = function (cfg) {
 };
 
 /* ============================================================
-   flowExec — animate execution flowing through a flowchart
+   flowExec - animate execution flowing through a flowchart
    config: { nodes, edges (as flowchart), trace:[{node, vars, note}] }
    ============================================================ */
 App.widgets.flowExec = function (cfg) {
@@ -814,7 +814,7 @@ App.widgets.flowExec = function (cfg) {
 };
 
 /* ============================================================
-   tryFlow — animate try / except / finally control flow.
+   tryFlow - animate try / except / finally control flow.
    Pick an input; step through and watch control jump to the
    matching except, then always land in finally.
    config: {
@@ -883,7 +883,7 @@ App.widgets.tryFlow = function (cfg) {
 };
 
 /* ============================================================
-   fileFlow — animate a file's life: open, write/read, close.
+   fileFlow - animate a file's life: open, write/read, close.
    config: {
      title, filename, code:[lines],
      steps:[{ line, mode, status:'open'|'closed', content:[lines],
@@ -928,7 +928,7 @@ App.widgets.fileFlow = function (cfg) {
 };
 
 /* ============================================================
-   arrayOp — animate a NumPy element-wise op (and broadcasting).
+   arrayOp - animate a NumPy element-wise op (and broadcasting).
    config: { title, a:[nums], b:[nums]|number, op:'+'|'-'|'*'|'/' }
    ============================================================ */
 App.widgets.arrayOp = function (cfg) {
@@ -966,7 +966,7 @@ App.widgets.arrayOp = function (cfg) {
 };
 
 /* ============================================================
-   dfFilter — animate a pandas DataFrame filter / sort.
+   dfFilter - animate a pandas DataFrame filter / sort.
    config: {
      title, columns:[names], rows:[[...]],
      scenarios:[{ label, filter:{col,op,value} } | { label, sort:{col,dir} }]
@@ -1042,7 +1042,7 @@ App.widgets.dfFilter = function (cfg) {
 };
 
 /* ============================================================
-   csvFlow — animate CSV round-trip: a table becomes comma-
+   csvFlow - animate CSV round-trip: a table becomes comma-
    separated text (write), then text is split back into rows (read).
    config: { title, columns:[names], rows:[[...]] }
    ============================================================ */
@@ -1082,7 +1082,7 @@ App.widgets.csvFlow = function (cfg) {
 };
 
 /* ============================================================
-   bigOViz — animate how each complexity class grows as n rises.
+   bigOViz - animate how each complexity class grows as n rises.
    config: { title, ns:[input sizes] }
    ============================================================ */
 App.widgets.bigOViz = function (cfg) {
@@ -1116,7 +1116,7 @@ App.widgets.bigOViz = function (cfg) {
 };
 
 /* ============================================================
-   ptrViz — animate a C pointer: p holds x's address (an arrow),
+   ptrViz - animate a C pointer: p holds x's address (an arrow),
    and *p follows the arrow to read or write x.
    config: { title, code:[lines], target:{addr,name}, pointer:{addr,name},
              steps:[{ line, xval, pval, arrow, deref:'read'|'write', note }] }
@@ -1149,7 +1149,7 @@ App.widgets.ptrViz = function (cfg) {
 };
 
 /* ============================================================
-   heapViz — animate the stack vs heap: frames push/pop, malloc
+   heapViz - animate the stack vs heap: frames push/pop, malloc
    adds a heap block, free() releases it (dangling afterwards).
    config: { title, steps:[{ stack:[{name,val,active}],
              heap:[{addr,label,active,freed}], note }] }
@@ -1175,7 +1175,7 @@ App.widgets.heapViz = function (cfg) {
 };
 
 /* ============================================================
-   arrViz — animate a contiguous array/string: each cell's address
+   arrViz - animate a contiguous array/string: each cell's address
    is base + i*size; step across it. NUL-terminator aware for strings.
    config: { title, base, elemSize, cells:[{val, nul}] }
    ============================================================ */
@@ -1196,6 +1196,760 @@ App.widgets.arrViz = function (cfg) {
         ? "Index " + i + ": the hidden <code>'\\0'</code> NUL terminator marks the end of the string."
         : "Index " + i + ": address = base + " + i + "×" + size + " = " + hex(base + i * size) + ". One calculation, so <code>arr[" + i + "]</code> is O(1).";
       return h("div", { class: "arrviz" }, row, h("div", { class: "tf-note", html: note }));
+    },
+  });
+};
+
+/* ============================================================
+   Shared "value-ball language": type -> color class + display label.
+   int=blue, float=teal, str=amber, bool=purple, None=grey.
+   Used by boxTrain (lists/arrays) and dictTrain (dicts).
+   ============================================================ */
+function btType(v) {
+  if (typeof v === "boolean") return "bool";
+  if (v === null || v === undefined) return "none";
+  if (typeof v === "number") return Number.isInteger(v) ? "int" : "float";
+  return "str";
+}
+function btLabel(v) {
+  if (v === null || v === undefined) return "None";
+  if (typeof v === "boolean") return v ? "True" : "False";
+  if (typeof v === "string") return "'" + v + "'";
+  return String(v);
+}
+
+/* Shared: the whole program on the right, current line marked (so the
+   reader sees the lines already run and the lines still to come). */
+function btCodePanel(code, line) {
+  const right = h("div", { class: "bt-code" });
+  code.forEach((ln, idx) => right.appendChild(h("div", { class: "bt-codeline" + (idx === line ? " bt-cur" : "") },
+    h("span", { class: "bt-marker" }, idx === line ? "▸" : " "),
+    h("span", { html: App.highlight(ln) || "&nbsp;" }))));
+  return right;
+}
+/* Wrap a step's visual (left) beside the whole-program panel (right). */
+function btTwoCol(left, code, line) {
+  const grid = h("div", { class: "bt-2col" });
+  grid.appendChild(left);
+  if (code && code.length) grid.appendChild(btCodePanel(code, line));
+  return grid;
+}
+
+/* ============================================================
+   boxTrain - a list as a train of coupled cars, each car holding a
+   value ball (colored by type). Under each car an odometer shows the
+   positive index (top) and negative index (bottom). Reused for arrays
+   (addresses under each car) and later stack/queue.
+   config: {
+     title, mode:'list'|'array', base, elemSize,
+     steps:[{
+       items:[v,...],          // full state this step (numbers or strings)
+       caption,                // html; describes the op (use <code>…</code>)
+       enter:[i,...],          // cars that just arrived -> arrive bounce
+       lift:[i,...],           // cars to lift+pulse -> "we read it"
+       flash:[i,...],          // cars whose ball changed -> color flash
+       leave:{value},          // a car rolling off the end (pop/remove) -> ghost
+       returned                // value returned by the op, shown in a tray
+     }]
+   }
+   ============================================================ */
+App.widgets.boxTrain = function (cfg) {
+  const mode = cfg.mode || "list";
+  const code = cfg.code || [];
+  return App.widgets.stepper({
+    title: cfg.title || "List operations",
+    steps: cfg.steps,
+    render: (s, i) => {
+      const grid = h("div", { class: "bt-2col" });
+
+      /* LEFT: the boxes, the variables assigned so far, a short description */
+      const left = h("div", { class: "bt-left" });
+      if (cfg.name) left.appendChild(h("div", { class: "bt-listname" }, cfg.name));
+      const track = h("div", { class: "bt-track bt-" + mode });
+      const items = s.items || [], n = items.length;
+      items.forEach((v, idx) => {
+        const cls = ["bt-car"];
+        if (s.enter && s.enter.includes(idx)) cls.push("bt-enter");
+        if (s.lift && s.lift.includes(idx)) cls.push("bt-lift");
+        if (s.flash && s.flash.includes(idx)) cls.push("bt-flash");
+        const car = h("div", { class: cls.join(" ") },
+          h("div", { class: "bt-ball bt-" + btType(v) }, btLabel(v)),
+          h("div", { class: "bt-odo" },
+            h("span", { class: "bt-ix" }, "[" + idx + "]"),
+            h("span", { class: "bt-nix" }, "[" + (idx - n) + "]")));
+        if (mode === "array" && cfg.base != null)
+          car.appendChild(h("div", { class: "bt-addr" }, "0x" + (cfg.base + idx * (cfg.elemSize || 4)).toString(16).toUpperCase()));
+        track.appendChild(car);
+      });
+      if (!n && !s.leave) track.appendChild(h("div", { class: "bt-empty" }, mode === "list" ? "[ ]" : "empty"));
+      if (s.leave) {
+        const v = s.leave.value;
+        track.appendChild(h("div", { class: "bt-car bt-leave" },
+          h("div", { class: "bt-ball bt-" + btType(v) }, btLabel(v)),
+          h("div", { class: "bt-odo" }, h("span", { class: "bt-ix" }, "off"))));
+      }
+      left.appendChild(track);
+
+      // variable boxes: values returned into names (a = nums[1], b = nums.pop()), persisting
+      const assigns = {};
+      for (let k = 0; k <= i; k++) { const a = cfg.steps[k].assign; if (a) assigns[a.name] = { value: a.value, set: k === i }; }
+      const names = Object.keys(assigns);
+      if (names.length) {
+        const vars = h("div", { class: "bt-vars" });
+        names.forEach((nm) => {
+          const a = assigns[nm];
+          vars.appendChild(h("div", { class: "bt-var" + (a.set ? " bt-var-set" : "") },
+            h("div", { class: "bt-varname" }, nm),
+            h("div", { class: "bt-ball bt-" + btType(a.value) }, btLabel(a.value))));
+        });
+        left.appendChild(vars);
+      }
+      if (s.caption) left.appendChild(h("div", { class: "bt-cap", html: s.caption }));
+
+      /* RIGHT: the whole program, current line marked (see past and upcoming lines) */
+      grid.appendChild(left);
+      if (code.length) {
+        const right = h("div", { class: "bt-code" });
+        code.forEach((ln, idx) => right.appendChild(h("div", { class: "bt-codeline" + (idx === s.line ? " bt-cur" : "") },
+          h("span", { class: "bt-marker" }, idx === s.line ? "▸" : " "),
+          h("span", { html: App.highlight(ln) || "&nbsp;" }))));
+        grid.appendChild(right);
+      }
+      return grid;
+    },
+  });
+};
+
+/* ============================================================
+   dictTrain - a dictionary as a wall of labeled lockers. Each locker
+   has a key plate (amber) on the door and a value ball inside. A set
+   flashes the swapped ball; get(missing) draws a ghost locker; a
+   lookup jumps straight to a locker (the fast-lookup lesson).
+   config: {
+     title, steps:[{
+       pairs:[[k,v],...],       // full state this step
+       caption,                 // html
+       flash:[k,...],           // keys whose value just changed
+       probe:k,                 // key we jumped straight to (lookup)
+       miss:k,                  // a missing key -> ghost locker appended
+       returned                 // value returned, shown in a tray
+     }]
+   }
+   ============================================================ */
+App.widgets.dictTrain = function (cfg) {
+  const code = cfg.code || [];
+  return App.widgets.stepper({
+    title: cfg.title || "Dictionary operations",
+    steps: cfg.steps,
+    render: (s, i) => {
+      const grid = h("div", { class: "bt-2col" });
+
+      /* LEFT: the lockers, variables assigned so far, a short description */
+      const left = h("div", { class: "bt-left" });
+      if (cfg.name) left.appendChild(h("div", { class: "bt-listname" }, cfg.name));
+      const wall = h("div", { class: "dt-wall" });
+      const pairs = s.pairs || [];
+      pairs.forEach(([k, v]) => {
+        const cls = ["dt-locker"];
+        if (s.flash && s.flash.includes(k)) cls.push("dt-flash");
+        if (s.probe === k) cls.push("dt-probe");
+        wall.appendChild(h("div", { class: cls.join(" ") },
+          h("div", { class: "dt-key" }, "'" + k + "'"),
+          h("div", { class: "dt-ball bt-" + btType(v) }, btLabel(v))));
+      });
+      if (!pairs.length && !s.miss) wall.appendChild(h("div", { class: "dt-locker dt-empty" }, "{ }"));
+      if (s.miss)
+        wall.appendChild(h("div", { class: "dt-locker dt-ghost dt-probe" },
+          h("div", { class: "dt-key" }, "'" + s.miss + "'"),
+          h("div", { class: "dt-ball bt-none" }, "?")));
+      left.appendChild(wall);
+
+      const assigns = {};
+      for (let k = 0; k <= i; k++) { const a = cfg.steps[k].assign; if (a) assigns[a.name] = { value: a.value, set: k === i }; }
+      const names = Object.keys(assigns);
+      if (names.length) {
+        const vars = h("div", { class: "bt-vars" });
+        names.forEach((nm) => {
+          const a = assigns[nm];
+          vars.appendChild(h("div", { class: "bt-var" + (a.set ? " bt-var-set" : "") },
+            h("div", { class: "bt-varname" }, nm),
+            h("div", { class: "bt-ball bt-" + btType(a.value) }, btLabel(a.value))));
+        });
+        left.appendChild(vars);
+      }
+      if (s.caption) left.appendChild(h("div", { class: "bt-cap", html: s.caption }));
+
+      /* RIGHT: the whole program, current line marked */
+      grid.appendChild(left);
+      if (code.length) {
+        const right = h("div", { class: "bt-code" });
+        code.forEach((ln, idx) => right.appendChild(h("div", { class: "bt-codeline" + (idx === s.line ? " bt-cur" : "") },
+          h("span", { class: "bt-marker" }, idx === s.line ? "▸" : " "),
+          h("span", { html: App.highlight(ln) || "&nbsp;" }))));
+        grid.appendChild(right);
+      }
+      return grid;
+    },
+  });
+};
+
+/* ============================================================
+   rebindViz - a name is a reference. Reassigning binds the same
+   name to a new value; the type can change (dynamic typing). Each
+   step adds the new value; the name points at the current one, older
+   values are shown unreferenced.
+   config: { title, name, steps:[{ value, note, flash }] }
+   ============================================================ */
+App.widgets.rebindViz = function (cfg) {
+  const nm = cfg.name || "x", code = cfg.code || [];
+  return App.widgets.stepper({
+    title: cfg.title || "One name, reassigned",
+    steps: cfg.steps,
+    render: (s, i) => {
+      const out = h("div", { class: "rb-wrap" });
+      const row = h("div", { class: "rb-objs" });
+      for (let j = 0; j <= i; j++) {
+        const st = cfg.steps[j], v = st.value, cur = j === i;
+        // JS can't distinguish 10.0 from 10, so allow explicit type/display overrides.
+        const t = st.type || btType(v), lbl = st.display != null ? st.display : btLabel(v);
+        row.appendChild(h("div", { class: "rb-obj" + (cur ? " rb-cur" : "") + (cur && s.flash ? " rb-flash" : "") },
+          h("div", { class: "rb-name" + (cur ? "" : " rb-hide") }, nm),
+          h("div", { class: "rb-arrow" + (cur ? "" : " rb-hide") }, "↓"),
+          h("div", { class: "rb-ball bt-" + t + (cur ? "" : " rb-dim") }, lbl),
+          h("div", { class: "rb-type" }, cur ? "type: " + (t === "none" ? "NoneType" : t) : "unreferenced")));
+      }
+      out.appendChild(row);
+      if (s.note) out.appendChild(h("div", { class: "bt-cap", html: s.note }));
+      return btTwoCol(out, code, s.line != null ? s.line : i);
+    },
+  });
+};
+
+/* ============================================================
+   aliasViz - two names can reference the SAME object. Mutating the
+   object through one name is visible through the other. copy() makes
+   a separate object. Compares identity (is) vs value (==).
+   config: { title, steps:[{
+     objects:[{ id, list:[...] }],   // objects on the heap this step
+     names:{ name: objId },          // which object each name references
+     flash:objId,                    // object just mutated
+     enter:objId,                    // object just created
+     compare:[[expr, boolean], ...], // is/== results to show
+     note
+   }] }
+   ============================================================ */
+App.widgets.aliasViz = function (cfg) {
+  return App.widgets.stepper({
+    title: cfg.title || "Two names can share one object",
+    steps: cfg.steps,
+    render: (s) => {
+      const out = h("div", { class: "al-wrap" });
+      const objs = h("div", { class: "al-objs" });
+      const names = s.names || {};
+      (s.objects || []).forEach((o) => {
+        const tags = Object.keys(names).filter((n) => names[n] === o.id);
+        const box = h("div", { class: "al-obj" + (s.flash === o.id ? " al-flash" : "") + (s.enter === o.id ? " al-enter" : "") });
+        const tagRow = h("div", { class: "al-tags" });
+        tags.forEach((n) => tagRow.appendChild(h("span", { class: "al-tag" }, n)));
+        if (!tags.length) tagRow.appendChild(h("span", { class: "al-tag al-none" }, "no name"));
+        box.appendChild(tagRow);
+        const cells = h("div", { class: "al-list" });
+        o.list.forEach((v) => cells.appendChild(h("span", { class: "al-cell bt-" + btType(v) }, btLabel(v))));
+        box.appendChild(cells);
+        box.appendChild(h("div", { class: "al-id" }, "list object " + o.id));
+        objs.appendChild(box);
+      });
+      out.appendChild(objs);
+      if (s.compare) {
+        const cmp = h("div", { class: "al-cmp" });
+        s.compare.forEach(([expr, val]) => cmp.appendChild(
+          h("span", { class: "al-chip " + (val ? "al-true" : "al-false") }, expr + " → " + (val ? "True" : "False"))));
+        out.appendChild(cmp);
+      }
+      if (s.note) out.appendChild(h("div", { class: "bt-cap", html: s.note }));
+      return out;
+    },
+  });
+};
+
+/* ============================================================
+   searchViz - linear search and binary search on the same sorted
+   data, advanced one comparison per step so their step counts can be
+   compared directly. Linear scans left to right; binary keeps a
+   low..high range and checks the middle, discarding half each step.
+   config: { title, data:[sorted numbers], target }
+   ============================================================ */
+App.widgets.searchViz = function (cfg) {
+  const data = cfg.data, target = cfg.target;
+  const lin = [];
+  for (let i = 0; i < data.length; i++) { lin.push(i); if (data[i] === target) break; }
+  const bin = [];
+  { let lo = 0, hi = data.length - 1;
+    while (lo <= hi) { const mid = (lo + hi) >> 1; bin.push({ lo, hi, mid });
+      if (data[mid] === target) break; else if (data[mid] < target) lo = mid + 1; else hi = mid - 1; } }
+  const total = Math.max(lin.length, bin.length);
+  const steps = []; for (let k = 0; k < total; k++) steps.push({ k });
+
+  function section(name, big, count, row) {
+    return h("div", { class: "sv-sect" },
+      h("div", { class: "sv-label" }, name + " ",
+        h("span", { class: "sv-big" }, big), h("span", { class: "sv-count" }, "steps: " + count)), row);
+  }
+
+  return App.widgets.stepper({
+    title: cfg.title || "Linear vs binary search",
+    steps,
+    render: (s) => {
+      const k = s.k, out = h("div", { class: "sv-wrap" });
+      out.appendChild(h("div", { class: "sv-head" }, "target = ", h("b", null, String(target))));
+
+      const li = Math.min(k, lin.length - 1), linActive = lin[li], linDone = k >= lin.length - 1;
+      const linRow = h("div", { class: "sv-row" });
+      data.forEach((v, idx) => {
+        let cls = "sv-cell";
+        if (linDone && idx === lin[lin.length - 1]) cls += " sv-found";
+        else if (idx === linActive) cls += " sv-active";
+        else if (idx < linActive) cls += " sv-checked";
+        linRow.appendChild(h("div", { class: cls }, String(v)));
+      });
+      out.appendChild(section("Linear", "O(n)", Math.min(k + 1, lin.length), linRow));
+
+      const bi = Math.min(k, bin.length - 1), st = bin[bi], binDone = k >= bin.length - 1;
+      const binRow = h("div", { class: "sv-row" });
+      data.forEach((v, idx) => {
+        let cls = "sv-cell";
+        if (binDone && idx === bin[bin.length - 1].mid) cls += " sv-found";
+        else if (idx < st.lo || idx > st.hi) cls += " sv-out";
+        else if (idx === st.mid) cls += " sv-active";
+        binRow.appendChild(h("div", { class: cls }, String(v)));
+      });
+      out.appendChild(section("Binary", "O(log n)", Math.min(k + 1, bin.length), binRow));
+
+      if (k === total - 1)
+        out.appendChild(h("div", { class: "bt-cap" }, "Result - linear: " + lin.length + " steps, binary: " + bin.length + " steps"));
+      return out;
+    },
+  });
+};
+
+/* ============================================================
+   bubbleViz - bubble sort as bars (height = value). Each step is one
+   comparison of a neighbouring pair; a swap is highlighted; after
+   each pass the largest remaining value settles at the end and locks.
+   config: { title, data:[numbers] }
+   ============================================================ */
+App.widgets.bubbleViz = function (cfg) {
+  const src = cfg.data, n = src.length, max = Math.max.apply(null, src);
+  const a = src.slice(), trace = [];
+  let comparisons = 0;
+  for (let i = 0; i < n - 1; i++) {
+    for (let j = 0; j < n - 1 - i; j++) {
+      comparisons++;
+      const swap = a[j] > a[j + 1];
+      trace.push({ arr: a.slice(), j, swap, lockedFrom: n - i, comparisons });
+      if (swap) { const tmp = a[j]; a[j] = a[j + 1]; a[j + 1] = tmp; }
+    }
+  }
+  trace.push({ arr: a.slice(), j: -1, swap: false, lockedFrom: 0, comparisons, done: true });
+
+  return App.widgets.stepper({
+    title: cfg.title || "Bubble sort",
+    steps: trace,
+    render: (s) => {
+      const out = h("div", { class: "bv-wrap" });
+      const bars = h("div", { class: "bv-bars" });
+      s.arr.forEach((v, idx) => {
+        let cls = "bv-bar";
+        if (idx >= s.lockedFrom) cls += " bv-locked";
+        else if (idx === s.j || idx === s.j + 1) cls += s.swap ? " bv-swap" : " bv-cmp";
+        bars.appendChild(h("div", { class: cls, style: "height:" + (v / max * 100) + "%" },
+          h("span", { class: "bv-val" }, String(v))));
+      });
+      out.appendChild(bars);
+      const state = s.done ? "sorted" : s.swap ? "swap (left > right)" : "in order, no swap";
+      out.appendChild(h("div", { class: "bv-info" }, "comparisons: " + s.comparisons + " · " + state));
+      return out;
+    },
+  });
+};
+
+/* ============================================================
+   cycleFlow - the information processing cycle: Input → Processing →
+   Storage → Output. Each step activates one stage; the data value is
+   shown at each stage it has reached (data transforms at Processing).
+   config: { title, stages:[{ name, data, note }] }
+   ============================================================ */
+App.widgets.cycleFlow = function (cfg) {
+  const stages = cfg.stages || [
+    { name: "Input", data: "key 'A'", note: "Data enters: keyboard, mouse, scanner, microphone." },
+    { name: "Processing", data: "'A' → 65", note: "The CPU transforms the data with instructions." },
+    { name: "Storage", data: "65 saved", note: "The result is kept in memory or on disk." },
+    { name: "Output", data: "show 'A'", note: "Information leaves: monitor, printer, speaker." },
+  ];
+  return App.widgets.stepper({
+    title: cfg.title || "The information processing cycle",
+    steps: stages,
+    render: (s, i) => {
+      const out = h("div", { class: "cf-wrap" });
+      const row = h("div", { class: "cf-row" });
+      stages.forEach((st, idx) => {
+        if (idx) row.appendChild(h("div", { class: "cf-arrow" + (idx <= i ? " cf-on" : "") }, "→"));
+        row.appendChild(h("div", { class: "cf-stage" + (idx === i ? " cf-active" : idx < i ? " cf-done" : "") },
+          h("div", { class: "cf-name" }, st.name),
+          h("div", { class: "cf-data" }, idx <= i ? st.data : "")));
+      });
+      out.appendChild(row);
+      out.appendChild(h("div", { class: "bt-cap", html: stages[i].note }));
+      return out;
+    },
+  });
+};
+
+/* ============================================================
+   powerToggle - RAM is volatile, ROM is non-volatile. Toggle power:
+   OFF clears the RAM cells; ROM cells keep their contents.
+   config: { title, ram:[values], rom:[values] }
+   ============================================================ */
+App.widgets.powerToggle = function (cfg) {
+  const ram = cfg.ram || ["x = 25", "name = 'Sophia'", "score = 90"];
+  const rom = cfg.rom || ["BIOS", "bootloader", "firmware"];
+  let on = true;
+  const stage = h("div");
+  const btn = h("button", { class: "w-btn on" });
+  function draw() {
+    btn.textContent = on ? "Power: ON" : "Power: OFF";
+    btn.classList.toggle("on", on);
+    stage.innerHTML = "";
+    const cols = h("div", { class: "pt-cols" });
+    const mk = (label, vals, volatile_) => {
+      const col = h("div", { class: "pt-col" }, h("div", { class: "pt-head" }, label));
+      vals.forEach((v) => {
+        const cleared = volatile_ && !on;
+        col.appendChild(h("div", { class: "pt-cell" + (cleared ? " pt-empty" : "") }, cleared ? "" : v));
+      });
+      return col;
+    };
+    cols.appendChild(mk("RAM (volatile)", ram, true));
+    cols.appendChild(mk("ROM (non-volatile)", rom, false));
+    stage.appendChild(cols);
+    stage.appendChild(h("div", { class: "bt-cap" }, on
+      ? "Power ON - RAM and ROM both hold data."
+      : "Power OFF - RAM is cleared. ROM keeps its data."));
+  }
+  btn.addEventListener("click", () => { on = !on; draw(); });
+  draw();
+  return widgetShell(cfg.title || "Cut the power: RAM vs ROM",
+    h("div", null, h("div", { class: "w-row", style: "margin-bottom:12px" }, btn), stage));
+};
+
+/* ============================================================
+   seekViz - reading a block. HDD moves a head to the track, waits for
+   the sector to rotate under it, then reads (milliseconds). SSD
+   addresses the cell electronically and reads at once (microseconds).
+   config: { title }
+   ============================================================ */
+App.widgets.seekViz = function (cfg) {
+  const cx = 95, cy = 95;
+  const pt = (r, aDeg) => { const a = aDeg * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
+  const phases = [
+    { label: "HDD: move the head to the track", ms: 9.0, headR: 80, secA: 150, read: false },
+    { label: "HDD: wait for the sector to rotate under the head", ms: 13.0, headR: 45, secA: 20, read: false },
+    { label: "HDD: read the sector", ms: 13.1, headR: 45, secA: -90, read: true },
+  ];
+  return App.widgets.stepper({
+    title: cfg.title || "Reading a block: HDD vs SSD",
+    steps: phases,
+    render: (s) => {
+      const [hx, hy] = pt(s.headR, -90), [sx, sy] = pt(45, s.secA);
+      const secColor = s.read ? "var(--accent-2)" : "var(--warn)";
+      const hdd =
+        '<svg viewBox="0 0 190 190" class="sk-svg">' +
+        '<circle cx="' + cx + '" cy="' + cy + '" r="80" style="fill:var(--bg-2);stroke:var(--border)"/>' +
+        '<circle cx="' + cx + '" cy="' + cy + '" r="45" stroke-dasharray="4 4" style="fill:none;stroke:var(--border)"/>' +
+        '<circle cx="' + cx + '" cy="' + cy + '" r="10" style="fill:var(--border)"/>' +
+        '<circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="9" style="fill:' + secColor + '"/>' +
+        '<line x1="178" y1="10" x2="' + hx.toFixed(1) + '" y2="' + hy.toFixed(1) + '" style="stroke:var(--accent);stroke-width:4"/>' +
+        '<circle cx="' + hx.toFixed(1) + '" cy="' + hy.toFixed(1) + '" r="6" style="fill:var(--accent)"/>' +
+        '</svg>';
+      let cells = "";
+      for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++)
+        cells += '<div class="sk-ssd-cell' + (r === 1 && c === 2 ? " sk-hit" : "") + '"></div>';
+      return '<div class="sk-grid">' +
+        '<div class="sk-panel"><div class="sk-ptitle">HDD - moving parts</div>' + hdd +
+        '<div class="sk-time">' + s.ms.toFixed(1) + ' ms</div></div>' +
+        '<div class="sk-panel"><div class="sk-ptitle">SSD - no moving parts</div>' +
+        '<div class="sk-ssd">' + cells + '</div><div class="sk-time">0.1 ms</div></div>' +
+        '</div><div class="bt-cap">' + s.label + ' &nbsp;·&nbsp; SSD: cell addressed directly, read now.</div>';
+    },
+  });
+};
+
+/* ============================================================
+   levelDrop - one line of code travels down the levels of a computer
+   system (User → … → Digital Logic). Each step activates one level and
+   shows what the line has become there; at Level 0 the gates output it.
+   config: { title, levels:[{ n, name, token, desc, out }] }
+   ============================================================ */
+App.widgets.levelDrop = function (cfg) {
+  const levels = cfg.levels || [
+    { n: 6, name: "User", token: 'run print("Hi")', desc: "You run the program." },
+    { n: 5, name: "High-Level Language", token: 'print("Hi")', desc: "Python source code - your code lives here." },
+    { n: 4, name: "Assembly", token: "CALL print", desc: "Human-readable mnemonics." },
+    { n: 3, name: "Operating System", token: "write() syscall", desc: "The OS handles the request." },
+    { n: 2, name: "Machine (ISA)", token: "10110100 …", desc: "Binary instructions the CPU runs." },
+    { n: 1, name: "Control", token: "micro-ops", desc: "Control signals drive the logic." },
+    { n: 0, name: "Digital Logic", token: "Hi", desc: "Gates switch and output the result.", out: true },
+  ];
+  return App.widgets.stepper({
+    title: cfg.title || 'One line down the levels: print("Hi")',
+    steps: levels,
+    render: (s, i) => {
+      const out = h("div", { class: "ld-wrap" });
+      const col = h("div", { class: "ld-levels" });
+      levels.forEach((lv, idx) => {
+        col.appendChild(h("div", { class: "ld-level" + (idx === i ? " ld-active" : idx < i ? " ld-passed" : "") },
+          h("span", { class: "ld-num" }, "L" + lv.n),
+          h("span", { class: "ld-name" }, lv.name),
+          idx === i ? h("span", { class: "ld-token" + (lv.out ? " ld-outtok" : "") }, lv.token) : null));
+      });
+      out.appendChild(col);
+      out.appendChild(h("div", { class: "bt-cap" }, levels[i].desc));
+      return out;
+    },
+  });
+};
+
+/* ============================================================
+   branchViz - if / elif / else. Conditions are checked top to bottom;
+   the first True branch runs, the rest are skipped. Switch the input
+   scenario to see a different branch light up.
+   config: {
+     title, var,
+     branches:[{ kw, cond, label, else }],   // last one is the else
+     scenarios:[{ value, evals:[bool per condition] }]
+   }
+   ============================================================ */
+App.widgets.branchViz = function (cfg) {
+  const branches = cfg.branches, varName = cfg.var || "x";
+  const condCount = branches.filter((b) => !b.else).length;
+
+  function buildStates(scn) {
+    let taken = scn.evals.findIndex((v) => v === true);
+    if (taken === -1) taken = branches.length - 1;               // the else
+    const varLine = varName + " = " + btLabel(scn.value);
+    const states = [];
+    const stop = (taken < condCount) ? taken : condCount - 1;
+    for (let k = 0; k <= stop; k++) {
+      const gates = branches.map((b, idx) => idx < k ? "false" : idx === k ? (scn.evals[k] ? "true" : "false") : "pending");
+      states.push({ varLine, gates, note: branches[k].cond + " → " + (scn.evals[k] ? "True" : "False") });
+    }
+    const gates = branches.map((b, idx) => idx < taken ? "false" : idx === taken ? "run" : "skip");
+    const tb = branches[taken];
+    states.push({ varLine, gates, note: (tb.else ? "else" : tb.cond) + " → runs: " + tb.label, done: true });
+    return states;
+  }
+
+  let i = 0, states = buildStates(cfg.scenarios[0]);
+  const stage = h("div");
+  const note = h("div", { class: "brv-note" });
+  const counter = h("span", { class: "mono", style: "color:var(--text-dim)" });
+  const prev = h("button", { class: "w-btn" }, "‹ Prev");
+  const next = h("button", { class: "w-btn on" }, "Next ›");
+  const reset = h("button", { class: "w-btn" }, "⟲");
+
+  const scRow = h("div", { class: "w-row", style: "margin-bottom:12px" });
+  cfg.scenarios.forEach((scn, idx) => {
+    const btn = h("button", { class: "w-btn" + (idx === 0 ? " on" : "") }, varName + " = " + btLabel(scn.value));
+    btn.addEventListener("click", () => {
+      i = 0; states = buildStates(scn);
+      scRow.querySelectorAll(".w-btn").forEach((x) => x.classList.remove("on"));
+      btn.classList.add("on"); draw();
+    });
+    scRow.appendChild(btn);
+  });
+
+  function draw() {
+    const st = states[i];
+    stage.innerHTML = "";
+    stage.appendChild(h("div", { class: "brv-var" }, st.varLine));
+    const list = h("div", { class: "brv-gates" });
+    branches.forEach((b, idx) => {
+      const gs = st.gates[idx];
+      const badge = gs === "true" ? "True" : gs === "false" ? "False" : "";
+      list.appendChild(h("div", { class: "brv-gate brv-" + gs },
+        h("span", { class: "brv-kw" }, b.kw || (b.else ? "else" : "if")),
+        h("span", { class: "brv-cond" }, b.else ? "" : b.cond),
+        badge ? h("span", { class: "brv-badge brv-b-" + gs }, badge) : null,
+        h("span", { class: "brv-body" }, b.label)));
+    });
+    stage.appendChild(list);
+    note.innerHTML = st.note;
+    counter.textContent = " step " + (i + 1) + " / " + states.length;
+    prev.disabled = i === 0; next.disabled = i === states.length - 1;
+  }
+  prev.addEventListener("click", () => { if (i > 0) { i--; draw(); } });
+  next.addEventListener("click", () => { if (i < states.length - 1) { i++; draw(); } });
+  reset.addEventListener("click", () => { i = 0; draw(); });
+  draw();
+
+  return widgetShell(cfg.title || "if / elif / else",
+    h("div", null, scRow, stage, note,
+      h("div", { class: "w-row", style: "margin-top:12px" }, prev, next, reset, counter)));
+};
+
+/* ============================================================
+   callStack - each call pushes a frame (top = most recent). The base
+   case stops the recursion; frames then return in reverse order. Reused
+   for recursion and for C function frames.
+   config: {
+     title, steps:[{
+       frames:[{ call, detail, state:'call'|'wait'|'base'|'return', ret }],
+       note, returned
+     }]
+   }
+   ============================================================ */
+App.widgets.callStack = function (cfg) {
+  const code = cfg.code || [];
+  return App.widgets.stepper({
+    title: cfg.title || "The call stack",
+    steps: cfg.steps,
+    render: (s) => {
+      const left = h("div", { class: "cs-wrap" });
+      left.appendChild(h("div", { class: "cs-head" }, "Call stack - top = most recent"));
+      const stack = h("div", { class: "cs-stack" });
+      const frames = s.frames || [];
+      frames.slice().reverse().forEach((f) => {
+        stack.appendChild(h("div", { class: "cs-frame cs-" + (f.state || "wait") },
+          h("div", { class: "cs-line" },
+            h("span", { class: "cs-fn" }, f.call),
+            f.ret != null ? h("span", { class: "cs-ret" }, "→ " + f.ret) : null),
+          f.detail ? h("div", { class: "cs-detail" }, f.detail) : null));
+      });
+      if (!frames.length) stack.appendChild(h("div", { class: "cs-empty" }, "(stack empty)"));
+      left.appendChild(stack);
+      if (s.note) left.appendChild(h("div", { class: "bt-cap", html: s.note }));
+      if (s.returned != null) left.appendChild(h("div", { class: "bt-ret" }, "→ result ", h("b", null, s.returned)));
+      return btTwoCol(left, code, s.line);
+    },
+  });
+};
+
+/* ============================================================
+   pseudoMap - build an algorithm line by line, pseudocode on the left
+   and the matching Python on the right. Each step reveals one row and
+   highlights the pair.
+   config: { title, rows:[{ pseudo, code, note }] }
+   ============================================================ */
+App.widgets.pseudoMap = function (cfg) {
+  const rows = cfg.rows;
+  return App.widgets.stepper({
+    title: cfg.title || "Pseudocode → Python",
+    steps: rows,
+    render: (s, i) => {
+      const out = h("div", { class: "pm-wrap" });
+      const grid = h("div", { class: "pm-grid" });
+      grid.appendChild(h("div", { class: "pm-colhead" }, "Pseudocode"));
+      grid.appendChild(h("div", { class: "pm-colhead" }, "Python"));
+      rows.forEach((r, idx) => {
+        const shown = idx <= i, act = idx === i;
+        grid.appendChild(h("div", { class: "pm-cell" + (shown ? "" : " pm-blank") + (act ? " pm-active" : "") }, shown ? r.pseudo : ""));
+        grid.appendChild(h("div", { class: "pm-cell pm-py" + (shown ? "" : " pm-blank") + (act ? " pm-active" : "") }, shown ? r.code : ""));
+      });
+      out.appendChild(grid);
+      if (rows[i].note) out.appendChild(h("div", { class: "pm-note", html: rows[i].note }));
+      return out;
+    },
+  });
+};
+
+/* ============================================================
+   buildPipeline - how a compiled C program is built and run: source →
+   compile (object file) → link (executable) → run. Each step activates
+   one stage and reveals the artifact it produces.
+   config: { title, stages:[{ name, artifact, note }] }
+   ============================================================ */
+App.widgets.buildPipeline = function (cfg) {
+  const stages = cfg.stages || [
+    { name: "Source", artifact: "hello.c", note: "You write the C source code." },
+    { name: "Compile (gcc)", artifact: "hello.o", note: "The compiler checks types and produces machine code (an object file). Not runnable yet." },
+    { name: "Link", artifact: "hello", note: "The linker joins your object file with library code into one executable." },
+    { name: "Run", artifact: '"Hello, World!"', note: "The CPU runs the executable directly. No interpreter." },
+  ];
+  return App.widgets.stepper({
+    title: cfg.title || "From source to running program",
+    steps: stages,
+    render: (s, i) => {
+      const out = h("div", { class: "bp-wrap" });
+      const row = h("div", { class: "bp-row" });
+      stages.forEach((st, idx) => {
+        if (idx) row.appendChild(h("div", { class: "bp-arrow" + (idx <= i ? " bp-on" : "") }, "→"));
+        row.appendChild(h("div", { class: "bp-stage" + (idx === i ? " bp-active" : idx < i ? " bp-done" : "") },
+          h("div", { class: "bp-name" }, st.name),
+          h("div", { class: "bp-artifact" }, idx <= i ? h("span", { class: "bp-file" }, st.artifact) : "")));
+      });
+      out.appendChild(row);
+      out.appendChild(h("div", { class: "bt-cap", html: stages[i].note }));
+      return out;
+    },
+  });
+};
+
+/* ============================================================
+   predict - a "what will happen?" beat placed just before an animation.
+   The student commits to a guess; picking one reveals which is right
+   and a short explanation. In slide mode this is its own slide before
+   the animation reveals the answer.
+   config: { title, question, options:[{ label, correct }], explain }
+   ============================================================ */
+App.widgets.predict = function (cfg) {
+  const wrap = h("div", { class: "pr-wrap" });
+  wrap.appendChild(h("div", { class: "pr-kick" }, "Predict"));
+  wrap.appendChild(h("div", { class: "pr-q", html: cfg.question }));
+  const opts = h("div", { class: "pr-opts" });
+  const explain = h("div", { class: "pr-explain", html: cfg.explain || "" });
+  let answered = false;
+  cfg.options.forEach((o) => {
+    const btn = h("button", { class: "pr-opt" }, o.label);
+    btn.addEventListener("click", () => {
+      if (answered) return; answered = true;
+      cfg.options.forEach((oo, k) => {
+        const b = opts.children[k];
+        b.disabled = true;
+        if (oo.correct) b.classList.add("pr-correct");
+        else if (b === btn) b.classList.add("pr-wrong");
+      });
+      explain.classList.add("show");
+    });
+    opts.appendChild(btn);
+  });
+  wrap.appendChild(opts);
+  wrap.appendChild(explain);
+  return widgetShell(cfg.title || "What will happen?", wrap);
+};
+
+/* ============================================================
+   pyToC - the same concept in Python (left) and C (right), stepped
+   construct by construct. Lets students carry Python knowledge into
+   C syntax. Python column is syntax-highlighted; C column is plain.
+   config: { title, pairs:[{ concept, py:[lines], c:[lines], note }] }
+   ============================================================ */
+App.widgets.pyToC = function (cfg) {
+  return App.widgets.stepper({
+    title: cfg.title || "Same logic - Python vs C",
+    steps: cfg.pairs,
+    render: (s) => {
+      const col = (label, lines, cls, isPy) => {
+        const box = h("div", { class: "bt-code" });
+        (lines || []).forEach((ln) => box.appendChild(h("div", { class: "bt-codeline" },
+          h("span", { html: isPy ? (App.highlight(ln) || "&nbsp;") : (App.esc(ln) || "&nbsp;") }))));
+        return h("div", { class: "p2c-col" }, h("div", { class: "p2c-lang " + cls }, label), box);
+      };
+      const grid = h("div", { class: "p2c-grid" },
+        col("Python", s.py, "p2c-py", true), col("C", s.c, "p2c-c", false));
+      return h("div", null,
+        s.concept ? h("div", { class: "p2c-concept" }, s.concept) : null,
+        grid,
+        s.note ? h("div", { class: "bt-cap", html: s.note }) : null);
     },
   });
 };

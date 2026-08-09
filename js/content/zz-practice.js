@@ -1,5 +1,5 @@
 /* ============================================================
-   zz-practice.js — appends a "Coding Practice" lesson to the END
+   zz-practice.js - appends a "Coding Practice" lesson to the END
    of every topic: "write code to …" questions with a writable,
    runnable editor and an auto-checking Check button.
    Loaded after all topics + zz-examples, before app.js.
@@ -25,8 +25,8 @@
       { prompt: "Write code to print the 7× table from 7×1 to 7×5, like:<br><code>7 x 1 = 7</code> … each on its own line.", expected: "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35", hint: "for i in range(1, 6): print(f\"7 x {i} = {7*i}\")" },
     ],
     t04: [
-      { prompt: "Given <code>a, b, c = 5, 9, 2</code>, write code to print the <b>largest</b> value.", starter: "a, b, c = 5, 9, 2\n", expected: "9", hint: "Use max(a, b, c) — or nested if statements." },
-      { prompt: "Write code to print a countdown from 3 to 1, then <b>Go!</b> — each on its own line.", expected: "3\n2\n1\nGo!" },
+      { prompt: "Given <code>a, b, c = 5, 9, 2</code>, write code to print the <b>largest</b> value.", starter: "a, b, c = 5, 9, 2\n", expected: "9", hint: "Use max(a, b, c) - or nested if statements." },
+      { prompt: "Write code to print a countdown from 3 to 1, then <b>Go!</b> - each on its own line.", expected: "3\n2\n1\nGo!" },
     ],
     t05: [
       { prompt: "Write a function <code>double(n)</code> that returns <code>n * 2</code>, then print <code>double(21)</code>.", expected: "42" },
@@ -40,7 +40,7 @@
     ],
     t07: [
       { prompt: "Write code that tries <code>10 / 0</code> and instead prints <b>cannot divide by zero</b> (no crash).", expected: "cannot divide by zero", hint: "Wrap it in try / except ZeroDivisionError." },
-      { prompt: "For each value in <code>[5, 0, 2]</code>, print <code>100 // value</code>, or <b>skip</b> if it would divide by zero — one per line.", expected: "20\nskip\n50", hint: "try the division inside the loop; except prints 'skip'." },
+      { prompt: "For each value in <code>[5, 0, 2]</code>, print <code>100 // value</code>, or <b>skip</b> if it would divide by zero - one per line.", expected: "20\nskip\n50", hint: "try the division inside the loop; except prints 'skip'." },
     ],
     t08: [
       { prompt: "Write code to save the numbers 1–5 to a file, read it back, and print their <b>sum</b>.", expected: "15", hint: "Write each number + '\\n', then read and int() each line." },

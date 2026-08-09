@@ -1,5 +1,5 @@
 /* ============================================================
-   core.js — namespace, registry, helpers
+   core.js - namespace, registry, helpers
    ============================================================ */
 window.App = window.App || {};
 App.TOPICS = [];

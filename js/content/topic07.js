@@ -1,4 +1,4 @@
-/* ===================== Topic 07 — Data Visualization & Exception Handling ===================== */
+/* ===================== Topic 07 - Data Visualization & Exception Handling ===================== */
 App.registerTopic({
   id: "t07",
   title: "Data Visualization & Exceptions",
@@ -9,7 +9,7 @@ App.registerTopic({
     {
       id: "matplotlib-basics",
       title: "Matplotlib basics",
-      sub: "Line plots, titles, labels — rendered live in your browser.",
+      sub: "Line plots, titles, labels - rendered live in your browser.",
       slides: "07:4–7",
       keywords: "matplotlib pyplot plot show line chart title label legend grid",
       learn: [
@@ -20,10 +20,10 @@ App.registerTopic({
             { c: "plt.plot(x, y)", e: "Maps each x to its y and draws a line." },
             { c: "plt.show()", e: "Renders the figure. (Here, the chart appears under the editor.)" },
           ] },
-        { type: "note", title: "It really runs", html: "The <b>Try it Live</b> editors below download Matplotlib the first time and draw the chart inline — no Jupyter needed." },
+        { type: "note", title: "It really runs", html: "The <b>Try it Live</b> editors below download Matplotlib the first time and draw the chart inline - no Jupyter needed." },
       ],
       live: [
-        { title: "Run me — a real chart appears below", code: "import matplotlib.pyplot as plt\nx = [1, 2, 3, 4, 5]\ny = [10, 20, 25, 30, 35]\nplt.plot(x, y, marker='o', linestyle='--', color='g', label=\"Data Line\")\nplt.title(\"Customized Line Plot\")\nplt.xlabel(\"X-Axis\")\nplt.ylabel(\"Y-Axis\")\nplt.legend()\nplt.grid(True)\nplt.show()" },
+        { title: "Run me - a real chart appears below", code: "import matplotlib.pyplot as plt\nx = [1, 2, 3, 4, 5]\ny = [10, 20, 25, 30, 35]\nplt.plot(x, y, marker='o', linestyle='--', color='g', label=\"Data Line\")\nplt.title(\"Customized Line Plot\")\nplt.xlabel(\"X-Axis\")\nplt.ylabel(\"Y-Axis\")\nplt.legend()\nplt.grid(True)\nplt.show()" },
       ],
       quiz: [
         { q: "What's the conventional alias for matplotlib.pyplot?", choices: ["mp", "plt", "plot", "mpl"], answer: 1, explain: "import matplotlib.pyplot as plt is the standard convention." },
@@ -38,10 +38,10 @@ App.registerTopic({
       keywords: "bar scatter histogram hist savefig chart type",
       learn: [
         { type: "list", title: "Common chart types", items: [
-          "<code>plt.bar(categories, values)</code> — compare categories.",
-          "<code>plt.scatter(x, y)</code> — relationship between two variables.",
-          "<code>plt.hist(data, bins=30)</code> — distribution of one variable.",
-          "<code>plt.savefig(\"plot.png\", dpi=300)</code> — save to a file.",
+          "<code>plt.bar(categories, values)</code> - compare categories.",
+          "<code>plt.scatter(x, y)</code> - relationship between two variables.",
+          "<code>plt.hist(data, bins=30)</code> - distribution of one variable.",
+          "<code>plt.savefig(\"plot.png\", dpi=300)</code> - save to a file.",
         ] },
       ],
       live: [
@@ -55,7 +55,7 @@ App.registerTopic({
     {
       id: "exceptions",
       title: "Exception handling",
-      sub: "try / except / else / finally — don't let bad input crash you.",
+      sub: "try / except / else / finally - don't let bad input crash you.",
       slides: "07:12–20",
       keywords: "exception try except else finally error handling valueerror zerodivision filenotfound",
       learn: [
@@ -112,7 +112,7 @@ App.registerTopic({
         { title: "Harder: raise your own, then else", code: "def check_age(age):\n    if age < 0:\n        raise ValueError(\"Age cannot be negative.\")\n    print(f\"Age is {age}.\")\n\ntry:\n    check_age(-5)\nexcept ValueError as e:\n    print(\"Caught:\", e)\nelse:\n    print(\"No error.\")" },
       ],
       quiz: [
-        { q: "Which block always runs, error or not?", choices: ["try", "except", "else", "finally"], answer: 3, explain: "finally always runs — perfect for cleanup like closing files." },
+        { q: "Which block always runs, error or not?", choices: ["try", "except", "else", "finally"], answer: 3, explain: "finally always runs - perfect for cleanup like closing files." },
         { q: "`else` in a try statement runs when…", choices: ["An exception occurs", "No exception occurs", "Always", "Never"], answer: 1, explain: "The else block runs only if the try block raised nothing." },
       ],
     },
