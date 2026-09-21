@@ -19,7 +19,7 @@
       slides.push({ kicker: KICK[b.type] || "Detail", title: curTitle, blocks });
     });
     flush();
-    (L.live || []).forEach((lv) => slides.push({ kicker: "Try it", title: lv.title || "Try it", blocks: [{ type: "livecode", code: lv.code, title: lv.title }] }));
+    (L.live || []).forEach((lv) => slides.push({ kicker: "Try it", title: lv.title || "Try it", blocks: [{ type: "livecode", code: lv.code, title: lv.title, lang: lv.lang, inputs: lv.inputs }] }));
     (L.quiz || []).forEach((q, i) => slides.push({ kicker: "Question " + (i + 1), title: "Check yourself", blocks: [{ __quiz: q }] }));
     return slides;
   }
@@ -34,8 +34,12 @@
     if (s.sub) el.appendChild(h("p", { class: "slide-sub" }, s.sub));
     const texts = s.blocks.filter(isText);
     const feats = s.blocks.filter((b) => !isText(b));
+    // A runnable example that carries its own line-by-line explanation lays itself
+    // out side-by-side, so give it the full slide width instead of squeezing it
+    // into a right-hand column next to the intro text.
+    const selfExplains = feats.some((b) => !b.__quiz && b.type === "example" && !b.norun && b.annot && b.annot.length);
     // Side-by-side: explanation on the left, the visual/example on the right.
-    if (!s.cover && texts.length && feats.length) {
+    if (!s.cover && texts.length && feats.length && !selfExplains) {
       const left = h("div", { class: "slide-col" }); texts.forEach((b) => left.appendChild(render1(b)));
       const right = h("div", { class: "slide-col" }); feats.forEach((b) => right.appendChild(render1(b)));
       el.appendChild(h("div", { class: "slide-split" }, left, right));

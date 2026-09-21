@@ -13,7 +13,7 @@ App.registerTopic({
       slides: "08:4–11",
       keywords: "file open read write close with mode os module append",
       learn: [
-        { type: "text", html: "<span class='term'>File handling</span> saves data that outlives one run.<br>RAM forgets, disk remembers.<br>You <code>open()</code> a file in a <b>mode</b>, use it, then close it." },
+        { type: "text", html: "<span class='term'>File handling</span> saves data that outlives one run.<br>RAM is cleared on power off; disk keeps data.<br>You <code>open()</code> a file in a <b>mode</b>, use it, then close it." },
 
         { type: "subhead", text: "The life of a file" },
         { type: "widget", name: "fileFlow", config: {
@@ -67,36 +67,67 @@ App.registerTopic({
       ],
     },
     {
-      id: "csv-json",
-      title: "CSV & JSON files",
-      sub: "Two everyday data formats.",
-      slides: "08:12–15",
-      keywords: "csv json writer reader dump load serialize",
+      id: "csv",
+      title: "CSV files",
+      sub: "A table saved as comma-separated text.",
+      slides: "08:12–13",
+      keywords: "csv writer reader dictreader rows comma table",
       learn: [
-        { type: "text", html: "Two file formats you meet everywhere:<br><b>CSV</b> is a table as comma-separated text.<br><b>JSON</b> is structured data (dicts and lists) as text." },
+        { type: "text", html: "<b>CSV</b> = a table saved as text.<br>One row per line.<br>Values separated by commas." },
 
-        { type: "subhead", text: "CSV: a table becomes text, and back" },
+        { type: "subhead", text: "Table becomes text, and back" },
         { type: "widget", name: "csvFlow", config: {
           filename: "data.csv",
           columns: ["Name", "Age", "City"],
           rows: [["Alice", 30, "New York"], ["Bob", 25, "SF"]],
         } },
 
-        { type: "deflist", title: "Two modules", items: [
-          { t: "<b>csv</b>", d: "<code>csv.writer(f).writerow([...])</code> to write, <code>csv.reader(f)</code> to read rows." },
-          { t: "<b>json</b>", d: "<code>json.dump(data, f)</code> to write, <code>json.load(f)</code> to read. Works directly with dicts and lists." },
+        { type: "deflist", title: "The csv module", items: [
+          { t: "<code>csv.writer(f)</code>", d: "<code>.writerow([...])</code> writes one row." },
+          { t: "<code>csv.reader(f)</code>", d: "Loops the rows, each a list of strings." },
+          { t: "<code>csv.DictReader(f)</code>", d: "Reads each row as a dict keyed by the header." },
+        ] },
+        { type: "example", caption: "write rows, then read them back", code:
+"import csv\nwith open('data.csv', 'w', newline='') as f:\n    w = csv.writer(f)\n    w.writerow(['Name', 'Age'])\n    w.writerow(['Alice', 30])\n\nwith open('data.csv', 'r') as f:\n    for row in csv.reader(f):\n        print(row)",
+          output: "['Name', 'Age']\n['Alice', '30']" },
+      ],
+      live: [
+        { title: "Easy: write rows, read them back", code: "import csv\nwith open('data.csv', 'w', newline='') as f:\n    w = csv.writer(f)\n    w.writerow(['Name', 'Age', 'City'])\n    w.writerow(['Alice', 30, 'New York'])\n    w.writerow(['Bob', 25, 'San Francisco'])\n\nwith open('data.csv', 'r') as f:\n    for row in csv.reader(f):\n        print(row)" },
+        { title: "Harder: read rows as dicts (DictReader)", code: "import csv\nwith open('data.csv', 'w', newline='') as f:\n    w = csv.writer(f)\n    w.writerow(['Name', 'Age'])\n    w.writerow(['Alice', 30])\n    w.writerow(['Bob', 25])\n\nwith open('data.csv', 'r') as f:\n    for row in csv.DictReader(f):\n        print(dict(row))" },
+      ],
+      quiz: [
+        { q: "In a CSV file, values on one line are separated by…", choices: ["spaces", "commas", "tabs", "semicolons"], answer: 1, explain: "CSV = comma-separated values, one row per line." },
+        { q: "Which reads each CSV row as a dict keyed by the header?", choices: ["csv.reader", "csv.DictReader", "json.load", "open"], answer: 1, explain: "DictReader uses the first row as the keys." },
+      ],
+    },
+    {
+      id: "json",
+      title: "JSON files",
+      sub: "Dicts and lists saved as text.",
+      slides: "08:14–15",
+      keywords: "json dump load dumps loads dict list serialize deserialize nested",
+      learn: [
+        { type: "text", html: "<b>JSON</b> = structured data saved as text.<br>Works directly with <b>dicts</b> and <b>lists</b>.<br>The common format for web data and configs." },
+
+        { type: "subhead", text: "dict to text, and back" },
+        { type: "widget", name: "jsonFlow", config: { data: { name: "Alice", age: 30, skills: ["py", "sql"] } } },
+
+        { type: "deflist", title: "The json module", items: [
+          { t: "<code>json.dump(data, f)</code>", d: "Writes a dict or list to a file as text." },
+          { t: "<code>json.load(f)</code>", d: "Reads the text back into a dict or list." },
+          { t: "<code>json.dumps</code> / <code>loads</code>", d: "Same, but to and from a string (the <code>s</code> = string)." },
         ] },
         { type: "example", caption: "round-tripping JSON", code:
 "import json\ndata = {'name': 'Alice', 'age': 30}\nwith open('data.json', 'w') as f:\n    json.dump(data, f)\n\nwith open('data.json', 'r') as f:\n    print(json.load(f))",
           output: "{'name': 'Alice', 'age': 30}" },
       ],
       live: [
-        { title: "Easy: JSON round-trip (dict to file and back)", code: "import json\ndata = {'name': 'Alice', 'age': 30, 'skills': ['py', 'sql']}\nwith open('data.json', 'w') as f:\n    json.dump(data, f)\n\nwith open('data.json', 'r') as f:\n    print(json.load(f))" },
-        { title: "Medium: CSV write & read", code: "import csv\nwith open('data.csv', 'w', newline='') as f:\n    w = csv.writer(f)\n    w.writerow(['Name', 'Age', 'City'])\n    w.writerow(['Alice', 30, 'New York'])\n    w.writerow(['Bob', 25, 'San Francisco'])\n\nwith open('data.csv', 'r') as f:\n    for row in csv.reader(f):\n        print(row)" },
-        { title: "Harder: read CSV rows into dicts", code: "import csv\nwith open('data.csv', 'w', newline='') as f:\n    w = csv.writer(f)\n    w.writerow(['Name', 'Age'])\n    w.writerow(['Alice', 30])\n    w.writerow(['Bob', 25])\n\nwith open('data.csv', 'r') as f:\n    for row in csv.DictReader(f):\n        print(dict(row))" },
+        { title: "Easy: dict to file and back", code: "import json\ndata = {'name': 'Alice', 'age': 30, 'skills': ['py', 'sql']}\nwith open('data.json', 'w') as f:\n    json.dump(data, f)\n\nwith open('data.json', 'r') as f:\n    print(json.load(f))" },
+        { title: "Harder: nested data, then read one field", code: "import json\ndata = {'team': 'A', 'members': [{'name': 'Alice', 'age': 30}, {'name': 'Bob', 'age': 25}]}\nwith open('team.json', 'w') as f:\n    json.dump(data, f)\n\nwith open('team.json', 'r') as f:\n    loaded = json.load(f)\nprint(loaded['members'][0]['name'])   # Alice" },
       ],
       quiz: [
         { q: "Which module serializes a Python dict to a file directly?", choices: ["csv", "json", "os", "math"], answer: 1, explain: "json.dump() writes dicts/lists; json.load() reads them back." },
+        { q: "<code>json.load(f)</code> returns…", choices: ["a string", "a dict or list", "a file object", "None"], answer: 1, explain: "It turns JSON text back into Python dicts/lists." },
       ],
     },
     {
@@ -125,7 +156,7 @@ App.registerTopic({
           { t: "<code>a.dtype</code>", d: "Element type." },
           { t: "Index / slice", d: "<code>a[1, 2]</code> for multi-D, <code>a[1:4]</code> like lists." },
         ] },
-        { type: "deepdive", title: "Why NumPy is fast (C arrays under Python)", html: "<p>A Python <code>list</code> stores pointers to scattered objects. Looping it in pure Python is slow.</p><p>A NumPy array packs raw numbers <b>contiguously</b>, like a C array.</p><p>The CPU streams them through cache and the math runs in compiled C. Write Python, get C speed for bulk numbers.</p>" },
+        { type: "note", title: "Why NumPy is fast (C arrays under Python)", html: "A Python <code>list</code> stores pointers to scattered objects. Looping it in pure Python is slow.<br><br>A NumPy array packs raw numbers <b>contiguously</b>, like a C array.<br><br>The CPU streams them through cache and the math runs in compiled C. Write Python, get C speed for bulk numbers." },
       ],
       live: [
         { title: "Easy: element-wise add and multiply", code: "import numpy as np\na = np.array([1, 2, 3])\nb = np.array([4, 5, 6])\nprint(a + b)\nprint(a * 2)" },
@@ -198,7 +229,7 @@ App.registerTopic({
         ] },
       ],
       live: [
-        { title: "Write 1..10, read back, sum (solved)", code: "with open('nums.txt', 'w') as f:\n    for i in range(1, 11):\n        f.write(f\"{i}\\n\")\n\ntotal = 0\nwith open('nums.txt', 'r') as f:\n    for line in f:\n        total += int(line)\nprint(\"sum 1..10 =\", total)" },
+        { title: "Write 1..10, read back, sum (solved)", code: "with open('nums.txt', 'w') as f:\n    for i in range(1, 11):\n        f.write(str(i) + \"\\n\")\n\ntotal = 0\nwith open('nums.txt', 'r') as f:\n    for line in f:\n        total += int(line)\nprint(\"sum 1..10 =\", total)" },
         { title: "4x4 identity (your turn)", code: "import numpy as np\nm = np.eye(4, dtype=int)   # try building it with a loop too!\nprint(m)" },
       ],
     },

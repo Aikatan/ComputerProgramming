@@ -5,16 +5,21 @@
 App.makeLive = function (code, opts) {
   opts = opts || {};
   const h = App.h;
+  const isC = opts.lang === "c";
+  const engine = isC ? App.c : App.py;
+  const cmMode = isC ? "text/x-csrc" : "python";
+  const hintText = isC ? "Run the code to compile and run it." : "Run the code, or Step Run to walk it line by line.";
   const wrap = h("div", { class: "live" });
-  const head = h("div", { class: "live-head" }, h("span", { class: "title" }, opts.title || "Edit and run real Python"));
+  const head = h("div", { class: "live-head" }, h("span", { class: "title" }, opts.title || (isC ? "Edit and run real C" : "Edit and run real Python")));
   const spacer = h("span", { class: "spacer" });
   const resetBtn = h("button", { class: "btn ghost", title: "Reset code" }, "Reset");
   const stepBtn = h("button", { class: "btn ghost" }, "▶ Step Run");
   const runBtn = h("button", { class: "btn" }, "▶ Run");
-  head.append(spacer, resetBtn, stepBtn, runBtn);
+  // JSCPP has no line-by-line tracer, so C editors show Run only.
+  if (isC) { head.append(spacer, resetBtn, runBtn); } else { head.append(spacer, resetBtn, stepBtn, runBtn); }
 
   const taHost = h("div");
-  const out = h("div", { class: "live-out muted" }, "Run the code, or Step Run to walk it line by line.");
+  const out = h("div", { class: "live-out muted" }, hintText);
 
   // step-through stage (hidden until Step Run)
   const stage = h("div", { class: "steprun-stage hidden" });
@@ -39,7 +44,7 @@ App.makeLive = function (code, opts) {
   let cm, steps = [], finalOut = "", i = 0, timer = null, lines = [];
   requestAnimationFrame(() => {
     cm = CodeMirror(taHost, {
-      value: code, mode: "python",
+      value: code, mode: cmMode,
       theme: document.body.dataset.theme === "light" ? "default" : "material-darker",
       lineNumbers: true, indentUnit: 4, viewportMargin: Infinity,
       extraKeys: { "Shift-Enter": () => doRun(), Tab: (c) => c.replaceSelection("    ") },
@@ -52,16 +57,16 @@ App.makeLive = function (code, opts) {
     if (!cm) return;
     stopPlay(); stage.classList.add("hidden");
     out.classList.remove("hidden");
-    runBtn.disabled = stepBtn.disabled = true; runBtn.textContent = "Running…";
+    runBtn.disabled = true; if (!isC) stepBtn.disabled = true; runBtn.textContent = "Running…";
     out.className = "live-out"; out.textContent = "";
     let printed = false;
-    const res = await App.py.run(cm.getValue(), {
+    const res = await engine.run(cm.getValue(), {
       inputs: opts.inputs,
       sink: (t, e) => { printed = true; out.appendChild(h("span", { class: e ? "err" : "" }, t)); out.scrollTop = out.scrollHeight; },
       onImage: (url) => { printed = true; out.appendChild(h("img", { src: url, alt: "plot output" })); },
     });
     if (!printed && res.ok) out.appendChild(h("span", { class: "muted" }, "(ran with no output)"));
-    runBtn.disabled = stepBtn.disabled = false; runBtn.textContent = "▶ Run";
+    runBtn.disabled = false; if (!isC) stepBtn.disabled = false; runBtn.textContent = "▶ Run";
   }
 
   /* ---- Step Run ---- */
@@ -120,7 +125,7 @@ App.makeLive = function (code, opts) {
   resetBtn.addEventListener("click", () => {
     stopPlay(); if (cm) cm.setValue(code);
     stage.classList.add("hidden"); out.classList.remove("hidden");
-    out.className = "live-out muted"; out.textContent = "Run the code, or Step Run to walk it line by line.";
+    out.className = "live-out muted"; out.textContent = hintText;
   });
   return wrap;
 };

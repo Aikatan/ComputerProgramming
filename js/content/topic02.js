@@ -18,7 +18,7 @@ App.registerTopic({
           "<b>Runtime error</b> - it starts, then crashes mid-run (e.g. dividing by zero).",
           "<b>Logical error</b> - it runs fine but gives the <i>wrong</i> answer. The hardest to find - Python can't warn you.",
         ] },
-        { type: "example", caption: "common runtime errors and their fixes", code:
+        { type: "example", norun: true, caption: "common runtime errors and their fixes (read-only)", code:
 "print(age)            # NameError: 'age' is not defined  -> define it first\nprint(\"Age: \" + 25)   # TypeError -> use str(25)\nint(\"abc\")            # ValueError -> string isn't a number\nprint(10 / 0)         # ZeroDivisionError -> check the divisor",
           annot: [
             { c: "NameError", e: "You used a variable that was never created. Fix: assign it before use." },
@@ -49,7 +49,7 @@ App.registerTopic({
 "print(\"Today\", \"is\", \"Monday\")              # Today is Monday\nprint(\"Today\", \"is\", \"Monday\", sep=\"...\")    # Today...is...Monday\nprint(\"Hi, \", end=\"\")\nprint(\"there\")                               # Hi, there",
           output: "Today is Monday\nToday...is...Monday\nHi, there" },
         { type: "note", title: "Strings in, numbers out", html: "Because <code>input()</code> gives a string, wrap it in <code>int()</code> or <code>float()</code> to do maths: <code>age = int(input(\"Age: \"))</code>." },
-        { type: "note", variant: "warn", title: "f-strings are your friend", html: "An f-string lets you drop variables straight into text: <code>f\"Hello, {name}! You are {age}.\"</code> - far cleaner than gluing strings with <code>+</code>." },
+        { type: "note", variant: "warn", title: "Prefer f-strings", html: "An f-string puts variables straight into text: <code>f\"Hello, {name}! You are {age}.\"</code> - cleaner than joining strings with <code>+</code>." },
       ],
       live: [
         { title: "Interactive - it will pop up a prompt for input()", code: "name = input(\"Enter your name: \")\nage = int(input(\"Enter your age: \"))\nprint(\"Next year, you will be\", age + 1)\nprint(f\"Hello, {name}! You are {age} years old.\")" },
@@ -135,6 +135,7 @@ App.registerTopic({
         { type: "note", title: "Takeaway", html: "Smaller types use less memory and fit more per cache line (faster); fixed types can overflow; Python's flexible ints trade speed for never overflowing. Choosing representations <i>is</i> performance work." },
       ],
       live: [
+        { title: "A number and its bits", code: "x = 13\nprint(\"decimal:\", x)\nprint(\"binary :\", bin(x))\nprint(\"'A' as a number:\", ord('A'))" },
         { title: "See the bits, the wrap, and Python's big integers", code: "x = 13\nprint(\"13 in binary :\", bin(x))            # 0b1101\nprint(\"'A' is        :\", ord('A'), bin(ord('A')))\n# two's complement of -5 in a single byte:\nprint(\"-5 as a byte  :\", format((-5) & 0xFF, '08b'))\n# a fixed 8-bit value would wrap; Python ints never do:\nprint(\"255 + 1 (8-bit):\", (255 + 1) & 0xFF)   # 0  (simulated wrap)\nprint(\"Python big int :\", 2 ** 200)\nprint(\"floats inexact :\", 0.1 + 0.2)" },
       ],
       quiz: [
@@ -200,6 +201,7 @@ App.registerTopic({
 "n       = 42            # int\npi      = 3.14          # float\ns       = \"hello\"       # str\nflag    = True          # bool\nnums    = [1, 2, 3]     # list\npoint   = (1, 2, 3)     # tuple\nperson  = {\"a\": 1}      # dict\nunique  = {1, 2, 3}     # set\nnothing = None          # NoneType" },
       ],
       live: [
+        { title: "Check a single value's type", code: "print(type(42).__name__)\nprint(type(3.14).__name__)\nprint(type(\"hi\").__name__)\nprint(type(True).__name__)" },
         { title: "Inspect the types", code: "samples = [42, 3.14, 1+2j, \"hi\", True, [1,2], (1,2), {\"a\":1}, {1,2}, None]\nfor s in samples:\n    print(repr(s), \"->\", type(s).__name__)" },
       ],
       quiz: [
@@ -247,7 +249,7 @@ App.registerTopic({
         ] },
       ],
       live: [
-        { title: "Slice and dice a string", code: "text = \"Programming\"\nprint(text[:4])\nprint(text[-4:])\nprint(text[::-1])\nprint(text.upper())\nprint(\"gram\" in text)" },
+        { title: "Slice a string and check membership", code: "text = \"Programming\"\nprint(text[:4])\nprint(text[-4:])\nprint(text[::-1])\nprint(text.upper())\nprint(\"gram\" in text)" },
         { title: "Arithmetic & math module", code: "import math\nprint(\"floor div:\", 17 // 5)\nprint(\"remainder:\", 17 % 5)\nprint(\"sqrt(144):\", math.sqrt(144))\nprint(\"round    :\", round(3.14159, 2))\nprint(\"big int  :\", 2 ** 100)" },
       ],
       quiz: [

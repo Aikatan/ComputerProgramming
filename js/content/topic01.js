@@ -25,6 +25,8 @@ App.registerTopic({
       ],
       live: [
         { title: "Software inspecting its own machine", code: "import platform, os\nprint(\"System:\", platform.system())\nprint(\"Machine:\", platform.machine())\nprint(\"CPU cores:\", os.cpu_count())" },
+        { title: "The four functions, in code", code: "data = 7                 # Input: a value comes in\nresult = data * data     # Processing: transform it\nsaved = result           # Storage: keep it\nprint(\"Output:\", saved)  # Output: deliver it" },
+        { title: "A tiny input to output pipeline", code: "celsius = 25\nfahrenheit = celsius * 9 / 5 + 32   # process\nprint(\"Stored C:\", celsius)\nprint(\"Output  F:\", fahrenheit)" },
       ],
       quiz: [
         { q: "Which is NOT one of the four primary computer functions?", choices: ["Input", "Processing", "Compilation", "Output"], answer: 2, explain: "The four are Input, Processing, Storage, Output. Compilation is a software step, not a primary hardware function." },
@@ -44,10 +46,12 @@ App.registerTopic({
           "<b>Registers</b> - tiny, ultra-fast storage right inside the CPU for the values being worked on right now.",
         ] },
         { type: "widget", name: "cpuCycle", config: {} },
-        { type: "deepdive", title: "Why registers matter for speed", html: "<p>Registers are the fastest storage in the whole machine - accessed in a single clock tick. RAM is ~100× slower; an SSD thousands of times slower; an HDD slower still. A huge part of making programs fast is keeping the data you're using as close to the CPU as possible (registers → cache → RAM → disk). You'll feel this in Topic 08, where NumPy keeps numbers packed tightly so the CPU can stream them efficiently.</p>" },
+        { type: "note", title: "Why registers matter for speed", html: "Registers are the fastest storage in the whole machine - accessed in a single clock tick. RAM is ~100× slower; an SSD thousands of times slower; an HDD slower still. A huge part of making programs fast is keeping the data you're using as close to the CPU as possible (registers → cache → RAM → disk). You'll feel this in Topic 08, where NumPy keeps numbers packed tightly so the CPU can stream them efficiently." },
       ],
       live: [
         { title: "The CPU doing arithmetic for you", code: "a = 12\nb = 5\nprint(\"sum     :\", a + b)\nprint(\"product :\", a * b)\nprint(\"compare :\", a > b)" },
+        { title: "More ALU operations", code: "a = 17\nb = 5\nprint(\"subtract :\", a - b)\nprint(\"divide   :\", a / b)\nprint(\"remainder:\", a % b)\nprint(\"greater? :\", a > b)" },
+        { title: "The ALU inside a loop (repeated work)", code: "total = 0\nfor n in range(1, 6):\n    total = total + n     # the ALU adds each time\nprint(\"sum 1..5:\", total)" },
       ],
       quiz: [
         { q: "Which CPU part performs additions and comparisons?", choices: ["Control Unit", "ALU", "Register", "Cache"], answer: 1, explain: "The Arithmetic Logic Unit (ALU) handles arithmetic and logic operations." },
@@ -69,11 +73,13 @@ App.registerTopic({
         { type: "subhead", text: "Power off" },
         { type: "text", html: "RAM is <b>volatile</b>: contents clear when power is off.<br>ROM is <b>non-volatile</b>: contents remain." },
         { type: "widget", name: "powerToggle", config: {} },
-        { type: "note", title: "The one-line summary", html: "RAM = fast scratch space that forgets. ROM = permanent instructions that remember. A computer needs both." },
-        { type: "deepdive", title: "What 'a variable lives in RAM' really means", html: "<p>When your Python program creates <code>x = 25</code>, the value sits in RAM. Because RAM is volatile, the moment the program ends (or power is lost) it's gone - which is exactly why Topic 08 teaches <b>file handling</b>: writing to disk is how you make data survive past a single run.</p>" },
+        { type: "note", title: "The one-line summary", html: "RAM: fast temporary storage, cleared when power is off.<br>ROM: permanent storage, kept when power is off.<br>A computer needs both." },
+        { type: "note", title: "What 'a variable lives in RAM' really means", html: "When your Python program creates <code>x = 25</code>, the value sits in RAM. Because RAM is volatile, the moment the program ends (or power is lost) it's gone - which is exactly why Topic 08 teaches <b>file handling</b>: writing to disk is how you make data survive past a single run." },
       ],
       live: [
         { title: "These values exist only in RAM while this runs", code: "x = 25          # lives in RAM\nname = \"Sophia\" # also in RAM\nprint(x, name)\nprint(\"When this program ends, these are gone unless saved to disk.\")" },
+        { title: "RAM can change while the program runs", code: "x = 25\nprint(\"x now    :\", x)\nx = 26          # same RAM name, new value\nprint(\"x updated:\", x)" },
+        { title: "Reassigning does not keep the old value", code: "score = 90\nscore = score + 5   # RAM holds only the latest value\nprint(\"final score:\", score)\nprint(\"Saving to a file is how a value outlives the run.\")" },
       ],
       quiz: [
         { q: "Your unsaved work disappears in a power cut because RAM is…", choices: ["Non-volatile", "Volatile", "Read-only", "Permanent"], answer: 1, explain: "RAM is volatile - it loses its contents without power." },
@@ -99,10 +105,11 @@ App.registerTopic({
           "<b>HDD</b>: long-term bulk data, cost-sensitive, mostly sequential reads (backups, CCTV, archives).",
           "<b>SSD</b>: high-speed and random access (boot drive, databases, real-time analytics).",
         ] },
-        { type: "deepdive", title: "Why the gap is so huge (orders of magnitude)", html: "<p>An HDD must physically <i>move metal</i> to the right track and wait for the disk to spin around - milliseconds. An SSD addresses a flash cell electrically - microseconds. That's roughly a 100× difference in latency and even more in random-access throughput (IOPS: ~100–300 for HDD vs &gt;100,000 for SSD). This is why opening a program from an SSD feels instant.</p>" },
+        { type: "note", title: "Why the gap is so huge (orders of magnitude)", html: "An HDD must physically <i>move metal</i> to the right track and wait for the disk to spin around - milliseconds. An SSD addresses a flash cell electrically - microseconds. That's roughly a 100× difference in latency and even more in random-access throughput (IOPS: ~100–300 for HDD vs &gt;100,000 for SSD). This is why opening a program from an SSD feels instant." },
       ],
       live: [
-        { title: "Numbers don't lie - relative access times", code: "# Rough access latencies, scaled so register = 1 second\nlevels = {\n    \"CPU register\": 1,\n    \"RAM\":          60,\n    \"SSD\":          150_000,\n    \"HDD\":          6_000_000,\n}\nfor name, t in levels.items():\n    print(f\"{name:13}: {t:>10,} (relative)\")" },
+        { title: "Relative access times (register = 1)", code: "# Rough access latencies, scaled so a CPU register = 1\nreg = 1\nram = 60\nssd = 150_000\nhdd = 6_000_000\nprint(\"CPU register:\", reg)\nprint(\"RAM         :\", ram)\nprint(\"SSD         :\", ssd)\nprint(\"HDD         :\", hdd)" },
+        { title: "How many times slower?", code: "ram = 60\nssd = 150_000\nhdd = 6_000_000\nprint(\"SSD vs RAM:\", ssd // ram, \"x slower\")\nprint(\"HDD vs SSD:\", hdd // ssd, \"x slower\")" },
       ],
       quiz: [
         { q: "Why is an SSD faster than an HDD?", choices: ["It spins faster", "It has no moving parts and addresses cells electronically", "It uses more electricity", "It stores less data"], answer: 1, explain: "No mechanical seek or rotational latency - flash is accessed electrically in microseconds." },
@@ -133,6 +140,7 @@ App.registerTopic({
       ],
       live: [
         { title: "One high-level line, a whole stack of work underneath", code: "# This single line travels through every level down to the gates:\nprint(\"From Level 5 (Python) all the way to Level 0 (logic gates)!\")" },
+        { title: "Your Level 5 code, the machine's Level 0 result", code: "x = 2 + 3        # Level 5: you write this\nprint(\"Level 0 gates computed:\", x)   # the hardware did the adding" },
       ],
       quiz: [
         { q: "At which level does your Python code live?", choices: ["Level 0 - Digital Logic", "Level 2 - Machine", "Level 5 - High-Level Language", "Level 6 - User"], answer: 2, explain: "Python is a high-level language (Level 5), translated downward toward the hardware." },

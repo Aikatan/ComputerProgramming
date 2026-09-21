@@ -42,7 +42,7 @@
       case "steprun":
         return App.makeStepRun(b.code, { title: b.title, inputs: b.inputs });
       case "livecode":
-        return App.makeLive(b.code, { title: b.title });
+        return App.makeLive(b.code, { title: b.title, lang: b.lang, inputs: b.inputs });
       case "practiceq":
         return App.makePractice(b);
       case "example":
@@ -71,7 +71,24 @@
     return wrap;
   }
 
+  // A code example. By default it is now a RUNNABLE editor (Run in the browser,
+  // no local compiler needed). When it also has line-by-line notes (annot), those
+  // sit beside the editor as an explanation column that stacks under it on a
+  // narrow screen / zoom / slide column (see .example-split container query).
+  // Set norun:true for code the in-browser engine can't run (e.g. C malloc/free)
+  // to keep the old read-only static block.
   function staticExample(b) {
+    if (b.norun) return staticExampleReadonly(b);
+    const editor = App.makeLive(b.code, { title: b.caption, lang: b.lang, inputs: b.inputs });
+    if (!(b.annot && b.annot.length)) return editor;
+    const list = h("ul", { class: "annot" });
+    b.annot.forEach((a) => list.appendChild(h("li", null, h("code", null, a.c), h("span", { class: "ex", html: a.e }))));
+    const expl = h("div", { class: "ex-explain" }, h("div", { class: "widget-title" }, "Line by line"), list);
+    return h("div", { class: "example-run" }, h("div", { class: "example-split" }, expl, editor));
+  }
+
+  // Read-only rendering (kept for examples the engine cannot execute).
+  function staticExampleReadonly(b) {
     const head = h("div", { class: "codeblock-head" },
       h("span", { class: "lang" }, b.lang || "python"),
       b.caption ? h("span", null, " · " + b.caption) : null);
@@ -142,7 +159,7 @@
     /* --- Section 2: Try it Live --- */
     if (lesson.live && lesson.live.length) {
       root.appendChild(h("div", { class: "section-tag tag-live" }, "Try it Live"));
-      lesson.live.forEach((lv) => root.appendChild(App.makeLive(lv.code, { title: lv.title })));
+      lesson.live.forEach((lv) => root.appendChild(App.makeLive(lv.code, { title: lv.title, lang: lv.lang, inputs: lv.inputs })));
     }
 
     /* --- Section 3: Quiz --- */

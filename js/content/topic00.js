@@ -14,16 +14,18 @@ App.registerTopic({
       keywords: "program instructions interpreter source code",
       learn: [
         { type: "text", html: "A <span class='term'>program</span> is a precise list of <span class='term'>instructions</span> that tells a computer how to perform a task. You write those instructions in a <b>programming language</b> - in this course, <span class='kw'>Python</span> - and a piece of software called the <b>interpreter</b> turns them into something the CPU actually executes." },
-        { type: "note", title: "Why Python first", html: "Python reads almost like English, hides messy low-level details (memory, types), and has huge libraries (NumPy, pandas, Matplotlib) you'll meet later in this course. It lets you focus on <i>logic</i> before <i>machinery</i>." },
+        { type: "note", title: "Why Python first", html: "Python has simple, readable syntax, hides low-level details (memory, types), and has large libraries (NumPy, pandas, Matplotlib) you'll meet later in this course. It lets you focus on <i>logic</i> first, machinery later." },
         { type: "widget", name: "diagram", config: { layout: "row", title: "The journey of one line of code", boxes: [
           { title: "You write", body: "<code>print(\"Hello\")</code> - human-readable source code in a <code>.py</code> file." },
           { title: "Interpreter reads", body: "Python parses your text, checks the grammar (syntax), and turns it into bytecode." },
           { title: "Computer runs", body: "The CPU executes the bytecode and the result - <code>Hello</code> - appears on screen." },
         ] } },
-        { type: "deepdive", title: "Compiled vs interpreted (why C feels different)", html: "<p>Languages like <b>C/C++</b> are <i>compiled</i>: a compiler translates your whole program into a machine-code <code>.exe</code> ahead of time, which then runs directly on the CPU - very fast, but you must compile after every change.</p><p>Python is <i>interpreted</i>: it reads and runs your code line by line at run time. More flexible and beginner-friendly, but slower. This trade-off (convenience vs raw speed) comes back in Topic 08 when we use NumPy - a C-backed library - to make Python fast again.</p>" },
+        { type: "note", title: "Compiled vs interpreted (why C feels different)", html: "Languages like <b>C/C++</b> are <i>compiled</i>: a compiler translates your whole program into a machine-code <code>.exe</code> ahead of time, which then runs directly on the CPU - very fast, but you must compile after every change.<br><br>Python is <i>interpreted</i>: it reads and runs your code line by line at run time. More flexible and beginner-friendly, but slower. This trade-off (convenience vs raw speed) comes back in Topic 08 when we use NumPy - a C-backed library - to make Python fast again." },
       ],
       live: [
-        { title: "Your very first program - press Run", code: 'print("Hello, World!")\nprint("I am learning to program.")' },
+        { title: "Your very first program", code: 'print("Hello, World!")\nprint("I am learning to program.")' },
+        { title: "The interpreter runs each line in order", code: 'print("Line 1 runs first")\nprint("Line 2 runs next")\nprint("Then line 3")' },
+        { title: "Instructions can compute, not just print", code: 'a = 6\nb = 7\nprint("The computer calculated:", a * b)' },
       ],
       quiz: [
         { q: "What does an interpreter do?", choices: ["Designs the hardware", "Translates and runs your source code", "Stores files on disk", "Draws the user interface"], answer: 1, explain: "The Python interpreter reads your source code and executes it, line by line." },
@@ -51,6 +53,7 @@ App.registerTopic({
       ],
       live: [
         { title: "Confirm Python works - what version are we running?", code: "import sys\nprint(\"Python version:\", sys.version.split()[0])\nprint(\"It runs!\")" },
+        { title: "The same environment can also do math", code: "print(\"2 + 2 =\", 2 + 2)\nprint(\"10 / 3 =\", 10 / 3)" },
       ],
       quiz: [
         { q: "How much of your grade is the Final Examination?", choices: ["10%", "20%", "30%", "50%"], answer: 2, explain: "Final = 30%, the same as Assignments, and the largest single component alongside them." },
@@ -75,6 +78,8 @@ App.registerTopic({
       ],
       live: [
         { title: "Run a tiny multi-line program", code: 'name = "ComPro"\nyear = 2025\nprint("Welcome to", name)\nprint("Let\'s write Python in", year)' },
+        { title: "A file can store values and use them", code: 'hours = 3\nprint("Study plan")\nprint("Hours today:", hours)\nprint("Hours this week:", hours * 5)' },
+        { title: "Store values and print them together", code: 'name = "ComPro"\nlessons = 3\nprint(name, "-", lessons, "lessons done")\nprint("Reached five?", lessons >= 5)' },
       ],
       quiz: [
         { q: "What is a Jupyter notebook cell good for?", choices: ["Running the whole program only once", "Running small pieces of code one at a time", "Storing images only", "Replacing the CPU"], answer: 1, explain: "Notebooks run code in independent cells - ideal for step-by-step experimentation and inline charts." },

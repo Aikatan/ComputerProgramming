@@ -25,6 +25,7 @@ App.registerTopic({
       ],
       live: [
         { title: "The simplest 'flowchart' as code", code: "# START -> x = 1 -> x = x + 2 -> DISPLAY x -> END\nx = 1\nx = x + 2\nprint(x)   # 3" },
+        { title: "A decision (diamond), as code", code: "x = 12\nif x > 10:      # the diamond\n    print(\"big\")\nelse:\n    print(\"small\")" },
       ],
       quiz: [
         { q: "Which shape represents a yes/no decision?", choices: ["Rectangle", "Rounded terminator", "Diamond", "Parallelogram"], answer: 2, explain: "The diamond is the decision symbol - it branches into True/False paths." },
@@ -37,7 +38,7 @@ App.registerTopic({
       slides: "04:8–15",
       keywords: "flowchart condition loop while for code mapping",
       learn: [
-        { type: "text", html: "Every flowchart maps to code. Hover the diagram or the code below to see the connection." },
+        { type: "text", html: "Every flowchart maps to code. The diagram and the code express the same logic." },
         { type: "subhead", text: "A condition" },
         { type: "widget", name: "flowchart", config: {
           width: 320, height: 360,
@@ -78,7 +79,7 @@ App.registerTopic({
           code: ["x = int(input())", "while not (x > 10):", "    x = int(input())", "print(x)"],
           map: { input: [0, 2], dec: [1], disp: [3] },
         } },
-        { type: "subhead", text: "▶ Run the flowchart step by step" },
+        { type: "subhead", text: "Trace the flowchart step by step" },
         { type: "text", html: "A flowchart shows <b>execution order</b>.<br>Follow the arrows for the input <code>x = 12</code>.<br>Each step marks the active shape and the variable state." },
         { type: "widget", name: "flowExec", config: {
           width: 320, height: 360,
@@ -110,6 +111,7 @@ App.registerTopic({
       ],
       live: [
         { title: "Multiple conditions - elif mirrors a nested decision", code: "x = 17\nif x > 15:\n    print(\"Hi-value\")\nelif x > 10:\n    print(x)\nelse:\n    print(\"low\")" },
+        { title: "The loop flowchart, as code", code: "x = 3\nwhile not (x > 10):     # the diamond loops back on False\n    x = x + 3           # each pass moves toward the exit\nprint(\"exited with x =\", x)" },
       ],
       quiz: [
         { q: "A diamond with a 'False' arrow looping back to an earlier step is…", choices: ["An if statement", "A while loop", "A function call", "Output"], answer: 1, explain: "Looping back on a condition is exactly what a while loop does." },
@@ -128,7 +130,7 @@ App.registerTopic({
           "<b>Structured</b>: still follows IF / ELSE / WHILE / FOR logic.",
           "Goal: easy for a human to read <i>and</i> easy to turn into code.",
         ] },
-        { type: "example", lang: "text", caption: "even-or-odd in pseudocode", code:
+        { type: "example", lang: "text", norun: true, caption: "even-or-odd in pseudocode", code:
 "Start\n  Get number\n  If number modulo 2 equals 0\n      Display \"Number is even\"\n  Else\n      Display \"Number is odd\"\nEnd" },
         { type: "subhead", text: "Pseudocode → Python" },
         { type: "text", html: "Each pseudocode line maps to one Python line.<br>Keywords translate directly." },
@@ -143,6 +145,7 @@ App.registerTopic({
       ],
       live: [
         { title: "The pseudocode above, now in Python", code: "number = int(input(\"Enter a number: \"))\nif number % 2 == 0:\n    print(\"Number is even\")\nelse:\n    print(\"Number is odd\")" },
+        { title: "Pseudocode for a sum, in Python", code: "# Get N, then add 1..N\nn = 5\ntotal = 0\nfor i in range(1, n + 1):   # WHILE more numbers\n    total = total + i\nprint(\"sum 1..\", n, \"=\", total)" },
       ],
       quiz: [
         { q: "Pseudocode is bound to one programming language's syntax.", choices: ["True", "False"], answer: 1, explain: "False - pseudocode is deliberately language-independent plain text." },

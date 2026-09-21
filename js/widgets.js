@@ -1953,3 +1953,37 @@ App.widgets.pyToC = function (cfg) {
     },
   });
 };
+
+/* ============================================================
+   jsonFlow - a dict becomes JSON text (dump) and back (load). Mirrors
+   csvFlow so JSON reads as its own complete lesson.
+   config: { title, data:{...} }
+   ============================================================ */
+App.widgets.jsonFlow = function (cfg) {
+  const data = cfg.data || { name: "Alice", age: 30, skills: ["py", "sql"] };
+  const text = JSON.stringify(data);
+  const disp = (v) => Array.isArray(v) ? "[" + v.map(btLabel).join(", ") + "]" : btLabel(v);
+  const typ = (v) => Array.isArray(v) ? "str" : btType(v);
+  const steps = [
+    { dir: "", flashDict: true, note: "A Python <b>dict</b> in memory." },
+    { dir: "dump", flashText: true, note: "<code>json.dump(data, f)</code> writes the dict as <b>text</b>." },
+    { dir: "load", flashDict: true, note: "<code>json.load(f)</code> reads the text back into a <b>dict</b>." },
+  ];
+  return App.widgets.stepper({
+    title: cfg.title || "dict to JSON text and back",
+    steps: steps,
+    render: (s) => {
+      const wall = h("div", { class: "dt-wall" });
+      Object.keys(data).forEach((k) => wall.appendChild(
+        h("div", { class: "dt-locker" + (s.flashDict ? " dt-flash" : "") },
+          h("div", { class: "dt-key" }, "'" + k + "'"),
+          h("div", { class: "dt-ball bt-" + typ(data[k]) }, disp(data[k])))));
+      const arrow = h("div", { class: "jf-arrow" }, s.dir === "dump" ? "dump →" : s.dir === "load" ? "← load" : "·");
+      const textBox = h("div", { class: "bt-code" + (s.flashText ? " bt-cur" : "") },
+        h("div", { class: "bt-codeline" }, h("span", { class: "jf-file" }, "data.json: "), h("span", { html: App.esc(text) })));
+      return h("div", null,
+        h("div", { class: "jf-grid" }, wall, arrow, textBox),
+        h("div", { class: "bt-cap", html: s.note }));
+    },
+  });
+};

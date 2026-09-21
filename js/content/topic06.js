@@ -74,7 +74,7 @@ App.registerTopic({
             { type: "example", caption: "you can't edit, only rebuild", code:
 "text = \"hello\"\n# text[0] = \"H\"      # TypeError: does not support item assignment\ntext = \"H\" + text[1:]  # build a new string instead\nprint(text)            # 'Hello'",
               output: "Hello" },
-            { type: "deepdive", title: "Why immutable? (and the C contrast)", html: "<p>In <b>C</b>, a string is a mutable array of bytes ending in <code>\\0</code>. You can poke any byte, and it is your job not to overrun the buffer.</p><p>Python trades that raw control for safety. Because strings cannot change, they can be shared freely, used as dictionary keys, and cached.</p><p>The cost: building a string one character at a time makes many temporaries. So collect pieces in a list and <code>\"\".join(...)</code> at the end.</p>" },
+            { type: "note", title: "Why immutable? (and the C contrast)", html: "In <b>C</b>, a string is a mutable array of bytes ending in <code>\\0</code>. You can poke any byte, and it is your job not to overrun the buffer.<br><br>Python trades that raw control for safety. Because strings cannot change, they can be shared freely, used as dictionary keys, and cached.<br><br>The cost: building a string one character at a time makes many temporaries. So collect pieces in a list and <code>\"\".join(...)</code> at the end." },
           ] },
         ] },
 
@@ -88,7 +88,7 @@ App.registerTopic({
 
       ],
       live: [
-        { title: "Indexing & slicing: change the numbers and re-run", code: "text = \"Programming\"\nprint(\"first :\", text[0])\nprint(\"last  :\", text[-1])\nprint(\"3..7  :\", text[3:7])\nprint(\"every2:\", text[::2])\nprint(\"reverse:\", text[::-1])" },
+        { title: "Indexing and slicing", code: "text = \"Programming\"\nprint(\"first :\", text[0])\nprint(\"last  :\", text[-1])\nprint(\"3..7  :\", text[3:7])\nprint(\"every2:\", text[::2])\nprint(\"reverse:\", text[::-1])" },
         { title: "Method tour", code: "s = \"  Hello, World!  \"\nprint(s.strip())\nprint(s.upper())\nprint(s.replace(\"World\", \"Python\"))\nprint(s.strip().split(\",\"))\nprint(\"length:\", len(s))\nprint(\"count l:\", s.count('l'))" },
         { title: "Build your own Caesar cipher", code: "def caesar(text, shift):\n    result = \"\"\n    for ch in text:\n        if ch.isupper():\n            result += chr((ord(ch) - 65 + shift) % 26 + 65)\n        elif ch.islower():\n            result += chr((ord(ch) - 97 + shift) % 26 + 97)\n        else:\n            result += ch          # leave spaces/punctuation alone\n    return result\n\nsecret = caesar(\"Hello, World!\", 3)\nprint(secret)                 # Khoor, Zruog!\nprint(caesar(secret, -3))     # decrypt back" },
       ],
@@ -143,7 +143,7 @@ App.registerTopic({
         ] },
       ],
       live: [
-        { title: "Grades example", code: "grades = [85, 90, 78, 92, 88, 76]\nprint(\"highest:\", max(grades))\nprint(\"lowest :\", min(grades))\nprint(f\"average: {sum(grades)/len(grades):.2f}\")" },
+        { title: "Grades example", code: "grades = [85, 90, 78, 92, 88, 76]\nprint(\"highest:\", max(grades))\nprint(\"lowest :\", min(grades))\nprint(\"average:\", round(sum(grades)/len(grades), 2))" },
         { title: "Mutate a list", code: "tasks = [\"Project\", \"Groceries\", \"Read\"]\ntasks.append(\"Exercise\")\ntasks.remove(\"Groceries\")\nprint(tasks)" },
       ],
       quiz: [
@@ -203,6 +203,7 @@ App.registerTopic({
           output: "{'apple': 3, 'banana': 2, 'orange': 1}" },
       ],
       live: [
+        { title: "Read, add, and update by key", code: "person = {\"name\": \"Alice\", \"age\": 25}\nprint(person[\"name\"])\nperson[\"age\"] = 26          # update\nperson[\"city\"] = \"Bangkok\"  # add\nprint(person.get(\"email\", \"n/a\"))  # safe read\nprint(person)" },
         { title: "Word frequency counter", code: "text = \"apple banana apple orange banana apple\"\ncount = {}\nfor word in text.split():\n    count[word] = count.get(word, 0) + 1\nprint(count)" },
       ],
       quiz: [

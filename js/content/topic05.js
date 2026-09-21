@@ -16,7 +16,7 @@
         learn: [
           { type: "text", html: "A <span class='term'>function</span> is a reusable block of code that performs one task. Define it with <span class='kw'>def</span>, then <i>call</i> it by name. Functions give you <b>modularity</b>, <b>reusability</b>, and <b>maintainability</b>." },
           { type: "example", caption: "anatomy of a function", code:
-"def greet(name):\n    \"\"\"Return a greeting for the given name.\"\"\"\n    message = f\"Hello, {name}!\"\n    return message\n\nanswer = greet(\"Pokpong\")\nprint(answer)   # Hello, Pokpong!",
+"def greet(name):\n    \"\"\"Return a greeting for the given name.\"\"\"\n    message = \"Hello, \" + name + \"!\"\n    return message\n\nanswer = greet(\"Pokpong\")\nprint(answer)   # Hello, Pokpong!",
             annot: [
               { c: "def greet(name):", e: "<code>def</code> + a name + parameters in parentheses." },
               { c: "\"\"\"…\"\"\"", e: "A docstring - documentation for whoever reads the code." },
@@ -33,6 +33,7 @@
         ],
         live: [
           { title: "Write once, call many times", code: "def concessions():\n    print(\"Popcorn: $8-10\")\n    print(\"Candy: $3-5\")\n\nconcessions()\nconcessions()  # reuse - no rewriting" },
+          { title: "A function that returns a value", code: "def square(n):\n    return n * n\n\nresult = square(6)\nprint(\"square(6) =\", result)" },
         ],
         quiz: [
           { q: "What does a function return if it has no return statement?", choices: ["0", "Empty string", "None", "An error"], answer: 2, explain: "With no explicit return, a function returns None." },
@@ -62,6 +63,7 @@
         ],
         live: [
           { title: "Local stays local", code: "x = 20            # global\n\ndef show():\n    y = 10        # local - only exists here\n    print(\"inside:\", x, y)\n\nshow()\nprint(\"outside:\", x)\n# print(y)  # would raise NameError" },
+          { title: "Modify a global with the global keyword", code: "count = 0\ndef bump():\n    global count\n    count = count + 1\n\nbump()\nbump()\nprint(\"count =\", count)   # 2" },
         ],
         quiz: [
           { q: "A variable defined inside a function is…", choices: ["Global", "Local to that function", "Visible everywhere", "Permanent"], answer: 1, explain: "It's local - it exists only while the function runs." },
@@ -99,12 +101,13 @@
             { line: 3, frames: [{ call: "factorial(3)", detail: "3 × 2", state: "return", ret: "6" }], note: "factorial(2) returned 2. factorial(3) = 3 × 2 = 6." },
             { line: 3, frames: [], note: "The stack is empty.", returned: "6" },
           ] } },
-          { type: "deepdive", title: "The call stack is real memory (and it can overflow)", html: "<p>Each function call pushes a <b>stack frame</b> holding its local variables and where to return to. Deep recursion piles up frames; in C this region is the literal 'stack', and overrunning it is a <i>stack overflow</i>. Python guards against this with a recursion limit (~1000) and raises <code>RecursionError</code> instead of crashing - try a huge number below to see it.</p>" },
+          { type: "note", title: "The call stack is real memory (and it can overflow)", html: "Each function call pushes a <b>stack frame</b> holding its local variables and where to return to. Deep recursion piles up frames; in C this region is the literal 'stack', and overrunning it is a <i>stack overflow</i>. Python guards against this with a recursion limit (~1000) and raises <code>RecursionError</code> instead of crashing." },
           { type: "subhead", text: "Step through it line by line" },
           { type: "text", html: "Step through real execution. Watch it dive deeper into <code>factorial</code> on the way down (each call shows <i>inside factorial()</i> with its own <code>n</code>), hit the base case, then unwind back up - multiplying as each call returns." },
           { type: "steprun", title: "factorial(3) - step into each recursive call", code: "def factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n - 1)\n\nanswer = factorial(3)\nprint(answer)" },
         ],
         live: [
+          { title: "Recursion that counts down to a base case", code: "def countdown(n):\n    if n == 0:        # base case\n        print(\"liftoff!\")\n        return\n    print(n)\n    countdown(n - 1)  # smaller subproblem\n\ncountdown(3)" },
           { title: "Run factorial and push it too far", code: "def factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial(5))     # 120\nprint(factorial(20))    # works - Python has big ints\n# print(factorial(5000))  # uncomment to trigger RecursionError" },
         ],
         quiz: [
@@ -126,14 +129,15 @@
             "<b>*args</b>: any number of positional args, collected into a tuple. <b>**kwargs</b>: any number of named args, collected into a dict.",
           ] },
           { type: "example", caption: "*args and **kwargs", code:
-"def sum_numbers(*args):\n    return sum(args)\n\ndef print_info(**kwargs):\n    for key, value in kwargs.items():\n        print(f\"{key}: {value}\")\n\nprint(sum_numbers(1, 2, 3))   # 6\nprint_info(a=1, b=2)          # a: 1 / b: 2" },
+"def sum_numbers(*args):\n    return sum(args)\n\ndef print_info(**kwargs):\n    for key, value in kwargs.items():\n        print(key + \":\", value)\n\nprint(sum_numbers(1, 2, 3))   # 6\nprint_info(a=1, b=2)          # a: 1 / b: 2" },
           { type: "note", html: "A function can return multiple values at once: <code>return 10, 20</code>, then <code>x, y = get_coords()</code>." },
           { type: "subhead", text: "How arguments reach the slots" },
           { type: "text", html: "<b>Positional</b>: matched by order.<br><b>Keyword</b>: matched by name, order-free.<br><b>Default</b>: used until an argument replaces it." },
           { type: "widget", name: "funcArgs", config: {} },
         ],
         live: [
-          { title: "Mix them", code: "def order(item, qty=1, *extras, **notes):\n    print(f\"{qty} x {item}\")\n    if extras: print(\"  extras:\", extras)\n    if notes:  print(\"  notes :\", notes)\n\norder(\"coffee\", 2, \"sugar\", \"milk\", size=\"large\")" },
+          { title: "Default and keyword arguments", code: "def describe(name, mood=\"happy\"):\n    print(name, \"is\", mood)\n\ndescribe(\"Al\")              # uses the default\ndescribe(\"Bo\", mood=\"tired\")  # keyword overrides it" },
+          { title: "Mix them", code: "def order(item, qty=1, *extras, **notes):\n    print(qty, \"x\", item)\n    if extras: print(\"  extras:\", extras)\n    if notes:  print(\"  notes :\", notes)\n\norder(\"coffee\", 2, \"sugar\", \"milk\", size=\"large\")" },
         ],
         quiz: [
           { q: "`*args` collects extra positional arguments into a…", choices: ["list", "tuple", "dict", "set"], answer: 1, explain: "*args is a tuple; **kwargs is a dict." },
@@ -157,7 +161,8 @@
           { type: "note", html: "Use <code>import numpy as np</code> to give a module a short alias - the convention you'll use constantly in Topics 07–08." },
         ],
         live: [
-          { title: "Standard library sampler", code: "import math, random\nprint(\"sqrt :\", math.sqrt(2))\nprint(\"pi   :\", math.pi)\nprint(\"dice :\", random.randint(1, 6))\nprint(\"pick :\", random.choice(['red','green','blue']))" },
+          { title: "Standard library sampler", code: "import math, random\nprint(\"sqrt :\", math.sqrt(2))\nprint(\"pi   :\", math.pi)\nprint(\"dice :\", random.randint(1, 6))\nprint(\"pick :\", random.choice(\"RGB\"))" },
+          { title: "from-import brings names in directly", code: "from math import pi, sqrt\nprint(pi)\nprint(sqrt(81))" },
         ],
         quiz: [
           { q: "How do you install a third-party library?", choices: ["import install x", "pip install x", "download x.exe", "python new x"], answer: 1, explain: "pip install <name> fetches packages from PyPI." },

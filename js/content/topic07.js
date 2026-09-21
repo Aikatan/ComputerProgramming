@@ -18,12 +18,13 @@ App.registerTopic({
 "import matplotlib.pyplot as plt\nx = [1, 2, 3, 4, 5]\ny = [10, 20, 25, 30, 35]\nplt.plot(x, y)\nplt.show()",
           annot: [
             { c: "plt.plot(x, y)", e: "Maps each x to its y and draws a line." },
-            { c: "plt.show()", e: "Renders the figure. (Here, the chart appears under the editor.)" },
+            { c: "plt.show()", e: "Renders the figure so the chart is drawn." },
           ] },
-        { type: "note", title: "It really runs", html: "The <b>Try it Live</b> editors below download Matplotlib the first time and draw the chart inline - no Jupyter needed." },
+        { type: "note", title: "It really runs", html: "The <b>Try it Live</b> editors download Matplotlib the first time and draw the chart inline - no Jupyter needed." },
       ],
       live: [
-        { title: "Run me - a real chart appears below", code: "import matplotlib.pyplot as plt\nx = [1, 2, 3, 4, 5]\ny = [10, 20, 25, 30, 35]\nplt.plot(x, y, marker='o', linestyle='--', color='g', label=\"Data Line\")\nplt.title(\"Customized Line Plot\")\nplt.xlabel(\"X-Axis\")\nplt.ylabel(\"Y-Axis\")\nplt.legend()\nplt.grid(True)\nplt.show()" },
+        { title: "A basic line plot", code: "import matplotlib.pyplot as plt\nx = [1, 2, 3, 4, 5]\ny = [10, 20, 25, 30, 35]\nplt.plot(x, y)\nplt.title(\"Line Plot\")\nplt.show()" },
+        { title: "A customized line chart", code: "import matplotlib.pyplot as plt\nx = [1, 2, 3, 4, 5]\ny = [10, 20, 25, 30, 35]\nplt.plot(x, y, marker='o', linestyle='--', color='g', label=\"Data Line\")\nplt.title(\"Customized Line Plot\")\nplt.xlabel(\"X-Axis\")\nplt.ylabel(\"Y-Axis\")\nplt.legend()\nplt.grid(True)\nplt.show()" },
       ],
       quiz: [
         { q: "What's the conventional alias for matplotlib.pyplot?", choices: ["mp", "plt", "plot", "mpl"], answer: 1, explain: "import matplotlib.pyplot as plt is the standard convention." },
@@ -46,6 +47,7 @@ App.registerTopic({
       ],
       live: [
         { title: "Bar chart", code: "import matplotlib.pyplot as plt\ncategories = ['A', 'B', 'C', 'D']\nvalues = [30, 50, 20, 40]\nplt.bar(categories, values, color='royalblue')\nplt.title(\"Bar Chart Example\")\nplt.show()" },
+        { title: "Scatter plot", code: "import matplotlib.pyplot as plt\nx = [1, 2, 3, 4, 5]\ny = [2, 5, 3, 8, 7]\nplt.scatter(x, y, color='crimson')\nplt.title(\"Scatter Example\")\nplt.show()" },
         { title: "Histogram of random data", code: "import numpy as np\nimport matplotlib.pyplot as plt\ndata = np.random.randn(1000)\nplt.hist(data, bins=30, color='purple', alpha=0.7)\nplt.title(\"Histogram Example\")\nplt.show()" },
       ],
       quiz: [
@@ -91,7 +93,7 @@ App.registerTopic({
           ],
         } },
 
-        { type: "example", caption: "catch specific errors", code:
+        { type: "example", caption: "catch specific errors", inputs: ["abc"], code:
 "try:\n    num = int(input(\"Enter a number: \"))\n    result = 10 / num\n    print(result)\nexcept ValueError:\n    print(\"Not a valid number.\")\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero.\")",
           annot: [
             { c: "try:", e: "Code that might fail goes here." },
@@ -109,7 +111,7 @@ App.registerTopic({
       live: [
         { title: "Easy: catch a divide-by-zero", code: "try:\n    print(10 / 0)\nexcept ZeroDivisionError:\n    print(\"Cannot divide by zero.\")" },
         { title: "Medium: many errors + finally (try 0 or 'abc')", code: "try:\n    num = int(input(\"Enter a number: \"))\n    print(\"10 /\", num, \"=\", 10 / num)\nexcept ValueError:\n    print(\"Error: not a valid integer.\")\nexcept ZeroDivisionError:\n    print(\"Error: cannot divide by zero.\")\nfinally:\n    print(\"Done.\")" },
-        { title: "Harder: raise your own, then else", code: "def check_age(age):\n    if age < 0:\n        raise ValueError(\"Age cannot be negative.\")\n    print(f\"Age is {age}.\")\n\ntry:\n    check_age(-5)\nexcept ValueError as e:\n    print(\"Caught:\", e)\nelse:\n    print(\"No error.\")" },
+        { title: "Harder: raise your own, then else", code: "def check_age(age):\n    if age < 0:\n        raise ValueError(\"Age cannot be negative.\")\n    print(\"Age is\", age)\n\ntry:\n    check_age(-5)\nexcept ValueError as e:\n    print(\"Caught:\", e)\nelse:\n    print(\"No error.\")" },
       ],
       quiz: [
         { q: "Which block always runs, error or not?", choices: ["try", "except", "else", "finally"], answer: 3, explain: "finally always runs - perfect for cleanup like closing files." },

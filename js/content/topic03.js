@@ -20,7 +20,7 @@ App.registerTopic({
           "Booleans are numbers underneath: <code>int(True)</code> is 1, <code>int(False)</code> is 0.",
         ] },
         { type: "example", caption: "truthy and falsy values", code:
-"# falsy\nbool(0)        # False\nbool(\"\")       # False\nbool(None)     # False\nbool([])       # False\n\n# truthy\nbool(42)       # True\nbool(\" \")      # True   (a space is not empty)\nbool([0])      # True   (non-empty list)" },
+"# falsy\nbool(0)        # False\nbool(0.0)      # False\nbool(\"\")       # False\nbool(None)     # False\n\n# truthy\nbool(42)       # True\nbool(-1)       # True   (any non-zero number)\nbool(\" \")      # True   (a space is not an empty string)" },
       ],
       live: [
         { title: "Test truthiness", code: "print(bool(0))      # False\nprint(bool(0.01))   # True\nprint(bool(\"\"))     # False\nprint(bool(\" \"))    # True (a space is non-empty!)\nprint(bool(None))   # False\nprint(int(True) + int(True))  # 2" },
@@ -107,7 +107,7 @@ App.registerTopic({
         { type: "text", html: "A <span class='kw'>while</span> loop repeats <i>as long as</i> a condition is true. A <span class='kw'>for</span> loop iterates over a sequence (a string, list, or <code>range</code>)." },
         { type: "subhead", text: "Step through a while loop" },
         { type: "widget", name: "loopViz", config: {
-          title: "while value < 5 - press Next to advance",
+          title: "while value < 5",
           code: ["value = 0", "while value < 5:", "    print(value)", "    value = value + 1"],
           trace: [
             { line: 0, vars: { value: 0 }, log: "" },
@@ -156,22 +156,22 @@ App.registerTopic({
             ] },
           ] },
           { label: "Accumulator pattern", blocks: [
-            { type: "text", html: "A hugely common pattern: start a variable at 0 (or an empty list/string), then update it each iteration." },
-            { type: "example", caption: "summing and collecting", code:
-"total = 0\nfor n in [4, 8, 15, 16]:\n    total += n          # accumulate a sum\nprint(total)            # 43\n\nsquares = []\nfor n in range(1, 5):\n    squares.append(n*n) # accumulate a list\nprint(squares)          # [1, 4, 9, 16]" },
+            { type: "text", html: "A common pattern: start a variable at a starting value (0, or an empty string), then update it each iteration." },
+            { type: "example", caption: "accumulate a sum and a string", code:
+"total = 0\nfor n in range(1, 5):\n    total += n          # accumulate a sum\nprint(total)            # 10\n\nword = \"\"\nfor ch in \"PYTHON\":\n    word = ch + word    # accumulate a reversed string\nprint(word)             # NOHTYP" },
           ] },
           { label: "Looping with index", blocks: [
             { type: "text", html: "Sometimes you need both the position and the value. <code>enumerate()</code> gives you both at once - cleaner than managing a counter by hand." },
             { type: "example", caption: "enumerate", code:
-"colors = ['red', 'green', 'blue']\nfor index, color in enumerate(colors):\n    print(index, color)",
-              output: "0 red\n1 green\n2 blue" },
+"word = \"cat\"\nfor index, ch in enumerate(word):\n    print(index, ch)",
+              output: "0 c\n1 a\n2 t" },
           ] },
         ] },
         { type: "note", variant: "danger", title: "Beware infinite loops", html: "<code>while True:</code> never stops on its own. Make sure something inside changes the condition (or use <code>break</code>)." },
       ],
       live: [
         { title: "for over a range", code: "for i in range(1, 6):\n    print(\"i =\", i, \" square =\", i*i)" },
-        { title: "Nested loops - a tiny clock", code: "for hour in range(8, 10):\n    for minute in range(0, 60, 30):\n        print(f\"{hour}:{minute:02d}\")" },
+        { title: "Nested loops - a tiny clock", code: "for hour in range(8, 10):\n    for minute in range(0, 60, 30):\n        print(str(hour) + \":\" + str(minute).zfill(2))" },
       ],
       quiz: [
         { q: "`range(0, 20, 5)` produces…", choices: ["0 5 10 15 20", "0 5 10 15", "5 10 15 20", "0 to 20"], answer: 1, explain: "The stop value (20) is excluded: 0, 5, 10, 15." },
@@ -198,8 +198,8 @@ App.registerTopic({
             { c: "continue", e: "Jumps straight to the next iteration, so print is skipped for evens." },
           ] },
         { type: "example", caption: "loop-else for a search", code:
-"numbers = [2, 5, 7, 11, 12]\nfor i in numbers:\n    if i == 10:\n        print(\"Found 10!\")\n        break\nelse:\n    print(\"10 is not in the list.\")",
-          output: "10 is not in the list." },
+"for i in range(2, 12, 3):   # 2, 5, 8, 11\n    if i == 10:\n        print(\"Found 10!\")\n        break\nelse:\n    print(\"10 is not in these numbers.\")",
+          output: "10 is not in these numbers." },
         { type: "subhead", text: "Step through it line by line" },
         { type: "text", html: "Step through to see exactly how <code>continue</code> jumps back to the loop header without reaching <code>print</code>, and how <code>break</code> would leave the loop entirely." },
         { type: "steprun", title: "continue - skip the even numbers", code: "for i in range(6):\n    if i % 2 == 0:\n        continue\n    print(\"odd:\", i)\nprint(\"done\")" },

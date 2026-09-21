@@ -18,7 +18,7 @@ App.registerTopic({
           { title: "Space complexity", body: "How much extra <i>memory</i> the algorithm needs as the input grows. Matters on big data and constrained devices." },
         ] } },
         { type: "text", html: "We don't count nanoseconds (those vary by machine). We count <b>how the work grows with input size n</b>. Summing a list of n numbers does ~n additions; comparing every pair does ~n² - and that difference is everything once n is large." },
-        { type: "example", caption: "same task, very different growth", code:
+        { type: "example", norun: true, caption: "same task, very different growth (read-only)", code:
 "# A) does ~n operations  (linear)\ntotal = 0\nfor x in data:\n    total += x\n\n# B) does ~n*n operations (quadratic) - every pair\nfor a in data:\n    for b in data:\n        compare(a, b)",
           annot: [
             { c: "one loop", e: "Work grows in step with n - double the data, double the work." },
@@ -27,7 +27,7 @@ App.registerTopic({
         { type: "note", html: "Goal of this topic: be able to look at code and estimate how it will scale - then pick a better approach <i>before</i> it becomes a problem." },
       ],
       live: [
-        { title: "Feel the difference: count the operations", code: "def linear_ops(n):\n    ops = 0\n    for i in range(n):\n        ops += 1\n    return ops\n\ndef quadratic_ops(n):\n    ops = 0\n    for i in range(n):\n        for j in range(n):\n            ops += 1\n    return ops\n\nfor n in [10, 100, 1000]:\n    print(f\"n={n:>4}:  linear={linear_ops(n):>7,}   quadratic={quadratic_ops(n):>9,}\")" },
+        { title: "Feel the difference: count the operations", code: "def linear_ops(n):\n    ops = 0\n    for i in range(n):\n        ops += 1\n    return ops\n\ndef quadratic_ops(n):\n    ops = 0\n    for i in range(n):\n        for j in range(n):\n            ops += 1\n    return ops\n\nfor n in [10, 100, 1000]:\n    print(\"n =\", n, \"  linear =\", linear_ops(n), \"  quadratic =\", quadratic_ops(n))" },
       ],
       quiz: [
         { q: "An algorithm must always be…", choices: ["Written in C", "Correct for every valid input", "Recursive", "Less than 10 lines"], answer: 1, explain: "Correctness is non-negotiable; efficiency is the second goal." },
@@ -89,12 +89,13 @@ App.registerTopic({
           annot: [
             { c: "for ... in data", e: "Worst case visits every element → O(n)." },
           ] },
-        { type: "subhead", text: "▶ Step through binary search" },
+        { type: "subhead", text: "Step through binary search" },
         { type: "text", html: "Watch <code>low</code>, <code>high</code> and <code>mid</code> close in on the target. Each step throws away <i>half</i> the remaining list - that's why even a million items take only ~20 steps." },
         { type: "steprun", title: "binary search for 23 in a sorted list", code: "def binary_search(data, target):\n    low = 0\n    high = len(data) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if data[mid] == target:\n            return mid\n        elif data[mid] < target:\n            low = mid + 1      # target is in the right half\n        else:\n            high = mid - 1     # target is in the left half\n    return -1\n\nnums = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]\nprint(\"found at index:\", binary_search(nums, 23))" },
         { type: "note", variant: "warn", title: "Binary search needs sorted data", html: "The halving logic only works if the list is ordered. If your data changes a lot, the cost of keeping it sorted may outweigh the faster search - engineering is about trade-offs." },
       ],
       live: [
+        { title: "Linear search returns the found index", code: "def linear_search(data, target):\n    for i, value in enumerate(data):\n        if value == target:\n            return i        # found at index i\n    return -1               # not found\n\nnums = [2, 5, 8, 12, 16, 23, 38]\nprint(linear_search(nums, 23))   # 5\nprint(linear_search(nums, 99))   # -1" },
         { title: "Race them: steps taken by each", code: "def linear_steps(data, target):\n    steps = 0\n    for v in data:\n        steps += 1\n        if v == target:\n            break\n    return steps\n\ndef binary_steps(data, target):\n    steps = 0\n    low, high = 0, len(data) - 1\n    while low <= high:\n        steps += 1\n        mid = (low + high) // 2\n        if data[mid] == target: break\n        elif data[mid] < target: low = mid + 1\n        else: high = mid - 1\n    return steps\n\ndata = list(range(1, 1_000_001))   # 1,000,000 sorted numbers\ntarget = 999_999\nprint(\"linear search steps:\", linear_steps(data, target))\nprint(\"binary search steps:\", binary_steps(data, target))" },
       ],
       quiz: [
@@ -112,7 +113,7 @@ App.registerTopic({
         { type: "subhead", text: "Compare and swap" },
         { type: "text", html: "Compare each neighbour pair.<br>Swap if left > right.<br>Each pass settles the largest remaining value at the end; the sorted tail grows." },
         { type: "widget", name: "bubbleViz", config: { title: "Bubble sort, comparison by comparison", data: [5, 1, 4, 2, 8] } },
-        { type: "subhead", text: "▶ Step through bubble sort" },
+        { type: "subhead", text: "Step through bubble sort" },
         { type: "text", html: "Watch the inner loop compare neighbours and swap. Notice how many comparisons it takes for just 5 numbers - then imagine a million." },
         { type: "steprun", title: "bubble sort a small list", code: "def bubble_sort(data):\n    n = len(data)\n    for i in range(n - 1):\n        for j in range(n - 1 - i):\n            if data[j] > data[j + 1]:\n                data[j], data[j + 1] = data[j + 1], data[j]  # swap\n    return data\n\nnums = [5, 1, 4, 2, 8]\nprint(bubble_sort(nums))" },
         { type: "note", title: "Don't write your own sort in real code", html: "Python's built-in <code>sorted()</code> and <code>list.sort()</code> use <b>Timsort</b> - an O(n log n) algorithm tuned in C. It is dramatically faster and well-tested. Hand-written sorts are for <i>learning</i> the ideas." },
@@ -121,7 +122,8 @@ App.registerTopic({
           output: "[1, 2, 4, 5, 8]\n[8, 5, 4, 2, 1]\n['fig', 'pear', 'banana']" },
       ],
       live: [
-        { title: "Count the comparisons bubble sort makes", code: "def bubble_count(data):\n    comparisons = 0\n    n = len(data)\n    for i in range(n - 1):\n        for j in range(n - 1 - i):\n            comparisons += 1\n            if data[j] > data[j + 1]:\n                data[j], data[j + 1] = data[j + 1], data[j]\n    return comparisons\n\nfor size in [5, 10, 50, 100]:\n    import random\n    sample = [random.randint(0, 999) for _ in range(size)]\n    print(f\"n={size:>3}:  {bubble_count(sample):>5,} comparisons\")" },
+        { title: "Run bubble sort on a small list", code: "def bubble_sort(data):\n    n = len(data)\n    for i in range(n - 1):\n        for j in range(n - 1 - i):\n            if data[j] > data[j + 1]:\n                data[j], data[j + 1] = data[j + 1], data[j]  # swap\n    return data\n\nprint(bubble_sort([5, 1, 4, 2, 8]))" },
+        { title: "Count the comparisons bubble sort makes", code: "def bubble_count(data):\n    comparisons = 0\n    n = len(data)\n    for i in range(n - 1):\n        for j in range(n - 1 - i):\n            comparisons += 1\n            if data[j] > data[j + 1]:\n                data[j], data[j + 1] = data[j + 1], data[j]\n    return comparisons\n\nfor size in [5, 10, 50, 100]:\n    import random\n    sample = [random.randint(0, 999) for _ in range(size)]\n    print(\"n =\", size, \" comparisons:\", bubble_count(sample))" },
       ],
       quiz: [
         { q: "Bubble sort's time complexity is…", choices: ["O(1)", "O(log n)", "O(n)", "O(n²)"], answer: 3, explain: "Two nested loops over the data → O(n²)." },
@@ -140,16 +142,16 @@ App.registerTopic({
           { title: "set", body: "Membership <code>x in s</code>: <b>O(1)</b> average (hashing). No duplicates, no order. Perfect for 'have I seen this?' checks." },
           { title: "dict", body: "Lookup <code>d[key]</code>: <b>O(1)</b> average. Key → value mapping. The workhorse for counting, indexing, caching." },
         ] } },
-        { type: "example", caption: "same result, very different cost", code:
+        { type: "example", norun: true, caption: "same result, very different cost (read-only)", code:
 "# Slow: 'in' on a list scans - O(n) per check, O(n*m) overall\nseen = []\nfor x in items:\n    if x not in seen:      # O(n) each time!\n        seen.append(x)\n\n# Fast: 'in' on a set hashes - O(1) per check, O(n) overall\nseen = set()\nfor x in items:\n    if x not in seen:      # O(1)\n        seen.add(x)",
           annot: [
             { c: "x not in seen  (list)", e: "Re-scans the whole list every time - quadratic overall." },
             { c: "x not in seen  (set)", e: "Hashes directly to the bucket - near-constant time." },
           ] },
-        { type: "deepdive", title: "Why hashing is O(1) (and the hardware angle)", html: "<p>A set/dict computes a <b>hash</b> of the key to jump straight to a memory slot, instead of comparing against every stored item. It trades a little extra memory for a huge time win - a recurring engineering theme. The cost: hashing scatters data across memory, so iterating a set is less cache-friendly than walking a contiguous list. Right tool, right job.</p>" },
+        { type: "note", title: "Why hashing is O(1) (and the hardware angle)", html: "A set/dict computes a <b>hash</b> of the key to jump straight to a memory slot, instead of comparing against every stored item. It trades a little extra memory for a huge time win - a recurring engineering theme. The cost: hashing scatters data across memory, so iterating a set is less cache-friendly than walking a contiguous list. Right tool, right job." },
       ],
       live: [
-        { title: "Time it: list membership vs set membership", code: "import time\n\nbig_list = list(range(100_000))\nbig_set  = set(big_list)\ntargets  = [99_999, 50_000, 0, 75_321]\n\nstart = time.perf_counter()\nfor _ in range(2000):\n    for t in targets:\n        t in big_list      # O(n) each\nlist_time = time.perf_counter() - start\n\nstart = time.perf_counter()\nfor _ in range(2000):\n    for t in targets:\n        t in big_set       # O(1) each\nset_time = time.perf_counter() - start\n\nprint(f\"list 'in': {list_time:.4f}s\")\nprint(f\"set  'in': {set_time:.4f}s\")\nprint(f\"set was ~{list_time/set_time:.0f}x faster\")" },
+        { title: "Time it: list membership vs set membership", code: "import time\n\nbig_list = list(range(100_000))\nbig_set  = set(big_list)\ntargets  = [99_999, 50_000, 0, 75_321]\n\nstart = time.perf_counter()\nfor _ in range(2000):\n    for t in targets:\n        t in big_list      # O(n) each\nlist_time = time.perf_counter() - start\n\nstart = time.perf_counter()\nfor _ in range(2000):\n    for t in targets:\n        t in big_set       # O(1) each\nset_time = time.perf_counter() - start\n\nprint(\"list 'in':\", round(list_time, 4), \"s\")\nprint(\"set  'in':\", round(set_time, 4), \"s\")\nprint(\"set was ~\", round(list_time/set_time), \"x faster\")" },
       ],
       quiz: [
         { q: "Checking `x in collection` is O(1) for a…", choices: ["list", "set or dict", "tuple", "string"], answer: 1, explain: "Sets and dicts hash the value for near-constant-time membership; lists/tuples scan (O(n))." },
@@ -185,11 +187,11 @@ App.registerTopic({
 "from functools import lru_cache\n\n@lru_cache(maxsize=None)\ndef fib(n):\n    if n < 2:\n        return n\n    return fib(n - 1) + fib(n - 2)\n\nprint(fib(100))   # instant - each value computed once" },
           ] },
         ] },
-        { type: "deepdive", title: "The hardware angle: locality & NumPy", html: "<p>The CPU reads memory in <b>cache lines</b>, so data that sits together is read together. Walking a contiguous array is far faster than chasing references scattered across the heap - even with the same Big-O. That's why <b>NumPy</b> (contiguous C arrays + operations in compiled C) can be 10–100× faster than a Python loop for number crunching. Choosing the right representation is a hardware decision, not just a style one.</p>" },
+        { type: "note", title: "The hardware angle: locality & NumPy", html: "The CPU reads memory in <b>cache lines</b>, so data that sits together is read together. Walking a contiguous array is far faster than chasing references scattered across the heap - even with the same Big-O. That's why <b>NumPy</b> (contiguous C arrays + operations in compiled C) can be 10–100× faster than a Python loop for number crunching. Choosing the right representation is a hardware decision, not just a style one." },
       ],
       live: [
-        { title: "Memoization: O(2ⁿ) vs O(n) on Fibonacci", code: "import time\nfrom functools import lru_cache\n\ndef slow_fib(n):\n    if n < 2: return n\n    return slow_fib(n-1) + slow_fib(n-2)\n\n@lru_cache(maxsize=None)\ndef fast_fib(n):\n    if n < 2: return n\n    return fast_fib(n-1) + fast_fib(n-2)\n\nstart = time.perf_counter()\nslow_fib(30)\nprint(f\"naive fib(30): {time.perf_counter()-start:.3f}s\")\n\nstart = time.perf_counter()\nfast_fib(100)\nprint(f\"memoized fib(100): {time.perf_counter()-start:.5f}s (and far bigger n)\")" },
-        { title: "String join vs += (watch the gap grow)", code: "import time\nwords = [\"x\"] * 50_000\n\nstart = time.perf_counter()\ns = \"\"\nfor w in words:\n    s += w\nplus_time = time.perf_counter() - start\n\nstart = time.perf_counter()\ns = \"\".join(words)\njoin_time = time.perf_counter() - start\n\nprint(f\"+=   : {plus_time:.4f}s\")\nprint(f\"join : {join_time:.4f}s\")" },
+        { title: "Memoization: O(2ⁿ) vs O(n) on Fibonacci", code: "import time\nfrom functools import lru_cache\n\ndef slow_fib(n):\n    if n < 2: return n\n    return slow_fib(n-1) + slow_fib(n-2)\n\n@lru_cache(maxsize=None)\ndef fast_fib(n):\n    if n < 2: return n\n    return fast_fib(n-1) + fast_fib(n-2)\n\nstart = time.perf_counter()\nslow_fib(30)\nprint(\"naive fib(30):\", round(time.perf_counter()-start, 3), \"s\")\n\nstart = time.perf_counter()\nfast_fib(100)\nprint(\"memoized fib(100):\", round(time.perf_counter()-start, 5), \"s (and far bigger n)\")" },
+        { title: "String join vs += (watch the gap grow)", code: "import time\nwords = [\"x\"] * 50_000\n\nstart = time.perf_counter()\ns = \"\"\nfor w in words:\n    s += w\nplus_time = time.perf_counter() - start\n\nstart = time.perf_counter()\ns = \"\".join(words)\njoin_time = time.perf_counter() - start\n\nprint(\"+=   :\", round(plus_time, 4), \"s\")\nprint(\"join :\", round(join_time, 4), \"s\")" },
       ],
       quiz: [
         { q: "Building a big string with `+=` in a loop is slow because…", choices: ["Strings are immutable, so each += makes a new copy", "Python can't add strings", "It uses the GPU", "Strings are too small"], answer: 0, explain: "Immutability means += rebuilds the whole string each time - O(n²). Use ''.join()." },
