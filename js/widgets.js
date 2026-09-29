@@ -126,7 +126,7 @@ App.widgets.truthTable = function (cfg) {
     tableHost.appendChild(h("table", { class: "tt" }, head, ...rows));
   }
   render();
-  return widgetShell("Truth table - pick an operator", h("div", null, sel, h("div", { style: "margin-top:12px" }, tableHost)));
+  return widgetShell((cfg && cfg.title) || "Truth table", h("div", null, sel, h("div", { style: "margin-top:12px" }, tableHost)));
 };
 
 /* ============================================================
@@ -269,6 +269,9 @@ App.widgets.codeTrace = function (cfg) {
   const outBox = h("div", { class: "step-out ct-out" });
   outBox.style.setProperty("--ct-out-lines", Math.max(1, T.maxOut));
   const note = h("div", { class: "ct-note" });
+  // reserve space for the longest note (1 or 2 lines), so the buttons do not move
+  const longNote = T.states.some((s) => s.note.replace(/<[^>]+>/g, "").length > 80);
+  note.style.minHeight = longNote ? "2.9em" : "1.5em";
   const count = h("span", { class: "ct-count" });
   const first = h("button", { class: "w-btn", title: "First step" }, "⟲");
   const prev = h("button", { class: "w-btn" }, "‹ Prev");
@@ -1950,7 +1953,7 @@ App.widgets.branchViz = function (cfg) {
   reset.addEventListener("click", () => { i = 0; draw(); });
   draw();
 
-  return widgetShell(cfg.title || "if / elif / else",
+  return widgetShell(cfg.title != null ? cfg.title : "if / elif / else",
     h("div", null, scRow, stage, note,
       h("div", { class: "w-row", style: "margin-top:12px" }, prev, next, reset, counter)));
 };

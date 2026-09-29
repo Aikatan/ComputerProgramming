@@ -48,32 +48,6 @@
       { q: "Logic gates are at the…", choices: ["User level", "Digital logic level", "OS level", "Assembly level"], answer: 1, explain: "Gates/flip-flops are Level 0." },
       { q: "The main benefit of layered abstraction is…", choices: ["More electricity", "Each layer hides the one below", "Fewer files", "Faster RAM"], answer: 1, explain: "Abstraction lets you ignore lower-level detail." },
     ],
-    /* ---------- Topic 03 ---------- */
-    "t03.boolean": [
-      { q: "`bool([])` is…", choices: ["True", "False"], answer: 1, explain: "An empty list is falsy." },
-      { q: "`bool('False')` is…", choices: ["True", "False"], answer: 0, explain: "A non-empty string is truthy, even 'False'." },
-      { q: "`int(True)` is…", choices: ["0", "1", "-1", "Error"], answer: 1, explain: "True is 1, False is 0." },
-    ],
-    "t03.operators": [
-      { q: "`True or False` is…", choices: ["True", "False"], answer: 0, explain: "or is True if either side is True." },
-      { q: "`not (3 > 5)` is…", choices: ["True", "False"], answer: 0, explain: "3 > 5 is False; not False is True." },
-      { q: "Equality operator is…", choices: ["=", "==", "=>", ":="], answer: 1, explain: "== compares; = assigns." },
-    ],
-    "t03.if-elif-else": [
-      { q: "How many branches run per pass?", choices: ["All", "At most one", "Two", "None"], answer: 1, explain: "Only the first matching branch runs." },
-      { q: "Blocks in Python are defined by…", choices: ["{ }", "Indentation", ";", "end"], answer: 1, explain: "Indentation marks blocks." },
-      { q: "C-style `elif` is Python's…", choices: ["else if", "elseif", "elif", "elsif"], answer: 2, explain: "Python uses elif." },
-    ],
-    "t03.loops": [
-      { q: "`range(2, 8, 2)` yields…", choices: ["2 4 6 8", "2 4 6", "2 3 4 5 6 7", "2 8"], answer: 1, explain: "Stops before 8, step 2 → 2,4,6." },
-      { q: "A for loop is best when…", choices: ["Count unknown", "Iterating a known sequence", "Never stopping", "Only once"], answer: 1, explain: "for suits known sequences/ranges." },
-      { q: "`while True:` without a break…", choices: ["Runs once", "Loops forever", "Errors", "Skips"], answer: 1, explain: "It's an infinite loop unless broken." },
-    ],
-    "t03.loop-control": [
-      { q: "`break`…", choices: ["Skips one iteration", "Exits the loop", "Does nothing", "Restarts"], answer: 1, explain: "break exits the loop entirely." },
-      { q: "`continue`…", choices: ["Exits the loop", "Skips to next iteration", "Does nothing", "Breaks twice"], answer: 1, explain: "continue jumps to the next iteration." },
-      { q: "`pass`…", choices: ["Exits", "Is a no-op placeholder", "Skips", "Prints"], answer: 1, explain: "pass does nothing; it's a placeholder." },
-    ],
     /* ---------- Topic 04 ---------- */
     "t04.flowchart-symbols": [
       { q: "A diamond means…", choices: ["Process", "Decision", "Start/Stop", "Input"], answer: 1, explain: "Diamond = decision." },
@@ -252,8 +226,6 @@
   // one more question for lessons that started with only a single quiz item
   const EXTRA = {
     "t00.first-run": { q: "Comments in Python start with…", choices: ["//", "#", "/*", "--"], answer: 1, explain: "# begins a comment in Python." },
-    "t03.boolean": { q: "`bool(0.0)` is…", choices: ["True", "False"], answer: 1, explain: "Zero (any numeric 0) is falsy." },
-    "t03.loops": { q: "`for c in 'hi':` runs how many times?", choices: ["1", "2", "3", "0"], answer: 1, explain: "Once per character - 'h','i' → 2 times." },
     "t04.flowchart-symbols": { q: "An arrow (flowline) shows…", choices: ["a value", "the order of steps", "an error", "memory"], answer: 1, explain: "Flowlines show the sequence of steps." },
     "t04.pseudocode": { q: "Good pseudocode is…", choices: ["Tied to Python", "Easy to read and to code", "Machine code", "Binary"], answer: 1, explain: "It reads plainly yet maps cleanly to code." },
     "t05.scope": { q: "Reading a global inside a function (without assigning) is…", choices: ["Allowed", "An error", "Requires global", "Impossible"], answer: 0, explain: "You can read a global directly; you only need `global` to reassign it." },

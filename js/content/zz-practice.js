@@ -14,11 +14,6 @@
       { prompt: "A program needs 4 bytes per <code>int</code>. Write code to print how many bytes <b>10 ints</b> take.", expected: "40" },
       { prompt: "Write code to print the four CPU instruction-cycle stages, one per line: <b>Fetch, Decode, Execute, Store</b>.", expected: "Fetch\nDecode\nExecute\nStore", hint: "Loop over a list of the four stage names." },
     ],
-    t03: [
-      { prompt: "Write code to print whether <b>17</b> is even or odd, like: <b>17 is odd</b>", expected: "17 is odd", hint: "Test n % 2 == 0." },
-      { prompt: "Write code to print the <b>sum of all numbers from 1 to 100</b>.", expected: "5050", hint: "Loop and accumulate, or use sum(range(1, 101))." },
-      { prompt: "Write code to print the 7× table from 7×1 to 7×5, like:<br><code>7 x 1 = 7</code> … each on its own line.", expected: "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35", hint: "for i in range(1, 6): print(\"7 x\", i, \"=\", 7 * i)" },
-    ],
     t04: [
       { prompt: "Given <code>a, b, c = 5, 9, 2</code>, write code to print the <b>largest</b> value.", starter: "a, b, c = 5, 9, 2\n", expected: "9", hint: "Use max(a, b, c) - or nested if statements." },
       { prompt: "Write code to print a countdown from 3 to 1, then <b>Go!</b> - each on its own line.", expected: "3\n2\n1\nGo!" },

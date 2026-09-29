@@ -574,7 +574,7 @@
               ["<code>'0'</code>", "48", "00110000"],
               ["space", "32", "00100000"],
             ], null, "center"),
-            N("The character <code>'7'</code> (code 55) is different from the number <code>7</code>. For this reason <code>\"12\" + \"3\"</code> joins characters instead of adding numbers."),
+            N("The character <code>'7'</code> (code 55) is not the number <code>7</code>. So <code>\"12\" + \"3\"</code> joins characters."),
           ] },
           { kind: "concept", part: "Size of each data type", title: "Each type uses a fixed number of bytes", blocks: [
             TB(["Type (C)", "Size", "Range or precision"], [

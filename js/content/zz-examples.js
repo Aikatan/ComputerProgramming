@@ -7,33 +7,6 @@
 (function () {
   // Python example: { t, code }.  C example: { t, c, py }
   const E = {
-    /* ---------- Topic 03 - Decisions & Loops ---------- */
-    "t03.boolean": [
-      { t: "Truthiness of values", code: 'for v in [0, 1, "", "hi", None, []]:\n    print(repr(v), "->", bool(v))' },
-      { t: "Booleans are numbers", code: 'print(True + True + False)   # 2\nprint(int(5 > 3))' },
-      { t: "or / and return a value", code: 'print(0 or "default")\nprint("a" and "b")' },
-    ],
-    "t03.operators": [
-      { t: "Combine conditions", code: 'age = 20\nprint(age >= 18 and age < 65)' },
-      { t: "Chained comparison & not", code: 'x = 5\nprint(1 <= x <= 10)\nprint(not (x == 5))' },
-      { t: "Comparisons return booleans", code: 'print(2 == 2.0)\nprint(2 != 3)\nprint("a" < "b")' },
-    ],
-    "t03.if-elif-else": [
-      { t: "Sign of a number", code: 'n = -4\nif n > 0:\n    print("positive")\nelif n < 0:\n    print("negative")\nelse:\n    print("zero")' },
-      { t: "Grade several scores", code: 'for s in [95, 73, 55]:\n    g = "A" if s >= 80 else "B" if s >= 70 else "C" if s >= 60 else "F"\n    print(s, "->", g)' },
-      { t: "One-line ternary", code: 'n = 7\nprint("even" if n % 2 == 0 else "odd")' },
-    ],
-    "t03.loops": [
-      { t: "Sum 1 to 10", code: 'total = 0\nfor i in range(1, 11):\n    total += i\nprint(total)' },
-      { t: "Times table", code: 'for i in range(1, 6):\n    print("3 x", i, "=", 3 * i)' },
-      { t: "A triangle of stars", code: 'for r in range(1, 5):\n    print("*" * r)' },
-    ],
-    "t03.loop-control": [
-      { t: "break out early", code: 'for n in range(10):\n    if n == 5:\n        break\n    print(n, end=" ")' },
-      { t: "continue skips evens", code: 'for n in range(1, 11):\n    if n % 2 == 0:\n        continue\n    print(n, end=" ")' },
-      { t: "pass as a placeholder", code: 'for i in range(3):\n    if i == 1:\n        pass   # do nothing for now\n    print(i)' },
-    ],
-
     /* ---------- Topic 04 - Flowchart & Pseudocode ---------- */
     "t04.flowchart-to-code": [
       { t: "Largest of two", code: 'a, b = 12, 8\nprint(max(a, b))' },

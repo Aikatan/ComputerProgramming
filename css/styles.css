@@ -982,7 +982,7 @@ body.slide-mode .deck-nav .btn, body.slide-mode .deck-counter, body.slide-mode .
 .ct-out div { white-space: pre-wrap; }
 .ct-out .ct-new { background: rgba(59,201,164,.16); border-radius: 4px; }
 .ct-dim { color: var(--text-dim); }
-.ct-note { margin-top: 12px; min-height: 2.9em; padding: 8px 12px; border-left: 3px solid var(--accent); background: var(--bg-2); border-radius: 0 8px 8px 0; }
+.ct-note { margin-top: 12px; padding: 8px 12px; box-sizing: content-box; border-left: 3px solid var(--accent); background: var(--bg-2); border-radius: 0 8px 8px 0; }
 .ct-ctrl { margin-top: 12px; }
 .ct-count { font-family: ui-monospace, monospace; color: var(--text-dim); }
 .slide .ctrace, .slide .ct-code, .slide .ct-label, .slide .ct-var, .slide .ct-var .bt-ball,
@@ -1076,3 +1076,5 @@ body.slide-mode .deck-stage { min-height: calc(100vh - 56px - 8px - 64px); }
   .brand-text { display: none; }
   .search { width: 84px; min-width: 0; }
 }
+.slide .practiceq { padding: 8px 12px; }
+.slide .live-out { padding: 4px 14px; }

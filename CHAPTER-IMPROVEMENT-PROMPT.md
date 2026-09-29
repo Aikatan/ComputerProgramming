@@ -151,14 +151,14 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 - **No small-text markup:** no `<sup>`, `<sub>`, `<small>`, or inline `font-size` in content. Write `2⁸`, `m²` with Unicode.
 - **Readability:** high contrast (4.5:1 or more in both themes), clear spacing, clear hierarchy.
 - **Zoom:** it must work: no horizontal page scroll at any width.
-- **Fit:** every slide fits without vertical scrolling at **1280×720, 1536×864 and 1920×1080**. Limits that fit, from t02:
+- **Fit:** every slide fits without vertical scrolling at **1280×720, 1536×864 and 1920×1080**. Limits that fit, from t02 and t03:
 
 | Slide | Limit |
 |---|---|
 | Concept | 5 list items or fewer, or one table of 6 rows or fewer plus 2 short lines |
-| `example` + `annot` | 7 lines or fewer, 40 characters or fewer per line, 3 short notes or fewer |
-| `codeTrace` | 6 lines or fewer, 40 characters or fewer per line, 4 variables or fewer, 2 output lines or fewer, notes of 2 lines or fewer |
-| `traceTable` | 6 rows or fewer (split with `rows:[a,b]`) |
+| `example` + `annot` | 7 lines or fewer, 40 characters or fewer per line, 3 short notes or fewer. A longer program (8–9 lines) goes on its own slide as one line of text plus a `livecode`. |
+| `codeTrace` | 7 lines or fewer, 40 characters or fewer per line, 4 variables or fewer, 4 output lines or fewer. Loop traces: one-line notes (80 characters or fewer). |
+| `traceTable` | 6 rows with two-line notes, or 7 rows with one-line notes. Split longer traces (loops) into parts with `rows:[a,b]`, titled "Trace table (part 1 of 2)". |
 | `practiceq` | prompt of about 40 words or fewer, starter of 6 lines or fewer, target of 3 lines or fewer |
 | Exercise with `cols` | 4 task lines or fewer on the left, 6 code lines or fewer on the right |
 | Summary | 5 items or fewer, or a table of 4 rows or fewer |
@@ -168,7 +168,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 
 | Type | Build |
 |---|---|
-| Trace the code | `cols`: task + `traceTable` (`blank:true, given:1`) on the left; the program as `livecode` on the right (checked with Step Run) |
+| Trace the code | `cols`: task + `traceTable` (`blank:true, given:1`) on the left; the program as `livecode` on the right (checked with Step Run). If the table has more than 5 columns, use two slides: "Trace the code" (task + full-width table), then "Check your trace" (the program). |
 | Determine the output | `cols`: task on the left; `livecode` on the right (paper first, then Run) |
 | Complete missing code | `practiceq` with a gap in the starter |
 | Modify existing code | `practiceq` with working code and a new target |
@@ -300,7 +300,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 Commit per chapter with a clear message. Push to `main` only when asked, because it publishes to GitHub Pages.
 
 ## 8. Known issues in unconverted chapters (verify and fix when you reach them)
-- **t03, t06, t09:** use `tabs`. Convert them to visible slides.
+- **t06, t09:** use `tabs`. Convert them to visible slides.
 - **t05:** the `funcCall` widgets contain inline 12px text. Move it to a CSS class.
 - **t06:** "Strings in depth" repeats t02 (creating, indexing, slicing, immutability) and teaches f-strings. Keep only what is new, without f-strings.
 - **t04:** flowchart labels are SVG text (18 viewBox units, about 24px on screen). Check that they render at 24px.
