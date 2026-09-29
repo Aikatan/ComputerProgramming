@@ -105,7 +105,7 @@ The chapter ends with a **practice lesson**:
 | t00–t02 | `if`, loops, lists, dicts, `def`, `try` |
 | t03 | lists, dicts, `def`, `try` (`range()` is allowed in `for`) |
 | t04 | lists, dicts, `def`, `try` |
-| t05 | lists, dicts, `try` |
+| t05 | lists, dicts, `try` (`*args` and `**kwargs` appear only with a `for` loop) |
 | t06 | `try`, files (aliasing and mutable defaults are taught here) |
 | t07+ | normal use of earlier material |
 
@@ -232,6 +232,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 - **`line`:** counts from 0.
 - **`set`:** lists only the changes, as Python literals (`"12"`, `"12.0"`, `"'ohm'"`, `"True"`). Use `{v:"10", t:"float"}` to force a type.
 - **`print`:** includes echoed input lines.
+- **`unset`:** a list of variables that disappear. Use it when a function returns, so that its locals are removed. Name locals `"v (power)"`, meaning v inside power.
 - **`traceTable` options:** `blank:true`, `given:n`, `rows:[a,b]`.
 - **Keyboard:** on slides, → / Space step the trace before the deck moves on.
 
@@ -241,7 +242,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
   - `binaryConverter`, `stringIndex`, `stringSlice`, `rebindViz`, `memoryModel` (t02)
   - `truthTable`, `branchViz`, `loopViz` (t03)
   - `flowchart` (t04): static, with a `code` panel, or traced with `trace`. `flowExec` and `pseudoMap` are no longer used; mappings are shown as tables.
-  - `funcCall` / `funcNested` / `funcArgs` / `funcScope`, `callStack` (t05)
+  - `callStack` (t05): recursion. Function calls use `codeTrace` with local names and `unset`. `funcCall` / `funcNested` / `funcArgs` / `funcScope` are no longer used.
   - `boxTrain`, `dictTrain`, `stringShift` (t06)
   - `tryFlow` (t07)
   - `fileFlow`, `csvFlow`, `jsonFlow`, `arrayOp`, `dfFilter` (t08)
@@ -319,7 +320,6 @@ Commit per chapter with a clear message. Push to `main` only when asked, because
 
 ## 8. Known issues in unconverted chapters (verify and fix when you reach them)
 - **t06, t09:** use `tabs`. Convert them to visible slides.
-- **t05:** the `funcCall` widgets contain inline 12px text. Move it to a CSS class.
 - **t06:** "Strings in depth" repeats t02 (creating, indexing, slicing, immutability) and teaches f-strings. Keep only what is new, without f-strings.
 - **Older widgets:** some use fixed pixel widths that were sized for smaller text. Check them for overflow at 24px.
 

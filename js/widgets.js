@@ -227,6 +227,8 @@ App.traceStates = function (cfg) {
   const names = [], vars = {}, out = [];
   const states = cfg.steps.map((st) => {
     const changed = [];
+    // unset: local variables that disappear when their function returns
+    if (st.unset) st.unset.forEach((k) => { delete vars[k]; });
     if (st.set) Object.keys(st.set).forEach((k) => {
       if (!names.includes(k)) names.push(k);
       vars[k] = traceVal(st.set[k]); changed.push(k);

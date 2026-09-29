@@ -14,11 +14,6 @@
       { prompt: "A program needs 4 bytes per <code>int</code>. Write code to print how many bytes <b>10 ints</b> take.", expected: "40" },
       { prompt: "Write code to print the four CPU instruction-cycle stages, one per line: <b>Fetch, Decode, Execute, Store</b>.", expected: "Fetch\nDecode\nExecute\nStore", hint: "Loop over a list of the four stage names." },
     ],
-    t05: [
-      { prompt: "Write a function <code>double(n)</code> that returns <code>n * 2</code>, then print <code>double(21)</code>.", expected: "42" },
-      { prompt: "Write a function that returns the <b>average</b> of <code>[4, 8, 15, 16, 23, 42]</code> and print it.", expected: "18.0", hint: "sum(nums) / len(nums)" },
-      { prompt: "Write a <b>recursive</b> factorial function and print <code>factorial(5)</code>.", expected: "120", hint: "Base case: n == 0 returns 1." },
-    ],
     t06: [
       { prompt: "Write code to print the list <code>[3, 1, 2]</code> <b>sorted</b>.", expected: "[1, 2, 3]", hint: "sorted([3, 1, 2])" },
       { prompt: "Write code to count each letter in <code>'banana'</code> and print the dictionary.", expected: "{'b': 1, 'a': 3, 'n': 2}", hint: "Loop the string; use d.get(ch, 0) + 1." },

@@ -48,32 +48,6 @@
       { q: "Logic gates are at the…", choices: ["User level", "Digital logic level", "OS level", "Assembly level"], answer: 1, explain: "Gates/flip-flops are Level 0." },
       { q: "The main benefit of layered abstraction is…", choices: ["More electricity", "Each layer hides the one below", "Fewer files", "Faster RAM"], answer: 1, explain: "Abstraction lets you ignore lower-level detail." },
     ],
-    /* ---------- Topic 05 ---------- */
-    "t05.defining": [
-      { q: "Keyword to define a function?", choices: ["func", "def", "function", "lambda"], answer: 1, explain: "def defines a function." },
-      { q: "No return statement means the function returns…", choices: ["0", "None", "''", "Error"], answer: 1, explain: "Without return, it returns None." },
-      { q: "A function must be defined…", choices: ["After it's called", "Before it's called", "In another file", "Twice"], answer: 1, explain: "Define before you call it." },
-    ],
-    "t05.scope": [
-      { q: "A variable made inside a function is…", choices: ["Global", "Local", "Constant", "Built-in"], answer: 1, explain: "It's local to that function." },
-      { q: "To modify a global inside a function, use…", choices: ["nonlocal", "global", "static", "extern"], answer: 1, explain: "Declare `global name` first." },
-      { q: "Local variables exist…", choices: ["Forever", "Only during the call", "In ROM", "On disk"], answer: 1, explain: "They're created on call, destroyed on return." },
-    ],
-    "t05.recursion": [
-      { q: "Every recursion needs a…", choices: ["Loop", "Base case", "Global", "Class"], answer: 1, explain: "A base case stops it." },
-      { q: "Too-deep recursion raises…", choices: ["ValueError", "RecursionError", "KeyError", "Nothing"], answer: 1, explain: "Python raises RecursionError near ~1000 deep." },
-      { q: "Each call uses a…", choices: ["Disk sector", "Stack frame", "ROM cell", "GPU core"], answer: 1, explain: "Calls push stack frames." },
-    ],
-    "t05.arguments": [
-      { q: "`*args` collects into a…", choices: ["list", "tuple", "dict", "set"], answer: 1, explain: "*args is a tuple." },
-      { q: "`**kwargs` collects into a…", choices: ["list", "tuple", "dict", "set"], answer: 2, explain: "**kwargs is a dict." },
-      { q: "Keyword arguments are matched by…", choices: ["Position", "Name", "Type", "Length"], answer: 1, explain: "By name, so order is free." },
-    ],
-    "t05.modules": [
-      { q: "Install a third-party package with…", choices: ["import x", "pip install x", "get x", "load x"], answer: 1, explain: "pip install fetches from PyPI." },
-      { q: "`from math import pi` lets you write…", choices: ["math.pi", "pi", "Math.PI", "import.pi"], answer: 1, explain: "The name is imported directly." },
-      { q: "A module is…", choices: ["A .py file you can import", "A CPU part", "A data type", "A loop"], answer: 0, explain: "A module is a Python file of reusable code." },
-    ],
     /* ---------- Topic 06 ---------- */
     "t06.strings": [
       { q: "`'Hi'.lower()` is…", choices: ["'HI'", "'hi'", "'Hi'", "Error"], answer: 1, explain: "lower() returns a lowercase copy." },
@@ -210,8 +184,6 @@
   // one more question for lessons that started with only a single quiz item
   const EXTRA = {
     "t00.first-run": { q: "Comments in Python start with…", choices: ["//", "#", "/*", "--"], answer: 1, explain: "# begins a comment in Python." },
-    "t05.scope": { q: "Reading a global inside a function (without assigning) is…", choices: ["Allowed", "An error", "Requires global", "Impossible"], answer: 0, explain: "You can read a global directly; you only need `global` to reassign it." },
-    "t05.modules": { q: "`import numpy as np` makes np a(n)…", choices: ["Alias", "Error", "Keyword", "File"], answer: 0, explain: "as gives the module a short alias." },
     "t06.list-vs-dict": { q: "Duplicates are allowed in a…", choices: ["set", "dict's keys", "list", "none of these"], answer: 2, explain: "Lists allow duplicates; set items and dict keys are unique." },
     "t07.chart-types": { q: "`plt.bar(...)` draws a…", choices: ["line", "bar chart", "scatter", "histogram"], answer: 1, explain: "bar() makes a bar chart." },
     "t08.csv-json": { q: "`json.dump(data, f)` …", choices: ["Reads JSON", "Writes data to file f", "Deletes f", "Prints data"], answer: 1, explain: "dump serializes data into the open file." },

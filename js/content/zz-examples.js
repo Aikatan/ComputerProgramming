@@ -7,33 +7,6 @@
 (function () {
   // Python example: { t, code }.  C example: { t, c, py }
   const E = {
-    /* ---------- Topic 05 - Functions & Modules ---------- */
-    "t05.defining": [
-      { t: "Return a value", code: 'def square(n):\n    return n * n\n\nprint(square(7))' },
-      { t: "Return two values", code: 'def stats(nums):\n    return min(nums), max(nums)\n\nlo, hi = stats([4, 9, 1, 7])\nprint(lo, hi)' },
-      { t: "A documented function", code: 'def greet(name):\n    """Return a greeting."""\n    return "Hi " + name\n\nprint(greet("Sam"))' },
-    ],
-    "t05.scope": [
-      { t: "Local vs global", code: 'x = 10\ndef show():\n    y = 5\n    print(x, y)\nshow()' },
-      { t: "The global keyword", code: 'count = 0\ndef inc():\n    global count\n    count += 1\ninc(); inc()\nprint(count)' },
-      { t: "Local shadows global", code: 'x = "global"\ndef f():\n    x = "local"\n    return x\nprint(f(), x)' },
-    ],
-    "t05.recursion": [
-      { t: "Recursive countdown", code: 'def down(n):\n    if n == 0:\n        return\n    print(n, end=" ")\n    down(n - 1)\ndown(5)' },
-      { t: "Recursive sum to n", code: 'def s(n):\n    return 0 if n == 0 else n + s(n - 1)\nprint(s(100))' },
-      { t: "Recursive factorial", code: 'def fact(n):\n    return 1 if n == 0 else n * fact(n - 1)\nprint(fact(5))' },
-    ],
-    "t05.arguments": [
-      { t: "Default argument", code: 'def greet(name, msg="Hi"):\n    return msg + ", " + name\nprint(greet("Sam"))\nprint(greet("Sam", "Yo"))' },
-      { t: "**kwargs", code: 'def info(**kw):\n    for k, v in kw.items():\n        print(k, "=", v)\ninfo(a=1, b=2)' },
-      { t: "*args", code: 'def total(*nums):\n    return sum(nums)\nprint(total(1, 2, 3, 4))' },
-    ],
-    "t05.modules": [
-      { t: "math module", code: 'import math\nprint(math.gcd(12, 18))\nprint(math.factorial(5))' },
-      { t: "random (seeded)", code: 'import random\nrandom.seed(0)\nprint(random.randint(1, 100))' },
-      { t: "ceil and floor", code: 'import math\nprint(math.ceil(4.2), math.floor(4.8))' },
-    ],
-
     /* ---------- Topic 06 - Strings, Lists, Dicts ---------- */
     "t06.strings": [
       { t: "Clean up text", code: 's = "  Hello  "\nprint(s.strip().upper())' },

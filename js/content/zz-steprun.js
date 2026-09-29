@@ -10,22 +10,6 @@
       intro: "Watch each variable get its value as the lines run, then how it's used in the output.",
       code: 'name = "ComPro"\nyear = 2025\ngreeting = "Welcome to " + name\nprint(greeting)\nprint("Year:", year)',
     },
-    "t05.defining": {
-      intro: "Step <i>into</i> the call: notice the scope label 'inside square()', watch <code>result</code> get built, then returned back to <code>x</code>.",
-      code: 'def square(n):\n    result = n * n\n    return result\n\nx = square(5)\ny = square(3)\nprint(x, y)',
-    },
-    "t05.scope": {
-      intro: "Watch the scope switch to 'inside show()' for the local <code>y</code>, then return to the module where only the global <code>x</code> exists.",
-      code: 'x = 20            # global\n\ndef show():\n    y = 10        # local to show()\n    print("inside:", x, y)\n\nshow()\nprint("outside:", x)',
-    },
-    "t05.arguments": {
-      intro: "<code>*args</code> collects every argument into a tuple; step through the loop to watch <code>s</code> accumulate the sum.",
-      code: 'def total(*args):\n    s = 0\n    for n in args:\n        s = s + n\n    return s\n\nprint(total(1, 2, 3, 4))',
-    },
-    "t05.modules": {
-      intro: "Imported modules aren't shown as variables - watch your own <code>r</code> and <code>area</code> instead.",
-      code: 'import math\nr = 5\narea = math.pi * r ** 2\nprint(round(area, 2))',
-    },
     "t06.strings": {
       intro: "Each string method returns a <b>new</b> string into its own variable - the original <code>s</code> never changes.",
       code: 's = "hello"\nup = s.upper()\nrep = s.replace("l", "L")\nn = len(s)\nprint(up, rep, n)',
