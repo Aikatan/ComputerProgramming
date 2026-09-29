@@ -7,23 +7,6 @@
 (function () {
   // Python example: { t, code }.  C example: { t, c, py }
   const E = {
-    /* ---------- Topic 07 - Plots & Exceptions ---------- */
-    "t07.matplotlib-basics": [
-      { t: "A line plot", code: 'import matplotlib.pyplot as plt\nplt.plot([1, 2, 3], [1, 4, 9])\nplt.show()' },
-      { t: "Style the line", code: 'import matplotlib.pyplot as plt\nplt.plot([1,2,3], [2,1,3], marker="o", color="r", linestyle="--")\nplt.title("Demo"); plt.grid(True)\nplt.show()' },
-      { t: "Label the axes", code: 'import matplotlib.pyplot as plt\nplt.plot([1, 2, 3], [3, 1, 2])\nplt.xlabel("x"); plt.ylabel("y"); plt.title("Labelled")\nplt.show()' },
-    ],
-    "t07.chart-types": [
-      { t: "Bar chart", code: 'import matplotlib.pyplot as plt\nplt.bar(["a", "b", "c"], [3, 7, 2])\nplt.show()' },
-      { t: "Scatter plot", code: 'import matplotlib.pyplot as plt\nplt.scatter([1, 2, 3, 4], [2, 4, 1, 8])\nplt.show()' },
-      { t: "Histogram", code: 'import matplotlib.pyplot as plt, numpy as np\nplt.hist(np.random.randn(300), bins=15)\nplt.show()' },
-    ],
-    "t07.exceptions": [
-      { t: "try / except", code: 'try:\n    print(10 / 0)\nexcept ZeroDivisionError:\n    print("no divide by zero")' },
-      { t: "else and finally", code: 'try:\n    x = int("42")\nexcept ValueError:\n    print("bad number")\nelse:\n    print("ok", x)\nfinally:\n    print("done")' },
-      { t: "Catch several error types", code: 'for v in ["5", "x"]:\n    try:\n        print(10 / int(v))\n    except (ValueError, ZeroDivisionError) as e:\n        print("error:", type(e).__name__)' },
-    ],
-
     /* ---------- Topic 08 - Files, NumPy & Pandas ---------- */
     "t08.file-handling": [
       { t: "Write then read", code: 'with open("a.txt", "w") as f:\n    f.write("hi\\n")\nwith open("a.txt") as f:\n    print(f.read())' },

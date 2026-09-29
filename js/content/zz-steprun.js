@@ -10,10 +10,6 @@
       intro: "Watch each variable get its value as the lines run, then how it's used in the output.",
       code: 'name = "ComPro"\nyear = 2025\ngreeting = "Welcome to " + name\nprint(greeting)\nprint("Year:", year)',
     },
-    "t07.exceptions": {
-      intro: "Watch execution jump from <code>try</code> straight into <code>except</code> the moment <code>n</code> is 0 - then carry on with the next item.",
-      code: 'nums = [10, 0, 5]\nfor n in nums:\n    try:\n        r = 100 / n\n        print("ok:", r)\n    except ZeroDivisionError:\n        print("skip: cannot divide by zero")',
-    },
     "t08.file-handling": {
       intro: "Step through writing a file, then reading it back into the <code>content</code> variable.",
       code: "with open('demo.txt', 'w') as f:\n    f.write('line 1\\n')\n    f.write('line 2\\n')\n\nwith open('demo.txt', 'r') as f:\n    content = f.read()\nprint(repr(content))",

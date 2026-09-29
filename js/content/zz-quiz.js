@@ -48,22 +48,6 @@
       { q: "Logic gates are at the…", choices: ["User level", "Digital logic level", "OS level", "Assembly level"], answer: 1, explain: "Gates/flip-flops are Level 0." },
       { q: "The main benefit of layered abstraction is…", choices: ["More electricity", "Each layer hides the one below", "Fewer files", "Faster RAM"], answer: 1, explain: "Abstraction lets you ignore lower-level detail." },
     ],
-    /* ---------- Topic 07 ---------- */
-    "t07.matplotlib-basics": [
-      { q: "Conventional import alias?", choices: ["mp", "plt", "plot", "mpl"], answer: 1, explain: "import matplotlib.pyplot as plt." },
-      { q: "Which renders the figure?", choices: ["plt.draw()", "plt.show()", "plt.figure()", "plt.plot()"], answer: 1, explain: "plt.show() displays it." },
-      { q: "Add a title with…", choices: ["plt.name()", "plt.title()", "plt.head()", "plt.label()"], answer: 1, explain: "plt.title('...')." },
-    ],
-    "t07.chart-types": [
-      { q: "Show a distribution with a…", choices: ["bar", "scatter", "histogram", "pie"], answer: 2, explain: "A histogram bins values." },
-      { q: "Compare categories with a…", choices: ["histogram", "bar chart", "scatter", "line"], answer: 1, explain: "Bar charts compare categories." },
-      { q: "Relationship between two variables → …", choices: ["bar", "scatter", "histogram", "pie"], answer: 1, explain: "Scatter plots show pairs of values." },
-    ],
-    "t07.exceptions": [
-      { q: "Which block always runs?", choices: ["try", "except", "else", "finally"], answer: 3, explain: "finally always runs." },
-      { q: "`else` in try runs when…", choices: ["An error occurs", "No error occurs", "Always", "Never"], answer: 1, explain: "else runs only if no exception." },
-      { q: "Trigger an error on purpose with…", choices: ["throw", "raise", "error", "panic"], answer: 1, explain: "raise SomeError('msg')." },
-    ],
     /* ---------- Topic 08 ---------- */
     "t08.file-handling": [
       { q: "Mode 'w' on an existing file…", choices: ["Appends", "Truncates it", "Errors", "Reads it"], answer: 1, explain: "'w' wipes existing content." },
@@ -163,7 +147,6 @@
   // one more question for lessons that started with only a single quiz item
   const EXTRA = {
     "t00.first-run": { q: "Comments in Python start with…", choices: ["//", "#", "/*", "--"], answer: 1, explain: "# begins a comment in Python." },
-    "t07.chart-types": { q: "`plt.bar(...)` draws a…", choices: ["line", "bar chart", "scatter", "histogram"], answer: 1, explain: "bar() makes a bar chart." },
     "t08.csv-json": { q: "`json.dump(data, f)` …", choices: ["Reads JSON", "Writes data to file f", "Deletes f", "Prints data"], answer: 1, explain: "dump serializes data into the open file." },
     "t10.why-c": { q: "C source becomes an executable via a…", choices: ["Interpreter", "Compiler", "Browser", "Spreadsheet"], answer: 1, explain: "A compiler builds the native executable." },
   };
