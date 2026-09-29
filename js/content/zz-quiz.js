@@ -48,37 +48,6 @@
       { q: "Logic gates are at the…", choices: ["User level", "Digital logic level", "OS level", "Assembly level"], answer: 1, explain: "Gates/flip-flops are Level 0." },
       { q: "The main benefit of layered abstraction is…", choices: ["More electricity", "Each layer hides the one below", "Fewer files", "Faster RAM"], answer: 1, explain: "Abstraction lets you ignore lower-level detail." },
     ],
-    /* ---------- Topic 09 ---------- */
-    "t09.what-is-algorithm": [
-      { q: "We measure cost by…", choices: ["Nanoseconds", "How work grows with input n", "Lines of code", "File size"], answer: 1, explain: "Growth with n, not raw time." },
-      { q: "Two nested loops over n are…", choices: ["O(n)", "O(n²)", "O(log n)", "O(1)"], answer: 1, explain: "n × n = n²." },
-      { q: "An algorithm must above all be…", choices: ["Short", "Correct", "Recursive", "In C"], answer: 1, explain: "Correctness comes first." },
-    ],
-    "t09.big-o": [
-      { q: "Best growth for large n?", choices: ["O(n²)", "O(n)", "O(log n)", "O(2ⁿ)"], answer: 2, explain: "O(log n) grows slowest here." },
-      { q: "`O(2n+5)` simplifies to…", choices: ["O(2n)", "O(n)", "O(5)", "O(n²)"], answer: 1, explain: "Drop constants → O(n)." },
-      { q: "Naive recursive Fibonacci is…", choices: ["O(1)", "O(n)", "O(2ⁿ)", "O(log n)"], answer: 2, explain: "Exponential - it recomputes subproblems." },
-    ],
-    "t09.searching": [
-      { q: "Binary search needs data that is…", choices: ["Small", "Sorted", "Unique", "Numeric"], answer: 1, explain: "Halving by comparison needs order." },
-      { q: "Linear search is…", choices: ["O(1)", "O(log n)", "O(n)", "O(n²)"], answer: 2, explain: "It may check every element." },
-      { q: "Binary search on 1,000,000 items ≈ … steps", choices: ["1,000,000", "1,000", "20", "1"], answer: 2, explain: "log2(1e6) ≈ 20." },
-    ],
-    "t09.sorting": [
-      { q: "Bubble sort is…", choices: ["O(1)", "O(n)", "O(n²)", "O(log n)"], answer: 2, explain: "Two nested loops." },
-      { q: "In real code, sort with…", choices: ["your own loop", "sorted()/list.sort()", "while", "recursion"], answer: 1, explain: "Built-in Timsort is O(n log n) and tuned." },
-      { q: "Python's built-in sort is…", choices: ["O(n²)", "O(n log n)", "O(2ⁿ)", "O(1)"], answer: 1, explain: "Timsort is O(n log n)." },
-    ],
-    "t09.data-structures": [
-      { q: "Membership `x in s` is O(1) for a…", choices: ["list", "set/dict", "tuple", "string"], answer: 1, explain: "Hashing gives ~constant lookup." },
-      { q: "Remove duplicates fast with a…", choices: ["list", "set", "string", "loop"], answer: 1, explain: "set() drops duplicates." },
-      { q: "`{1,2} & {2,3}` is…", choices: ["{1,2,3}", "{2}", "{1,3}", "set()"], answer: 1, explain: "& is intersection → {2}." },
-    ],
-    "t09.efficient-python": [
-      { q: "`+=` in a loop to build a string is slow because strings are…", choices: ["Sets", "Immutable (each += copies)", "Numbers", "Sorted"], answer: 1, explain: "Use ''.join() instead." },
-      { q: "Memoizing naive Fibonacci changes it from…", choices: ["O(n)→O(1)", "O(2ⁿ)→O(n)", "O(n²)→O(n)", "no change"], answer: 1, explain: "Caching makes each n computed once." },
-      { q: "A generator helps mainly with…", choices: ["Speed only", "Memory (streams items)", "Sorting", "Plotting"], answer: 1, explain: "It avoids building a big list in memory." },
-    ],
     /* ---------- Topic 10 - C ---------- */
     "t10.why-c": [
       { q: "C is…", choices: ["Interpreted", "Compiled to machine code", "Run in a browser", "A database"], answer: 1, explain: "A compiler builds a native executable." },

@@ -151,8 +151,13 @@ App.widgets.stepper = function (cfg) {
   next.addEventListener("click", () => { if (i < cfg.steps.length - 1) { i++; draw(); } });
   reset.addEventListener("click", () => { i = 0; draw(); });
   draw();
-  return widgetShell(cfg.title || "Step through it",
+  const shell = widgetShell(cfg.title || "Step through it",
     h("div", null, stage, h("div", { class: "w-row", style: "margin-top:12px" }, prev, next, reset, counter)));
+  // used by the deck: keyboard steps the widget before changing slide
+  shell.classList.add("kstep");
+  shell._step = (dir) => { const j = i + dir; if (j < 0 || j >= cfg.steps.length) return false; i = j; draw(); return true; };
+  shell._goto = (where) => { i = where === "end" ? cfg.steps.length - 1 : 0; draw(); };
+  return shell;
 };
 
 /* helper: render variable chips */

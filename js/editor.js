@@ -150,7 +150,7 @@ App.makePractice = function (cfg) {
   const checkBtn = App.h("button", { class: "btn" }, "✓ Check");
   head.append(spacer, resetBtn, runBtn, checkBtn);
   const taHost = App.h("div");
-  const out = App.h("div", { class: "live-out muted" }, "Write your solution, then Run to test it or Check to grade it.");
+  const out = App.h("div", { class: "live-out muted" }, "Run to test your code. Check grades it.");
   const badge = App.h("div", { class: "pq-badge hidden" });
   editorWrap.append(head, taHost, out);
   wrap.append(editorWrap, badge);
@@ -204,7 +204,7 @@ App.makePractice = function (cfg) {
 
   runBtn.addEventListener("click", doRun);
   checkBtn.addEventListener("click", doCheck);
-  resetBtn.addEventListener("click", () => { if (cm) cm.setValue(starter); out.className = "live-out muted"; out.textContent = "Write your solution, then Run to test it or Check to grade it."; badge.className = "pq-badge hidden"; });
+  resetBtn.addEventListener("click", () => { if (cm) cm.setValue(starter); out.className = "live-out muted"; out.textContent = "Run to test your code. Check grades it."; badge.className = "pq-badge hidden"; });
   return wrap;
 };
 

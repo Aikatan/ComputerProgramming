@@ -157,6 +157,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 |---|---|
 | Concept | 5 list items or fewer, or one table of 6 rows or fewer plus 2 short lines |
 | `example` + `annot` | 7 lines or fewer, 40 characters or fewer per line, 3 short notes or fewer. A longer program (8–9 lines) goes on its own slide as one line of text plus a `livecode`. |
+| `livecode` | 9 lines or fewer with no text line (the editor has 38px lines). A longer program (for example binary search, 12 lines) is shown read-only in parts: `cols` with a `code` part on the left and notes on the right, one slide per part. The complete runnable version becomes a "complete missing code" exercise. |
 | `codeTrace` | 7 lines or fewer, 40 characters or fewer per line, 4 variables or fewer, 4 output lines or fewer. Loop traces: one-line notes (80 characters or fewer). |
 | `traceTable` | 6 rows with two-line notes, or 7 rows with one-line notes. Split longer traces (loops) into parts with `rows:[a,b]`, titled "Trace table (part 1 of 2)". |
 | `practiceq` | prompt of about 40 words or fewer, starter of 6 lines or fewer, target of 3 lines or fewer |
@@ -171,6 +172,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 |---|---|
 | Trace the code | `cols`: task + `traceTable` (`blank:true, given:1`) on the left; the program as `livecode` on the right (checked with Step Run). If the table has more than 5 columns, use two slides: "Trace the code" (task + full-width table), then "Check your trace" (the program). |
 | Determine the output | `cols`: task on the left; `livecode` on the right (paper first, then Run) |
+| Complete a table | a `table` with blank cells (for example the iterations of a search), then "Check your table" with the completed table. Use it when the program is too long for Step Run on a slide. |
 | Complete missing code | `practiceq` with a gap in the starter |
 | Modify existing code | `practiceq` with working code and a new target |
 | Correct an error | `practiceq` with broken code |
@@ -234,7 +236,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 - **`print`:** includes echoed input lines.
 - **`unset`:** a list of variables that disappear. Use it when a function returns, so that its locals are removed. Name locals `"v (power)"`, meaning v inside power.
 - **`traceTable` options:** `blank:true`, `given:n`, `rows:[a,b]`.
-- **Keyboard:** on slides, → / Space step the trace before the deck moves on.
+- **Keyboard:** on slides, → / Space step a `codeTrace`, a traced `flowchart`, or any stepper widget (`searchViz`, `bubbleViz`, `boxTrain`, `fileFlow`, …) before the deck moves on.
 
 ### Widgets (reuse before building new ones)
 - **Every chapter:** `codeTrace`, `traceTable`
@@ -246,7 +248,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
   - `boxTrain`, `dictTrain`, `stringShift` (t06)
   - `tryFlow` (t07)
   - `fileFlow`, `csvFlow`, `jsonFlow`, `arrayOp`, `dfFilter` (t08)
-  - `searchViz`, `bubbleViz`, `bigOViz` (t09)
+  - `searchViz`, `bubbleViz` (t09). `bigOViz` is no longer used: it animates numbers, not execution. Growth is shown with tables and a Matplotlib plot.
   - `pyToC`, `buildPipeline`, `ptrViz`, `heapViz`, `arrViz` (t10)
   - `cpuCycle`, `cycleFlow`, `powerToggle`, `seekViz`, `levelDrop` (t01)
 - **Values shown as balls** use the shared colours: int blue, float teal, str amber, bool purple, None grey (`bt-int` … `bt-none`).
@@ -306,6 +308,8 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 
 ### Correctness
 - **Real outputs:** every output quoted anywhere comes from a real run (floats included, for example `0.30000000000000004`).
+- **Timings** (`time.perf_counter()`) differ on every run: never quote an exact time; describe the comparison instead.
+- **NumPy integers are 32-bit in the browser** (Pyodide): `np.array(list(range(1000000))).sum()` overflows. Use `mean()`, floats, or small data for sums.
 - **Error messages** are copied from a real run. The runner shows only the student's program:
   ```
   Traceback (most recent call last):
@@ -319,7 +323,6 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 Commit per chapter with a clear message. Push to `main` only when asked, because it publishes to GitHub Pages.
 
 ## 8. Known issues in unconverted chapters (verify and fix when you reach them)
-- **t09:** uses `tabs`. Convert them to visible slides.
 - **Older widgets:** some use fixed pixel widths that were sized for smaller text. Check them for overflow at 24px.
 
 ## 9. Review checklist (before finishing)

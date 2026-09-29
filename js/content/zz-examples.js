@@ -7,38 +7,6 @@
 (function () {
   // Python example: { t, code }.  C example: { t, c, py }
   const E = {
-    /* ---------- Topic 09 - Algorithms & Efficiency ---------- */
-    "t09.what-is-algorithm": [
-      { t: "Linear vs quadratic work", code: 'n = 50\nprint("linear   :", n)\nprint("quadratic:", n * n)' },
-      { t: "Count steps in nested loops", code: 'steps = 0\nfor i in range(5):\n    for j in range(5):\n        steps += 1\nprint(steps)' },
-      { t: "Accumulate a result", code: 'data = [4, 8, 15, 16]\ntotal = 0\nfor x in data:\n    total += x\nprint(total)' },
-    ],
-    "t09.big-o": [
-      { t: "Steps for binary search", code: 'import math\nfor n in [10, 1000, 1_000_000]:\n    print("n =", n, " log2 =", int(math.log2(n)))' },
-      { t: "Compare growth", code: 'for n in [10, 100, 1000]:\n    print("n =", n, " n^2 =", n * n)' },
-      { t: "O(1) vs O(n) lookup", code: 'd = {"a": 1}\nprint("a" in d)       # O(1)\nprint(3 in [1, 2, 3]) # O(n)' },
-    ],
-    "t09.searching": [
-      { t: "Linear search", code: 'def find(a, t):\n    for i, v in enumerate(a):\n        if v == t:\n            return i\n    return -1\nprint(find([3, 6, 9], 9))' },
-      { t: "Binary search", code: 'def bs(a, t):\n    lo, hi = 0, len(a) - 1\n    while lo <= hi:\n        m = (lo + hi) // 2\n        if a[m] == t: return m\n        elif a[m] < t: lo = m + 1\n        else: hi = m - 1\n    return -1\nprint(bs([1, 3, 5, 7, 9], 7))' },
-      { t: "The in operator", code: 'print(9 in [3, 6, 9])\nprint(5 in [3, 6, 9])' },
-    ],
-    "t09.sorting": [
-      { t: "Built-in sort", code: 'print(sorted([5, 2, 8, 1]))\nprint(sorted(["pear", "fig"], key=len))' },
-      { t: "Bubble sort by hand", code: 'a = [5, 1, 4, 2]\nfor i in range(len(a)):\n    for j in range(len(a) - 1 - i):\n        if a[j] > a[j + 1]:\n            a[j], a[j + 1] = a[j + 1], a[j]\nprint(a)' },
-      { t: "reverse and key", code: 'print(sorted([3, 1, 2], reverse=True))\nprint(sorted(["bb", "a", "ccc"], key=len))' },
-    ],
-    "t09.data-structures": [
-      { t: "A set removes duplicates", code: 'print(sorted(set([1, 1, 2, 3, 3, 3])))' },
-      { t: "Set operations", code: 'a = {1, 2, 3}\nb = {2, 3, 4}\nprint(a & b, a | b, a - b)' },
-      { t: "Counting with Counter", code: 'from collections import Counter\nprint(Counter("banana"))' },
-    ],
-    "t09.efficient-python": [
-      { t: "Comprehension over a loop", code: 'print([n * 2 for n in range(5)])' },
-      { t: "join beats += for strings", code: 'parts = ["a", "b", "c", "d"]\nprint("".join(parts))' },
-      { t: "Generator for memory", code: 'print(sum(n * n for n in range(1, 6)))' },
-    ],
-
     /* ---------- Topic 10 - Programming in C (C + Python twin) ---------- */
     "t10.why-c": [
       { t: "Hello world", c: '#include <stdio.h>\nint main(void) {\n    puts("Hello, World!");\n    return 0;\n}', py: 'print("Hello, World!")' },

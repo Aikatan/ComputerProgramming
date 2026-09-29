@@ -116,7 +116,7 @@
         if (el._cm.getOption("theme") !== theme) el._cm.setOption("theme", theme);
         setTimeout(() => el._cm.refresh(), 0);
       });
-      cache[i].querySelectorAll(".ctrace").forEach((t) => t._goto && t._goto(dir < 0 ? "end" : 0));
+      cache[i].querySelectorAll(".ctrace, .kstep").forEach((t) => t._goto && t._goto(dir < 0 ? "end" : 0));
       counter.textContent = (i + 1) + " / " + slides.length;
       progress.firstChild.style.width = ((i + 1) / slides.length * 100) + "%";
       const part = slides[i].part;
@@ -141,7 +141,7 @@
     // Keyboard / presenter clicker: a code trace on the slide steps first,
     // the deck moves on only when the trace is at its end (or start).
     function keyStep(dir) {
-      const tr = cache[i] && cache[i].querySelector(".ctrace");
+      const tr = cache[i] && cache[i].querySelector(".ctrace, .kstep");
       if (tr && tr._step && tr._step(dir)) return;
       if (dir > 0) goNext(); else goPrev();
     }
