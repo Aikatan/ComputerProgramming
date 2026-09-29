@@ -7,28 +7,6 @@
 (function () {
   // Python example: { t, code }.  C example: { t, c, py }
   const E = {
-    /* ---------- Topic 08 - Files, NumPy & Pandas ---------- */
-    "t08.file-handling": [
-      { t: "Write then read", code: 'with open("a.txt", "w") as f:\n    f.write("hi\\n")\nwith open("a.txt") as f:\n    print(f.read())' },
-      { t: "Sum numbers from a file", code: 'with open("n.txt", "w") as f:\n    for i in range(1, 6):\n        f.write(str(i) + "\\n")\ntotal = sum(int(line) for line in open("n.txt"))\nprint(total)' },
-      { t: "Append mode", code: 'with open("a.txt", "w") as f:\n    f.write("one\\n")\nwith open("a.txt", "a") as f:\n    f.write("two\\n")\nprint(open("a.txt").read())' },
-    ],
-    "t08.csv-json": [
-      { t: "JSON round-trip", code: 'import json\nd = {"x": 1, "y": [2, 3]}\ns = json.dumps(d)\nprint(s)\nprint(json.loads(s)["y"])' },
-      { t: "CSV round-trip", code: 'import csv\nwith open("d.csv", "w", newline="") as f:\n    csv.writer(f).writerows([["a", "b"], [1, 2]])\nwith open("d.csv") as f:\n    print(list(csv.reader(f)))' },
-      { t: "Pretty-print JSON", code: 'import json\nd = {"users": [{"n": "A"}, {"n": "B"}]}\nprint(json.dumps(d, indent=2))' },
-    ],
-    "t08.numpy": [
-      { t: "Element-wise math", code: 'import numpy as np\na = np.array([1, 2, 3, 4])\nprint(a * 10)' },
-      { t: "2-D arrays", code: 'import numpy as np\nm = np.array([[1, 2], [3, 4]])\nprint(m.sum(), m.sum(axis=0))' },
-      { t: "arange and aggregate", code: 'import numpy as np\na = np.arange(1, 6)\nprint(a, a.sum(), a.mean())' },
-    ],
-    "t08.pandas": [
-      { t: "A DataFrame column mean", code: 'import pandas as pd\ndf = pd.DataFrame({"x": [1, 2, 3]})\nprint(df["x"].mean())' },
-      { t: "Filter rows", code: 'import pandas as pd\ndf = pd.DataFrame({"name": ["A", "B", "C"], "age": [20, 35, 28]})\nprint(df[df["age"] > 25])' },
-      { t: "Group and sum", code: 'import pandas as pd\ndf = pd.DataFrame({"d": ["x", "y", "x"], "v": [1, 2, 3]})\nprint(df.groupby("d")["v"].sum())' },
-    ],
-
     /* ---------- Topic 09 - Algorithms & Efficiency ---------- */
     "t09.what-is-algorithm": [
       { t: "Linear vs quadratic work", code: 'n = 50\nprint("linear   :", n)\nprint("quadratic:", n * n)' },

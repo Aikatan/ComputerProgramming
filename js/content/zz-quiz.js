@@ -48,27 +48,6 @@
       { q: "Logic gates are at the…", choices: ["User level", "Digital logic level", "OS level", "Assembly level"], answer: 1, explain: "Gates/flip-flops are Level 0." },
       { q: "The main benefit of layered abstraction is…", choices: ["More electricity", "Each layer hides the one below", "Fewer files", "Faster RAM"], answer: 1, explain: "Abstraction lets you ignore lower-level detail." },
     ],
-    /* ---------- Topic 08 ---------- */
-    "t08.file-handling": [
-      { q: "Mode 'w' on an existing file…", choices: ["Appends", "Truncates it", "Errors", "Reads it"], answer: 1, explain: "'w' wipes existing content." },
-      { q: "`with open(...)` is preferred because it…", choices: ["Is faster", "Auto-closes the file", "Encrypts", "Avoids imports"], answer: 1, explain: "It closes the file even on error." },
-      { q: "Append to a file with mode…", choices: ["'r'", "'w'", "'a'", "'x'"], answer: 2, explain: "'a' appends." },
-    ],
-    "t08.csv-json": [
-      { q: "Serialize a dict to a file with…", choices: ["csv", "json", "os", "math"], answer: 1, explain: "json.dump writes dicts/lists." },
-      { q: "CSV stands for…", choices: ["Comma-Separated Values", "Code Style Verify", "Compact Storage Volume", "Column Sorted Values"], answer: 0, explain: "Comma-Separated Values." },
-      { q: "`json.loads(s)` does what?", choices: ["Writes JSON", "Parses JSON text to Python", "Deletes JSON", "Sorts JSON"], answer: 1, explain: "loads parses a JSON string." },
-    ],
-    "t08.numpy": [
-      { q: "Conventional import?", choices: ["import numpy as np", "import np", "from numpy", "include numpy"], answer: 0, explain: "import numpy as np." },
-      { q: "`np.array([1,2]) + np.array([3,4])` is…", choices: ["[1,2,3,4]", "[4,6]", "10", "Error"], answer: 1, explain: "Element-wise: [4, 6]." },
-      { q: "NumPy is fast because arrays are…", choices: ["On the GPU", "Contiguous + run in C", "Smaller", "Sorted"], answer: 1, explain: "Contiguous memory + compiled C." },
-    ],
-    "t08.pandas": [
-      { q: "A DataFrame is like a…", choices: ["Single number", "Table/spreadsheet", "Text file", "Loop"], answer: 1, explain: "2-D labelled table." },
-      { q: "Read a CSV with…", choices: ["pd.open_csv", "pd.read_csv", "pd.csv", "pd.load"], answer: 1, explain: "pd.read_csv(...)." },
-      { q: "Average salary per dept uses…", choices: ["df.mean()", "df.groupby('dept')['salary'].mean()", "df.head()", "df.sort()"], answer: 1, explain: "groupby then mean." },
-    ],
     /* ---------- Topic 09 ---------- */
     "t09.what-is-algorithm": [
       { q: "We measure cost by…", choices: ["Nanoseconds", "How work grows with input n", "Lines of code", "File size"], answer: 1, explain: "Growth with n, not raw time." },
@@ -147,7 +126,6 @@
   // one more question for lessons that started with only a single quiz item
   const EXTRA = {
     "t00.first-run": { q: "Comments in Python start with…", choices: ["//", "#", "/*", "--"], answer: 1, explain: "# begins a comment in Python." },
-    "t08.csv-json": { q: "`json.dump(data, f)` …", choices: ["Reads JSON", "Writes data to file f", "Deletes f", "Prints data"], answer: 1, explain: "dump serializes data into the open file." },
     "t10.why-c": { q: "C source becomes an executable via a…", choices: ["Interpreter", "Compiler", "Browser", "Spreadsheet"], answer: 1, explain: "A compiler builds the native executable." },
   };
 

@@ -14,10 +14,6 @@
       { prompt: "A program needs 4 bytes per <code>int</code>. Write code to print how many bytes <b>10 ints</b> take.", expected: "40" },
       { prompt: "Write code to print the four CPU instruction-cycle stages, one per line: <b>Fetch, Decode, Execute, Store</b>.", expected: "Fetch\nDecode\nExecute\nStore", hint: "Loop over a list of the four stage names." },
     ],
-    t08: [
-      { prompt: "Write code to save the numbers 1–5 to a file, read it back, and print their <b>sum</b>.", expected: "15", hint: "Write each number + '\\n', then read and int() each line." },
-      { prompt: "Using NumPy, write code to make the array <code>[1, 2, 3, 4]</code> and print its <b>mean</b>.", expected: "2.5", hint: "import numpy as np; np.array([...]).mean()" },
-    ],
     t09: [
       { prompt: "Write a <b>linear search</b> and print the index of <code>9</code> in <code>[4, 2, 9, 7]</code>.", expected: "2", hint: "enumerate the list; return i when value == target." },
       { prompt: "Write a <b>binary search</b> and print the index of <code>23</code> in <code>[2, 5, 8, 12, 16, 23, 38]</code>.", expected: "5", hint: "Track low/high; compare the middle element." },
