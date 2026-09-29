@@ -10,27 +10,6 @@
       intro: "Watch each variable get its value as the lines run, then how it's used in the output.",
       code: 'name = "ComPro"\nyear = 2025\ngreeting = "Welcome to " + name\nprint(greeting)\nprint("Year:", year)',
     },
-    "t02.errors": {
-      intro: "A <i>logical error</i> runs without crashing but gives the wrong answer. Step through and watch <code>result</code> - the precedence bug computes <code>a + (b/2)</code>, not <code>(a+b)/2</code>.",
-      code: 'a = 10\nb = 20\nresult = a + b / 2     # bug: only b is divided\nprint("buggy:", result)\nresult = (a + b) / 2   # fixed with parentheses\nprint("fixed:", result)',
-    },
-    "t02.input-output": {
-      intro: "This example reads input. The Step Run feeds the sample answers <b>Alice</b> and <b>25</b> so you can trace it without typing.",
-      code: 'name = input("Name: ")\nage = int(input("Age: "))\nnext_age = age + 1\nprint(f"{name}, next year you\'ll be {next_age}")',
-      inputs: ["Alice", "25"],
-    },
-    "t02.variables": {
-      intro: "See how one name can change value - and even type - as the program runs.",
-      code: 'x = 5\ny = "!"\nx = x + 3\nx = str(x) + y\nprint(x)',
-    },
-    "t02.data-types": {
-      intro: "Watch <code>s</code> and its type name <code>t</code> change on each pass of the loop.",
-      code: 'samples = [42, 3.14, True, "hi"]\nfor s in samples:\n    t = type(s).__name__\n    print(s, "->", t)',
-    },
-    "t02.strings-numbers": {
-      intro: "Each slice result becomes its own variable - step through to see them appear one by one.",
-      code: 'text = "Programming"\nfirst = text[0]\nlast = text[-1]\nmiddle = text[3:7]\nreverse = text[::-1]\nprint(first, last, middle, reverse)',
-    },
     "t05.defining": {
       intro: "Step <i>into</i> the call: notice the scope label 'inside square()', watch <code>result</code> get built, then returned back to <code>x</code>.",
       code: 'def square(n):\n    result = n * n\n    return result\n\nx = square(5)\ny = square(3)\nprint(x, y)',
@@ -82,6 +61,7 @@
 
   Object.keys(demos).forEach((key) => {
     const lesson = findLesson(key);
+    if (lesson && lesson.deck) return; // authored decks carry their own examples
     if (!lesson) return;
     lesson.learn = lesson.learn || [];
     // avoid duplicates if this runs twice

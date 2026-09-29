@@ -62,12 +62,13 @@ App.widgets.cpuCycle = function (cfg) {
 /* ============================================================
    binaryConverter - char/number <-> 8-bit binary + ASCII
    ============================================================ */
-App.widgets.binaryConverter = function () {
-  let value = 65; // 'A'
+App.widgets.binaryConverter = function (cfg) {
+  let value = cfg && cfg.value != null ? cfg.value & 0xff : 65; // 'A'
+  const chOf = (v) => (v >= 32 && v < 127 ? String.fromCharCode(v) : "");
   const bitsEl = h("div", { class: "bits" });
   const info = h("div", { class: "step-log" });
-  const input = h("input", { class: "w-input mono", type: "text", maxlength: "3", value: "A", style: "width:70px" });
-  const numIn = h("input", { class: "w-input mono", type: "number", min: "0", max: "255", value: "65", style: "width:90px" });
+  const input = h("input", { class: "w-input mono", type: "text", maxlength: "3", value: chOf(value), style: "width:70px" });
+  const numIn = h("input", { class: "w-input mono", type: "number", min: "0", max: "255", value: String(value), style: "width:90px" });
 
   function render() {
     bitsEl.innerHTML = "";
@@ -79,16 +80,15 @@ App.widgets.binaryConverter = function () {
     }
     const ch = value >= 32 && value < 127 ? String.fromCharCode(value) : "·";
     info.innerHTML = "decimal <b>" + value + "</b> &nbsp;=&nbsp; binary <b>" + value.toString(2).padStart(8, "0") +
-      "</b> &nbsp;=&nbsp; hex <b>0x" + value.toString(16).toUpperCase().padStart(2, "0") +
-      "</b> &nbsp;=&nbsp; char <b>'" + ch + "'</b>  (click bits to flip)";
+      "</b> &nbsp;=&nbsp; ASCII character <b>'" + ch + "'</b>";
   }
   function sync() { value &= 0xff; input.value = value >= 32 && value < 127 ? String.fromCharCode(value) : ""; numIn.value = value; render(); }
   input.addEventListener("input", () => { if (input.value.length) { value = input.value.charCodeAt(0) & 0xff; numIn.value = value; render(); } });
   numIn.addEventListener("input", () => { value = (parseInt(numIn.value, 10) || 0) & 0xff; input.value = value >= 32 && value < 127 ? String.fromCharCode(value) : ""; render(); });
   render();
-  return widgetShell("Binary / ASCII explorer",
+  return widgetShell((cfg && cfg.title) || "Binary converter: one byte (8 bits)",
     h("div", null,
-      h("div", { class: "w-row" }, h("span", { class: "mono" }, "char:"), input, h("span", { class: "mono" }, "decimal:"), numIn),
+      h("div", { class: "w-row" }, h("span", { class: "mono" }, "character:"), input, h("span", { class: "mono" }, "decimal:"), numIn),
       h("div", { style: "margin:12px 0" }, bitsEl), info));
 };
 
@@ -199,6 +199,164 @@ App.widgets.loopViz = function (cfg) {
         right);
     },
   });
+};
+
+/* ============================================================
+   Code traces - one authored trace object drives two views:
+   - codeTrace  : step-by-step execution (current line, variables, output)
+   - traceTable : the same trace as a static table (all rows visible)
+   trace = { code:[lines], steps:[{ line, note, set:{name:"py literal"|{v,t}}, print }] }
+   - line  : 0-based index into code; -1 = before the program starts
+   - set   : only the variables that change on this step (values accumulate)
+   - print : text this step adds to the output (may contain \n)
+   ============================================================ */
+function pyLitType(text) {
+  const s = String(text).trim();
+  if (/^(['"]).*\1$/s.test(s)) return "str";
+  if (s === "True" || s === "False") return "bool";
+  if (s === "None") return "none";
+  if (/^-?\d+$/.test(s)) return "int";
+  if (/^-?(\d+\.\d*|\.\d+|\d+(\.\d*)?[eE][-+]?\d+)$/.test(s)) return "float";
+  return "obj";
+}
+function traceVal(x) {
+  if (x && typeof x === "object") return { text: String(x.v), type: x.t || pyLitType(x.v) };
+  return { text: String(x), type: pyLitType(x) };
+}
+App.traceStates = function (cfg) {
+  const names = [], vars = {}, out = [];
+  const states = cfg.steps.map((st) => {
+    const changed = [];
+    if (st.set) Object.keys(st.set).forEach((k) => {
+      if (!names.includes(k)) names.push(k);
+      vars[k] = traceVal(st.set[k]); changed.push(k);
+    });
+    let printed = null;
+    if (st.print != null) { printed = String(st.print); printed.split("\n").forEach((ln) => out.push(ln)); }
+    return { line: st.line, note: st.note || "", vars: Object.assign({}, vars), changed, out: out.slice(), printed };
+  });
+  return { names, states, maxOut: out.length };
+};
+
+/* codeTrace - config: a trace object (+ optional title) */
+App.widgets.codeTrace = function (cfg) {
+  const T = App.traceStates(cfg);
+  const n = T.states.length;
+  let i = 0;
+
+  // program with line numbers and a marker on the current line
+  const codeBox = h("div", { class: "step-code ct-code" });
+  const lineEls = cfg.code.map((ln, idx) => {
+    const el = h("span", { class: "ln" },
+      h("span", { class: "ct-no" }, String(idx + 1)),
+      h("span", { class: "marker" }, "  "),
+      h("span", { html: App.highlight(ln) || "&nbsp;" }));
+    codeBox.appendChild(el);
+    return el;
+  });
+
+  // one reserved slot per variable, so the layout never jumps
+  const varsBox = h("div", { class: "ct-vars" });
+  const varEls = {};
+  T.names.forEach((nm) => {
+    const ball = h("span", { class: "bt-ball" });
+    const el = h("div", { class: "ct-var" }, h("span", { class: "ct-name" }, nm), h("span", { class: "ct-eq" }, "="), ball);
+    el._ball = ball;
+    varEls[nm] = el;
+    varsBox.appendChild(el);
+  });
+  const noVars = h("div", { class: "ct-empty" }, "No variables yet.");
+  const outBox = h("div", { class: "step-out ct-out" });
+  outBox.style.setProperty("--ct-out-lines", Math.max(1, T.maxOut));
+  const note = h("div", { class: "ct-note" });
+  const count = h("span", { class: "ct-count" });
+  const first = h("button", { class: "w-btn", title: "First step" }, "⟲");
+  const prev = h("button", { class: "w-btn" }, "‹ Prev");
+  const next = h("button", { class: "w-btn on" }, "Next ›");
+
+  function draw() {
+    const s = T.states[i];
+    lineEls.forEach((el, idx) => {
+      const cur = idx === s.line;
+      el.classList.toggle("hl", cur);
+      el.children[1].textContent = cur ? "▸ " : "  ";
+    });
+    let any = false;
+    T.names.forEach((nm) => {
+      const el = varEls[nm], v = s.vars[nm];
+      el.classList.toggle("ct-pending", !v);
+      el.classList.toggle("ct-set", s.changed.includes(nm));
+      if (v) { any = true; el._ball.className = "bt-ball bt-" + v.type; el._ball.textContent = v.text; }
+    });
+    noVars.style.display = any ? "none" : "";
+    outBox.replaceChildren(...(s.out.length ? s.out.map((ln, k) =>
+      h("div", { class: k >= s.out.length - (s.printed != null ? s.printed.split("\n").length : 0) ? "ct-new" : "" }, ln || " "))
+      : [h("div", { class: "ct-dim" }, "(no output yet)")]));
+    const where = s.line >= 0 ? "Line " + (s.line + 1) + ": " : (i === 0 ? "Start: " : "End: ");
+    note.innerHTML = "<b>" + where + "</b>" + s.note;
+    count.textContent = "Step " + (i + 1) + " of " + n;
+    first.disabled = prev.disabled = i === 0;
+    next.disabled = i === n - 1;
+  }
+  function go(k) { const j = Math.max(0, Math.min(n - 1, k)); if (j === i) return false; i = j; draw(); return true; }
+  first.addEventListener("click", () => go(0));
+  prev.addEventListener("click", () => go(i - 1));
+  next.addEventListener("click", () => go(i + 1));
+
+  const hasVars = T.names.length > 0; // a print-only program shows no variables panel
+  const wrap = h("div", { class: "widget ctrace" },
+    cfg.title ? h("div", { class: "widget-title" }, cfg.title) : null,
+    h("div", { class: "ct-grid" },
+      codeBox,
+      h("div", { class: "ct-state" },
+        hasVars ? h("div", { class: "ct-label" }, "Variables") : null, hasVars ? noVars : null, hasVars ? varsBox : null,
+        h("div", { class: "ct-label" }, "Output"), outBox)),
+    note,
+    h("div", { class: "w-row ct-ctrl" }, first, prev, next, count));
+  // used by the deck: keyboard steps the trace before changing slide
+  wrap._step = (dir) => go(i + dir);
+  wrap._goto = (where) => { i = where === "end" ? n - 1 : 0; draw(); };
+  draw();
+  return wrap;
+};
+
+/* traceTable - config: { trace, blank?, given?, rows?:[from,to] }
+   Normal: Line | What happens | one column per variable | Output
+   Blank : Line | Code | empty boxes to fill in (rows before `given` stay filled) */
+App.widgets.traceTable = function (cfg) {
+  const T = App.traceStates(cfg.trace);
+  const code = cfg.trace.code;
+  let rows = T.states.map((s, k) => ({ s, k })).filter((r) => r.s.line >= 0);
+  if (cfg.rows) rows = rows.slice(cfg.rows[0], cfg.rows[1]);
+  const given = cfg.blank ? (cfg.given || 0) : Infinity;
+  const head = ["Line", cfg.blank ? "Code" : "What happens"].concat(T.names, ["Output"]);
+  const thead = h("thead", null, h("tr", null, ...head.map((c, ci) =>
+    h("th", { class: ci >= 2 && ci < 2 + T.names.length ? "tt-var" : "" }, c))));
+  const tbody = h("tbody");
+  rows.forEach((r, ri) => {
+    const s = r.s, fill = ri < given;
+    const tr = h("tr");
+    tr.appendChild(h("td", { class: "tt-line", "data-label": "Line" }, String(s.line + 1)));
+    if (cfg.blank) tr.appendChild(h("td", { class: "tt-code", "data-label": "Code", html: App.highlight(code[s.line] || "") }));
+    else tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
+    T.names.forEach((nm) => {
+      const v = s.vars[nm];
+      const td = h("td", { class: "tt-var", "data-label": nm });
+      if (!fill) td.appendChild(h("span", { class: "tt-box" }));
+      else if (v && s.changed.includes(nm)) td.appendChild(h("span", { class: "tt-val bt-ball bt-" + v.type }, v.text));
+      else if (v) td.appendChild(h("span", { class: "tt-same" }, v.text));
+      else td.appendChild(h("span", { class: "tt-dim" }, "–"));
+      tr.appendChild(td);
+    });
+    const outTd = h("td", { class: "tt-out", "data-label": "Output" });
+    if (!fill) outTd.appendChild(h("span", { class: "tt-box" }));
+    else outTd.textContent = s.printed != null ? s.printed : "";
+    tr.appendChild(outTd);
+    tbody.appendChild(tr);
+  });
+  return h("div", { class: "ttab-wrap" + (cfg.blank ? " tt-blank" : "") },
+    cfg.title ? h("div", { class: "widget-title" }, cfg.title) : null,
+    h("table", { class: "ttab" }, thead, tbody));
 };
 
 /* ============================================================
@@ -664,10 +822,9 @@ App.widgets.stringIndex = function (cfg) {
   textIn.addEventListener("input", () => { text = textIn.value || " "; render(); });
   idxIn.addEventListener("input", () => { i = parseInt(idxIn.value, 10) || 0; render(); });
   render();
-  return widgetShell("String indexing - top number is the index, bottom is the negative index",
+  return widgetShell("String indexing: text[i]. Top number: index. Bottom number: negative index.",
     h("div", null,
-      h("div", { class: "w-row" }, h("span", { class: "mono" }, "text ="), textIn, h("span", { class: "mono" }, "index"), idxIn,
-        h("span", { style: "color:var(--text-dim);font-size:12px" }, "(or click a box)")),
+      h("div", { class: "w-row" }, h("span", { class: "mono" }, "text ="), textIn, h("span", { class: "mono" }, "index"), idxIn),
       h("div", { style: "margin:14px 0" }, charsEl), out));
 };
 
@@ -679,9 +836,10 @@ App.widgets.stringSlice = function (cfg) {
   let text = (cfg && cfg.text) || "Programming";
   const charsEl = h("div", { class: "sgrid" });
   const out = h("div", { class: "step-log" });
-  const sIn = h("input", { class: "w-input mono", value: "", placeholder: "start", style: "width:74px" });
-  const eIn = h("input", { class: "w-input mono", value: "", placeholder: "end", style: "width:74px" });
-  const stIn = h("input", { class: "w-input mono", value: "", placeholder: "step", style: "width:74px" });
+  const pre = (v) => (v == null ? "" : String(v));
+  const sIn = h("input", { class: "w-input mono", value: pre(cfg && cfg.start), placeholder: "start", style: "width:74px" });
+  const eIn = h("input", { class: "w-input mono", value: pre(cfg && cfg.end), placeholder: "end", style: "width:74px" });
+  const stIn = h("input", { class: "w-input mono", value: pre(cfg && cfg.step), placeholder: "step", style: "width:74px" });
   const textIn = h("input", { class: "w-input mono", value: text, style: "width:160px" });
 
   function pyslice() {
@@ -712,7 +870,7 @@ App.widgets.stringSlice = function (cfg) {
   [sIn, eIn, stIn].forEach((el) => el.addEventListener("input", render));
   textIn.addEventListener("input", () => { text = textIn.value || " "; render(); });
   render();
-  return widgetShell("String slicing - try start, end, step (leave blank for default; negatives allowed)",
+  return widgetShell("String slicing: text[start:end:step]. An empty box uses the default.",
     h("div", null,
       h("div", { class: "w-row" }, h("span", { class: "mono" }, "text ="), textIn),
       h("div", { class: "w-row", style: "margin-top:8px" }, h("span", { class: "mono" }, "text ["), sIn, h("span", { class: "mono" }, ":"), eIn, h("span", { class: "mono" }, ":"), stIn, h("span", { class: "mono" }, "]")),

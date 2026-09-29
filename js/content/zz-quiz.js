@@ -48,42 +48,6 @@
       { q: "Logic gates are at the…", choices: ["User level", "Digital logic level", "OS level", "Assembly level"], answer: 1, explain: "Gates/flip-flops are Level 0." },
       { q: "The main benefit of layered abstraction is…", choices: ["More electricity", "Each layer hides the one below", "Fewer files", "Faster RAM"], answer: 1, explain: "Abstraction lets you ignore lower-level detail." },
     ],
-    /* ---------- Topic 02 ---------- */
-    "t02.errors": [
-      { q: "A missing ) is what kind of error?", choices: ["Runtime", "Logical", "Syntax", "None"], answer: 2, explain: "Bad grammar is a syntax error - caught before running." },
-      { q: "Using an undefined name raises…", choices: ["ValueError", "NameError", "KeyError", "IndexError"], answer: 1, explain: "An undefined name raises NameError." },
-      { q: "Which line of a traceback is usually most useful?", choices: ["The first", "The last (error type/message)", "The middle", "None"], answer: 1, explain: "Read the bottom line: the error type and message." },
-    ],
-    "t02.input-output": [
-      { q: "input() returns a…", choices: ["int", "float", "str", "bool"], answer: 2, explain: "input() always returns a string." },
-      { q: "`print('a','b',sep='')` prints…", choices: ["a b", "ab", "a,b", "a-b"], answer: 1, explain: "Empty sep removes the space: 'ab'." },
-      { q: "To print without a trailing newline use…", choices: ["sep=''", "end=''", "flush=True", "nl=False"], answer: 1, explain: "end='' replaces the default newline." },
-    ],
-    "t02.variables": [
-      { q: "Valid variable name?", choices: ["2nd", "user name", "total_score", "class"], answer: 2, explain: "snake_case is valid; can't start with a digit, contain spaces, or be a keyword." },
-      { q: "`x = y = 0` does what?", choices: ["Error", "Sets both x and y to 0", "Only sets x", "Swaps them"], answer: 1, explain: "Chained assignment sets both names to 0." },
-      { q: "`Name` and `name` are…", choices: ["The same variable", "Different (case-sensitive)", "Both keywords", "Illegal"], answer: 1, explain: "Python identifiers are case-sensitive." },
-    ],
-    "t02.values-in-memory": [
-      { q: "One byte is how many bits?", choices: ["4", "8", "16", "32"], answer: 1, explain: "A byte is 8 bits." },
-      { q: "How are negative integers commonly stored?", choices: ["Sign-magnitude", "Two's complement", "ASCII", "BCD"], answer: 1, explain: "Two's complement is standard." },
-      { q: "`bin(5)` gives…", choices: ["'101'", "'0b101'", "5", "'0x5'"], answer: 1, explain: "bin() returns a '0b'-prefixed string." },
-    ],
-    "t02.python-memory": [
-      { q: "`is` compares…", choices: ["Values", "Identity (same object)", "Types", "Lengths"], answer: 1, explain: "`is` is identity; `==` is value." },
-      { q: "To copy a list (not alias) use…", choices: ["b = a", "b = a.copy()", "b == a", "b is a"], answer: 1, explain: "a.copy() makes an independent list." },
-      { q: "Strings and tuples are…", choices: ["Mutable", "Immutable", "Always empty", "Numbers"], answer: 1, explain: "They can't be changed in place." },
-    ],
-    "t02.data-types": [
-      { q: "`type(3.0)` is…", choices: ["int", "float", "str", "bool"], answer: 1, explain: "3.0 is a float." },
-      { q: "Which is a mapping type?", choices: ["list", "tuple", "dict", "set"], answer: 2, explain: "dict maps keys to values." },
-      { q: "`int('7') + 1` is…", choices: ["'71'", "8", "Error", "7"], answer: 1, explain: "int('7') converts to 7, then +1 = 8." },
-    ],
-    "t02.strings-numbers": [
-      { q: "`10 // 3` is…", choices: ["3.33", "3", "1", "4"], answer: 1, explain: "// is floor division → 3." },
-      { q: "`'ab' * 3` is…", choices: ["'ababab'", "'aaabbb'", "Error", "'ab3'"], answer: 0, explain: "* repeats a string." },
-      { q: "`len('  hi ')` is…", choices: ["2", "3", "5", "4"], answer: 2, explain: "Spaces count: '  hi ' has 5 characters." },
-    ],
     /* ---------- Topic 03 ---------- */
     "t03.boolean": [
       { q: "`bool([])` is…", choices: ["True", "False"], answer: 1, explain: "An empty list is falsy." },
@@ -303,7 +267,7 @@
   function topUp(map) {
     Object.keys(map).forEach((key) => {
       const lesson = findLesson(key);
-      if (!lesson) return;
+      if (!lesson || lesson.deck) return; // authored decks carry their own checks
       lesson.quiz = lesson.quiz || [];
       const items = Array.isArray(map[key]) ? map[key] : [map[key]];
       for (const q of items) {

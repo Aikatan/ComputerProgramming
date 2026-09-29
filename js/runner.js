@@ -38,6 +38,21 @@ App.py = {
     if (this._sink) this._sink(text, isErr);
   },
 
+  // Keep only the student's frames ("<program>") of a Pyodide traceback:
+  // the header, each "<program>" frame with its source and marker lines, and
+  // the final error line. Falls back to the plain tail if no frame matches.
+  _cleanTraceback(raw) {
+    const idx = raw.indexOf("Traceback (most recent call last)");
+    const msg = idx >= 0 ? raw.slice(idx) : raw;
+    if (msg.indexOf('"<program>"') < 0) return msg.replace(/\n\s*File "<exec>".*\n.*\n/g, "\n");
+    let keep = false;
+    return msg.split("\n").filter((ln) => {
+      if (/^\s+File "/.test(ln)) { keep = ln.indexOf('"<program>"') >= 0; return keep; }
+      if (/^\s/.test(ln)) return keep;   // source line or ^ marker of the current frame
+      return true;                       // header, error type and message
+    }).join("\n");
+  },
+
   async _loadPkgs(code) {
     const needs = [];
     if (/\b(import|from)\s+numpy/.test(code) && !this._pkgsLoaded.has("numpy")) needs.push("numpy");
@@ -66,6 +81,8 @@ App.py = {
       let val;
       if (inputs && inputs.length) val = inputs.shift();
       else val = window.prompt(p) ?? "";
+      // finish any printed line first, so the echoed prompt starts on its own line
+      if (App.py._pendingNL) { App.py._emit("\n"); App.py._pendingNL = false; }
       if (p) App.py._emit(p + String(val) + "\n");
       return String(val);
     });
@@ -82,10 +99,14 @@ App.py = {
         "__plt_capture.show = lambda *a, **k: None\n";
     }
     wrapped += "import sys as __sys\n__user_ns = {}\n";
-    // We exec user code in a fresh namespace each run
+    // We exec user code in a fresh namespace each run. It is compiled as
+    // "<program>" and registered in linecache, so a traceback shows the
+    // student's line number and source line (see _cleanTraceback).
     py.globals.set("__user_code__", code);
     wrapped +=
-      "exec(__user_code__, __user_ns)\n";
+      "import linecache as __lc\n" +
+      "__lc.cache['<program>'] = (len(__user_code__), None, __user_code__.splitlines(True), '<program>')\n" +
+      "exec(compile(__user_code__, '<program>', 'exec'), __user_ns)\n";
     if (hasPlot) {
       wrapped +=
         "import io as __io, base64 as __b64\n" +
@@ -109,12 +130,9 @@ App.py = {
       return { ok: true };
     } catch (e) {
       // Pyodide wraps Python tracebacks in the message
-      let msg = String(e.message || e);
-      // trim the JS-side wrapper lines, keep the python traceback tail
-      const idx = msg.indexOf("Traceback (most recent call last)");
-      if (idx >= 0) msg = msg.slice(idx);
-      // strip references to our wrapper file lines
-      msg = msg.replace(/\n\s*File "<exec>".*\n.*\n/g, "\n");
+      const msg = App.py._cleanTraceback(String(e.message || e));
+      // finish a partly printed line, so the error starts on its own line
+      if (this._pendingNL) { this._sink("\n"); this._pendingNL = false; }
       this._sink(msg, true);
       this.setStatus("ready", "ready");
       return { ok: false, error: msg };

@@ -1,12 +1,15 @@
 /* ============================================================
-   present.js - Slide / lecture mode. Auto-segments a lesson into
-   one-idea-per-slide and shows a navigable deck (arrows / click).
+   present.js - Slide / lecture mode.
+   Two sources of slides:
+   - lesson.deck  : authored slides, one purpose each (see lesson.js)
+   - learn/live/quiz : auto-segmented into one-idea-per-slide (older topics)
    ============================================================ */
 (function () {
   const h = App.h;
 
   const KICK = { example: "Example", deepdive: "Deep dive", steprun: "Step by step", livecode: "Try it", tabs: "Reference", widget: "Visual" };
 
+  /* ---- auto-segmented slides (lessons without a deck) ---- */
   function buildSlides(rec) {
     const L = rec.lesson, slides = [];
     slides.push({ cover: true, kicker: "Lesson", title: L.title, sub: L.sub, blocks: [] });
@@ -24,14 +27,42 @@
     return slides;
   }
 
+  /* ---- authored slides (lesson.deck) ---- */
+  function buildDeckSlides(rec) {
+    const L = rec.lesson, kick = App.deckKickers(L);
+    const slides = [{ cover: true, map: true, kicker: App.lessonPos(rec), title: L.title, sub: L.sub, blocks: [] }];
+    L.deck.forEach((s, n) => slides.push({ authored: true, kind: s.kind, part: s.part, kicker: kick[n], title: s.title, blocks: s.blocks || [], cols: s.cols }));
+    return slides;
+  }
+
+  // Numbered list of the topic's lessons; the current one is marked.
+  function chapterMap(rec) {
+    const list = h("ol", { class: "chap-map" });
+    rec.topic.lessons.forEach((l, j) => {
+      const key = rec.topic.id + "." + l.id;
+      const cls = (j === rec.li ? "cur" : "") + (App.progress.isDone(key) ? " done" : "");
+      list.appendChild(h("li", { class: cls.trim() }, h("a", { href: "#/l/" + key + "/0" }, l.title)));
+    });
+    return h("div", { class: "chap-map-wrap" }, h("div", { class: "chap-map-head" }, rec.topic.title), list);
+  }
+
   const render1 = (b) => (b.__quiz ? App.renderQuizItem(b.__quiz) : App.renderBlock(b));
   const isText = (b) => !b.__quiz && (b.type === "text" || b.type === "note" || b.type === "list");
 
-  function renderSlide(s) {
-    const el = h("div", { class: "slide" + (s.cover ? " slide-cover" : "") });
+  function renderSlide(s, rec) {
+    const el = h("div", { class: "slide" + (s.cover ? " slide-cover" : "") + (s.map ? " has-map" : "") + (s.authored ? " slide-authored kind-" + s.kind : "") });
     el.appendChild(h("div", { class: "slide-kicker" }, s.kicker));
     if (s.title) el.appendChild(h("h2", { class: "slide-title" }, s.title));
     if (s.sub) el.appendChild(h("p", { class: "slide-sub" }, s.sub));
+    if (s.map) { el.appendChild(chapterMap(rec)); return el; }
+    if (s.authored) {
+      if (s.cols) {
+        const left = h("div", { class: "slide-col" }); s.cols[0].forEach((b) => left.appendChild(render1(b)));
+        const right = h("div", { class: "slide-col" }); (s.cols[1] || []).forEach((b) => right.appendChild(render1(b)));
+        el.appendChild(h("div", { class: "slide-split" }, left, right));
+      } else s.blocks.forEach((b) => el.appendChild(render1(b)));
+      return el;
+    }
     const texts = s.blocks.filter(isText);
     const feats = s.blocks.filter((b) => !isText(b));
     // A runnable example that carries its own line-by-line explanation lays itself
@@ -49,64 +80,86 @@
     return el;
   }
 
-  App._deckNav = null; // {prev, next} while a deck is active
+  App._deckNav = null; // {prev, next, key} while a deck is active
 
   App.renderDeck = function (key, index) {
     const rec = App.getLesson(key);
     const view = document.getElementById("view");
     view.innerHTML = "";
     if (!rec) { view.appendChild(h("div", { class: "note danger" }, "Lesson not found: " + key)); return; }
-    const slides = buildSlides(rec);
+    const slides = rec.lesson.deck ? buildDeckSlides(rec) : buildSlides(rec);
     const cache = [];
     let i = Math.max(0, Math.min(slides.length - 1, index || 0));
+    const topicName = rec.topic.short || rec.topic.title;
+    const lessonName = (rec.li + 1) + ". " + rec.lesson.title;
 
     const bc = h("div", { class: "lesson-bc" }, h("a", { href: "#/" }, "Home"), " / ",
-      h("a", { href: "#/t/" + rec.topic.id }, rec.topic.short || rec.topic.title));
+      h("a", { href: "#/t/" + rec.topic.id }, topicName), " / ", lessonName);
     const stage = h("div", { class: "deck-stage" });
     const prev = h("button", { class: "btn ghost" }, "‹ Prev");
     const next = h("button", { class: "btn" }, "Next ›");
     const outlineBtn = h("button", { class: "btn ghost", title: "Outline (Esc)" }, "☰ Outline");
     const counter = h("span", { class: "deck-counter" });
     const progress = h("div", { class: "deck-progress" }, h("span"));
-    const nav = h("div", { class: "deck-nav" }, prev, outlineBtn, progress, counter, next);
+    const loc = h("span", { class: "deck-loc" });
+    const nav = h("div", { class: "deck-nav" }, prev, outlineBtn, loc, progress, counter, next);
 
-    function draw() {
-      if (!cache[i]) cache[i] = renderSlide(slides[i]);
+    // dir > 0: arrived moving forward (a trace starts at its first step);
+    // dir < 0: arrived moving back (a trace shows its last step).
+    function draw(dir) {
+      if (!cache[i]) cache[i] = renderSlide(slides[i], rec);
       stage.replaceChildren(cache[i]);
-      // CodeMirror needs a refresh when its slide is (re)attached
-      cache[i].querySelectorAll(".live").forEach((el) => el._cm && setTimeout(() => el._cm.refresh(), 0));
+      const theme = document.body.dataset.theme === "light" ? "default" : "material-darker";
+      // CodeMirror needs a refresh (and the current theme) when its slide is (re)attached
+      cache[i].querySelectorAll(".live").forEach((el) => {
+        if (!el._cm) return;
+        if (el._cm.getOption("theme") !== theme) el._cm.setOption("theme", theme);
+        setTimeout(() => el._cm.refresh(), 0);
+      });
+      cache[i].querySelectorAll(".ctrace").forEach((t) => t._goto && t._goto(dir < 0 ? "end" : 0));
       counter.textContent = (i + 1) + " / " + slides.length;
       progress.firstChild.style.width = ((i + 1) / slides.length * 100) + "%";
+      const part = slides[i].part;
+      loc.textContent = topicName + " › " + lessonName + (part ? " › " + part : "");
       prev.disabled = false; next.disabled = false;
       history.replaceState(null, "", "#/l/" + key + "/" + i);
       if (i === slides.length - 1) App.progress.setDone(key, true), App.buildSidebar && App.buildSidebar();
       window.scrollTo(0, 0);
     }
     function goNext() {
-      if (i < slides.length - 1) { i++; draw(); return; }
+      if (i < slides.length - 1) { i++; draw(1); return; }
       const flat = App.flatLessons(), idx = flat.findIndex((f) => f.key === key);
       if (idx < flat.length - 1) location.hash = "#/l/" + flat[idx + 1].key + "/0";
     }
     function goPrev() {
-      if (i > 0) { i--; draw(); return; }
+      if (i > 0) { i--; draw(-1); return; }
       // Cross-topic back-nav lands on the PREVIOUS lesson's LAST slide (finish the
       // thought), not slide 1. renderDeck clamps a large index down to the last slide.
       const flat = App.flatLessons(), idx = flat.findIndex((f) => f.key === key);
       if (idx > 0) location.hash = "#/l/" + flat[idx - 1].key + "/9999";
     }
+    // Keyboard / presenter clicker: a code trace on the slide steps first,
+    // the deck moves on only when the trace is at its end (or start).
+    function keyStep(dir) {
+      const tr = cache[i] && cache[i].querySelector(".ctrace");
+      if (tr && tr._step && tr._step(dir)) return;
+      if (dir > 0) goNext(); else goPrev();
+    }
     prev.addEventListener("click", goPrev);
     next.addEventListener("click", goNext);
-    outlineBtn.addEventListener("click", () => openOutline(slides, i, (n) => { i = n; draw(); }));
-    App._deckNav = { prev: goPrev, next: goNext };
+    outlineBtn.addEventListener("click", () => openOutline(slides, i, (n) => { i = n; draw(1); }));
+    App._deckNav = { prev: goPrev, next: goNext, key: keyStep };
 
     const root = h("div", { class: "deck" }, bc, stage, nav);
     view.appendChild(root);
-    draw();
+    draw(index >= 9999 ? -1 : 1);
   };
 
   function openOutline(slides, cur, jump) {
     const panel = h("div", { class: "panel" }, h("div", { class: "widget-title", style: "padding:4px 10px" }, "Slides - click to jump"));
+    let part = null;
     slides.forEach((s, n) => {
+      if (s.part && s.part !== part) { part = s.part; panel.appendChild(h("div", { class: "opart" }, s.part)); }
       const label = (s.cover ? s.title : (s.title ? s.title : s.kicker));
       const it = h("div", { class: "oitem" + (n === cur ? " cur" : "") },
         h("span", { style: "color:var(--text-dim)" }, (n + 1) + ". "),
@@ -127,9 +180,9 @@
     if (!App._deckNav) return;
     if (document.querySelector(".deck-outline")) return;
     const t = e.target;
-    if (t && (t.closest(".CodeMirror") || t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
-    if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); App._deckNav.next(); }
-    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); App._deckNav.prev(); }
-    else if (e.key === " " && !e.shiftKey) { e.preventDefault(); App._deckNav.next(); }
+    if (t && t.closest && (t.closest(".CodeMirror") || t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
+    if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); App._deckNav.key(1); }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); App._deckNav.key(-1); }
+    else if (e.key === " " && !e.shiftKey) { e.preventDefault(); App._deckNav.key(1); }
   });
 })();

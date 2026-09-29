@@ -7,43 +7,6 @@
 (function () {
   // Python example: { t, code }.  C example: { t, c, py }
   const E = {
-    /* ---------- Topic 02 - Basics ---------- */
-    "t02.errors": [
-      { t: "Fix a TypeError", code: 'print("Age: " + str(25))   # str() makes the int joinable' },
-      { t: "Spot a logical error (precedence)", code: 'print(10 + 20 / 2)     # wrong: 20.0\nprint((10 + 20) / 2)   # right: 15.0' },
-      { t: "Catch a ValueError", code: 'try:\n    int("abc")\nexcept ValueError as e:\n    print("ValueError:", e)' },
-    ],
-    "t02.input-output": [
-      { t: "sep and end", code: 'print("a", "b", "c", sep="-")\nprint("loading", end="... ")\nprint("done")' },
-      { t: "Format numbers in an f-string", code: 'pi = 3.14159\nprint(f"{pi:.2f}")\nprint(f"{42:>6}|")' },
-      { t: "Print several values", code: 'name, score = "Al", 92\nprint(name, score)\nprint(f"{name}: {score}")' },
-    ],
-    "t02.variables": [
-      { t: "A name can change type", code: 'x = 5\nprint(x, type(x).__name__)\nx = "five"\nprint(x, type(x).__name__)' },
-      { t: "Swap and multiple assignment", code: 'a, b = 1, 2\na, b = b, a\nprint(a, b)\nx = y = z = 0\nprint(x, y, z)' },
-      { t: "Augmented assignment", code: 'x = 10\nx += 5\nx *= 2\nprint(x)' },
-    ],
-    "t02.values-in-memory": [
-      { t: "Bits and ASCII", code: "print(bin(13))\nprint(ord('A'), '->', chr(65))" },
-      { t: "Fixed-size wrap vs Python big ints", code: 'print((255 + 1) & 0xFF)   # 8-bit wrap -> 0\nprint(2 ** 64)            # Python never overflows' },
-      { t: "Other bases", code: 'print(hex(255))\nprint(oct(8))\nprint(int("ff", 16))' },
-    ],
-    "t02.python-memory": [
-      { t: "is vs ==", code: 'a = [1, 2]\nb = a\nc = [1, 2]\nprint(a is b, a is c, a == c)' },
-      { t: "Alias vs copy", code: 'a = [1, 2, 3]\nb = a\nb.append(9)\nprint("alias changed a:", a)\nc = a.copy()\nc.append(0)\nprint("copy left a:", a)' },
-      { t: "Immutable ints rebind", code: 'a = 5\nb = a\na += 1\nprint(a, b)   # 6 5 - b is unaffected' },
-    ],
-    "t02.data-types": [
-      { t: "Inspect types", code: 'for v in [42, 3.14, "hi", True, [1]]:\n    print(v, "->", type(v).__name__)' },
-      { t: "Convert between types", code: 'print(int("42") + 8)\nprint(float(7))\nprint(str(100) + "%")' },
-      { t: "Collection literals", code: 'print(type([1]).__name__)\nprint(type((1,)).__name__)\nprint(type({1}).__name__)\nprint(type({"a": 1}).__name__)' },
-    ],
-    "t02.strings-numbers": [
-      { t: "Slice a string three ways", code: 's = "Programming"\nprint(s[:4], s[-4:], s[::-1])' },
-      { t: "The math module", code: 'import math\nprint(round(math.pi, 3))\nprint(math.sqrt(144), 2 ** 10)' },
-      { t: "String methods", code: 's = "Hello, World"\nprint(s.upper())\nprint(s.lower())\nprint(s.replace("o", "0"))' },
-    ],
-
     /* ---------- Topic 03 - Decisions & Loops ---------- */
     "t03.boolean": [
       { t: "Truthiness of values", code: 'for v in [0, 1, "", "hi", None, []]:\n    print(repr(v), "->", bool(v))' },
@@ -249,7 +212,7 @@
 
   Object.keys(E).forEach((key) => {
     const lesson = findLesson(key);
-    if (!lesson || !lesson.learn) return;
+    if (!lesson || !lesson.learn || lesson.deck) return; // authored decks carry their own examples
     if (lesson.learn.some((b) => b.__examples)) return; // idempotent
     lesson.learn.push({ type: "subhead", text: "Examples", __examples: true });
     E[key].forEach((ex) => {

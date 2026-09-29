@@ -14,11 +14,6 @@
       { prompt: "A program needs 4 bytes per <code>int</code>. Write code to print how many bytes <b>10 ints</b> take.", expected: "40" },
       { prompt: "Write code to print the four CPU instruction-cycle stages, one per line: <b>Fetch, Decode, Execute, Store</b>.", expected: "Fetch\nDecode\nExecute\nStore", hint: "Loop over a list of the four stage names." },
     ],
-    t02: [
-      { prompt: "Given <code>name = 'Sam'</code> and <code>age = 20</code>, write code to print: <b>Sam is 20 years old.</b>", starter: "name = 'Sam'\nage = 20\n# print the sentence below\n", expected: "Sam is 20 years old.", hint: "Use an f-string: f\"{name} is {age} years old.\"" },
-      { prompt: "Write code to print the quotient and remainder of 17 ÷ 5 as: <b>17 / 5 = 3 remainder 2</b>", expected: "17 / 5 = 3 remainder 2", hint: "Use // for the quotient and % for the remainder." },
-      { prompt: "Write code to print the first 3 letters of <code>'python'</code> in uppercase.", expected: "PYT", hint: "Slice [:3] then .upper()." },
-    ],
     t03: [
       { prompt: "Write code to print whether <b>17</b> is even or odd, like: <b>17 is odd</b>", expected: "17 is odd", hint: "Test n % 2 == 0." },
       { prompt: "Write code to print the <b>sum of all numbers from 1 to 100</b>.", expected: "5050", hint: "Loop and accumulate, or use sum(range(1, 101))." },
@@ -68,6 +63,7 @@
   Object.keys(Q).forEach((tid) => {
     const t = (App.TOPICS || []).find((x) => x.id === tid);
     if (!t) return;
+    if (t.lessons.some((l) => l.deck)) return; // authored topics carry their own practice lesson
     if (t.lessons.some((l) => l.id === "coding-practice")) return; // idempotent
     t.lessons.push(buildLesson(Q[tid])); // always last
   });

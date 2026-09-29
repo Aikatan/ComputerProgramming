@@ -21,7 +21,7 @@
       case "list":
         return h("div", { class: "card" },
           b.title ? h("h4", null, b.title) : null,
-          h("ul", null, ...b.items.map((it) => h("li", { html: it }))));
+          h(b.ordered ? "ol" : "ul", null, ...b.items.map((it) => h("li", { html: it }))));
       case "deflist":
         // term on its own line, meaning indented below (avoids "label: value" on one line)
         return h("div", { class: "card deflist" },
@@ -47,6 +47,12 @@
         return App.makePractice(b);
       case "example":
         return staticExample(b);
+      case "code":
+        return staticExampleReadonly(b);
+      case "table":
+        return tableBlock(b);
+      case "quiz":
+        return quizBlock(b.items, b.start || 0);
       default:
         return h("div", { class: "note danger" }, "Unknown block: " + b.type);
     }
@@ -106,10 +112,25 @@
     return h("div", null, cb, h("div", { class: "card" }, h("h4", null, "Line by line"), list));
   }
 
-  function quizBlock(items) {
+  // A plain, always-visible table. Cells may hold HTML. Each td carries its
+  // column heading in data-label so a narrow container can show rows as cards.
+  // cfg: { head:[...], rows:[[...]], caption?, cls? }
+  function tableBlock(b) {
+    const head = b.head || [];
+    const table = h("table", { class: "dtab" + (b.cls ? " " + b.cls : "") },
+      head.length ? h("thead", null, h("tr", null, ...head.map((c) => h("th", { html: String(c) })))) : null,
+      h("tbody", null, ...b.rows.map((r) => h("tr", null,
+        ...r.map((c, ci) => h("td", { "data-label": head[ci] != null ? String(head[ci]).replace(/<[^>]+>/g, "") : "", html: String(c) }))))));
+    return h("div", { class: "dtab-wrap" },
+      b.caption ? h("div", { class: "dtab-cap", html: b.caption }) : null, table);
+  }
+
+  function quizBlock(items, start) {
     const wrap = h("div");
     items.forEach((q, qi) => {
-      const card = h("div", { class: "quiz-q" }, h("div", { class: "q" }, (qi + 1) + ". " + q.q));
+      // question text is escaped; `backticks` become inline code
+      const qHtml = App.esc(q.q).replace(/`([^`]+)`/g, "<code>$1</code>");
+      const card = h("div", { class: "quiz-q" }, h("div", { class: "q", html: ((start || 0) + qi + 1) + ". " + qHtml }));
       const explain = h("div", { class: "quiz-explain" }, q.explain || "");
       let answered = false;
       q.choices.forEach((c, ci) => {
@@ -136,6 +157,44 @@
   App.renderBlock = block;
   App.renderQuizItem = function (q) { return quizBlock([q]); };
 
+  /* ---- authored decks (lesson.deck) ----
+     deck: [{ kind, part?, title, blocks? , cols?:[[left blocks],[right blocks]] }]
+     Shared by the slide view (present.js) and the scroll view below. */
+  const KIND = { overview: "Overview", concept: "Concept", problem: "Problem", code: "Example",
+    visual: "Illustration", trace: "Trace table", summary: "Summary", exercise: "Exercise", check: "Check" };
+  App.deckKickers = function (lesson) {
+    const deck = lesson.deck || [];
+    const nEx = deck.filter((s) => s.kind === "exercise").length;
+    let ex = 0;
+    return deck.map((s) => {
+      let k = KIND[s.kind] || "Slide";
+      if (s.kind === "exercise") { ex++; k += " " + ex + " of " + nEx; }
+      return s.part ? k + " · " + s.part : k;
+    });
+  };
+  App.deckBlocks = function (s) {
+    return s.cols ? s.cols[0].concat(s.cols[1] || []) : (s.blocks || []);
+  };
+  App.lessonPos = function (rec) {
+    return "Lesson " + (rec.li + 1) + " of " + rec.topic.lessons.length;
+  };
+
+  function renderDeckScroll(rec, root) {
+    const L = rec.lesson, kick = App.deckKickers(L);
+    let part = null;
+    L.deck.forEach((s, n) => {
+      if (s.part && s.part !== part && s.kind !== "summary") {
+        root.appendChild(h("h2", { class: "deck-part" }, s.part));
+      }
+      if (s.part) part = s.part;
+      const sec = h("section", { class: "deck-sec kind-" + s.kind },
+        h("div", { class: "deck-sec-kicker" }, kick[n]),
+        s.title ? h("h3", { class: "deck-sec-title" }, s.title) : null);
+      App.deckBlocks(s).forEach((b) => sec.appendChild(block(b)));
+      root.appendChild(sec);
+    });
+  }
+
   App.renderLesson = function (key) {
     const rec = App.getLesson(key);
     const view = document.getElementById("view");
@@ -147,8 +206,12 @@
     root.appendChild(h("div", { class: "lesson-bc" },
       h("a", { href: "#/" }, "Home"), " / ",
       h("a", { href: "#/t/" + topic.id }, topic.title)));
+    if (lesson.deck) root.appendChild(h("div", { class: "lesson-pos" }, App.lessonPos(rec)));
     root.appendChild(h("h1", { class: "lesson-title" }, lesson.title));
     if (lesson.sub) root.appendChild(h("p", { class: "lesson-sub" }, lesson.sub));
+
+    /* --- Authored deck: every slide in order, as reading sections --- */
+    if (lesson.deck) renderDeckScroll(rec, root);
 
     /* --- Section 1: Concept & Visuals --- */
     if (lesson.learn && lesson.learn.length) {
