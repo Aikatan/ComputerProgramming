@@ -10,18 +10,6 @@
       intro: "Watch each variable get its value as the lines run, then how it's used in the output.",
       code: 'name = "ComPro"\nyear = 2025\ngreeting = "Welcome to " + name\nprint(greeting)\nprint("Year:", year)',
     },
-    "t06.strings": {
-      intro: "Each string method returns a <b>new</b> string into its own variable - the original <code>s</code> never changes.",
-      code: 's = "hello"\nup = s.upper()\nrep = s.replace("l", "L")\nn = len(s)\nprint(up, rep, n)',
-    },
-    "t06.lists": {
-      intro: "Lists are mutable - watch <code>nums</code> change in place on every line.",
-      code: 'nums = [1, 2]\nnums.append(3)\nnums.insert(1, 9)\nnums.remove(2)\nlast = nums.pop()\nprint("nums:", nums)\nprint("popped:", last)',
-    },
-    "t06.dictionaries": {
-      intro: "The classic word-counter: step through and watch the <code>count</code> dictionary fill up key by key.",
-      code: 'text = "apple banana apple cherry banana apple"\ncount = {}\nfor word in text.split():\n    count[word] = count.get(word, 0) + 1\nprint(count)',
-    },
     "t07.exceptions": {
       intro: "Watch execution jump from <code>try</code> straight into <code>except</code> the moment <code>n</code> is 0 - then carry on with the next item.",
       code: 'nums = [10, 0, 5]\nfor n in nums:\n    try:\n        r = 100 / n\n        print("ok:", r)\n    except ZeroDivisionError:\n        print("skip: cannot divide by zero")',

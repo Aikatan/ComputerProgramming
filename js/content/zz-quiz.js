@@ -48,27 +48,6 @@
       { q: "Logic gates are at the…", choices: ["User level", "Digital logic level", "OS level", "Assembly level"], answer: 1, explain: "Gates/flip-flops are Level 0." },
       { q: "The main benefit of layered abstraction is…", choices: ["More electricity", "Each layer hides the one below", "Fewer files", "Faster RAM"], answer: 1, explain: "Abstraction lets you ignore lower-level detail." },
     ],
-    /* ---------- Topic 06 ---------- */
-    "t06.strings": [
-      { q: "`'Hi'.lower()` is…", choices: ["'HI'", "'hi'", "'Hi'", "Error"], answer: 1, explain: "lower() returns a lowercase copy." },
-      { q: "`'a,b'.split(',')` returns…", choices: ["'ab'", "['a', 'b']", "('a','b')", "2"], answer: 1, explain: "split returns a list." },
-      { q: "Strings are…", choices: ["Mutable", "Immutable", "Numbers", "Sets"], answer: 1, explain: "You can't change them in place." },
-    ],
-    "t06.lists": [
-      { q: "Add one item to the end with…", choices: ["extend", "append", "insert", "pop"], answer: 1, explain: "append adds a single item." },
-      { q: "`[1,2,3][1:]` is…", choices: ["[1,2]", "[2,3]", "[1]", "[3]"], answer: 1, explain: "Slice from index 1 to end." },
-      { q: "`[n for n in range(3)]` is…", choices: ["[0,1,2]", "[1,2,3]", "range(3)", "[3]"], answer: 0, explain: "A comprehension building [0,1,2]." },
-    ],
-    "t06.dictionaries": [
-      { q: "Safe read of a maybe-missing key?", choices: ["d['x']", "d.get('x', 0)", "d.x", "get d x"], answer: 1, explain: "get() returns a default instead of erroring." },
-      { q: "Dict keys must be…", choices: ["Lists", "Unique and immutable", "Numbers only", "Sorted"], answer: 1, explain: "Keys are unique and must be hashable/immutable." },
-      { q: "Iterate key/value pairs with…", choices: [".keys()", ".values()", ".items()", ".pairs()"], answer: 2, explain: "for k, v in d.items()." },
-    ],
-    "t06.list-vs-dict": [
-      { q: "O(1) membership comes from a…", choices: ["list", "dict/set", "tuple", "string"], answer: 1, explain: "Hashing gives near-constant lookup." },
-      { q: "Order matters and duplicates allowed → use a…", choices: ["set", "list", "dict", "frozenset"], answer: 1, explain: "Lists keep order and allow duplicates." },
-      { q: "Look data up by a name like 'email' → use a…", choices: ["list", "dict", "tuple", "string"], answer: 1, explain: "Dicts map names to values." },
-    ],
     /* ---------- Topic 07 ---------- */
     "t07.matplotlib-basics": [
       { q: "Conventional import alias?", choices: ["mp", "plt", "plot", "mpl"], answer: 1, explain: "import matplotlib.pyplot as plt." },
@@ -184,7 +163,6 @@
   // one more question for lessons that started with only a single quiz item
   const EXTRA = {
     "t00.first-run": { q: "Comments in Python start with…", choices: ["//", "#", "/*", "--"], answer: 1, explain: "# begins a comment in Python." },
-    "t06.list-vs-dict": { q: "Duplicates are allowed in a…", choices: ["set", "dict's keys", "list", "none of these"], answer: 2, explain: "Lists allow duplicates; set items and dict keys are unique." },
     "t07.chart-types": { q: "`plt.bar(...)` draws a…", choices: ["line", "bar chart", "scatter", "histogram"], answer: 1, explain: "bar() makes a bar chart." },
     "t08.csv-json": { q: "`json.dump(data, f)` …", choices: ["Reads JSON", "Writes data to file f", "Deletes f", "Prints data"], answer: 1, explain: "dump serializes data into the open file." },
     "t10.why-c": { q: "C source becomes an executable via a…", choices: ["Interpreter", "Compiler", "Browser", "Spreadsheet"], answer: 1, explain: "A compiler builds the native executable." },

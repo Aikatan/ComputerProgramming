@@ -7,28 +7,6 @@
 (function () {
   // Python example: { t, code }.  C example: { t, c, py }
   const E = {
-    /* ---------- Topic 06 - Strings, Lists, Dicts ---------- */
-    "t06.strings": [
-      { t: "Clean up text", code: 's = "  Hello  "\nprint(s.strip().upper())' },
-      { t: "count and replace", code: 't = "banana"\nprint(t.count("a"), t.replace("a", "A"))' },
-      { t: "split and join", code: 's = "a,b,c"\nparts = s.split(",")\nprint(parts)\nprint("-".join(parts))' },
-    ],
-    "t06.lists": [
-      { t: "Build a list", code: 'nums = [1, 2, 3]\nnums.append(4)\nnums.insert(0, 0)\nprint(nums)' },
-      { t: "List comprehensions", code: 'print([n * n for n in range(1, 6)])\nprint([n for n in range(10) if n % 2 == 0])' },
-      { t: "Sort and aggregate", code: 'nums = [5, 2, 8, 1]\nnums.sort()\nprint(nums, sum(nums), max(nums))' },
-    ],
-    "t06.dictionaries": [
-      { t: "Access with a default", code: 'p = {"name": "Al", "age": 30}\nprint(p["name"], p.get("city", "N/A"))' },
-      { t: "Count words", code: 'c = {}\nfor w in "a b a c a".split():\n    c[w] = c.get(w, 0) + 1\nprint(c)' },
-      { t: "Loop over items", code: 'p = {"a": 1, "b": 2}\nfor k, v in p.items():\n    print(k, "=", v)' },
-    ],
-    "t06.list-vs-dict": [
-      { t: "Membership in each", code: 'nums = [1, 2, 3]\nd = {"a": 1}\nprint(2 in nums, "a" in d)' },
-      { t: "Deduplicate with a set", code: 'nums = [1, 1, 2, 3, 3]\nprint(sorted(set(nums)))' },
-      { t: "Build a dict from two lists", code: 'keys = ["a", "b"]\nvals = [1, 2]\nprint(dict(zip(keys, vals)))' },
-    ],
-
     /* ---------- Topic 07 - Plots & Exceptions ---------- */
     "t07.matplotlib-basics": [
       { t: "A line plot", code: 'import matplotlib.pyplot as plt\nplt.plot([1, 2, 3], [1, 4, 9])\nplt.show()' },

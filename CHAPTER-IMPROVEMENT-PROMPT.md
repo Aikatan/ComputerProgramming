@@ -106,7 +106,7 @@ The chapter ends with a **practice lesson**:
 | t03 | lists, dicts, `def`, `try` (`range()` is allowed in `for`) |
 | t04 | lists, dicts, `def`, `try` |
 | t05 | lists, dicts, `try` (`*args` and `**kwargs` appear only with a `for` loop) |
-| t06 | `try`, files (aliasing and mutable defaults are taught here) |
+| t06 | `try`, files |
 | t07+ | normal use of earlier material |
 
 ### Code style
@@ -319,8 +319,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 Commit per chapter with a clear message. Push to `main` only when asked, because it publishes to GitHub Pages.
 
 ## 8. Known issues in unconverted chapters (verify and fix when you reach them)
-- **t06, t09:** use `tabs`. Convert them to visible slides.
-- **t06:** "Strings in depth" repeats t02 (creating, indexing, slicing, immutability) and teaches f-strings. Keep only what is new, without f-strings.
+- **t09:** uses `tabs`. Convert them to visible slides.
 - **Older widgets:** some use fixed pixel widths that were sized for smaller text. Check them for overflow at 24px.
 
 ## 9. Review checklist (before finishing)

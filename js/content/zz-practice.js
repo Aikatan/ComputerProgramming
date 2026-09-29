@@ -14,11 +14,6 @@
       { prompt: "A program needs 4 bytes per <code>int</code>. Write code to print how many bytes <b>10 ints</b> take.", expected: "40" },
       { prompt: "Write code to print the four CPU instruction-cycle stages, one per line: <b>Fetch, Decode, Execute, Store</b>.", expected: "Fetch\nDecode\nExecute\nStore", hint: "Loop over a list of the four stage names." },
     ],
-    t06: [
-      { prompt: "Write code to print the list <code>[3, 1, 2]</code> <b>sorted</b>.", expected: "[1, 2, 3]", hint: "sorted([3, 1, 2])" },
-      { prompt: "Write code to count each letter in <code>'banana'</code> and print the dictionary.", expected: "{'b': 1, 'a': 3, 'n': 2}", hint: "Loop the string; use d.get(ch, 0) + 1." },
-      { prompt: "Write code to print the <b>longest</b> word in <code>['hi', 'hello', 'hey']</code>.", expected: "hello", hint: "Track the word with the greatest len()." },
-    ],
     t07: [
       { prompt: "Write code that tries <code>10 / 0</code> and instead prints <b>cannot divide by zero</b> (no crash).", expected: "cannot divide by zero", hint: "Wrap it in try / except ZeroDivisionError." },
       { prompt: "For each value in <code>[5, 0, 2]</code>, print <code>100 // value</code>, or <b>skip</b> if it would divide by zero - one per line.", expected: "20\nskip\n50", hint: "try the division inside the loop; except prints 'skip'." },
