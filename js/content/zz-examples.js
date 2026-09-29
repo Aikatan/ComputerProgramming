@@ -7,18 +7,6 @@
 (function () {
   // Python example: { t, code }.  C example: { t, c, py }
   const E = {
-    /* ---------- Topic 04 - Flowchart & Pseudocode ---------- */
-    "t04.flowchart-to-code": [
-      { t: "Largest of two", code: 'a, b = 12, 8\nprint(max(a, b))' },
-      { t: "Countdown loop", code: 'x = 3\nwhile x > 0:\n    print(x)\n    x -= 1\nprint("Go!")' },
-      { t: "Sum 1 to N", code: 'n = 5\ntotal = 0\nfor i in range(1, n + 1):\n    total += i\nprint(total)' },
-    ],
-    "t04.pseudocode": [
-      { t: "Even or odd", code: 'number = 8\nprint("even" if number % 2 == 0 else "odd")' },
-      { t: "Largest of two", code: 'a, b = 4, 9\nif a > b:\n    print(a)\nelse:\n    print(b)' },
-      { t: "Sum a list", code: 'nums = [3, 5, 2]\ns = 0\nfor n in nums:\n    s += n\nprint(s)' },
-    ],
-
     /* ---------- Topic 05 - Functions & Modules ---------- */
     "t05.defining": [
       { t: "Return a value", code: 'def square(n):\n    return n * n\n\nprint(square(7))' },

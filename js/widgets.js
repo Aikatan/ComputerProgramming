@@ -327,21 +327,32 @@ App.widgets.codeTrace = function (cfg) {
    Normal: Line | What happens | one column per variable | Output
    Blank : Line | Code | empty boxes to fill in (rows before `given` stay filled) */
 App.widgets.traceTable = function (cfg) {
-  const T = App.traceStates(cfg.trace);
-  const code = cfg.trace.code;
+  // flowchart mode: the rows name the shape instead of a code line
+  const flow = cfg.flow;
+  const trace = flow
+    ? { code: flow.nodes.map((n) => n.text), steps: flow.trace.map((s) => Object.assign({}, s, { line: flow.nodes.findIndex((n) => n.id === s.node) })) }
+    : cfg.trace;
+  const T = App.traceStates(trace);
+  const code = trace.code;
   let rows = T.states.map((s, k) => ({ s, k })).filter((r) => r.s.line >= 0);
   if (cfg.rows) rows = rows.slice(cfg.rows[0], cfg.rows[1]);
   const given = cfg.blank ? (cfg.given || 0) : Infinity;
-  const head = ["Line", cfg.blank ? "Code" : "What happens"].concat(T.names, ["Output"]);
+  const lead = flow ? (cfg.blank ? ["Shape"] : ["Shape", "What happens"]) : ["Line", cfg.blank ? "Code" : "What happens"];
+  const head = lead.concat(T.names, ["Output"]);
   const thead = h("thead", null, h("tr", null, ...head.map((c, ci) =>
-    h("th", { class: ci >= 2 && ci < 2 + T.names.length ? "tt-var" : "" }, c))));
+    h("th", { class: ci >= lead.length && ci < lead.length + T.names.length ? "tt-var" : "" }, c))));
   const tbody = h("tbody");
   rows.forEach((r, ri) => {
     const s = r.s, fill = ri < given;
     const tr = h("tr");
-    tr.appendChild(h("td", { class: "tt-line", "data-label": "Line" }, String(s.line + 1)));
-    if (cfg.blank) tr.appendChild(h("td", { class: "tt-code", "data-label": "Code", html: App.highlight(code[s.line] || "") }));
-    else tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
+    if (flow) {
+      tr.appendChild(h("td", { class: "tt-code", "data-label": "Shape" }, code[s.line] || ""));
+      if (!cfg.blank) tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
+    } else {
+      tr.appendChild(h("td", { class: "tt-line", "data-label": "Line" }, String(s.line + 1)));
+      if (cfg.blank) tr.appendChild(h("td", { class: "tt-code", "data-label": "Code", html: App.highlight(code[s.line] || "") }));
+      else tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
+    }
     T.names.forEach((nm) => {
       const v = s.vars[nm];
       const td = h("td", { class: "tt-var", "data-label": nm });
@@ -384,106 +395,220 @@ App.widgets.memoryModel = function (cfg) {
 };
 
 /* ============================================================
-   flowchart - SVG flowchart with code sync
-   config: { nodes:[{id,type,text,x,y,w,h}], edges:[{from,to,label}],
-             code:[lines], map:{ nodeId:[lineIdx...] } }
-   types: terminator | process | decision | io | call
+   flowchart - a flowchart drawn at 1:1 scale, so its text is exactly
+   24px on slides. Shapes sit on a grid; arrows are routed automatically.
+   config: {
+     nodes: [{ id, type, text, col, row }],
+       type: terminator | process | io | decision | predefined | connector
+     cols:  [x offsets of the columns] (default [0])
+     edges: [{ from, to, port, lane, laneIndex, label }]
+       port: bottom (default) | left | right   (where the arrow leaves)
+       lane: left | right  (go around through a side lane: loop back, exit)
+     code:  [python lines]           (optional, shown beside the chart)
+     map:   { nodeId: [line indices] }
+     trace: [{ node, note, set, print }]   (optional: step-by-step mode)
+   }
    ============================================================ */
-App.widgets.flowchart = function (cfg) {
-  const W = cfg.width || 320, Hh = cfg.height || 420;
+const FC = { fs: 24, h: 40, hDec: 64, gap: 16, gapDec: 32, lane: 30, pad: 22, margin: 8 };
+let fcMeasureCtx = null;
+function fcTextW(text) {
+  if (!fcMeasureCtx) fcMeasureCtx = document.createElement("canvas").getContext("2d");
+  fcMeasureCtx.font = FC.fs + 'px -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+  return fcMeasureCtx.measureText(text).width;
+}
+function fcLayout(cfg) {
+  const cols = cfg.cols || [0];
+  const nodes = {};
+  cfg.nodes.forEach((n) => {
+    const tw = fcTextW(n.text);
+    let w, hh = FC.h;
+    if (n.type === "decision") { w = Math.max(180, tw * 1.65 + 40); hh = FC.hDec; }
+    else if (n.type === "io") w = Math.max(150, tw + 2 * FC.pad + 24);
+    else if (n.type === "predefined") w = Math.max(150, tw + 2 * FC.pad + 20);
+    else if (n.type === "connector") { w = Math.max(FC.h, tw + 24); }
+    else w = Math.max(130, tw + 2 * FC.pad);
+    nodes[n.id] = Object.assign({}, n, { w, h: hh, tw });
+  });
+  // rows: each row as tall as its tallest shape
+  const maxRow = Math.max(...cfg.nodes.map((n) => n.row));
+  const rowH = [];
+  for (let r = 0; r <= maxRow; r++) rowH[r] = FC.h;
+  Object.values(nodes).forEach((n) => { rowH[n.row] = Math.max(rowH[n.row], n.h); });
+  // below a row with a decision there is room for its True/False label
+  const hasDec = []; Object.values(nodes).forEach((n) => { if (n.type === "decision") hasDec[n.row] = true; });
+  const rowY = []; let y = FC.margin, lastGap = 0;
+  for (let r = 0; r <= maxRow; r++) { rowY[r] = y; lastGap = hasDec[r] ? FC.gapDec : FC.gap; y += rowH[r] + lastGap; }
+  Object.values(nodes).forEach((n) => {
+    n.cx = cols[n.col || 0];
+    n.x = n.cx - n.w / 2;
+    n.y = rowY[n.row] + (rowH[n.row] - n.h) / 2;
+    n.cy = n.y + n.h / 2;
+  });
+  // lanes left and right of all shapes; shift everything so the left lane is inside
+  const minX = Math.min(...Object.values(nodes).map((n) => n.x));
+  const maxX = Math.max(...Object.values(nodes).map((n) => n.x + n.w));
+  const lanesL = Math.max(0, ...(cfg.edges || []).filter((e) => e.lane === "left").map((e) => (e.laneIndex || 0) + 1));
+  const lanesR = Math.max(0, ...(cfg.edges || []).filter((e) => e.lane === "right").map((e) => (e.laneIndex || 0) + 1));
+  const labelRoom = 70;
+  const shift = labelRoom + lanesL * FC.lane - minX;
+  Object.values(nodes).forEach((n) => { n.x += shift; n.cx += shift; });
+  const laneX = (side, k) => side === "left" ? minX + shift - (k + 1) * FC.lane : maxX + shift + (k + 1) * FC.lane;
+  const width = Math.ceil(maxX + shift + lanesR * FC.lane + labelRoom);
+  const height = Math.ceil(y - lastGap + FC.margin);
+  return { nodes, laneX, width, height };
+}
+function fcShape(svgNS, n) {
+  const g = document.createElementNS(svgNS, "g");
+  g.setAttribute("class", "fc-node fc-" + n.type);
+  let s;
+  if (n.type === "decision") {
+    s = document.createElementNS(svgNS, "polygon");
+    s.setAttribute("points", `${n.cx},${n.y} ${n.x + n.w},${n.cy} ${n.cx},${n.y + n.h} ${n.x},${n.cy}`);
+  } else if (n.type === "io") {
+    s = document.createElementNS(svgNS, "polygon");
+    const k = 14;
+    s.setAttribute("points", `${n.x + k},${n.y} ${n.x + n.w},${n.y} ${n.x + n.w - k},${n.y + n.h} ${n.x},${n.y + n.h}`);
+  } else if (n.type === "connector") {
+    s = document.createElementNS(svgNS, "circle");
+    s.setAttribute("cx", n.cx); s.setAttribute("cy", n.cy); s.setAttribute("r", n.h / 2);
+  } else {
+    s = document.createElementNS(svgNS, "rect");
+    s.setAttribute("x", n.x); s.setAttribute("y", n.y); s.setAttribute("width", n.w); s.setAttribute("height", n.h);
+    s.setAttribute("rx", n.type === "terminator" ? n.h / 2 : 4);
+  }
+  s.setAttribute("class", "fc-box");
+  g.appendChild(s);
+  if (n.type === "predefined") {
+    [n.x + 10, n.x + n.w - 10].forEach((lx) => {
+      const l = document.createElementNS(svgNS, "line");
+      l.setAttribute("x1", lx); l.setAttribute("x2", lx); l.setAttribute("y1", n.y); l.setAttribute("y2", n.y + n.h);
+      l.setAttribute("class", "fc-box");
+      g.appendChild(l);
+    });
+  }
+  const t = document.createElementNS(svgNS, "text");
+  t.setAttribute("x", n.cx); t.setAttribute("y", n.cy + 8);
+  t.setAttribute("text-anchor", "middle");
+  t.setAttribute("class", "fc-text");
+  t.textContent = n.text;
+  g.appendChild(t);
+  return g;
+}
+let fcIds = 0;
+function fcSvg(cfg) {
+  const L = fcLayout(cfg);
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("viewBox", "0 0 " + W + " " + Hh);
-  svg.innerHTML = '<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="currentColor"/></marker></defs>';
-
-  const nodeById = {};
-  cfg.nodes.forEach((n) => (nodeById[n.id] = n));
-
-  // edges first
+  const mid = "fc-arrow-" + (++fcIds);
+  svg.setAttribute("viewBox", "0 0 " + L.width + " " + L.height);
+  svg.setAttribute("width", L.width); svg.setAttribute("height", L.height);
+  svg.setAttribute("class", "fc-svg");
+  svg.innerHTML = `<defs><marker id="${mid}" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L9,4 L0,8 Z" class="fc-head"/></marker></defs>`;
+  const port = (n, p) => p === "left" ? [n.x, n.cy] : p === "right" ? [n.x + n.w, n.cy] : [n.cx, n.y + n.h];
   (cfg.edges || []).forEach((e) => {
-    const a = nodeById[e.from], b = nodeById[e.to];
+    const a = L.nodes[e.from], b = L.nodes[e.to];
     if (!a || !b) return;
-    const x1 = a.x + a.w / 2, y1 = a.y + a.h, x2 = b.x + b.w / 2, y2 = b.y;
+    const p = e.port || "bottom";
+    const [sx, sy] = port(a, p);
+    const tx = b.cx, ty = b.y;
+    let pts;
+    if (b.row === a.row && !e.lane) {
+      // same row: straight into the side of the target
+      pts = [[sx, sy], [b.cx > a.cx ? b.x : b.x + b.w, sy]];
+    } else if (e.lane) {
+      const lx = L.laneX(e.lane, e.laneIndex || 0);
+      pts = p === "bottom" ? [[sx, sy], [sx, sy + 14], [lx, sy + 14], [lx, ty - 14], [tx, ty - 14], [tx, ty]]
+                           : [[sx, sy], [lx, sy], [lx, ty - 14], [tx, ty - 14], [tx, ty]];
+    } else if (p === "left" || p === "right") pts = [[sx, sy], [tx, sy], [tx, ty]];
+    else if (Math.abs(sx - tx) < 1) pts = [[sx, sy], [tx, ty]];
+    else pts = [[sx, sy], [sx, ty - 14], [tx, ty - 14], [tx, ty]];
     const path = document.createElementNS(svgNS, "path");
-    let d;
-    if (e.side === "right") {
-      const mx = a.x + a.w;
-      d = `M${mx},${a.y + a.h / 2} H${x2 + 40} V${y2} H${x2}`;
-    } else if (e.side === "left") {
-      d = `M${a.x},${a.y + a.h / 2} H${b.x - 40} V${y2} H${x2}`;
-    } else {
-      d = `M${x1},${y1} V${y2}`;
-    }
-    path.setAttribute("d", d);
-    path.setAttribute("class", "fline");
+    path.setAttribute("d", "M" + pts.map((q) => q[0] + "," + q[1]).join(" L"));
+    path.setAttribute("class", "fc-line");
+    path.setAttribute("marker-end", "url(#" + mid + ")");
     svg.appendChild(path);
     if (e.label) {
       const t = document.createElementNS(svgNS, "text");
-      t.setAttribute("x", (e.side === "right" ? a.x + a.w + 4 : e.side === "left" ? a.x - 36 : x1 + 6));
-      t.setAttribute("y", a.y + a.h + 12);
-      t.setAttribute("class", "flbl");
+      const side = p === "left" ? "end" : "start";
+      t.setAttribute("x", p === "left" ? sx - 6 : sx + 6);
+      t.setAttribute("y", p === "bottom" ? sy + 26 : sy - 8);
+      t.setAttribute("text-anchor", side);
+      t.setAttribute("class", "fc-label");
       t.textContent = e.label;
       svg.appendChild(t);
     }
   });
+  const els = {};
+  cfg.nodes.forEach((n) => { els[n.id] = fcShape(svgNS, L.nodes[n.id]); svg.appendChild(els[n.id]); });
+  return { svg, els };
+}
 
-  const nodeEls = {};
-  cfg.nodes.forEach((n) => {
-    const g = document.createElementNS(svgNS, "g");
-    g.setAttribute("class", "fnode");
-    let shape;
-    if (n.type === "decision") {
-      shape = document.createElementNS(svgNS, "polygon");
-      const cx = n.x + n.w / 2, cy = n.y + n.h / 2;
-      shape.setAttribute("points", `${cx},${n.y} ${n.x + n.w},${cy} ${cx},${n.y + n.h} ${n.x},${cy}`);
-    } else if (n.type === "io") {
-      shape = document.createElementNS(svgNS, "polygon");
-      const sk = 14;
-      shape.setAttribute("points", `${n.x + sk},${n.y} ${n.x + n.w},${n.y} ${n.x + n.w - sk},${n.y + n.h} ${n.x},${n.y + n.h}`);
-    } else {
-      shape = document.createElementNS(svgNS, "rect");
-      shape.setAttribute("x", n.x); shape.setAttribute("y", n.y);
-      shape.setAttribute("width", n.w); shape.setAttribute("height", n.h);
-      shape.setAttribute("rx", n.type === "terminator" ? n.h / 2 : 4);
-    }
-    shape.setAttribute("class", "fbox");
-    g.appendChild(shape);
-    const t = document.createElementNS(svgNS, "text");
-    t.setAttribute("x", n.x + n.w / 2); t.setAttribute("y", n.y + n.h / 2 + 4);
-    t.setAttribute("text-anchor", "middle");
-    t.textContent = n.text;
-    g.appendChild(t);
-    g.addEventListener("mouseenter", () => highlight(n.id));
-    g.addEventListener("mouseleave", () => highlight(null));
-    svg.appendChild(g);
-    nodeEls[n.id] = g;
-  });
-
-  // code side
-  const codeBox = h("div", { class: "step-code" });
+App.widgets.flowchart = function (cfg) {
+  const { svg, els } = fcSvg(cfg);
+  const chart = h("div", { class: "fc-chart" }, svg);
   const lineEls = [];
-  cfg.code.forEach((ln, idx) => {
-    const el = h("span", { class: "ln", html: App.highlight(ln) || "&nbsp;" });
-    el.addEventListener("mouseenter", () => highlightFromLine(idx));
-    el.addEventListener("mouseleave", () => highlight(null));
+  const codeBox = cfg.code ? h("div", { class: "step-code fc-code" }) : null;
+  if (cfg.code) cfg.code.forEach((ln) => {
+    const el = h("span", { class: "ln" }, h("span", { class: "marker" }, "  "), h("span", { html: App.highlight(ln) || "&nbsp;" }));
     codeBox.appendChild(el); lineEls.push(el);
   });
-
-  function highlight(id) {
-    Object.keys(nodeEls).forEach((k) => nodeEls[k].classList.toggle("hl", k === id));
-    lineEls.forEach((e) => e.classList.remove("hl"));
-    if (id && cfg.map && cfg.map[id]) cfg.map[id].forEach((li) => lineEls[li] && lineEls[li].classList.add("hl"));
+  if (!cfg.trace) {
+    const body = codeBox ? h("div", { class: "fc-grid" }, chart, h("div", { class: "fc-panel" }, h("div", { class: "ct-label" }, "Python"), codeBox)) : chart;
+    return widgetShell(cfg.title || null, body);
   }
-  function highlightFromLine(li) {
-    let id = null;
-    if (cfg.map) for (const k in cfg.map) if (cfg.map[k].includes(li)) { id = k; break; }
-    highlight(id);
+  // step-by-step mode: the active shape, its code line, variables, output
+  const T = App.traceStates({ code: cfg.nodes.map((n) => n.text), steps: cfg.trace.map((s) => Object.assign({}, s, { line: cfg.nodes.findIndex((n) => n.id === s.node) })) });
+  const n = T.states.length;
+  let i = 0;
+  const varsBox = h("div", { class: "ct-vars" });
+  const varEls = {};
+  T.names.forEach((nm) => {
+    const ball = h("span", { class: "bt-ball" });
+    const el = h("div", { class: "ct-var" }, h("span", { class: "ct-name" }, nm), h("span", { class: "ct-eq" }, "="), ball);
+    el._ball = ball; varEls[nm] = el; varsBox.appendChild(el);
+  });
+  const outBox = h("div", { class: "step-out ct-out" });
+  outBox.style.setProperty("--ct-out-lines", Math.max(1, T.maxOut));
+  const note = h("div", { class: "ct-note" });
+  note.style.minHeight = T.states.some((s) => s.note.replace(/<[^>]+>/g, "").length > 60) ? "2.9em" : "1.5em";
+  const count = h("span", { class: "ct-count" });
+  const first = h("button", { class: "w-btn", title: "First step" }, "⟲");
+  const prev = h("button", { class: "w-btn" }, "‹ Prev");
+  const next = h("button", { class: "w-btn on" }, "Next ›");
+  function draw() {
+    const s = T.states[i], id = cfg.trace[i].node;
+    Object.keys(els).forEach((k) => els[k].classList.toggle("fc-active", k === id));
+    const lines = (cfg.map && cfg.map[id]) || [];
+    lineEls.forEach((el, k) => { const on = lines.includes(k); el.classList.toggle("hl", on); el.children[0].textContent = on ? "▸ " : "  "; });
+    T.names.forEach((nm) => {
+      const el = varEls[nm], v = s.vars[nm];
+      el.classList.toggle("ct-pending", !v);
+      el.classList.toggle("ct-set", s.changed.includes(nm));
+      if (v) { el._ball.className = "bt-ball bt-" + v.type; el._ball.textContent = v.text; }
+    });
+    outBox.replaceChildren(...(s.out.length ? s.out.map((ln) => h("div", null, ln || " ")) : [h("div", { class: "ct-dim" }, "(no output yet)")]));
+    note.innerHTML = s.note;
+    count.textContent = "Step " + (i + 1) + " of " + n;
+    first.disabled = prev.disabled = i === 0;
+    next.disabled = i === n - 1;
   }
-
-  const grid = h("div", { class: "flow-wrap" },
-    h("div", { class: "flow" }, svg),
-    h("div", null, h("div", { class: "widget-title" }, "Equivalent Python - hover to link"), codeBox));
-  return widgetShell(cfg.title || "Flowchart ↔ code (hover to connect)", grid);
+  function go(k) { const j = Math.max(0, Math.min(n - 1, k)); if (j === i) return false; i = j; draw(); return true; }
+  first.addEventListener("click", () => go(0));
+  prev.addEventListener("click", () => go(i - 1));
+  next.addEventListener("click", () => go(i + 1));
+  const panel = h("div", { class: "fc-panel" },
+    h("div", { class: "w-row ct-ctrl fc-ctrl" }, first, prev, next, count),
+    note,
+    codeBox ? h("div", { class: "ct-label" }, "Python") : null, codeBox,
+    h("div", { class: "fc-state" },
+      T.names.length ? h("div", null, h("div", { class: "ct-label" }, "Variables"), varsBox) : null,
+      h("div", null, h("div", { class: "ct-label" }, "Output"), outBox)));
+  const wrap = widgetShell(cfg.title || null, h("div", { class: "fc-grid" }, chart, panel));
+  wrap.classList.add("ctrace");                       // deck keyboard steps it like a codeTrace
+  wrap._step = (dir) => go(i + dir);
+  wrap._goto = (where) => { i = where === "end" ? n - 1 : 0; draw(); };
+  draw();
+  return wrap;
 };
 
 /* ============================================================

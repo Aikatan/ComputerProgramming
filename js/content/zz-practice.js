@@ -14,10 +14,6 @@
       { prompt: "A program needs 4 bytes per <code>int</code>. Write code to print how many bytes <b>10 ints</b> take.", expected: "40" },
       { prompt: "Write code to print the four CPU instruction-cycle stages, one per line: <b>Fetch, Decode, Execute, Store</b>.", expected: "Fetch\nDecode\nExecute\nStore", hint: "Loop over a list of the four stage names." },
     ],
-    t04: [
-      { prompt: "Given <code>a, b, c = 5, 9, 2</code>, write code to print the <b>largest</b> value.", starter: "a, b, c = 5, 9, 2\n", expected: "9", hint: "Use max(a, b, c) - or nested if statements." },
-      { prompt: "Write code to print a countdown from 3 to 1, then <b>Go!</b> - each on its own line.", expected: "3\n2\n1\nGo!" },
-    ],
     t05: [
       { prompt: "Write a function <code>double(n)</code> that returns <code>n * 2</code>, then print <code>double(21)</code>.", expected: "42" },
       { prompt: "Write a function that returns the <b>average</b> of <code>[4, 8, 15, 16, 23, 42]</code> and print it.", expected: "18.0", hint: "sum(nums) / len(nums)" },

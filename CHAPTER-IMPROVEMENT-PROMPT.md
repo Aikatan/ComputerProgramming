@@ -163,6 +163,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 | Exercise with `cols` | 4 task lines or fewer on the left, 6 code lines or fewer on the right |
 | Summary | 5 items or fewer, or a table of 4 rows or fewer |
 | Check | 2 questions, short options, one-sentence explanations |
+| `flowchart` | 6 rows or fewer, with 2 decisions or fewer. A chart wider than about 550px gets its own slide (not a half column). A traced chart places its panel beside it. |
 
 ## 5. Exercises
 
@@ -239,7 +240,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 - **By topic:**
   - `binaryConverter`, `stringIndex`, `stringSlice`, `rebindViz`, `memoryModel` (t02)
   - `truthTable`, `branchViz`, `loopViz` (t03)
-  - `flowchart`, `flowExec`, `pseudoMap` (t04)
+  - `flowchart` (t04): static, with a `code` panel, or traced with `trace`. `flowExec` and `pseudoMap` are no longer used; mappings are shown as tables.
   - `funcCall` / `funcNested` / `funcArgs` / `funcScope`, `callStack` (t05)
   - `boxTrain`, `dictTrain`, `stringShift` (t06)
   - `tryFlow` (t07)
@@ -249,6 +250,23 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
   - `cpuCycle`, `cycleFlow`, `powerToggle`, `seekViz`, `levelDrop` (t01)
 - **Values shown as balls** use the shared colours: int blue, float teal, str amber, bool purple, None grey (`bt-int` … `bt-none`).
 - **New widgets:** follow the same visual language. A new stepping widget also needs a static equivalent.
+
+### Flowchart object (the `flowchart` widget)
+```js
+{ cols: [0, 300],                      // x offsets of the columns (default [0])
+  nodes: [{ id, type, text, col, row }], // type: terminator | process | io | decision | predefined | connector
+  edges: [{ from, to, port, lane, laneIndex, label }],
+  code: [...], map: { nodeId: [line indices] },          // optional code panel
+  trace: [{ node, note, set, print }] }                  // optional step-by-step mode
+```
+- **Drawing:** the chart is drawn at 1:1 scale, so its text is exactly 24px. Shapes are sized from their text.
+- **Arrows:**
+  - `port: "left"` / `"right"` leaves a decision sideways.
+  - A target on the same row is entered from the side.
+  - `lane: "left"` / `"right"` routes around the chart: loop-backs and exits.
+  - Leave at least about 110px between the diamond and a same-row target, so the True/False label fits.
+- **Trace table:** `traceTable` takes `{ flow: F }` and shows a Shape column.
+- **On phones:** charts scroll inside their own box.
 
 ### Other rules
 - **Injected content:** the `zz-*.js` files add examples and quizzes to unconverted lessons and skip `deck` lessons. When a chapter is converted, delete its entries there.
@@ -303,7 +321,6 @@ Commit per chapter with a clear message. Push to `main` only when asked, because
 - **t06, t09:** use `tabs`. Convert them to visible slides.
 - **t05:** the `funcCall` widgets contain inline 12px text. Move it to a CSS class.
 - **t06:** "Strings in depth" repeats t02 (creating, indexing, slicing, immutability) and teaches f-strings. Keep only what is new, without f-strings.
-- **t04:** flowchart labels are SVG text (18 viewBox units, about 24px on screen). Check that they render at 24px.
 - **Older widgets:** some use fixed pixel widths that were sized for smaller text. Check them for overflow at 24px.
 
 ## 9. Review checklist (before finishing)

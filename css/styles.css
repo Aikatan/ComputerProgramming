@@ -1078,3 +1078,23 @@ body.slide-mode .deck-stage { min-height: calc(100vh - 56px - 8px - 64px); }
 }
 .slide .practiceq { padding: 8px 12px; }
 .slide .live-out { padding: 4px 14px; }
+
+/* flowchart: drawn at 1:1 scale, so shape text is exactly 24px */
+.fc-grid { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 22px; align-items: start; }
+.fc-chart { min-width: 0; max-width: 100%; overflow-x: auto; }
+.fc-svg { display: block; margin: 0 auto; }
+.fc-box { fill: var(--bg-2); stroke: var(--text-dim); stroke-width: 2; }
+.fc-decision .fc-box { fill: var(--bg-3); }
+.fc-text { fill: var(--text); font-size: 24px; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+.fc-label { fill: var(--accent-2); font-size: 24px; font-weight: 700; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+.fc-line { fill: none; stroke: var(--text-dim); stroke-width: 2; }
+.fc-head { fill: var(--text-dim); }
+.fc-active .fc-box { stroke: var(--accent); stroke-width: 4; fill: rgba(77,171,247,.2); }
+.fc-panel { min-width: 0; }
+.fc-ctrl { margin: 0 0 8px; }
+.fc-code { margin-bottom: 8px; }
+.slide .fc-panel .ct-label, .slide .fc-code, .slide .fc-code .ln { font-size: 24px; }
+@container slide (max-width: 900px) { .fc-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 820px) { .fc-grid { grid-template-columns: minmax(0, 1fr); } }
+.fc-state { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.fc-state .ct-vars { margin-bottom: 0; }

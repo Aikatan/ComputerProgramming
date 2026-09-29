@@ -48,22 +48,6 @@
       { q: "Logic gates are at the…", choices: ["User level", "Digital logic level", "OS level", "Assembly level"], answer: 1, explain: "Gates/flip-flops are Level 0." },
       { q: "The main benefit of layered abstraction is…", choices: ["More electricity", "Each layer hides the one below", "Fewer files", "Faster RAM"], answer: 1, explain: "Abstraction lets you ignore lower-level detail." },
     ],
-    /* ---------- Topic 04 ---------- */
-    "t04.flowchart-symbols": [
-      { q: "A diamond means…", choices: ["Process", "Decision", "Start/Stop", "Input"], answer: 1, explain: "Diamond = decision." },
-      { q: "A rounded shape (terminator) means…", choices: ["Decision", "Start/Stop", "Process", "Data"], answer: 1, explain: "Terminator = start or stop." },
-      { q: "A parallelogram means…", choices: ["Input/Output", "Decision", "Process", "Connector"], answer: 0, explain: "Parallelogram = input/output." },
-    ],
-    "t04.flowchart-to-code": [
-      { q: "A decision looping back is a…", choices: ["if", "while loop", "function", "print"], answer: 1, explain: "Looping back on a condition is a while loop." },
-      { q: "`A >= B` equals…", choices: ["not (A < B)", "not (A > B)", "A < B", "A == B"], answer: 0, explain: "≥ is the negation of <." },
-      { q: "A rectangle (process) maps to…", choices: ["A condition", "An assignment/action", "A loop header", "Output"], answer: 1, explain: "Process = an action like x = x + 1." },
-    ],
-    "t04.pseudocode": [
-      { q: "Pseudocode is…", choices: ["Valid Python", "Language-independent plain steps", "Machine code", "A flowchart"], answer: 1, explain: "It's plain, language-independent logic." },
-      { q: "Pseudocode mainly helps you…", choices: ["Run faster", "Plan logic before coding", "Save memory", "Compile"], answer: 1, explain: "It's a planning tool." },
-      { q: "'REPEAT ... UNTIL' is a…", choices: ["Decision", "Loop", "Function", "Variable"], answer: 1, explain: "It describes a loop." },
-    ],
     /* ---------- Topic 05 ---------- */
     "t05.defining": [
       { q: "Keyword to define a function?", choices: ["func", "def", "function", "lambda"], answer: 1, explain: "def defines a function." },
@@ -226,8 +210,6 @@
   // one more question for lessons that started with only a single quiz item
   const EXTRA = {
     "t00.first-run": { q: "Comments in Python start with…", choices: ["//", "#", "/*", "--"], answer: 1, explain: "# begins a comment in Python." },
-    "t04.flowchart-symbols": { q: "An arrow (flowline) shows…", choices: ["a value", "the order of steps", "an error", "memory"], answer: 1, explain: "Flowlines show the sequence of steps." },
-    "t04.pseudocode": { q: "Good pseudocode is…", choices: ["Tied to Python", "Easy to read and to code", "Machine code", "Binary"], answer: 1, explain: "It reads plainly yet maps cleanly to code." },
     "t05.scope": { q: "Reading a global inside a function (without assigning) is…", choices: ["Allowed", "An error", "Requires global", "Impossible"], answer: 0, explain: "You can read a global directly; you only need `global` to reassign it." },
     "t05.modules": { q: "`import numpy as np` makes np a(n)…", choices: ["Alias", "Error", "Keyword", "File"], answer: 0, explain: "as gives the module a short alias." },
     "t06.list-vs-dict": { q: "Duplicates are allowed in a…", choices: ["set", "dict's keys", "list", "none of these"], answer: 2, explain: "Lists allow duplicates; set items and dict keys are unique." },
