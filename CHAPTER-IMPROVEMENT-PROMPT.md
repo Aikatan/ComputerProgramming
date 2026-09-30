@@ -336,7 +336,8 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 Commit per chapter with a clear message. Push to `main` only when asked, because it publishes to GitHub Pages.
 
 ## 8. Known issues in unconverted chapters (verify and fix when you reach them)
-- **t00, t01:** not converted yet (legacy `learn/live/quiz`, plus `zz-*.js` content).
+- **All chapters (t00–t10) use `deck`** since 2026-09-30. The `zz-*.js` injectors now only matter for any future non-deck lesson.
+- **Python runs on the page's thread:** `App.py.run` stops a program after 5 million lines of the student's code (an endless loop would freeze the tab). Starters of exercises should not loop forever when run unchanged.
 - **Older widgets:** some use fixed pixel widths that were sized for smaller text. Check them for overflow at 24px.
 
 ## 9. Review checklist (before finishing)

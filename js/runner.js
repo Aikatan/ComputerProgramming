@@ -65,6 +65,8 @@ App.py = {
     }
   },
 
+  LINE_LIMIT: 5000000,    // lines of the student's code before a run is stopped (see run)
+
   /* run code; opts: { sink(text,isErr), inputs:[...]|prompt-fn, onImage(dataURL) } */
   async run(code, opts) {
     opts = opts || {};
@@ -99,6 +101,19 @@ App.py = {
         "__plt_capture.show = lambda *a, **k: None\n";
     }
     wrapped += "import sys as __sys\n__user_ns = {}\n";
+    // Pyodide runs on the page's thread: an endless loop would freeze the tab.
+    // Lines of the student's code are counted (library code is not traced), and
+    // the program is stopped after LINE_LIMIT lines, as the C runner stops after 4 s.
+    wrapped +=
+      "def __guard(limit):\n" +
+      "    n = [0]\n" +
+      "    def local(frame, event, arg):\n" +
+      "        if event == 'line':\n" +
+      "            n[0] += 1\n" +
+      "            if n[0] > limit:\n" +
+      "                raise RuntimeError('__PCL_TOO_LONG__')\n" +
+      "        return local\n" +
+      "    return lambda frame, event, arg: local if frame.f_code.co_filename == '<program>' else None\n";
     // We exec user code in a fresh namespace each run. It is compiled as
     // "<program>" and registered in linecache, so a traceback shows the
     // student's line number and source line (see _cleanTraceback).
@@ -106,7 +121,11 @@ App.py = {
     wrapped +=
       "import linecache as __lc\n" +
       "__lc.cache['<program>'] = (len(__user_code__), None, __user_code__.splitlines(True), '<program>')\n" +
-      "exec(compile(__user_code__, '<program>', 'exec'), __user_ns)\n";
+      "__sys.settrace(__guard(" + this.LINE_LIMIT + "))\n" +
+      "try:\n" +
+      "    exec(compile(__user_code__, '<program>', 'exec'), __user_ns)\n" +
+      "finally:\n" +
+      "    __sys.settrace(None)\n";
     if (hasPlot) {
       wrapped +=
         "import io as __io, base64 as __b64\n" +
@@ -130,7 +149,10 @@ App.py = {
       return { ok: true };
     } catch (e) {
       // Pyodide wraps Python tracebacks in the message
-      const msg = App.py._cleanTraceback(String(e.message || e));
+      const raw = String(e.message || e);
+      const msg = raw.indexOf("__PCL_TOO_LONG__") >= 0
+        ? "The program was stopped after " + (this.LINE_LIMIT / 1e6) + " million steps. Check the loop conditions: a loop may never end."
+        : App.py._cleanTraceback(raw);
       // finish a partly printed line, so the error starts on its own line
       if (this._pendingNL) { this._sink("\n"); this._pendingNL = false; }
       this._sink(msg, true);

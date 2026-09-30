@@ -90,14 +90,15 @@
   };
 
   const T_speed = {
-    code: ["distance = 150", "time = 2", "speed = distance / time", 'print("Speed =", speed, "km/h")'],
+    code: ["distance = 120   # km", "minutes = 90", "hours = minutes / 60", "speed = distance / hours", 'print("Speed =", speed, "km/h")'],
     steps: [
       { line: -1, note: "No variable exists yet." },
-      { line: 0, note: "150 (km) is stored in <code>distance</code>.", set: { distance: "150" } },
-      { line: 1, note: "2 (hours) is stored in <code>time</code>.", set: { time: "2" } },
-      { line: 2, note: "<code>distance / time</code> → <code>150 / 2</code> → <code>75.0</code>. The operator <code>/</code> always gives a float, even when the division is exact.", set: { speed: "75.0" } },
-      { line: 3, note: "The speed is displayed with its unit.", print: "Speed = 75.0 km/h" },
-      { line: -1, note: "The program ends. Result: Speed = 75.0 km/h. <b>Check:</b> 150 ÷ 2 = 75. The output shows <code>75.0</code>, because <code>/</code> produces a float." },
+      { line: 0, note: "120 (km) is stored in <code>distance</code>.", set: { distance: "120" } },
+      { line: 1, note: "90 (minutes) is stored in <code>minutes</code>.", set: { minutes: "90" } },
+      { line: 2, note: "<code>90 / 60</code> → <code>1.5</code>. The time is now in hours.", set: { hours: "1.5" } },
+      { line: 3, note: "<code>120 / 1.5</code> → <code>80.0</code>. The operator <code>/</code> always gives a float, even when the division is exact.", set: { speed: "80.0" } },
+      { line: 4, note: "The speed is displayed with its unit.", print: "Speed = 80.0 km/h" },
+      { line: -1, note: "The program ends. Result check: 90 min = 1.5 h, and 120 ÷ 1.5 = 80. The output shows <code>80.0</code>, because <code>/</code> produces a float." },
     ],
   };
 
@@ -108,16 +109,18 @@
       { line: 0, note: "125 is stored in <code>total_minutes</code>.", set: { total_minutes: "125" } },
       { line: 1, note: "<code>125 // 60</code> → <code>2</code>: two full hours.", set: { hours: "2" } },
       { line: 2, note: "<code>125 % 60</code> → <code>5</code>: the minutes that remain.", set: { minutes: "5" } },
-      { line: 3, note: "Four values are displayed with one space between them.", print: "2 h 5 min" },
+      { line: 3, note: "Four values are displayed with one space between them. Result check: 2 × 60 + 5 = 125.", print: "2 h 5 min" },
     ],
   };
 
   const T_name = {
-    code: ['name = input("Name: ")', 'print("Hello", name)'],
+    code: ['name = input("Name: ")', 'age = input("Age: ")', 'print("Hello", name)', "print(type(age))"],
     steps: [
-      { line: -1, note: "The program has not started. Test input: the user types Anan." },
-      { line: 0, note: "<code>input()</code> displays <code>Name: </code> and waits. The user types <code>Anan</code> and presses Enter. The text <code>'Anan'</code> is stored in <code>name</code>.", set: { name: "'Anan'" }, print: "Name: Anan" },
-      { line: 1, note: "The text <code>Hello</code> and the value of <code>name</code> are displayed.", print: "Hello Anan" },
+      { line: -1, note: "The program has not started. Test input: the user types Anan, and then 19." },
+      { line: 0, note: "The prompt is displayed. The user types Anan. <code>'Anan'</code> is stored in <code>name</code>.", set: { name: "'Anan'" }, print: "Name: Anan" },
+      { line: 1, note: "The user types 19. <code>input()</code> returns the text <code>'19'</code>, not the number 19.", set: { age: "'19'" }, print: "Age: 19" },
+      { line: 2, note: "The text <code>Hello</code> and the value of <code>name</code> are displayed.", print: "Hello Anan" },
+      { line: 3, note: "Result check: <code>age</code> is a <code>str</code>. The digits 19 are text, not a number.", print: "<class 'str'>" },
     ],
   };
 
@@ -125,32 +128,35 @@
     code: ['voltage = float(input("Voltage (V): "))', 'current = float(input("Current (A): "))', "power = voltage * current", 'print("Power =", power, "W")'],
     steps: [
       { line: -1, note: "Test values: the user enters 12 and then 1.5." },
-      { line: 0, note: "The prompt is displayed. The user types 12. <code>input()</code> returns <code>'12'</code>. <code>float()</code> converts it to <code>12.0</code>.", set: { voltage: "12.0" }, print: "Voltage (V): 12" },
+      { line: 0, note: "The user types 12. <code>input()</code> returns <code>'12'</code>. <code>float()</code> converts it to <code>12.0</code>.", set: { voltage: "12.0" }, print: "Voltage (V): 12" },
       { line: 1, note: "The user types 1.5. It is converted to the float <code>1.5</code>.", set: { current: "1.5" }, print: "Current (A): 1.5" },
       { line: 2, note: "<code>12.0 * 1.5</code> → <code>18.0</code>.", set: { power: "18.0" } },
-      { line: 3, note: "The power is displayed. <b>Verify:</b> 12 × 1.5 = 18, as displayed.", print: "Power = 18.0 W" },
+      { line: 3, note: "The power is displayed. Result check: 12 × 1.5 = 18, as displayed.", print: "Power = 18.0 W" },
     ],
   };
 
   const T_index = {
-    code: ['code = "TMP36"', "first = code[0]", "last = code[-1]", "print(first, last)"],
+    code: ['label = "PUMP-07"', "n = len(label)", "first = label[0]", "last = label[n - 1]", "print(first, last)", "print(label[-1])"],
     steps: [
       { line: -1, note: "No variable exists yet." },
-      { line: 0, note: "The sensor code is stored as a string of 5 characters.", set: { code: "'TMP36'" } },
-      { line: 1, note: "Index 0 is the first character: <code>'T'</code>.", set: { first: "'T'" } },
-      { line: 2, note: "Index -1 is the last character: <code>'6'</code>.", set: { last: "'6'" } },
-      { line: 3, note: "Both characters are displayed.", print: "T 6" },
+      { line: 0, note: "The device label is stored as a string of 7 characters.", set: { label: "'PUMP-07'" } },
+      { line: 1, note: "<code>len(label)</code> → 7. The indexes are 0 to 6.", set: { n: "7" } },
+      { line: 2, note: "Index 0 is the first character: <code>'P'</code>.", set: { first: "'P'" } },
+      { line: 3, note: "<code>n - 1</code> → 6. Index 6 is the last character: <code>'7'</code>.", set: { last: "'7'" } },
+      { line: 4, note: "Both characters are displayed.", print: "P 7" },
+      { line: 5, note: "Index -1 also gives the last character. Result check: both give <code>'7'</code>.", print: "7" },
     ],
   };
 
-  const T_avg = {
-    code: ["t1 = 30", "t2 = 36", "average = t1 + t2 / 2", 'print("Average =", average)'],
+  const T_cost = {
+    code: ["minutes = 90", "hours = minutes // 60", "energy = 1.5 * hours   # kWh", "cost = energy * 4      # 4 baht/kWh", 'print("Cost =", cost, "baht")'],
     steps: [
-      { line: -1, note: "Expected result by hand: (30 + 36) ÷ 2 = 33." },
-      { line: 0, note: "30 is stored in <code>t1</code>. Correct.", set: { t1: "30" } },
-      { line: 1, note: "36 is stored in <code>t2</code>. Correct.", set: { t2: "36" } },
-      { line: 2, note: "<code>/</code> is evaluated before <code>+</code>: <code>36 / 2</code> → 18.0, then <code>30 + 18.0</code> → <b>48.0</b>. The expected value is 33. The error is on this line.", set: { average: "48.0" } },
-      { line: 3, note: "The wrong value is displayed.", print: "Average = 48.0" },
+      { line: -1, note: "A 1.5 kW heater runs for 90 minutes. 1 kWh costs 4 baht. Expected by hand: 1.5 h × 1.5 kW = 2.25 kWh, and 2.25 × 4 = 9.0 baht." },
+      { line: 0, note: "90 is stored in <code>minutes</code>. Correct.", set: { minutes: "90" } },
+      { line: 1, note: "<code>90 // 60</code> → <b>1</b>. The expected value is 1.5 h. This is the first wrong value: the error is on this line.", set: { hours: "1" } },
+      { line: 2, note: "<code>1.5 * 1</code> → 1.5. The expected value is 2.25. It is wrong only because <code>hours</code> is wrong.", set: { energy: "1.5" } },
+      { line: 3, note: "<code>1.5 * 4</code> → 6.0. The expected value is 9.0.", set: { cost: "6.0" } },
+      { line: 4, note: "Result check: 6.0 is not 9.0. The output shows the error, but its cause is line 2.", print: "Cost = 6.0 baht" },
     ],
   };
 
@@ -316,9 +322,9 @@
             ]),
           ] },
           { kind: "code", part: "Using variables in calculations", title: "Example: area and perimeter of a steel plate", blocks: [
-            EX('length = 5   # cm\nwidth = 3    # cm\narea = length * width\nperimeter = length + width + length + width\nprint("Area =", area, "cm2")\nprint("Perimeter =", perimeter, "cm")', "one value, used several times", [
+            EX('length = 5   # cm\nwidth = 3    # cm\narea = length * width\nperimeter = 2 * length + 2 * width\nprint("Area =", area, "cm2")\nprint("Perimeter =", perimeter, "cm")', "one value, used several times", [
               { c: "area = length * width", e: "5 * 3 → <code>15</code>" },
-              { c: "perimeter = ...", e: "5 + 3 + 5 + 3 → <code>16</code>" },
+              { c: "perimeter = ...", e: "2 * 5 + 2 * 3 → 10 + 6 → <code>16</code>" },
               { c: "print(...)", e: "Output: <code>Area = 15 cm2</code> and <code>Perimeter = 16 cm</code>" },
             ]),
           ] },
@@ -452,10 +458,10 @@
             T("Digits inside quotes are characters, not a number. Python does not calculate with them."),
           ] },
           { kind: "code", part: "Numbers and text are different", title: "Example: adding numbers and joining text", blocks: [
-            EX('print(12 + 3)\nprint("12" + "3")\nprint(2.5 + 2.5)', "the type decides what + does", [
-              { c: "12 + 3", e: "int + int → <code>15</code>" },
-              { c: '"12" + "3"', e: "str + str → <code>123</code> (the texts are joined)" },
-              { c: "2.5 + 2.5", e: "float + float → <code>5.0</code> (a float keeps the decimal point)" },
+            EX('print(220 + 10)\nprint("220" + "10")\nprint("220" + "V")\nprint(1.5 + 1.5)', "the type decides what + does", [
+              { c: "220 + 10 and 1.5 + 1.5", e: "Numbers are added: <code>230</code> and <code>3.0</code> (a float keeps the decimal point)" },
+              { c: '"220" + "10"', e: "str + str → <code>22010</code> (the texts are joined)" },
+              { c: '"220" + "V"', e: "Joining is useful for labels: <code>220V</code>" },
             ]),
           ] },
           { kind: "concept", part: "A variable takes the type of its value", title: "The type follows the value", blocks: [
@@ -594,10 +600,10 @@
             ]),
           ] },
           { kind: "code", part: "float values are approximate", title: "Example: exact and approximate results", blocks: [
-            EX("print(0.1 + 0.2)\nprint(0.25 + 0.5)\nprint(12345678901234567890 * 10)", "float precision and Python ints", [
+            EX("print(0.1 + 0.2)\nprint(0.25 + 0.5)\nprint(1.1 + 2.2)", "tenths are approximate; halves and quarters are exact", [
               { c: "0.1 + 0.2", e: "Approximate: <code>0.30000000000000004</code>" },
               { c: "0.25 + 0.5", e: "Exact: <code>0.75</code>" },
-              { c: "12345678901234567890 * 10", e: "A Python int grows as needed: <code>123456789012345678900</code>" },
+              { c: "1.1 + 2.2", e: "Approximate: <code>3.3000000000000003</code>" },
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [
@@ -662,12 +668,12 @@
             ]),
           ] },
           { kind: "problem", part: "The arithmetic operators", title: "Problem: average speed", blocks: [
-            T("A vehicle travels 150 km in 2 hours. The program must display its average speed."),
+            T("A vehicle travels 120 km in 90 minutes. The program must display its average speed in km/h."),
             IPO([
-              ["Input (given values)", "distance = 150 km, time = 2 h"],
+              ["Input (given values)", "distance = 120 km, time = 90 min"],
               ["Required output", "speed in km/h"],
-              ["Processing", "speed = distance ÷ time"],
-              ["Algorithm", "1. Store the distance.<br>2. Store the time.<br>3. Compute the speed.<br>4. Display the speed."],
+              ["Processing", "hours = minutes ÷ 60<br>speed = distance ÷ hours"],
+              ["Algorithm", "1. Store the distance and the time.<br>2. Convert the time to hours.<br>3. Compute the speed.<br>4. Display the speed."],
             ]),
           ] },
           { kind: "code", part: "The arithmetic operators", title: "First example: execution step by step", blocks: [W("codeTrace", T_speed)] },
@@ -679,8 +685,8 @@
             TB(["Expression", "Result", "Reason"], [
               ["<code>17 // 5</code>", "<code>3</code>", "5 fits into 17 three times"],
               ["<code>17 % 5</code>", "<code>2</code>", "17 = 3 × 5 + 2"],
-              ["<code>125 // 60</code>", "<code>2</code>", "two full hours in 125 minutes"],
-              ["<code>125 % 60</code>", "<code>5</code>", "5 minutes remain"],
+              ["<code>18 // 6</code>", "<code>3</code>", "6 fits into 18 exactly three times"],
+              ["<code>18 % 6</code>", "<code>0</code>", "no remainder: 18 is a multiple of 6"],
             ]),
           ] },
           { kind: "code", part: "Division: /, //, and %", title: "Example: minutes to hours and minutes", blocks: [W("codeTrace", T_time)] },
@@ -803,10 +809,7 @@
           ] },
           { kind: "code", part: "Reading text with input()", title: "First example: execution step by step", blocks: [W("codeTrace", T_name)] },
           { kind: "concept", part: "Converting text to numbers", title: "Text digits are not numbers", blocks: [
-            T("<code>input()</code> returns a str. Two inputs joined with <code>+</code> are placed side by side. They are not added:"),
-            TB(["User types", "Stored values", "a + b"], [
-              ["12 and 3", "<code>'12'</code> and <code>'3'</code>", "<code>'123'</code>"],
-            ], null, "center"),
+            T("<code>input()</code> returns a str. Two inputs joined with <code>+</code> are placed side by side. They are not added."),
             T("To calculate, the program must first convert the text to a number."),
           ] },
           { kind: "code", part: "Converting text to numbers", title: "Example: the problem with text digits", blocks: [
@@ -877,7 +880,7 @@
           { kind: "exercise", title: "Run with test values", cols: [
             [T("Compute each power by hand first. Then run the program once for each row and enter the test values."),
               TB(["Voltage (V)", "Current (A)", "Power (W)"], [["12", "1.5", ""], ["230", "0.5", ""], ["5", "0.2", ""]], null, "center")],
-            [RUN('voltage = float(input("Voltage (V): "))\ncurrent = float(input("Current (A): "))\npower = voltage * current\nprint("Power =", power, "W")')],
+            [RUN('voltage = float(input("Voltage: "))\ncurrent = float(input("Current: "))\npower = voltage * current\nprint("Power =", power, "W")')],
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
             [T("The user types 5 and then 7. Write the output on paper.<br>Then run the program and compare.")],
@@ -1138,10 +1141,11 @@
               "Run the program again and compare again.",
             ], null, true),
           ] },
-          { kind: "code", part: "Finding a logical error", title: "Example: tracing a wrong average", blocks: [W("codeTrace", T_avg)] },
+          { kind: "code", part: "Finding a logical error", title: "Example: tracing a wrong cost", blocks: [W("codeTrace", T_cost)] },
           { kind: "code", part: "Finding a logical error", title: "Correction and verification", blocks: [
-            EX('t1 = 30\nt2 = 36\naverage = (t1 + t2) / 2\nprint("Average =", average)', "parentheses first", [
-              { c: "(t1 + t2) / 2", e: "The addition is done first: 66 / 2 → <code>33.0</code>. The output now matches the hand calculation." },
+            EX('minutes = 90\nhours = minutes / 60\nenergy = 1.5 * hours   # kWh\ncost = energy * 4      # 4 baht/kWh\nprint("Cost =", cost, "baht")', "/ keeps the fraction", [
+              { c: "minutes / 60", e: "Line 2 is corrected: 90 / 60 → <code>1.5</code> h, as expected." },
+              { c: "energy, cost", e: "1.5 * 1.5 → 2.25 kWh, and 2.25 * 4 → 9.0. Output: <code>Cost = 9.0 baht</code>, the same as the hand calculation." },
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [

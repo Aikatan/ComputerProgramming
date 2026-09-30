@@ -20,23 +20,13 @@
   const IPO = (rows) => TB(["Step", "Result"], rows);
 
   /* ---------- traces ---------- */
-  const T_np = {
-    code: ["import numpy as np", "a = np.array([1, 2, 3])", "b = a * 2", "c = a + b", "print(c, c.sum())"],
-    steps: [
-      { line: 0, note: "NumPy is imported with the short name np." },
-      { line: 1, note: "np.array turns the list into an array.", set: { a: "array([1, 2, 3])" } },
-      { line: 2, note: "a * 2 multiplies every element: no loop is needed.", set: { b: "array([2, 4, 6])" } },
-      { line: 3, note: "a + b adds the elements at the same positions.", set: { c: "array([3, 6, 9])" } },
-      { line: 4, note: "An array prints without commas. c.sum() is 18.", print: "[3 6 9] 18" },
-    ],
-  };
   const FILE_STEPS = [
     { line: 0, mode: "w", status: "open", content: [], exists: true, note: "open(..., 'w') creates the file (or empties it) and opens it for writing." },
     { line: 1, mode: "w", status: "open", content: ["21.5"], flow: "write", note: "write adds the text \"21.5\\n\": one line." },
     { line: 2, mode: "w", status: "open", content: ["21.5", "22.0"], flow: "write", note: "A second line." },
     { line: 3, status: "closed", content: ["21.5", "22.0"], note: "The with block ends: the file is closed." },
     { line: 3, mode: "r", status: "open", content: ["21.5", "22.0"], note: "The file is opened again, for reading." },
-    { line: 4, mode: "r", status: "open", content: ["21.5", "22.0"], flow: "read", out: "21.5\n22.0", note: "read() returns the whole content as one string; print displays it." },
+    { line: 4, mode: "r", status: "open", content: ["21.5", "22.0"], flow: "read", out: "21.5\n22.0", note: "read() returns one string, <code>'21.5\\n22.0\\n'</code>; print displays it." },
     { line: 4, status: "closed", content: ["21.5", "22.0"], out: "21.5\n22.0", note: "The with block ends: the file is closed." },
   ];
 
@@ -83,17 +73,8 @@
               'with open("readings.txt", "r") as f:', "    print(f.read())",
             ], steps: FILE_STEPS }),
           ] },
-          { kind: "concept", part: "Writing to a file", title: "The file after each statement", blocks: [
-            TB(["Statement", "File", "Content of readings.txt"], [
-              ['<code>open("readings.txt", "w")</code>', "open for writing", "(empty)"],
-              ['<code>f.write("21.5\\n")</code>', "open", "21.5"],
-              ['<code>f.write("22.0\\n")</code>', "open", "21.5 / 22.0"],
-              ["end of the with block", "closed", "21.5 / 22.0"],
-              ["<code>f.read()</code>", "open for reading", "returns <code>'21.5\\n22.0\\n'</code>"],
-            ]),
-          ] },
           { kind: "code", part: "Writing to a file", title: "Example: writelines", blocks: [
-            EX('lines = ["pump\\n", "fan\\n", "heater\\n"]\nwith open("devices.txt", "w") as f:\n    f.writelines(lines)\nwith open("devices.txt") as f:\n    print(f.read())', "each string already ends with \\n", [
+            EX('lines = ["pump\\n", "fan\\n",\n         "heater\\n"]\nwith open("devices.txt", "w") as f:\n    f.writelines(lines)\nwith open("devices.txt") as f:\n    print(f.read())', "each string already ends with \\n", [
               { c: "f.writelines(lines)", e: "Writes the three strings; their \\n make three lines." },
               { c: 'open("devices.txt")', e: "Mode \"r\" is the default." },
             ]),
@@ -220,7 +201,7 @@
             ]),
             T("A file name without a folder refers to the current working folder."),
           ] },
-          { kind: "code", part: "The os module", title: "Example: checking before opening", blocks: [
+          { kind: "code", part: "The os module", title: "Example: exists() before and after remove()", blocks: [
             EX('import os\n\nwith open("temp.txt", "w") as f:\n    f.write("x")\nprint(os.path.exists("temp.txt"))\nos.remove("temp.txt")\nprint(os.path.exists("temp.txt"))', "exists, remove, exists", [
               { c: "os.path.exists", e: "<code>True</code> after the file is written" },
               { c: "os.remove", e: "Deletes it: then <code>False</code>" },
@@ -284,7 +265,7 @@
             ]),
           ] },
           { kind: "code", part: "Writing rows", title: "First example: write, then look at the text", blocks: [
-            EX('import csv\nwith open("devices.csv", "w", newline="") as f:\n    w = csv.writer(f)\n    w.writerow(["Name", "Voltage"])\n    w.writerow(["pump", 220])\n    w.writerow(["fan", 110])\nwith open("devices.csv") as f:\n    print(f.read())', "the file is plain text", [
+            EX('import csv\nwith open("devices.csv", "w",\n          newline="") as f:\n    w = csv.writer(f)\n    w.writerow(["Name", "Voltage"])\n    w.writerow(["pump", 220])\n    w.writerow(["fan", 110])\nwith open("devices.csv") as f:\n    print(f.read())', "the file is plain text", [
               { c: "w.writerow([...])", e: "One list becomes one comma-separated line." },
               { c: "print(f.read())", e: "<code>Name,Voltage</code>, <code>pump,220</code>, <code>fan,110</code>" },
             ]),
@@ -296,7 +277,8 @@
               "Convert numbers: <code>float(row[1])</code>.",
             ]),
           ] },
-          { kind: "code", part: "Reading rows", title: "Example: the total voltage (rows[1:] skips the header)", blocks: [
+          { kind: "code", part: "Reading rows", title: "Example: the total voltage", blocks: [
+            T("<code>rows[1:]</code> skips the header row, and <code>int()</code> converts each voltage. The output is 330 = 220 + 110."),
             RUN('import csv\nwith open("devices.csv", "w") as f:\n    f.write("Name,Voltage\\npump,220\\nfan,110\\n")\nwith open("devices.csv") as f:\n    rows = list(csv.reader(f))\ntotal = 0\nfor row in rows[1:]:\n    total = total + int(row[1])\nprint(total)'),
           ] },
           { kind: "concept", part: "Reading rows as dictionaries", title: "csv.DictReader", blocks: [
@@ -307,9 +289,10 @@
             ]),
           ] },
           { kind: "code", part: "Reading rows as dictionaries", title: "Example: rows by column name", blocks: [
-            EX('import csv\nwith open("devices.csv", "w", newline="") as f:\n    csv.writer(f).writerows([["Name", "Voltage"], ["pump", 220], ["fan", 110]])\nwith open("devices.csv") as f:\n    for row in csv.DictReader(f):\n        print(row["Name"], row["Voltage"])', "the header gives the keys", [
-              { c: "csv.DictReader(f)", e: "Each row is a dictionary with the keys Name and Voltage." },
-              { c: 'row["Name"]', e: "<code>pump 220</code>, then <code>fan 110</code>" },
+            EX('import csv\nwith open("devices.csv", "w") as f:\n    f.write("Name,Voltage\\n")\n    f.write("pump,220\\nfan,110\\n")\nwith open("devices.csv") as f:\n    for row in csv.DictReader(f):\n        print(row, row["Voltage"])', "the header gives the keys", [
+              { c: "csv.DictReader(f)", e: "The header line gives the keys." },
+              { c: "row", e: "One dictionary per data row; the values are strings." },
+              { c: 'row["Voltage"]', e: "By column name: <code>220</code>, then <code>110</code>" },
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [
@@ -366,7 +349,7 @@
             ]),
           ] },
           { kind: "code", part: "Files: dump and load", title: "First example: save and load settings", blocks: [
-            EX('import json\nsettings = {"name": "Pump", "voltage": 220}\nwith open("settings.json", "w") as f:\n    json.dump(settings, f)\nwith open("settings.json") as f:\n    loaded = json.load(f)\nprint(loaded["voltage"])', "a round trip through a file", [
+            EX('import json\nsettings = {"name": "Pump",\n            "voltage": 220}\nwith open("settings.json", "w") as f:\n    json.dump(settings, f)\nwith open("settings.json") as f:\n    loaded = json.load(f)\nprint(loaded["voltage"])', "a round trip through a file", [
               { c: "json.dump(settings, f)", e: "The file holds <code>{\"name\": \"Pump\", \"voltage\": 220}</code>." },
               { c: "json.load(f)", e: "A new dictionary; <code>loaded[\"voltage\"]</code> is <code>220</code>." },
             ]),
@@ -379,10 +362,10 @@
             T("Data received from a network or a sensor often arrives as a JSON string; loads converts it."),
           ] },
           { kind: "code", part: "Strings: dumps and loads", title: "Example: a sensor message", blocks: [
-            EX('import json\ntext = \'{"sensor": "T1", "value": 25.4, "ok": true}\'\ndata = json.loads(text)\nprint(data["value"] + 1)\nprint(data["ok"])\nprint(json.dumps({"a": 1}))', "string to dictionary and back", [
-              { c: "json.loads(text)", e: "A dictionary; true became <code>True</code>." },
-              { c: 'data["value"] + 1', e: "25.4 is a number: <code>26.4</code>" },
-              { c: "json.dumps", e: "<code>{\"a\": 1}</code>" },
+            EX('import json\ntext = \'{"id": "T1", "value": 25.4}\'\ndata = json.loads(text)\nprint(data["value"] + 1)\ndata["ok"] = True\nprint(json.dumps(data))', "string to dictionary and back", [
+              { c: "json.loads(text)", e: "A dictionary; 25.4 is a number: <code>26.4</code>" },
+              { c: 'data["ok"] = True', e: "A new key with a Python bool." },
+              { c: "json.dumps(data)", e: "JSON text again; True is written as <code>true</code>." },
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [
@@ -428,7 +411,13 @@
               "An array prints without commas: <code>[1 2 3]</code>.",
             ]),
           ] },
-          { kind: "code", part: "Arrays", title: "First example: execution step by step", blocks: [W("codeTrace", T_np)] },
+          { kind: "code", part: "Arrays", title: "First example: a list and an array", blocks: [
+            EX("import numpy as np\nreadings = [21, 25, 19, 27]\ntemps = np.array(readings)\nprint(readings)\nprint(temps)\nprint(np.arange(0, 10, 2))\nprint(np.zeros(3))", "an array prints without commas", [
+              { c: "np.array(readings)", e: "The list becomes an array: <code>[21 25 19 27]</code>" },
+              { c: "np.arange(0, 10, 2)", e: "Like range, but the result is an array: <code>[0 2 4 6 8]</code>" },
+              { c: "np.zeros(3)", e: "Three zeros: <code>[0. 0. 0.]</code>. The dot marks a float." },
+            ]),
+          ] },
           { kind: "concept", part: "Shape and two-dimensional arrays", title: "Shape", blocks: [
             TB(["Attribute", "Meaning", "For np.array([[1, 2, 3], [4, 5, 6]])"], [
               ["<code>a.shape</code>", "the size along each dimension", "<code>(2, 3)</code>: 2 rows, 3 columns"],
@@ -463,6 +452,12 @@
           ] },
           { kind: "visual", part: "Element-wise operations", title: "a * 2: the number applies to every element", blocks: [
             W("arrayOp", { title: "a * 2", a: [1, 2, 3], b: 2, op: "*" }),
+          ] },
+          { kind: "code", part: "Element-wise operations", title: "Example: temperature rise", blocks: [
+            EX("import numpy as np\nmorning = np.array([20, 25, 30])\nnoon = np.array([31, 36, 42])\nprint(noon - morning)\nprint(morning * 9 / 5 + 32)", "no loop is needed", [
+              { c: "noon - morning", e: "Position by position: 31 − 20, 36 − 25, 42 − 30 → <code>[11 11 12]</code>" },
+              { c: "morning * 9 / 5 + 32", e: "Each number applies to every element: the values in °F, <code>[68. 77. 86.]</code>" },
+            ]),
           ] },
           { kind: "concept", part: "Aggregation", title: "Aggregation functions", blocks: [
             TB(["Function", "Result for a = np.array([2, 4, 9])"], [
@@ -531,7 +526,7 @@
             T("<code>read_excel</code> and <code>read_json</code> read other formats in the same way."),
           ] },
           { kind: "code", part: "Reading and writing CSV files", title: "First example: a table from a CSV file", blocks: [
-            EX('import pandas as pd\nwith open("staff.csv", "w") as f:\n    f.write("Name,Age,City\\nAli,25,Bangkok\\nBob,30,Chiang Mai\\nChar,35,Phuket\\n")\ndf = pd.read_csv("staff.csv")\nprint(df)', "the file becomes a table", [
+            EX('import pandas as pd\nwith open("staff.csv", "w") as f:\n    f.write("Name,Age,City\\n")\n    f.write("Ali,25,Bangkok\\n")\n    f.write("Bob,30,Chiang Mai\\n")\n    f.write("Char,35,Phuket\\n")\ndf = pd.read_csv("staff.csv")\nprint(df)', "the file becomes a table", [
               { c: 'pd.read_csv("staff.csv")', e: "Three rows; the columns Name, Age, City." },
               { c: "print(df)", e: "The table with the index 0, 1, 2 on the left." },
             ]),
@@ -554,7 +549,7 @@
             ]),
           ] },
           { kind: "code", part: "Selecting columns and rows", title: "Example: one column and one row", blocks: [
-            EX('import pandas as pd\ndf = pd.DataFrame({"Name": ["Ali", "Bob", "Char"], "Age": [25, 30, 35]})\nprint(df.shape)\nprint(df["Name"].tolist())\nprint(df.iloc[1]["Age"])', "shape, a column, a row", [
+            EX('import pandas as pd\ndf = pd.DataFrame({\n    "Name": ["Ali", "Bob", "Char"],\n    "Age": [25, 30, 35]})\nprint(df.shape)\nprint(df["Name"].tolist())\nprint(df.iloc[1]["Age"])', "shape, a column, a row", [
               { c: "df.shape", e: "<code>(3, 2)</code>" },
               { c: 'df["Name"].tolist()', e: "The column as a list: <code>['Ali', 'Bob', 'Char']</code>" },
               { c: 'df.iloc[1]["Age"]', e: "Row 1, column Age: <code>30</code>" },
@@ -611,14 +606,13 @@
               "Combine conditions with <code>&amp;</code> (and) and <code>|</code> (or), each in parentheses: <code>df[(df[\"Age\"] &gt; 20) &amp; (df[\"City\"] == \"Bangkok\")]</code>.",
             ]),
           ] },
-          { kind: "visual", part: "Filtering rows", title: "A filter and a sort", blocks: [
+          { kind: "visual", part: "Filtering rows", title: "A filter, row by row", blocks: [
             W("dfFilter", { title: "df", columns: ["Name", "Age", "City"], rows: [["Ali", 25, "Bangkok"], ["Bob", 30, "Chiang Mai"], ["Char", 35, "Phuket"]], scenarios: [
               { label: "df[df['Age'] > 28]", filter: { col: "Age", op: ">", value: 28 } },
-              { label: "sort_values('Age', ascending=False)", sort: { col: "Age", dir: "desc" } },
             ] }),
           ] },
           { kind: "code", part: "Filtering rows", title: "Example: rows above an age", blocks: [
-            EX('import pandas as pd\ndf = pd.DataFrame({"Name": ["Ali", "Bob", "Char"], "Age": [25, 30, 35]})\nolder = df[df["Age"] > 28]\nprint(older["Name"].tolist())\nprint(len(older))', "a boolean filter", [
+            EX('import pandas as pd\ndf = pd.DataFrame({\n    "Name": ["Ali", "Bob", "Char"],\n    "Age": [25, 30, 35]})\nolder = df[df["Age"] > 28]\nprint(older["Name"].tolist())\nprint(len(older))', "a boolean filter", [
               { c: 'df[df["Age"] > 28]', e: "The rows of Bob and Char." },
               { c: "print(...)", e: "<code>['Bob', 'Char']</code> and <code>2</code>" },
             ]),
@@ -631,9 +625,10 @@
             ]),
           ] },
           { kind: "code", part: "Sorting", title: "Example: the highest first", blocks: [
-            EX('import pandas as pd\ndf = pd.DataFrame({"Name": ["Ali", "Bob", "Char"], "Score": [78, 92, 85]})\ntop = df.sort_values("Score", ascending=False).reset_index(drop=True)\nprint(top["Name"].tolist())\nprint(top.loc[0, "Name"])', "sort, then renumber", [
-              { c: "sort_values(..., ascending=False)", e: "Bob 92, Char 85, Ali 78." },
-              { c: 'top.loc[0, "Name"]', e: "After reset_index, row 0 is the best: <code>Bob</code>" },
+            EX('import pandas as pd\ndf = pd.DataFrame({\n    "Name": ["Ali", "Bob", "Char"],\n    "Score": [78, 92, 85]})\ntop = df.sort_values("Score",\n                     ascending=False)\nprint(top.loc[0]["Name"])\ntop = top.reset_index(drop=True)\nprint(top.loc[0]["Name"])', "sort, then renumber", [
+              { c: "sort_values(..., ascending=False)", e: "Bob 92, Char 85, Ali 78. Each row keeps its index label: 1, 2, 0." },
+              { c: 'top.loc[0]["Name"]', e: "Label 0 is still the row of Ali: <code>Ali</code>" },
+              { c: "reset_index(drop=True)", e: "Renumbers the rows 0, 1, 2. Label 0 is now the best: <code>Bob</code>" },
             ]),
           ] },
           { kind: "concept", part: "Adding and changing columns", title: "New and changed columns", blocks: [
@@ -644,8 +639,10 @@
             ]),
           ] },
           { kind: "code", part: "Adding and changing columns", title: "Example: a computed column", blocks: [
-            EX('import pandas as pd\ndf = pd.DataFrame({"Device": ["pump", "fan"], "Voltage": [220, 110], "Current": [1.5, 0.4]})\ndf["Power"] = df["Voltage"] * df["Current"]\nprint(df["Power"].tolist())', "one row at a time, without a loop", [
-              { c: 'df["Power"] = ...', e: "220 × 1.5 and 110 × 0.4: <code>[330.0, 44.0]</code>" },
+            EX('import pandas as pd\ndf = pd.DataFrame({\n    "Device": ["pump", "fan"],\n    "Voltage": [220, 110],\n    "Current": [1.5, 0.4]})\npower = df["Voltage"] * df["Current"]\ndf["Power"] = power\nprint(df)', "every row at once, without a loop", [
+              { c: 'df["Voltage"] * df["Current"]', e: "Row by row: 220 × 1.5 = 330.0 and 110 × 0.4 = 44.0" },
+              { c: 'df["Power"] = power', e: "Stores the results as a new column." },
+              { c: "print(df)", e: "The table now has four columns." },
             ]),
           ] },
           { kind: "concept", part: "Groups", title: "groupby", blocks: [
@@ -655,8 +652,9 @@
             ]),
           ] },
           { kind: "code", part: "Groups", title: "Example: mean salary per department", blocks: [
-            EX('import pandas as pd\ndf = pd.DataFrame({"Dept": ["IT", "HR", "IT"], "Salary": [50000, 40000, 60000]})\navg = df.groupby("Dept")["Salary"].mean()\nfor dept, value in avg.items():\n    print(dept, value)', "one mean per group", [
+            EX('import pandas as pd\ndf = pd.DataFrame({\n    "Dept": ["IT", "HR", "IT"],\n    "Salary": [50000, 40000, 60000]})\ngroups = df.groupby("Dept")\navg = groups["Salary"].mean()\nfor dept, value in avg.items():\n    print(dept, value)', "one mean per group", [
               { c: "groupby(\"Dept\")", e: "Groups: HR (40000) and IT (50000, 60000)." },
+              { c: 'groups["Salary"].mean()', e: "The mean salary of each group." },
               { c: "for dept, value", e: "<code>HR 40000.0</code>, <code>IT 55000.0</code>" },
             ]),
           ] },

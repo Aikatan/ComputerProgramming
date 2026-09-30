@@ -21,35 +21,42 @@
 
   /* ---------- traces: one object drives codeTrace and traceTable ---------- */
   const T_cmp = {
-    code: ["voltage = 12", "is_high = voltage > 15", "is_ok = voltage >= 11", "print(is_high, is_ok)"],
+    code: ["temperature = 72", "too_hot = temperature > 70", "too_cold = temperature < 5", "print(too_hot, too_cold)"],
     steps: [
       { line: -1, note: "No variable exists yet." },
-      { line: 0, note: "12 is stored in <code>voltage</code>.", set: { voltage: "12" } },
-      { line: 1, note: "<code>12 > 15</code> is False. The result False is stored in <code>is_high</code>.", set: { is_high: "False" } },
-      { line: 2, note: "<code>12 >= 11</code> is True. The result is stored in <code>is_ok</code>.", set: { is_ok: "True" } },
-      { line: 3, note: "Both bool values are displayed. A comparison does not change any variable. It produces a new bool value, which can be stored or displayed.", print: "False True" },
+      { line: 0, note: "72 is stored in <code>temperature</code>.", set: { temperature: "72" } },
+      { line: 1, note: "<code>72 &gt; 70</code> is True. The result True is stored in <code>too_hot</code>.", set: { too_hot: "True" } },
+      { line: 2, note: "<code>72 &lt; 5</code> is False. The result False is stored in <code>too_cold</code>.", set: { too_cold: "False" } },
+      { line: 3, note: "Both bool values are displayed. A comparison does not change any variable; it produces a new bool value. Result check: 72 is above 70 and not below 5.", print: "True False" },
     ],
   };
 
   const T_and = {
-    code: ["v = 230", "closed = False", "ok = v == 230 and closed", 'print("Start:", ok)'],
+    code: ["voltage = 230", "closed = False", "ok = voltage == 230 and closed", 'print("Start:", ok)', "closed = True", "ok = voltage == 230 and closed", 'print("Start:", ok)'],
     steps: [
       { line: -1, note: "Rule: a motor may start when the voltage is 230 V and the door is closed." },
-      { line: 0, note: "230 is stored in <code>v</code>.", set: { v: "230" } },
+      { line: 0, note: "230 is stored in <code>voltage</code>.", set: { voltage: "230" } },
       { line: 1, note: "The door is open: <code>closed</code> is False.", set: { closed: "False" } },
-      { line: 2, note: "<code>v == 230</code> is True. <code>True and False</code> is False: both sides must be True.", set: { ok: "False" } },
+      { line: 2, note: "<code>voltage == 230</code> is True. <code>True and False</code> is False: both sides must be True.", set: { ok: "False" } },
       { line: 3, note: "The result is displayed.", print: "Start: False" },
+      { line: 4, note: "The door is now closed.", set: { closed: "True" } },
+      { line: 5, note: "The same expression: <code>True and True</code> is True.", set: { ok: "True" } },
+      { line: 6, note: "Result check: both conditions are True, so the motor may start.", print: "Start: True" },
     ],
   };
 
   const T_if = {
-    code: ["temperature = 75", "if temperature > 70:", '    print("Warning: too hot")', 'print("Reading:", temperature)'],
+    code: ["temperature = 75", "if temperature > 70:", '    print("Warning: too hot")', 'print("Reading:", temperature)', "temperature = 60", "if temperature > 70:", '    print("Warning: too hot")', 'print("Reading:", temperature)'],
     steps: [
       { line: -1, note: "No variable exists yet." },
-      { line: 0, note: "75 is stored in <code>temperature</code>.", set: { temperature: "75" } },
-      { line: 1, note: "<code>75 > 70</code> is True, so the indented block runs.", },
+      { line: 0, note: "First reading: 75 is stored in <code>temperature</code>.", set: { temperature: "75" } },
+      { line: 1, note: "<code>75 &gt; 70</code> is True, so the indented block runs." },
       { line: 2, note: "The block displays the warning.", print: "Warning: too hot" },
-      { line: 3, note: "Not indented: this line runs in every case. With <code>temperature = 60</code>, the condition is False: line 3 is skipped, and only <code>Reading: 60</code> is displayed.", print: "Reading: 75" },
+      { line: 3, note: "Not indented: this line runs in every case.", print: "Reading: 75" },
+      { line: 4, note: "Second reading: 60 replaces 75.", set: { temperature: "60" } },
+      { line: 5, note: "<code>60 &gt; 70</code> is False, so the indented block (line 7) is skipped." },
+      { line: 7, note: "Not indented: this line runs in every case.", print: "Reading: 60" },
+      { line: -1, note: "Result check: only the reading above 70 °C displayed a warning. A loop (Lesson 4) repeats lines without writing them twice." },
     ],
   };
 
@@ -157,16 +164,22 @@
   };
 
   const T_else = {
-    code: ["n = 9", "for i in range(2, n):", "    if n % i == 0:", '        print("Not prime")', "        break", "else:", '    print("Prime")'],
+    code: ["n = 7", "for i in range(2, n):", "    if n % i == 0:", '        print("Not prime")', "        break", "else:", '    print("Prime")'],
     steps: [
       { line: -1, note: "Search for a divisor of n from 2 to n - 1." },
-      { line: 0, note: "9 is stored in n.", set: { n: "9" } },
+      { line: 0, note: "7 is stored in n.", set: { n: "7" } },
       { line: 1, note: "i = 2.", set: { i: "2" } },
-      { line: 2, note: "9 % 2 == 0 is False: 2 is not a divisor." },
+      { line: 2, note: "7 % 2 == 0 is False: 2 is not a divisor." },
       { line: 1, note: "i = 3.", set: { i: "3" } },
-      { line: 2, note: "9 % 3 == 0 is True: 3 is a divisor." },
-      { line: 3, note: "The result is displayed.", print: "Not prime" },
-      { line: 4, note: "break: the loop ends, so the else block is skipped." },
+      { line: 2, note: "7 % 3 == 0 is False." },
+      { line: 1, note: "i = 4.", set: { i: "4" } },
+      { line: 2, note: "7 % 4 == 0 is False." },
+      { line: 1, note: "i = 5.", set: { i: "5" } },
+      { line: 2, note: "7 % 5 == 0 is False." },
+      { line: 1, note: "i = 6.", set: { i: "6" } },
+      { line: 2, note: "7 % 6 == 0 is False." },
+      { line: 1, note: "No value is left: the loop ends without break." },
+      { line: 6, note: "No break, so the else block runs. Result check: 7 has no divisor from 2 to 6.", print: "Prime" },
     ],
   };
 
@@ -459,12 +472,12 @@
             ]),
           ] },
           { kind: "problem", part: "if", title: "Problem: over-temperature warning", blocks: [
-            T("A temperature sensor reads 75 °C. The program must display a warning when the temperature is above 70 °C, and always display the reading."),
+            T("A temperature sensor sends two readings: 75 °C and then 60 °C. For each reading, the program displays a warning when the temperature is above 70 °C, and it always displays the reading."),
             IPO([
-              ["Input", "temperature = 75"],
-              ["Output", "a warning (only above 70 °C), then the reading"],
+              ["Input", "temperature = 75, then temperature = 60"],
+              ["Output", "for each reading: a warning (only above 70 °C), then the reading"],
               ["Condition", "temperature &gt; 70"],
-              ["Algorithm", "1. Store the reading.<br>2. If it is above 70, display the warning.<br>3. Display the reading."],
+              ["Algorithm", "1. Store the reading.<br>2. If it is above 70, display the warning.<br>3. Display the reading.<br>4. Repeat steps 2 and 3 for the second reading."],
             ]),
           ] },
           { kind: "code", part: "if", title: "First example: execution step by step", blocks: [W("codeTrace", T_if)] },
@@ -477,9 +490,9 @@
             ]),
           ] },
           { kind: "code", part: "Blocks and indentation", title: "Example: two lines in one block", blocks: [
-            EX('level = 90\nif level > 80:\n    print("Battery high")\n    print("Charging stops")\nprint("Check done")', "indentation decides the block", [
-              { c: "lines 3 and 4", e: "Both are indented, so both belong to the if block." },
-              { c: 'print("Check done")', e: "Not indented: it runs in every case." },
+            EX('level = 60\nif level > 80:\n    print("Battery high")\n    print("Charging stops")\nprint("Check done")', "indentation decides the block", [
+              { c: "lines 3 and 4", e: "Both are indented, so both belong to the if block. 60 > 80 is False: both are skipped together." },
+              { c: 'print("Check done")', e: "Not indented: it runs in every case. Output: <code>Check done</code>" },
             ]),
           ] },
           { kind: "concept", part: "if and else", title: "Two alternatives: if and else", blocks: [
@@ -500,7 +513,7 @@
             CODE("if condition1:\n    block A\nelif condition2:\n    block B\nelse:\n    block C", null, "syntax"),
             L([
               "The conditions are checked from top to bottom.",
-              "The first True condition runs its block. All other blocks are skipped.",
+              "The first True condition runs its block. The remaining conditions are not checked, and all other blocks are skipped.",
               "<code>else</code> runs only when no condition is True. elif can be repeated.",
             ]),
           ] },
@@ -517,14 +530,6 @@
                 { value: 25, evals: [false, true] },
                 { value: 12, evals: [false, false] },
               ] }),
-          ] },
-          { kind: "concept", part: "if, elif, and else", title: "All three cases", blocks: [
-            TB(["t", "t &gt; 30", "t &gt; 20", "Block that runs", "Output"], [
-              ["35", "True", "not checked", "if", "HOT"],
-              ["25", "False", "True", "elif", "WARM"],
-              ["12", "False", "False", "else", "COLD"],
-            ], null, "center"),
-            T("After the first True condition, the remaining conditions are not checked."),
           ] },
           { kind: "code", part: "if, elif, and else", title: "Example: several elif, no else", blocks: [
             T("For 45, only <code>level >= 20</code> is True: <code>Low</code> is displayed. Without else, nothing is displayed when no condition is True, for example for 10."),
@@ -660,7 +665,7 @@
             ]),
           ] },
           { kind: "code", part: "Repeating until a condition changes", title: "Example: ask again until the value is valid", blocks: [
-            EX('level = int(input("Level (0-100): "))\nwhile level > 100:\n    print("Invalid, try again")\n    level = int(input("Level (0-100): "))\nprint("Level =", level)', "test input: 150, then 80", [
+            EX('level = int(input("Level: "))\nwhile level > 100:\n    print("Invalid, try again")\n    level = int(input("Level: "))\nprint("Level =", level)', "test input: 150, then 80", [
               { c: "while level > 100", e: "150 is invalid: the block asks again." },
               { c: "second input", e: "80 is valid: the loop ends. Output: <code>Level = 80</code>" },
             ], ["150", "80"]),
@@ -930,11 +935,12 @@
             ]),
           ] },
           { kind: "code", part: "break", title: "First example: execution step by step", blocks: [W("codeTrace", T_break)] },
-          { kind: "code", part: "break", title: "Example: break in a while loop", blocks: [
-            EX("i = 10\nwhile i >= 0:\n    i -= 1\n    if i == 5:\n        break\n    print(i)", "the loop stops at 5", [
-              { c: "i -= 1", e: "i becomes 9, 8, 7, 6, and then 5." },
-              { c: "break", e: "When i is 5, the loop ends before print. Output: 9 8 7 6" },
-            ]),
+          { kind: "code", part: "break", title: "Example: while True with break", blocks: [
+            EX('while True:\n    level = int(input("Level: "))\n    if level <= 100:\n        break\n    print("Invalid, try again")\nprint("Level =", level)', "test input: 150, then 80", [
+              { c: "while True:", e: "The condition is always True. Only <code>break</code> ends the loop." },
+              { c: "if level <= 100:", e: "150 is invalid: the loop asks again. 80 is valid: break. Output: <code>Level = 80</code>" },
+              { c: "input(...)", e: "The Lesson 4 version wrote <code>input()</code> twice. With break, it is written once." },
+            ], ["150", "80"]),
           ] },
           { kind: "concept", part: "continue", title: "continue skips to the next iteration", blocks: [
             L([
@@ -945,9 +951,9 @@
           ] },
           { kind: "code", part: "continue", title: "First example: execution step by step", blocks: [W("codeTrace", T_cont)] },
           { kind: "code", part: "continue", title: "Example: continue in a while loop", blocks: [
-            EX("i = 10\nwhile i >= 0:\n    i -= 1\n    if i % 3 != 0:\n        continue\n    print(i)", "only multiples of 3 are displayed", [
-              { c: "i % 3 != 0", e: "True for numbers that are not multiples of 3: they are skipped." },
-              { c: "print(i)", e: "Output: 9 6 3 0" },
+            EX('sensor = 0\nwhile sensor < 6:\n    sensor += 1\n    if sensor == 4:\n        continue\n    print("Reading sensor", sensor)', "sensor 4 is offline", [
+              { c: "sensor += 1", e: "The update comes before continue. After it, continue would skip the update, and the loop would never end." },
+              { c: "continue", e: "Sensor 4 is skipped. Output: sensors 1, 2, 3, 5, and 6" },
             ]),
           ] },
           { kind: "concept", part: "pass", title: "pass does nothing", blocks: [
@@ -957,10 +963,11 @@
               "Example: a block that is planned but not written yet.",
             ]),
           ] },
-          { kind: "code", part: "pass", title: "Example: no action for even numbers", blocks: [
-            EX("for i in range(6):\n    if i % 2 == 0:\n        pass\n    else:\n        print(i)", "an empty block", [
-              { c: "pass", e: "No action for even numbers." },
-              { c: "print(i)", e: "Odd numbers are displayed: 1 3 5" },
+          { kind: "code", part: "pass", title: "Example: a block that is not written yet", blocks: [
+            EX('for sensor in range(1, 4):\n    if sensor == 2:\n        pass  # to be written\n    print("Sensor", sensor, "read")', "pass does nothing", [
+              { c: "pass", e: "No action: sensor 2 is still displayed. Output: Sensor 1, 2, and 3 read" },
+              { c: "continue, break", e: "<code>continue</code> would skip sensor 2. <code>break</code> would stop the loop." },
+              { c: "without pass", e: "The if block is empty: IndentationError." },
             ]),
           ] },
           { kind: "concept", part: "else on a loop", title: "else on a loop", blocks: [
@@ -972,10 +979,10 @@
             ]),
           ] },
           { kind: "code", part: "else on a loop", title: "First example: execution step by step", blocks: [W("codeTrace", T_else)] },
-          { kind: "code", part: "else on a loop", title: "Example: a prime number", blocks: [
-            EX('n = 7\nfor i in range(2, n):\n    if n % i == 0:\n        print("Not prime")\n        break\nelse:\n    print("Prime")', "no divisor is found", [
-              { c: "for i in range(2, n)", e: "7 % i is never 0 for i = 2 to 6." },
-              { c: "else", e: "The loop ended without break, so else runs: <code>Prime</code>" },
+          { kind: "code", part: "else on a loop", title: "Example: a number that is not prime", blocks: [
+            EX('n = 9\nfor i in range(2, n):\n    if n % i == 0:\n        print("Not prime")\n        break\nelse:\n    print("Prime")', "a divisor is found", [
+              { c: "n % i == 0", e: "9 % 2 is 1. 9 % 3 is 0: 3 is a divisor. Output: <code>Not prime</code>" },
+              { c: "break", e: "The loop ends with break, so the else block is skipped." },
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [

@@ -20,14 +20,19 @@
 
   /* ---------- traces ---------- */
   const T_try = {
-    code: ['text = "12a"', "try:", "    value = int(text)", '    print("Value:", value)', "except ValueError:", '    print("Not a number")', 'print("Done")'],
+    code: ['for text in ["12", "4x"]:', "    try:", "        value = int(text)", '        print("Value:", value)', "    except ValueError:", '        print("Not a number:", text)', 'print("Done")'],
     steps: [
-      { line: 0, note: "The text is not a valid integer.", set: { text: "'12a'" } },
+      { line: -1, note: "No variable exists yet." },
+      { line: 0, note: "text takes the first value, \"12\".", set: { text: "'12'" } },
       { line: 1, note: "try: the following block is watched for errors." },
-      { line: 2, note: "int('12a') raises a ValueError. The rest of the try block is skipped." },
+      { line: 2, note: "int('12') → 12. No error occurs.", set: { value: "12" } },
+      { line: 3, note: "The try block completes.", print: "Value: 12" },
+      { line: 0, note: "No error occurred, so the except block was skipped. text takes \"4x\".", set: { text: "'4x'" } },
+      { line: 1, note: "try: the block is watched again." },
+      { line: 2, note: "int('4x') raises a ValueError. value keeps 12. The rest of the try block is skipped." },
       { line: 4, note: "The error type matches except ValueError: its block runs." },
-      { line: 5, note: "The except block displays a message.", print: "Not a number" },
-      { line: 6, note: "The program continues normally after the try statement. With <code>text = \"12\"</code>, no error occurs: the output is <code>Value: 12</code> and <code>Done</code>; the except block is skipped.", print: "Done" },
+      { line: 5, note: "The except block displays a message.", print: "Not a number: 4x" },
+      { line: 6, note: "The loop has ended. The program continues normally. Result check: \"12\" converts to 12; \"4x\" does not.", print: "Done" },
     ],
   };
   const T_raise = {
@@ -92,7 +97,7 @@
             T("An engineering chart always has labelled axes with units."),
           ] },
           { kind: "code", part: "Labels, title, and grid", title: "Example: a labelled chart", blocks: [
-            EX('import matplotlib.pyplot as plt\nhours = [0, 4, 8, 12, 16, 20]\ntemps = [22, 21, 25, 31, 29, 24]\nplt.plot(hours, temps)\nplt.xlabel("Hour")\nplt.ylabel("Temperature (C)")\nplt.title("Room temperature")\nplt.show()', "the same data with labels (grid: plt.grid(True))", null),
+            EX('import matplotlib.pyplot as plt\nhours = [0, 4, 8, 12, 16, 20]\ntemps = [22, 21, 25, 31, 29, 24]\nplt.plot(hours, temps)\nplt.xlabel("Hour")\nplt.ylabel("Temperature (C)")\nplt.title("Room temperature")\nplt.grid(True)\nplt.show()', "the same data with labels, a title, and grid lines", null),
           ] },
           { kind: "concept", part: "Several lines and a legend", title: "Several lines and a legend", blocks: [
             L([
@@ -102,7 +107,7 @@
             ]),
           ] },
           { kind: "code", part: "Several lines and a legend", title: "Example: two sensors", blocks: [
-            EX('import matplotlib.pyplot as plt\n\nhours = [0, 6, 12, 18]\nplt.plot(hours, [22, 24, 31, 26], label="Room")\nplt.plot(hours, [18, 20, 34, 23], label="Outside")\nplt.legend()\nplt.show()', "two lines in one chart", [
+            EX('import matplotlib.pyplot as plt\n\nhours = [0, 6, 12, 18]\nroom = [22, 24, 31, 26]\nroof = [18, 20, 34, 23]\nplt.plot(hours, room, label="Room")\nplt.plot(hours, roof, label="Roof")\nplt.legend()\nplt.show()', "two sensors, two lines in one chart", [
               { c: 'label="Room"', e: "The name of the first line." },
               { c: "plt.legend()", e: "Shows both names with their colors." },
             ]),
@@ -190,7 +195,10 @@
             ]),
           ] },
           { kind: "code", part: "Histograms", title: "Example: distribution of resistor values", blocks: [
-            EX('import matplotlib.pyplot as plt\n\nohms = [98, 101, 100, 99, 103, 100, 97, 102, 100, 101]\nplt.hist(ohms, bins=4)\nplt.xlabel("Resistance (ohm)")\nplt.ylabel("Count")\nplt.show()', "ten measurements in 4 bins", null),
+            EX('import matplotlib.pyplot as plt\n\nohms = [98, 101, 100, 99, 103,\n        100, 97, 102, 100, 101]\nplt.hist(ohms, bins=4)\nplt.xlabel("Resistance (ohm)")\nplt.ylabel("Count")\nplt.show()', "ten measurements in 4 bins", [
+              { c: "bins=4", e: "97 to 103 is divided into 4 intervals, each 1.5 ohm wide." },
+              { c: "plt.hist(ohms, bins=4)", e: "Bar heights 2, 1, 5, 2: most values are close to 100 ohm." },
+            ]),
           ] },
           { kind: "concept", part: "Choosing a chart", title: "Choosing a chart", blocks: [
             TB(["Question", "Chart", "Function"], [
@@ -224,7 +232,7 @@
           ] },
           { kind: "exercise", title: "Write a program: a histogram", cols: [
             [T("Draw a histogram with 3 bins of these test scores: 55, 62, 68, 70, 71, 75, 78, 80, 85, 92.")],
-            [RUN("import matplotlib.pyplot as plt\n\nscores = [55, 62, 68, 70, 71, 75, 78, 80, 85, 92]\n# Write the histogram here\n")],
+            [RUN("import matplotlib.pyplot as plt\n\nscores = [55, 62, 68, 70, 71,\n          75, 78, 80, 85, 92]\n# Write the histogram here\n")],
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which chart shows how many values fall into each interval?", choices: ["bar", "scatter", "hist", "plot"], answer: 2, explain: "A histogram counts values per interval (bin)." },
@@ -265,7 +273,7 @@
           ] },
           { kind: "code", part: "try and except", title: "First example: execution step by step", blocks: [W("codeTrace", T_try)] },
           { kind: "code", part: "try and except", title: "Example: safe input", blocks: [
-            EX('try:\n    n = int(input("Number: "))\n    print("Double:", n * 2)\nexcept ValueError:\n    print("Please enter a whole number.")', "test input: abc", [
+            EX('try:\n    n = int(input("Number: "))\n    print("Double:", n * 2)\nexcept ValueError:\n    print("Enter a whole number.")', "test input: abc", [
               { c: 'int(input("Number: "))', e: "\"abc\" raises a ValueError." },
               { c: "except ValueError", e: "The message is displayed; the program does not stop." },
             ], ["abc"]),
@@ -367,9 +375,9 @@
             ]),
           ] },
           { kind: "code", part: "assert", title: "Example: a checked division", blocks: [
-            EX('def divide(a, b):\n    assert b != 0, "Denominator must not be zero"\n    return a / b\n\nprint(divide(10, 2))\nprint(divide(1, 0))', "the second call fails the check", [
+            EX('def divide(a, b):\n    assert b != 0, "b must not be 0"\n    return a / b\n\nprint(divide(10, 2))\nprint(divide(1, 0))', "the second call fails the check", [
               { c: "divide(10, 2)", e: "b != 0 is True: <code>5.0</code>" },
-              { c: "divide(1, 0)", e: "AssertionError: Denominator must not be zero" },
+              { c: "divide(1, 0)", e: "AssertionError: b must not be 0" },
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [

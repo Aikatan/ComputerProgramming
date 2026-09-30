@@ -6,14 +6,6 @@
    ============================================================ */
 (function () {
   const Q = {
-    t00: [
-      { prompt: "Write code to print exactly: <b>Hello, ComPro!</b>", expected: "Hello, ComPro!" },
-      { prompt: "Write code to print the numbers <b>1 to 5</b>, each on its own line.", expected: "1\n2\n3\n4\n5", hint: "A for loop over range(1, 6)." },
-    ],
-    t01: [
-      { prompt: "A program needs 4 bytes per <code>int</code>. Write code to print how many bytes <b>10 ints</b> take.", expected: "40" },
-      { prompt: "Write code to print the four CPU instruction-cycle stages, one per line: <b>Fetch, Decode, Execute, Store</b>.", expected: "Fetch\nDecode\nExecute\nStore", hint: "Loop over a list of the four stage names." },
-    ],
   };
 
   function buildLesson(qs) {

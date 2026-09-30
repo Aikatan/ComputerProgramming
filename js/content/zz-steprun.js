@@ -6,10 +6,6 @@
    ============================================================ */
 (function () {
   const demos = {
-    "t00.first-run": {
-      intro: "Watch each variable get its value as the lines run, then how it's used in the output.",
-      code: 'name = "ComPro"\nyear = 2025\ngreeting = "Welcome to " + name\nprint(greeting)\nprint("Year:", year)',
-    },
   };
 
   function findLesson(key) {

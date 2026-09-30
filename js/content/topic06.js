@@ -1,7 +1,9 @@
 /* ===================== Topic 06 - Strings, Lists and Dictionaries =====================
    Authored deck format (see CHAPTER-IMPROVEMENT-PROMPT.md).
-   Lesson order: strings (building on Topic 02) -> lists -> list methods -> dictionaries -> practice.
-   Python level: t02-t05 material plus lists, dictionaries and their methods. No f-strings, no try.
+   Lesson order: strings (building on Topic 02) -> lists -> list methods -> tuples -> dictionaries
+   -> sets -> practice.
+   Python level: t02-t05 material plus lists, tuples, dictionaries, sets and their methods.
+   No f-strings, no try. Printed sets hold small integers only, so that their order is fixed.
    ====================================================================================== */
 (function () {
   /* ---------- block helpers ---------- */
@@ -19,41 +21,107 @@
   const IPO = (rows) => TB(["Step", "Result"], rows);
 
   /* ---------- traces ---------- */
-  const T_slice = {
-    code: ['s = "Python"', "r = s[::-1]", "part = s[-3:-1]", "print(r, part)"],
+  const T_build = {
+    code: ['word = "volt"', 'result = ""', "for ch in word:", "    result = ch + result", "print(result)"],
     steps: [
-      { line: 0, note: "The string has the indexes 0 to 5 (or -6 to -1).", set: { s: "'Python'" } },
-      { line: 1, note: "Step -1 goes from the end to the start: the reversed string.", set: { r: "'nohtyP'" } },
-      { line: 2, note: "From index -3 up to (not including) -1: 'h' and 'o'.", set: { part: "'ho'" } },
-      { line: 3, note: "Both new strings are displayed. s is unchanged.", print: "nohtyP ho" },
+      { line: 0, note: "The word to reverse.", set: { word: "'volt'" } },
+      { line: 1, note: "An empty string: the result is built from it.", set: { result: "''" } },
+      { line: 2, note: "ch takes the first character: 'v'.", set: { ch: "'v'" } },
+      { line: 3, note: "'v' + '' → 'v'.", set: { result: "'v'" } },
+      { line: 2, note: "ch = 'o'.", set: { ch: "'o'" } },
+      { line: 3, note: "'o' + 'v' → 'ov': the new character goes in front.", set: { result: "'ov'" } },
+      { line: 2, note: "ch = 'l'.", set: { ch: "'l'" } },
+      { line: 3, note: "'l' + 'ov' → 'lov'.", set: { result: "'lov'" } },
+      { line: 2, note: "ch = 't'.", set: { ch: "'t'" } },
+      { line: 3, note: "'t' + 'lov' → 'tlov'.", set: { result: "'tlov'" } },
+      { line: 2, note: "No character is left: the loop ends." },
+      { line: 4, note: "The reversed word is displayed. Result check: 'volt'[::-1] is 'tlov'.", print: "tlov" },
     ],
   };
-  const T_list = {
-    code: ["readings = [20, 22, 21, 23]", "first = readings[0]", "last = readings[-1]", "middle = readings[1:3]", "print(first, last, middle)"],
+  const T_loop = {
+    code: ["readings = [24, 31, 27, 35]", "for r in readings:", "    if r > 30:", '        print("High:", r)', "print(27 in readings)"],
     steps: [
-      { line: 0, note: "A list of 4 elements, with the indexes 0 to 3.", set: { readings: "[20, 22, 21, 23]" } },
-      { line: 1, note: "Index 0 is the first element.", set: { first: "20" } },
-      { line: 2, note: "Index -1 is the last element.", set: { last: "23" } },
-      { line: 3, note: "A slice is a new list: the elements 1 and 2.", set: { middle: "[22, 21]" } },
-      { line: 4, note: "Two numbers and a list are displayed.", print: "20 23 [22, 21]" },
+      { line: 0, note: "A list of 4 readings.", set: { readings: "[24, 31, 27, 35]" } },
+      { line: 1, note: "r takes the first element: 24.", set: { r: "24" } },
+      { line: 2, note: "24 > 30 is False: nothing is displayed." },
+      { line: 1, note: "r takes the next element: 31.", set: { r: "31" } },
+      { line: 2, note: "31 > 30 is True." },
+      { line: 3, note: "The reading is displayed.", print: "High: 31" },
+      { line: 1, note: "r = 27.", set: { r: "27" } },
+      { line: 2, note: "27 > 30 is False." },
+      { line: 1, note: "r = 35.", set: { r: "35" } },
+      { line: 2, note: "35 > 30 is True." },
+      { line: 3, note: "The reading is displayed.", print: "High: 35" },
+      { line: 1, note: "No element is left: the loop ends." },
+      { line: 4, note: "27 is an element of the list: True. Result check: only 31 and 35 are above 30.", print: "True" },
     ],
   };
   const T_pop = {
-    code: ["stack = [5, 7, 9]", "top = stack.pop()", "stack.remove(5)", "print(stack, top)"],
+    code: ["stack = [5, 7, 9]", "while len(stack) > 0:", "    top = stack.pop()", "    print(top, stack)", 'print("Empty:", stack)'],
     steps: [
       { line: 0, note: "A list of three elements.", set: { stack: "[5, 7, 9]" } },
-      { line: 1, note: "pop() removes the last element and returns it: 9 is stored in top.", set: { stack: "[5, 7]", top: "9" } },
-      { line: 2, note: "remove(5) removes the element equal to 5. It returns nothing.", set: { stack: "[7]" } },
-      { line: 3, note: "The list and the popped value are displayed.", print: "[7] 9" },
+      { line: 1, note: "len(stack) is 3: 3 > 0 is True." },
+      { line: 2, note: "pop() removes the last element, 9, and returns it: 9 is stored in top.", set: { stack: "[5, 7]", top: "9" } },
+      { line: 3, note: "The returned value and the shorter list are displayed.", print: "9 [5, 7]" },
+      { line: 1, note: "len(stack) is 2: True." },
+      { line: 2, note: "pop() removes and returns 7.", set: { stack: "[5]", top: "7" } },
+      { line: 3, note: "Display top and the list.", print: "7 [5]" },
+      { line: 1, note: "len(stack) is 1: True." },
+      { line: 2, note: "pop() removes and returns 5. The list is now empty.", set: { stack: "[]", top: "5" } },
+      { line: 3, note: "Display top and the list.", print: "5 []" },
+      { line: 1, note: "len(stack) is 0: 0 > 0 is False. The loop ends." },
+      { line: 4, note: "Result check: the elements came out in reverse order: 9, 7, 5.", print: "Empty: []" },
     ],
   };
-  const T_dict = {
-    code: ['d = {"name": "Pump", "voltage": 220}', 'v = d["voltage"]', 'c = d.get("current", 0)', "print(v, c)"],
+  const T_lowhigh = {
+    code: ["def low_high(values):", "    return min(values), max(values)", "", "result = low_high([21, 25, 19, 23])", "print(result, type(result))", "low, high = result", 'print("Range:", high - low)'],
     steps: [
-      { line: 0, note: "Two key-value pairs.", set: { d: "{'name': 'Pump', 'voltage': 220}" } },
-      { line: 1, note: "The value of the key \"voltage\".", set: { v: "220" } },
-      { line: 2, note: "The key \"current\" does not exist: get returns the default 0.", set: { c: "0" } },
-      { line: 3, note: "Both values are displayed.", print: "220 0" },
+      { line: 0, note: "def creates the function <code>low_high</code>. Its body does not run now." },
+      { line: 3, note: "Call: the parameter values receives the list of readings.", set: { "values (low_high)": "[21, 25, 19, 23]" } },
+      { line: 1, note: "min gives 19 and max gives 25. return packs them into one tuple: (19, 25).", unset: ["values (low_high)"] },
+      { line: 3, note: "The call is replaced by the tuple (19, 25), which is stored in result.", set: { result: "(19, 25)" } },
+      { line: 4, note: "result is one value: a tuple with two elements.", print: "(19, 25) <class 'tuple'>" },
+      { line: 5, note: "Unpacking: the first element goes to low, the second to high.", set: { low: "19", high: "25" } },
+      { line: 6, note: "25 - 19 → 6. Result check: the readings go from 19 to 25, a range of 6.", print: "Range: 6" },
+    ],
+  };
+  const T_seen = {
+    code: ["alarms = [2, 5, 2, 6]", "seen = set()", "for sensor in alarms:", "    if sensor in seen:", '        print("Again:", sensor)', "    seen.add(sensor)", "print(seen)"],
+    steps: [
+      { line: 0, note: "The numbers of the sensors that sent an alarm, in order.", set: { alarms: "[2, 5, 2, 6]" } },
+      { line: 1, note: "An empty set: no sensor is recorded yet.", set: { seen: "set()" } },
+      { line: 2, note: "sensor takes the first element: 2.", set: { sensor: "2" } },
+      { line: 3, note: "2 in seen is False: the set is empty." },
+      { line: 5, note: "add(2): 2 becomes an element of the set.", set: { seen: "{2}" } },
+      { line: 2, note: "sensor = 5.", set: { sensor: "5" } },
+      { line: 3, note: "5 in seen is False." },
+      { line: 5, note: "add(5): 5 is added.", set: { seen: "{2, 5}" } },
+      { line: 2, note: "sensor = 2.", set: { sensor: "2" } },
+      { line: 3, note: "2 in seen is True: sensor 2 sent an alarm before." },
+      { line: 4, note: "The repeated sensor is displayed.", print: "Again: 2" },
+      { line: 5, note: "add(2): 2 is already an element. The set does not change." },
+      { line: 2, note: "sensor = 6.", set: { sensor: "6" } },
+      { line: 3, note: "6 in seen is False." },
+      { line: 5, note: "add(6): 6 is added.", set: { seen: "{2, 5, 6}" } },
+      { line: 2, note: "No element is left: the loop ends." },
+      { line: 6, note: "Result check: 4 alarms came from 3 different sensors: 2, 5, and 6.", print: "{2, 5, 6}" },
+    ],
+  };
+  const T_count = {
+    code: ['log = "ok fault ok ok"', "counts = {}", "for w in log.split():", "    counts[w] = counts.get(w, 0) + 1", "print(counts)"],
+    steps: [
+      { line: 0, note: "A status log with four words.", set: { log: "'ok fault ok ok'" } },
+      { line: 1, note: "An empty dictionary: no word is counted yet.", set: { counts: "{}" } },
+      { line: 2, note: "split() gives 'ok', 'fault', 'ok', 'ok'. w = 'ok'.", set: { w: "'ok'" } },
+      { line: 3, note: "'ok' is not a key yet: get gives 0. 0 + 1 → 1.", set: { counts: "{'ok': 1}" } },
+      { line: 2, note: "w = 'fault'.", set: { w: "'fault'" } },
+      { line: 3, note: "'fault' is a new key: get gives 0. The pair 'fault': 1 is added.", set: { counts: "{'ok': 1, 'fault': 1}" } },
+      { line: 2, note: "w = 'ok'.", set: { w: "'ok'" } },
+      { line: 3, note: "'ok' is a key: get gives 1. 1 + 1 → 2.", set: { counts: "{'ok': 2, 'fault': 1}" } },
+      { line: 2, note: "w = 'ok'.", set: { w: "'ok'" } },
+      { line: 3, note: "get gives 2. 2 + 1 → 3.", set: { counts: "{'ok': 3, 'fault': 1}" } },
+      { line: 2, note: "No word is left: the loop ends." },
+      { line: 4, note: "The frequency table is displayed. Result check: 3 + 1 = 4 words.", print: "{'ok': 3, 'fault': 1}" },
     ],
   };
 
@@ -61,8 +129,8 @@
     id: "t06",
     title: "Strings, Lists and Dictionaries",
     short: "Strings, Lists & Dicts",
-    blurb: "More string operations, lists and their methods, and dictionaries.",
-    intro: "This chapter covers the data structures that store and process many values: strings, lists, and dictionaries. Each lesson uses only what the lessons before it have explained:<br>strings → lists → list methods → dictionaries → practice.",
+    blurb: "More string operations, lists and their methods, tuples, dictionaries, and sets.",
+    intro: "This chapter covers the data structures that store and process many values: strings, lists, tuples, dictionaries, and sets. Each lesson uses only what the lessons before it have explained:<br>strings → lists → list methods → tuples → dictionaries → sets → practice.",
     lessons: [
       /* =============================== 1. STRINGS =============================== */
       {
@@ -94,7 +162,13 @@
               ["<code>s[4:1]</code>", "<code>''</code>", "start after end (step 1): an empty string"],
             ]),
           ] },
-          { kind: "code", part: "Slicing in both directions", title: "First example: execution step by step", blocks: [W("codeTrace", T_slice)] },
+          { kind: "code", part: "Slicing in both directions", title: "Example: the bits of a byte", blocks: [
+            EX('bits = "10110010"\nhigh = bits[:4]\nlow = bits[-4:]\nprint(high, low)\nprint(bits[::-1])', "the two halves of a byte", [
+              { c: "bits[:4]", e: "From the start up to index 4: <code>1011</code>" },
+              { c: "bits[-4:]", e: "The last 4 characters: <code>0010</code>" },
+              { c: "bits[::-1]", e: "Step -1 reverses the string: <code>01001101</code>" },
+            ]),
+          ] },
           { kind: "concept", part: "strip() and find()", title: "strip() and find()", blocks: [
             TB(["Method", "Result", "Example"], [
               ["<code>s.strip()</code>", "a copy without spaces at the start and the end", "<code>\"  hi  \".strip()</code> → <code>'hi'</code>"],
@@ -104,9 +178,9 @@
             T("<code>lstrip()</code> and <code>rstrip()</code> remove spaces only at the start or only at the end."),
           ] },
           { kind: "code", part: "strip() and find()", title: "Example: cleaning a sensor message", blocks: [
-            EX('msg = "  TEMP=25  "\nclean = msg.strip()\nprint(clean)\nprint(clean.find("="))\nprint(clean.find("#"))', "strip, then search", [
+            EX('msg = "  TEMP=25  "\nclean = msg.strip()\npos = clean.find("=")\nprint(clean, pos)\nprint(clean[pos + 1:])\nprint(clean.find("#"))', "strip, find, then slice", [
               { c: "msg.strip()", e: "<code>TEMP=25</code>: the spaces are removed" },
-              { c: 'find("=")', e: "\"=\" is at index <code>4</code>" },
+              { c: "clean[pos + 1:]", e: "\"=\" is at index 4; the value starts after it: <code>25</code>" },
               { c: 'find("#")', e: "Not found: <code>-1</code>" },
             ]),
           ] },
@@ -120,29 +194,24 @@
             T("String methods return new values. The original string does not change."),
           ] },
           { kind: "code", part: "count() and checking methods", title: "Example: checking a device code", blocks: [
-            EX('code = "PUMP-2026-07"\nprint(code.count("2"))\nprint(code.startswith("PUMP"))\nprint(code.endswith(".txt"))\nprint("2026".isdigit())', "counting and checking", [
-              { c: 'count("2")', e: "Two 2s: <code>2</code>" },
+            EX('code = "PUMP-2026-07"\nprint(code.count("-"))\nprint(code.startswith("PUMP"))\nprint(code.endswith("08"))\nyear = code[5:9]\nprint(year, year.isdigit())', "counting and checking", [
+              { c: 'count("-")', e: "Two separators: <code>2</code>" },
               { c: "startswith, endswith", e: "<code>True</code>, <code>False</code>" },
-              { c: '"2026".isdigit()', e: "Only digits: <code>True</code>" },
+              { c: "year.isdigit()", e: "<code>code[5:9]</code> is '2026', only digits: <code>2026 True</code>" },
             ]),
           ] },
           { kind: "concept", part: "Processing a string with a loop", title: "A loop over the characters", blocks: [
             L([
               "<code>for ch in s:</code> visits each character (Topic 03).",
-              "To count characters with a property, use a counter and an if.",
               "To build a new string, start with <code>\"\"</code> and add characters with <code>+</code>.",
+              "To count characters with a property, use a counter and an if.",
             ]),
           ] },
+          { kind: "code", part: "Processing a string with a loop", title: "First example: execution step by step", blocks: [W("codeTrace", T_build)] },
           { kind: "code", part: "Processing a string with a loop", title: "Example: counting a letter", blocks: [
             EX('text = "Engineering"\ncount = 0\nfor ch in text:\n    if ch == "e" or ch == "E":\n        count = count + 1\nprint(count)', "a counter with a condition", [
               { c: 'ch == "e" or ch == "E"', e: "True for E, e, e" },
               { c: "print(count)", e: "<code>3</code>" },
-            ]),
-          ] },
-          { kind: "code", part: "Processing a string with a loop", title: "Example: building a new string", blocks: [
-            EX('word = "sensor"\nresult = ""\nfor ch in word:\n    result = ch + result\nprint(result)', "each character goes in front", [
-              { c: "result = ch + result", e: "s → es → nes → … → the reversed word" },
-              { c: "print(result)", e: "<code>rosnes</code>, the same as <code>word[::-1]</code>" },
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [
@@ -210,7 +279,13 @@
               "An index outside the list causes an IndexError.",
             ]),
           ] },
-          { kind: "code", part: "Indexing and slicing", title: "First example: execution step by step", blocks: [W("codeTrace", T_list)] },
+          { kind: "code", part: "Indexing and slicing", title: "Example: first, last, and slices", blocks: [
+            EX("temps = [18.5, 21.0, 23.5, 22.0, 19.5]\nprint(temps[0], temps[-1])\nprint(temps[1:3])\nprint(temps[-2:])", "indexes and slices of a list", [
+              { c: "temps[0], temps[-1]", e: "The first and the last element: <code>18.5 19.5</code>" },
+              { c: "temps[1:3]", e: "A new list with the elements 1 and 2: <code>[21.0, 23.5]</code>" },
+              { c: "temps[-2:]", e: "The last two elements: <code>[22.0, 19.5]</code>" },
+            ]),
+          ] },
           { kind: "concept", part: "Changing an element", title: "Lists are mutable", blocks: [
             L([
               "An element can be replaced: <code>readings[1] = 25</code>.",
@@ -231,12 +306,7 @@
               "<code>x in readings</code> is True when x is an element.",
             ]),
           ] },
-          { kind: "code", part: "Looping over a list", title: "Example: readings above 21", blocks: [
-            EX("readings = [20, 22, 21, 23]\nfor r in readings:\n    if r > 21:\n        print(r)\nprint(22 in readings)", "a loop with a condition", [
-              { c: "for r in readings", e: "r is 20, 22, 21, 23 in turn; 22 and 23 are displayed" },
-              { c: "22 in readings", e: "<code>True</code>" },
-            ]),
-          ] },
+          { kind: "code", part: "Looping over a list", title: "First example: execution step by step", blocks: [W("codeTrace", T_loop)] },
           { kind: "concept", part: "sum(), max(), min(), and averages", title: "Functions for lists of numbers", blocks: [
             TB(["Expression", "Result for [20, 22, 21, 23]"], [
               ["<code>sum(readings)</code>", "86"],
@@ -248,7 +318,7 @@
           { kind: "code", part: "sum(), max(), min(), and averages", title: "Example: grade statistics", blocks: [
             EX("grades = [85, 90, 78, 92]\nprint(max(grades), min(grades))\nprint(sum(grades) / len(grades))", "from the lecture", [
               { c: "max, min", e: "<code>92 78</code>" },
-              { c: "sum / len", e: "341 / 4 → <code>85.25</code>" },
+              { c: "sum / len", e: "345 / 4 → <code>86.25</code>" },
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [
@@ -303,24 +373,18 @@
             ]),
           ] },
           { kind: "visual", part: "append() and insert()", title: "append and insert, step by step", blocks: [
-            W("boxTrain", { title: "nums", name: "nums", code: ["nums = [10, 20, 30]", "nums.append(40)", "nums.insert(1, 99)"], steps: [
-              { items: [10, 20, 30], line: 0, enter: [0, 1, 2], caption: "Three elements." },
-              { items: [10, 20, 30, 40], line: 1, enter: [3], caption: "append(40): 40 is added at the end." },
-              { items: [10, 99, 20, 30, 40], line: 2, enter: [1], caption: "insert(1, 99): 99 goes to index 1; 20, 30, 40 move right." },
+            W("boxTrain", { title: "temps", name: "temps", code: ["temps = [21, 23]", "temps.append(25)", "temps.insert(0, 20)", "temps.insert(2, 22)"], steps: [
+              { items: [21, 23], line: 0, enter: [0, 1], caption: "Two elements. len(temps) is 2." },
+              { items: [21, 23, 25], line: 1, enter: [2], caption: "append(25): 25 is added at the end. len(temps) is 3." },
+              { items: [20, 21, 23, 25], line: 2, enter: [0], caption: "insert(0, 20): 20 goes to index 0; 21, 23, 25 move right. len(temps) is 4." },
+              { items: [20, 21, 22, 23, 25], line: 3, enter: [2], caption: "insert(2, 22): 22 goes to index 2; 23 and 25 move right. The list stays in increasing order. len(temps) is 5." },
             ] }),
-          ] },
-          { kind: "concept", part: "append() and insert()", title: "The list after each statement", blocks: [
-            TB(["Statement", "nums after the statement", "len(nums)"], [
-              ["<code>nums = [10, 20, 30]</code>", "<code>[10, 20, 30]</code>", "3"],
-              ["<code>nums.append(40)</code>", "<code>[10, 20, 30, 40]</code>", "4"],
-              ["<code>nums.insert(1, 99)</code>", "<code>[10, 99, 20, 30, 40]</code>", "5"],
-            ]),
           ] },
           { kind: "concept", part: "extend() and append()", title: "extend() adds several elements", blocks: [
             L([
-              "<code>a.extend([4, 5])</code> adds each element: <code>[1, 2, 3, 4, 5]</code>.",
-              "<code>a.append([4, 5])</code> adds one element, the list itself: <code>[1, 2, 3, [4, 5]]</code>.",
-              "<code>len()</code> shows the difference: 5 and 4.",
+              "<code>a.extend(other)</code> adds each element of the list <code>other</code> to the end of a.",
+              "<code>a.append(other)</code> adds the whole list <code>other</code> as <b>one</b> element.",
+              "After extend, <code>len(a)</code> grows by <code>len(other)</code>. After append, it grows by 1.",
             ]),
           ] },
           { kind: "code", part: "extend() and append()", title: "Example: extend compared with append", blocks: [
@@ -366,11 +430,11 @@
             ]),
             T("<code>split()</code> returns a list of strings. <code>join()</code> needs a list of strings."),
           ] },
-          { kind: "code", part: "Strings and lists: split() and join()", title: "Example: a date", blocks: [
-            EX('date = "2025-10-15"\nparts = date.split("-")\nprint(parts)\nprint(parts[1])\nprint("/".join(parts))', "split, index, join", [
-              { c: 'date.split("-")', e: "<code>['2025', '10', '15']</code>" },
-              { c: "parts[1]", e: "<code>10</code>" },
-              { c: '"/".join(parts)', e: "<code>2025/10/15</code>" },
+          { kind: "code", part: "Strings and lists: split() and join()", title: "Example: a line of sensor data", blocks: [
+            EX('line = "12.5,0.8"\nparts = line.split(",")\nprint(parts)\nvoltage = float(parts[0])\ncurrent = float(parts[1])\nprint(voltage * current)\nprint(";".join(parts))', "split, convert, join", [
+              { c: 'line.split(",")', e: "A list of two <b>strings</b>: <code>['12.5', '0.8']</code>" },
+              { c: "float(parts[0])", e: "Each string is converted before the calculation: 12.5 * 0.8 → <code>10.0</code>" },
+              { c: '";".join(parts)', e: "The strings joined with ; between: <code>12.5;0.8</code>" },
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [
@@ -381,7 +445,7 @@
               "<code>sort()</code> and <code>reverse()</code> change the list and return None.",
               "<code>split()</code> turns a string into a list; <code>join()</code> turns a list into a string.",
             ]),
-            NEXT("<b>Dictionaries</b>. Values stored under names (keys) instead of positions."),
+            NEXT("<b>Tuples</b>. A tuple stores ordered values like a list, but it cannot be changed."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
             [T("Write the output of each line on paper.<br>Then run the program and compare.")],
@@ -406,7 +470,142 @@
         ],
       },
 
-      /* =============================== 4. DICTIONARIES =============================== */
+      /* =============================== 4. TUPLES =============================== */
+      {
+        id: "tuples",
+        title: "Tuples",
+        sub: "Creating tuples, indexing, immutability, packing and unpacking, returning several values, and tuples or lists.",
+        keywords: "tuple parentheses one element comma immutable typeerror packing unpacking multiple assignment swap return several values list of tuples tuple vs list",
+        deck: [
+          { kind: "overview", title: "Tuples", blocks: [
+            T("A <b>tuple</b> stores several values in order, like a list. Unlike a list, a tuple cannot be changed after it is created."),
+            L(["Creating a tuple", "Indexing and slicing", "Tuples cannot be changed", "Packing and unpacking", "Returning several values", "Tuples or lists"], "Subtopics in this lesson", true),
+          ] },
+          { kind: "concept", part: "Creating a tuple", title: "Creating a tuple", blocks: [
+            L([
+              "Parentheses, with the elements separated by commas: <code>point = (3, 4)</code>.",
+              "A tuple is ordered and can hold different types: <code>(\"R1\", 220, 0.25)</code>.",
+              "<code>()</code> is an empty tuple. <code>len(point)</code> is the number of elements: 2.",
+              "A tuple with one element needs a comma: <code>(5,)</code>. Without the comma, <code>(5)</code> is the integer 5.",
+            ]),
+          ] },
+          { kind: "code", part: "Creating a tuple", title: "Example: the comma makes a tuple", blocks: [
+            EX("point = (3, 4)\nsingle = (5,)\nnumber = (5)\nprint(point, len(point))\nprint(single, type(single))\nprint(number, type(number))", "tuples with two elements and one element", [
+              { c: "point = (3, 4)", e: "Two elements: <code>(3, 4) 2</code>" },
+              { c: "single = (5,)", e: "The comma makes a tuple: <code>(5,) &lt;class 'tuple'&gt;</code>" },
+              { c: "number = (5)", e: "No comma: the integer <code>5 &lt;class 'int'&gt;</code>" },
+            ]),
+          ] },
+          { kind: "concept", part: "Indexing and slicing", title: "Indexes of a tuple", blocks: [
+            TB(["Element", "255", "128", "0"], [["Index", "0", "1", "2"], ["Negative index", "-3", "-2", "-1"]], "<code>color = (255, 128, 0)</code>: red, green, blue", "center"),
+            L([
+              "Indexing, slicing, <code>len()</code>, <code>in</code>, and a for loop work as for lists.",
+              "A slice of a tuple is a new tuple: <code>color[0:2]</code> is <code>(255, 128)</code>.",
+            ]),
+          ] },
+          { kind: "code", part: "Indexing and slicing", title: "Example: a point in space", blocks: [
+            EX("position = (1.5, 0.0, 2.25)\nprint(position[0], position[-1])\nprint(position[:2])\nprint(len(position), 0.0 in position)", "(x, y, z) in metres", [
+              { c: "position[0], position[-1]", e: "x and z: <code>1.5 2.25</code>" },
+              { c: "position[:2]", e: "A new tuple with x and y: <code>(1.5, 0.0)</code>" },
+              { c: "len(position), 0.0 in position", e: "<code>3 True</code>" },
+            ]),
+          ] },
+          { kind: "concept", part: "Tuples cannot be changed", title: "Tuples are immutable", blocks: [
+            L([
+              "A tuple is <b>immutable</b>: an element cannot be replaced, added, or removed.",
+              "Assignment to an element, such as <code>limits[1] = 120</code>, causes a TypeError.",
+              "A tuple has no <code>append()</code>, <code>remove()</code>, or <code>sort()</code>.",
+              "To change the data, create a new tuple and assign it to the variable: <code>limits = (0, 120)</code>.",
+            ]),
+          ] },
+          { kind: "code", part: "Tuples cannot be changed", title: "Example: changing an element", blocks: [
+            EX('limits = (0, 100)\nprint("Upper limit:", limits[1])\nlimits[1] = 120\nprint("New limit:", limits[1])', "a runtime error", [
+              { c: "Lines 1 and 2", e: "They run. Output: <code>Upper limit: 100</code>" },
+              { c: "limits[1] = 120", e: "TypeError: 'tuple' object does not support item assignment. The program stops: line 4 does not run." },
+            ]),
+          ] },
+          { kind: "concept", part: "Packing and unpacking", title: "Packing and unpacking", blocks: [
+            L([
+              "<b>Packing</b>: values separated by commas form a tuple, also without parentheses: <code>p = 3, 4</code>.",
+              "<b>Unpacking</b>: the elements of a tuple are assigned to variables in order: <code>x, y = p</code>.",
+              "The number of variables must equal the number of elements; otherwise a ValueError occurs.",
+              "Multiple assignment (Topic 02), <code>x, y = 8, 3</code>, is packing followed by unpacking.",
+            ]),
+          ] },
+          { kind: "code", part: "Packing and unpacking", title: "Example: unpacking and swapping", blocks: [
+            EX('reading = "T1", 25.4, "C"\nprint(reading)\nname, value, unit = reading\nprint(name, "=", value, unit)\na = 12\nb = 5\na, b = b, a\nprint(a, b)', "one tuple, three variables", [
+              { c: 'reading = "T1", 25.4, "C"', e: "Packing: <code>('T1', 25.4, 'C')</code>" },
+              { c: "name, value, unit = reading", e: "Unpacking in order: <code>T1 = 25.4 C</code>" },
+              { c: "a, b = b, a", e: "The right side is packed first, (5, 12), then unpacked into a and b: <code>5 12</code>. The values are swapped." },
+            ]),
+          ] },
+          { kind: "code", part: "Packing and unpacking", title: "Example: a list of tuples", blocks: [
+            EX("points = [(0, 0), (3, 4), (6, 8)]\nfor x, y in points:\n    dist = (x ** 2 + y ** 2) ** 0.5\n    print(x, y, dist)", "points (x, y) and their distance from (0, 0)", [
+              { c: "for x, y in points", e: "Each element is a tuple. It is unpacked into x and y in every iteration." },
+              { c: "dist = (x ** 2 + y ** 2) ** 0.5", e: "√(x² + y²): <code>0.0</code>, <code>5.0</code>, <code>10.0</code>" },
+            ]),
+          ] },
+          { kind: "concept", part: "Returning several values", title: "A function returns a tuple", blocks: [
+            L([
+              "<code>return a, b</code> (Topic 05) packs the two values into one tuple.",
+              "The call can store the tuple in one variable, <code>result = low_high(data)</code>, or unpack it: <code>low, high = low_high(data)</code>.",
+            ]),
+          ] },
+          { kind: "code", part: "Returning several values", title: "First example: execution step by step", blocks: [W("codeTrace", T_lowhigh)] },
+          { kind: "concept", part: "Tuples or lists", title: "Tuples or lists", blocks: [
+            TB(["Feature", "List", "Tuple"], [
+              ["Written as", "<code>[20, 22, 21]</code>", "<code>(20, 22, 21)</code>"],
+              ["Elements can change", "yes: mutable", "no: immutable"],
+              ["Methods that change it", "<code>append()</code>, <code>remove()</code>, <code>sort()</code>, …", "none"],
+              ["Use for", "values that are collected or changed, such as a series of readings", "a fixed group of values, such as a point (x, y) or an RGB color"],
+            ]),
+            T("<code>tuple(a_list)</code> and <code>list(a_tuple)</code> convert between the two."),
+          ] },
+          { kind: "code", part: "Tuples or lists", title: "Example: from a list to a tuple", blocks: [
+            EX("readings = [21.5, 22.0]\nreadings.append(22.4)\nsaved = tuple(readings)\nprint(saved)\ncopy = list(saved)\ncopy.append(23.1)\nprint(copy)", "each type for its purpose", [
+              { c: "readings.append(22.4)", e: "A list, while the readings are collected." },
+              { c: "saved = tuple(readings)", e: "A tuple that cannot be changed: <code>(21.5, 22.0, 22.4)</code>" },
+              { c: "copy = list(saved)", e: "A new list, which can be changed: <code>[21.5, 22.0, 22.4, 23.1]</code>" },
+            ]),
+          ] },
+          { kind: "summary", title: "Summary", blocks: [
+            L([
+              "A tuple stores ordered elements: <code>(3, 4)</code>. One element needs a comma: <code>(5,)</code>.",
+              "Indexing, slicing, <code>len()</code>, <code>in</code>, and for loops work as for lists.",
+              "A tuple is immutable: <code>t[0] = x</code> causes a TypeError.",
+              "Packing: <code>p = 3, 4</code>. Unpacking: <code>x, y = p</code>. <code>return a, b</code> returns a tuple.",
+              "A list holds data that changes; a tuple holds a fixed group of values.",
+            ]),
+            NEXT("<b>Dictionaries</b>. Values stored under names (keys) instead of positions."),
+          ] },
+          { kind: "exercise", title: "Determine the output", cols: [
+            [T("Write the output of each line on paper.<br>Then run the program and compare.")],
+            [RUN("point = (4, 7, 2)\nprint(point[1], point[-1])\nprint(point[:2])\nprint(len(point), 7 in point)\nx, y, z = point\nprint(x + y + z)\nsingle = (9,)\nprint(single, len(single))")],
+          ] },
+          { kind: "exercise", title: "Complete the code: swap two values", blocks: [
+            PQ("Complete line 3, so that the values of first and second are swapped in one statement.",
+              "fan pump", 'first = "pump"\nsecond = "fan"\nfirst, second = \nprint(first, second)\n', null, "first, second = second, first"),
+          ] },
+          { kind: "exercise", title: "Correct the error", blocks: [
+            PQ("The program stops with a TypeError, because a tuple cannot be changed. Correct line 2, so that limits becomes a new tuple with the upper limit 120.",
+              "(0, 120)", "limits = (0, 100)\nlimits[1] = 120\nprint(limits)\n", null, "limits = (limits[0], 120)"),
+          ] },
+          { kind: "exercise", title: "Write a function: two results", blocks: [
+            PQ("Write the function <code>convert(celsius)</code>. It returns two values: the temperature in Fahrenheit, <code>celsius * 9 / 5 + 32</code>, and in kelvin, <code>celsius + 273.15</code>.",
+              "(77.0, 298.15)\n77.0 F 298.15 K", '# Write the function here\n\nresult = convert(25)\nprint(result)\nf, k = result\nprint(f, "F", k, "K")\n', null, "return celsius * 9 / 5 + 32, celsius + 273.15"),
+          ] },
+          { kind: "exercise", title: "Write a program: a list of tuples", blocks: [
+            PQ("Each tuple holds a resistor name and its resistance in ohms. Display each resistor above 1000 ohms, then the total resistance of all the resistors.",
+              "R2 4700\nR3 10000\nTotal: 14920", 'resistors = [("R1", 220), ("R2", 4700), ("R3", 10000)]\n# Write your program here\n', null, "for name, ohms in resistors: if ohms > 1000: print(name, ohms); add ohms to a total"),
+          ] },
+          { kind: "check", title: "Check", blocks: [QZ([
+            { q: "`t = (5)`. What is the type of t?", choices: ["tuple", "int", "list", "str"], answer: 1, explain: "Without a comma, (5) is the integer 5. A tuple with one element is written (5,)." },
+            { q: "`t = (1, 2, 3)`. What does `t[0] = 9` do?", choices: ["t becomes (9, 2, 3)", "it raises a TypeError", "it adds 9 to t", "t becomes (9,)"], answer: 1, explain: "A tuple is immutable: its elements cannot be replaced." },
+          ])] },
+        ],
+      },
+
+      /* =============================== 5. DICTIONARIES =============================== */
       {
         id: "dictionaries",
         title: "Dictionaries",
@@ -435,13 +634,19 @@
               ["<code>d.get(\"voltage\", 0)</code>", "<code>220</code>: the default is used only for a missing key"],
             ]),
           ] },
-          { kind: "code", part: "Reading values: [] and get()", title: "First example: execution step by step", blocks: [W("codeTrace", T_dict)] },
+          { kind: "code", part: "Reading values: [] and get()", title: "Example: reading settings", blocks: [
+            EX('config = {"mode": "auto", "speed": 3}\nprint(config["speed"])\nprint(config.get("limit", 100))\nprint(config.get("mode", "manual"))', "[] and get() with a default", [
+              { c: 'config["speed"]', e: "The value of the key speed: <code>3</code>" },
+              { c: 'get("limit", 100)', e: "The key limit is missing: the default <code>100</code>" },
+              { c: 'get("mode", "manual")', e: "The key mode exists: its value <code>auto</code>; the default is not used" },
+            ]),
+          ] },
           { kind: "concept", part: "Adding, changing, and removing pairs", title: "Changing a dictionary", blocks: [
             TB(["Statement", "Effect"], [
               ["<code>d[key] = value</code>", "changes the value of an existing key, or adds a new pair"],
               ["<code>del d[key]</code>", "removes the pair"],
               ["<code>d.pop(key)</code>", "removes the pair and returns its value"],
-              ["<code>d.popitem()</code>", "removes the pair added last and returns it as <code>(key, value)</code>"],
+              ["<code>key, value = d.popitem()</code>", "removes the pair added last and returns it as a tuple (key, value)"],
             ]),
           ] },
           { kind: "visual", part: "Adding, changing, and removing pairs", title: "Changes step by step", blocks: [
@@ -455,22 +660,22 @@
               ] }),
           ] },
           { kind: "code", part: "Adding, changing, and removing pairs", title: "Example: pop and popitem", blocks: [
-            EX('d = {"name": "Pump", "voltage": 220}\nd["phase"] = 3\nv = d.pop("voltage")\nprint(v, d)\nprint(d.popitem())\nprint(d)', "removing and returning", [
+            EX('d = {"name": "Pump", "voltage": 220}\nd["phase"] = 3\nv = d.pop("voltage")\nprint(v, d)\nkey, value = d.popitem()\nprint(key, value, d)', "removing and returning", [
               { c: 'd.pop("voltage")', e: "Returns 220: <code>220 {'name': 'Pump', 'phase': 3}</code>" },
-              { c: "d.popitem()", e: "The last pair added: <code>('phase', 3)</code>" },
+              { c: "key, value = d.popitem()", e: "The last pair added: <code>phase 3 {'name': 'Pump'}</code>" },
             ]),
           ] },
           { kind: "concept", part: "Looping over a dictionary", title: "Looping over keys, values, and pairs", blocks: [
             TB(["Loop", "The loop variable takes"], [
               ["<code>for key in d:</code>", "each key (the same as <code>d.keys()</code>)"],
               ["<code>for value in d.values():</code>", "each value"],
-              ["<code>for key, value in d.items():</code>", "each pair: two variables per iteration"],
+              ["<code>for key, value in d.items():</code>", "each pair as a tuple (key, value), unpacked into two variables"],
             ]),
           ] },
           { kind: "code", part: "Looping over a dictionary", title: "Example: keys and values", blocks: [
-            EX('voltages = {"pump": 220, "fan": 110, "heater": 230}\nfor name in voltages:\n    print(name)\ntotal = 0\nfor v in voltages.values():\n    total = total + v\nprint(total)', "keys, then values", [
-              { c: "for name in voltages", e: "The keys: pump, fan, heater" },
-              { c: "voltages.values()", e: "220 + 110 + 230 → <code>560</code>" },
+            EX('power = {"pump": 750, "fan": 60}\nfor name in power:\n    print(name)\ntotal = 0\nfor p in power.values():\n    total = total + p\nprint(total, "W")', "keys, then values", [
+              { c: "for name in power", e: "The keys: pump, fan" },
+              { c: "power.values()", e: "750 + 60 → <code>810 W</code>, the total power" },
             ]),
           ] },
           { kind: "code", part: "Looping over a dictionary", title: "Example: pairs with items()", blocks: [
@@ -484,12 +689,7 @@
               "<code>counts[x] = counts.get(x, 0) + 1</code>: get gives 0 for a key that is not there yet.",
             ]),
           ] },
-          { kind: "code", part: "Counting with a dictionary", title: "Example: counting words", blocks: [
-            EX('text = "a b a c a b"\ncounts = {}\nfor w in text.split():\n    counts[w] = counts.get(w, 0) + 1\nprint(counts)', "a frequency table", [
-              { c: "text.split()", e: "The words: a, b, a, c, a, b" },
-              { c: "counts.get(w, 0) + 1", e: "<code>{'a': 3, 'b': 2, 'c': 1}</code>" },
-            ]),
-          ] },
+          { kind: "code", part: "Counting with a dictionary", title: "First example: execution step by step", blocks: [W("codeTrace", T_count)] },
           { kind: "concept", part: "Lists or dictionaries", title: "Lists or dictionaries", blocks: [
             TB(["Feature", "List", "Dictionary"], [
               ["Access", "by position: 0, 1, 2, …", "by key: \"name\", \"voltage\", …"],
@@ -506,7 +706,7 @@
               "Loop over keys, <code>values()</code>, or <code>items()</code>.",
               "<code>counts.get(x, 0) + 1</code> counts occurrences.",
             ]),
-            NEXT("<b>Chapter practice</b>. Complete problems with strings, lists, and dictionaries."),
+            NEXT("<b>Sets</b>. A set stores unique values without order, like the keys of a dictionary without their values."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
             [T("Write the output of each line on paper.<br>Then run the program and compare.")],
@@ -531,18 +731,156 @@
         ],
       },
 
-      /* =============================== 5. PRACTICE =============================== */
+      /* =============================== 6. SETS =============================== */
+      {
+        id: "sets",
+        title: "Sets",
+        sub: "Unique elements without order: creating sets, membership, adding and removing, set operations, and removing duplicates.",
+        keywords: "set unique duplicates unordered empty set in not in add remove discard union intersection difference | & - remove duplicates set vs list",
+        deck: [
+          { kind: "overview", title: "Sets", blocks: [
+            T("A <b>set</b> stores unique elements without order. Sets remove duplicates, check membership, and compare two groups of values."),
+            L(["Creating a set", "Membership: in", "Adding and removing elements", "Set operations", "Removing duplicates from a list", "Sets or lists"], "Subtopics in this lesson", true),
+          ] },
+          { kind: "concept", part: "Creating a set", title: "Creating a set", blocks: [
+            L([
+              "Curly braces, with the elements separated by commas: <code>channels = {3, 1, 2}</code>.",
+              "A set has no duplicates: a repeated value is stored once.",
+              "A set has no order, so it has no index: <code>channels[0]</code> causes a TypeError.",
+              "<code>set()</code> is an empty set. <code>{}</code> is an empty dictionary.",
+            ]),
+          ] },
+          { kind: "code", part: "Creating a set", title: "Example: duplicates are stored once", blocks: [
+            EX("channels = {30, 10, 20, 10, 30}\nprint(channels, len(channels))\nempty = set()\nprint(empty, len(empty))\nprint(type({}))", "channel numbers", [
+              { c: "{30, 10, 20, 10, 30}", e: "10 and 30 are stored once: <code>{10, 20, 30} 3</code>. The set keeps its own order, not the written order." },
+              { c: "empty = set()", e: "An empty set is displayed as <code>set() 0</code>" },
+              { c: "type({})", e: "<code>{}</code> is an empty dictionary: <code>&lt;class 'dict'&gt;</code>" },
+            ]),
+          ] },
+          { kind: "concept", part: "Membership: in", title: "Checking membership", blocks: [
+            L([
+              "<code>x in s</code> is True when x is an element of the set s.",
+              "<code>x not in s</code> is True when x is not an element of s.",
+              "<code>for x in s:</code> visits each element once, in no fixed order.",
+            ]),
+          ] },
+          { kind: "code", part: "Membership: in", title: "Example: checking a device code", blocks: [
+            EX('allowed = {"A1", "B2", "C3"}\ncode = input("Code: ")\nif code in allowed:\n    print("Accepted")\nelse:\n    print("Rejected")', "a set of allowed codes", [
+              { c: "code in allowed", e: "True when the code is an element of the set." },
+              { c: "input B2", e: "<code>Accepted</code>. With the input C9, the output is <code>Rejected</code>." },
+            ], ["B2"]),
+          ] },
+          { kind: "concept", part: "Adding and removing elements", title: "Adding and removing elements", blocks: [
+            TB(["Method", "Effect"], [
+              ["<code>s.add(x)</code>", "adds x; nothing changes when x is already an element"],
+              ["<code>s.remove(x)</code>", "removes x; a KeyError when x is not an element"],
+              ["<code>s.discard(x)</code>", "removes x when it is an element; no error otherwise"],
+            ]),
+            T("A set is mutable: these methods change the set in place."),
+          ] },
+          { kind: "code", part: "Adding and removing elements", title: "First example: execution step by step", blocks: [W("codeTrace", T_seen)] },
+          { kind: "code", part: "Adding and removing elements", title: "Example: remove() and discard()", blocks: [
+            EX("active = {1, 2, 3}\nactive.discard(5)\nprint(active)\nactive.remove(2)\nprint(active)\nactive.remove(5)", "machines that are running", [
+              { c: "active.discard(5)", e: "5 is not an element: discard does nothing. <code>{1, 2, 3}</code>" },
+              { c: "active.remove(2)", e: "2 is removed: <code>{1, 3}</code>" },
+              { c: "active.remove(5)", e: "5 is not an element: <code>KeyError: 5</code>. The program stops." },
+            ]),
+          ] },
+          { kind: "concept", part: "Set operations", title: "Union, intersection, and difference", blocks: [
+            TB(["Operation", "Operator", "Method", "Result"], [
+              ["union: in a or in b", "<code>a | b</code>", "<code>a.union(b)</code>", "<code>{1, 2, 3, 4}</code>"],
+              ["intersection: in both", "<code>a &amp; b</code>", "<code>a.intersection(b)</code>", "<code>{2, 3}</code>"],
+              ["difference: in a, not in b", "<code>a - b</code>", "<code>a.difference(b)</code>", "<code>{1}</code>"],
+            ], "<code>a = {1, 2, 3}</code> and <code>b = {2, 3, 4}</code>"),
+            T("Each operation returns a new set. The sets a and b do not change."),
+          ] },
+          { kind: "code", part: "Set operations", title: "Example: operators", blocks: [
+            EX("due = {1, 2, 4, 6}\ndone = {2, 3, 6}\nprint(due - done)\nprint(due & done)\nprint(due | done)\nprint(done - due)", "machines due for service, and machines serviced", [
+              { c: "due - done", e: "Due, but not serviced yet: <code>{1, 4}</code>" },
+              { c: "due & done", e: "Due and serviced: <code>{2, 6}</code>" },
+              { c: "done - due", e: "The order matters: serviced, but not due: <code>{3}</code>" },
+            ]),
+          ] },
+          { kind: "code", part: "Set operations", title: "Example: methods", blocks: [
+            EX("line_a = {1, 2, 3}\nline_b = {3, 4}\nboth = line_a.union(line_b)\ncommon = line_a.intersection(line_b)\nprint(both, common)\nprint(line_a.difference(line_b))\nprint(line_a, line_b)", "sensor types on two production lines", [
+              { c: "union, intersection", e: "The same results as | and &amp;: <code>{1, 2, 3, 4} {3}</code>" },
+              { c: "line_a.difference(line_b)", e: "Only on line A: <code>{1, 2}</code>" },
+              { c: "print(line_a, line_b)", e: "The methods return new sets: <code>line_a</code> and <code>line_b</code> do not change." },
+            ]),
+          ] },
+          { kind: "concept", part: "Removing duplicates from a list", title: "Removing duplicates", blocks: [
+            L([
+              "<code>set(a_list)</code> keeps one copy of each value of the list.",
+              "<code>list(a_set)</code> turns the set back into a list, which can be indexed and sorted.",
+              "The order of the original list is lost. <code>sort()</code> gives a fixed order.",
+              "<code>len(set(a_list))</code> is the number of different values.",
+            ]),
+          ] },
+          { kind: "code", part: "Removing duplicates from a list", title: "Example: different fault codes", blocks: [
+            EX('codes = [12, 7, 12, 30, 7, 12]\nunique = list(set(codes))\nunique.sort()\nprint(unique)\nprint(len(codes), "entries")\nprint(len(unique), "different codes")', "the fault codes of a log", [
+              { c: "list(set(codes))", e: "One copy of 12, 7, and 30, in no fixed order." },
+              { c: "unique.sort()", e: "A list can be sorted: <code>[7, 12, 30]</code>" },
+              { c: "len(codes), len(unique)", e: "<code>6 entries</code>, <code>3 different codes</code>" },
+            ]),
+          ] },
+          { kind: "concept", part: "Sets or lists", title: "Sets or lists", blocks: [
+            TB(["Feature", "List", "Set"], [
+              ["Written as", "<code>[3, 1, 3]</code>", "<code>{3, 1}</code>"],
+              ["Duplicates", "allowed", "stored once"],
+              ["Order and index", "ordered; <code>a[0]</code> works", "no order; no index"],
+              ["<code>x in ...</code>", "compares the elements one by one", "fast, also for many elements"],
+              ["Use for", "values in order, such as readings over time", "unique values, membership checks, comparing two groups"],
+            ]),
+          ] },
+          { kind: "summary", title: "Summary", blocks: [
+            L([
+              "A set stores unique elements without order: <code>{1, 2, 3}</code>. <code>set()</code> is an empty set.",
+              "<code>x in s</code> and <code>x not in s</code> check membership; a set has no index.",
+              "<code>add()</code> adds; <code>remove()</code> fails for a missing element; <code>discard()</code> does not.",
+              "<code>a | b</code>, <code>a &amp; b</code>, <code>a - b</code>: union, intersection, and difference, also as methods.",
+              "<code>list(set(a_list))</code> removes duplicates; the order is lost.",
+            ]),
+            NEXT("<b>Chapter practice</b>. Complete problems that combine the data structures of this chapter."),
+          ] },
+          { kind: "exercise", title: "Determine the output", cols: [
+            [T("Write the output of each line on paper.<br>Then run the program and compare.")],
+            [RUN("s = {4, 2, 4, 1, 2}\nprint(len(s))\ns.add(3)\ns.add(4)\nprint(s)\ns.discard(9)\nprint(2 in s, 9 not in s)\nt = {1, 5}\nprint(s & t, s - t)")],
+          ] },
+          { kind: "exercise", title: "Correct the error", blocks: [
+            PQ("The program stops with an AttributeError, because <code>{}</code> is an empty dictionary, which has no add(). Correct line 1, so that seen is an empty set.",
+              "{3, 5}", "seen = {}\nseen.add(3)\nseen.add(5)\nseen.add(3)\nprint(seen)\n", null, "seen = set()"),
+          ] },
+          { kind: "exercise", title: "Complete the code: common values", blocks: [
+            PQ("Complete line 3, so that the program displays the fault codes that appear in both weeks.",
+              "{3, 4}", "week1 = [1, 3, 4, 3]\nweek2 = [3, 6, 4]\ncommon = \nprint(common)\n", null, "common = set(week1) & set(week2)"),
+          ] },
+          { kind: "exercise", title: "Write a program: merge two lists", blocks: [
+            PQ("Merge the two lists into one list without duplicates, sort it in increasing order, and display it.",
+              "[1, 2, 4, 7, 9]", "list_a = [4, 1, 7, 4]\nlist_b = [7, 2, 9, 1]\n# Write your program here\n", null, "merged = list(set(list_a) | set(list_b)), then merged.sort()"),
+          ] },
+          { kind: "exercise", title: "Write a program: different words", blocks: [
+            PQ("Read a sentence with the prompt <code>Sentence: </code>. Display the number of words and the number of different words. Test input: on off on on fault off.",
+              "Sentence: on off on on fault off\n6 words\n3 different words", "# Write your program here\n", ["on off on on fault off"], "words = sentence.split(); then len(words) and len(set(words))"),
+          ] },
+          { kind: "check", title: "Check", blocks: [QZ([
+            { q: "`s = {1, 2, 2, 3, 3, 3}`. What is `len(s)`?", choices: ["6", "3", "1", "an error"], answer: 1, explain: "A set stores each value once: {1, 2, 3}." },
+            { q: "`{1, 2, 3} - {2, 3, 4}` is…", choices: ["{1}", "{4}", "{1, 4}", "{2, 3}"], answer: 0, explain: "The difference holds the elements of the first set that are not in the second." },
+          ])] },
+        ],
+      },
+
+      /* =============================== 7. PRACTICE =============================== */
       {
         id: "practice",
         title: "Chapter practice",
-        sub: "Complete problems with strings, lists, and dictionaries.",
+        sub: "Complete problems with strings, lists, tuples, dictionaries, and sets.",
         slides: "06:36",
         keywords: "practice count words even sum longest word frequency readings",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
             T("For each problem, decide first:"),
             L([
-              "the <b>data structure</b>: a string, a list, or a dictionary",
+              "the <b>data structure</b>: a string, a list, a tuple, a dictionary, or a set",
               "the <b>operation</b>: index, slice, method, or a loop over the elements",
               "then write the program and check the output with the test data",
             ], null, true),
@@ -590,12 +928,18 @@
           { kind: "exercise", part: "Problem 6", title: "Problem 6: write the program", blocks: [
             PQ("Use the string in the starter.", "3", 'text = "mode=auto;speed=3"\nsettings = {}\n# Write your program here\n', null, 'for part in text.split(";"): key, value = part.split("="); settings[key] = value'),
           ] },
-          { kind: "summary", title: "Chapter summary", blocks: [
+          { kind: "summary", title: "Chapter summary (part 1 of 2)", blocks: [
             TB(["Lesson", "Key rule"], [
               ["1. Strings", "<code>[::-1]</code>, <code>strip()</code>, <code>find()</code> (-1 if missing), <code>count()</code>; strings are immutable."],
               ["2. Lists", "Ordered, mutable elements; indexing and slicing; <code>sum</code>, <code>max</code>, <code>min</code>."],
               ["3. List methods", "<code>append</code>, <code>extend</code>, <code>insert</code>, <code>remove</code>, <code>pop</code>, <code>sort</code>; <code>split</code> and <code>join</code>."],
-              ["4. Dictionaries", "Key-value pairs; <code>get(key, default)</code>; loop over <code>items()</code>; count with <code>get</code>."],
+            ]),
+          ] },
+          { kind: "summary", title: "Chapter summary (part 2 of 2)", blocks: [
+            TB(["Lesson", "Key rule"], [
+              ["4. Tuples", "Ordered and immutable: <code>(3, 4)</code>, <code>(5,)</code>; packing and unpacking; <code>return a, b</code> returns a tuple."],
+              ["5. Dictionaries", "Key-value pairs; <code>get(key, default)</code>; loop over <code>items()</code>; count with <code>get</code>."],
+              ["6. Sets", "Unique elements without order; <code>add</code>, <code>discard</code>; <code>|</code>, <code>&amp;</code>, <code>-</code>; <code>list(set(a))</code> removes duplicates."],
             ]),
             N("<b>Topic 07: Data visualization and exceptions</b>. Plotting lists of values, and handling errors with try and except.", "Next topic"),
           ] },

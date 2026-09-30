@@ -151,7 +151,7 @@ App.widgets.stepper = function (cfg) {
   next.addEventListener("click", () => { if (i < cfg.steps.length - 1) { i++; draw(); } });
   reset.addEventListener("click", () => { i = 0; draw(); });
   draw();
-  const shell = widgetShell(cfg.title || "Step through it",
+  const shell = widgetShell(cfg.title === "" ? null : (cfg.title || "Step through it"),   // "" hides the title
     h("div", null, stage, h("div", { class: "w-row", style: "margin-top:12px" }, prev, next, reset, counter)));
   // used by the deck: keyboard steps the widget before changing slide
   shell.classList.add("kstep");
@@ -1212,15 +1212,13 @@ App.widgets.fileFlow = function (cfg) {
         h("span", { class: "ff-status" }, s.status || ""));
       const fileBox = h("div", { class: "ff-file" + (s.flow ? " flow-" + s.flow : "") }, fhead, h("div", { class: "ff-body" }, body));
       const arrow = h("div", { class: "ff-arrow" }, s.flow === "write" ? "write →" : s.flow === "read" ? "← read" : "·");
+      // the output goes under the file, beside the program, so that the slide stays short
+      const side = h("div", { class: "ff-side" }, fileBox,
+        s.out != null ? h("div", null, h("div", { class: "widget-title" }, "Output"), h("div", { class: "step-out" }, s.out)) : null);
       const cols = h("div", { class: "ff-cols" },
         h("div", { class: "ff-prog" }, h("div", { class: "widget-title" }, "Program"), codeBox),
-        arrow, fileBox);
-      // the note and the output side by side, so that both stay on the slide
-      const note = h("div", { class: "tf-note", html: s.note || "" });
-      const bottom = s.out != null
-        ? h("div", { class: "ff-bottom" }, note, h("div", null, h("div", { class: "widget-title" }, "Output"), h("div", { class: "step-out" }, s.out)))
-        : note;
-      return h("div", { class: "fileflow" }, cols, bottom);
+        arrow, side);
+      return h("div", { class: "fileflow" }, cols, h("div", { class: "tf-note", html: s.note || "" }));
     },
   });
 };
@@ -1951,11 +1949,11 @@ App.widgets.seekViz = function (cfg) {
   const pt = (r, aDeg) => { const a = aDeg * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
   const phases = [
     { label: "HDD: move the head to the track", ms: 9.0, headR: 80, secA: 150, read: false },
-    { label: "HDD: wait for the sector to rotate under the head", ms: 13.0, headR: 45, secA: 20, read: false },
+    { label: "HDD: wait for the sector to arrive", ms: 13.0, headR: 45, secA: 20, read: false },
     { label: "HDD: read the sector", ms: 13.1, headR: 45, secA: -90, read: true },
   ];
   return App.widgets.stepper({
-    title: cfg.title || "Reading a block: HDD vs SSD",
+    title: "title" in cfg ? cfg.title : "Reading a block: HDD vs SSD",   // "" hides it
     steps: phases,
     render: (s) => {
       const [hx, hy] = pt(s.headR, -90), [sx, sy] = pt(45, s.secA);
@@ -1977,7 +1975,7 @@ App.widgets.seekViz = function (cfg) {
         '<div class="sk-time">' + s.ms.toFixed(1) + ' ms</div></div>' +
         '<div class="sk-panel"><div class="sk-ptitle">SSD - no moving parts</div>' +
         '<div class="sk-ssd">' + cells + '</div><div class="sk-time">0.1 ms</div></div>' +
-        '</div><div class="bt-cap">' + s.label + ' &nbsp;·&nbsp; SSD: cell addressed directly, read now.</div>';
+        '</div><div class="bt-cap">' + s.label + ' &nbsp;·&nbsp; SSD: the cell is read directly.</div>';
     },
   });
 };

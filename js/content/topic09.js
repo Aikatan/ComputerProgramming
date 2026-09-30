@@ -106,16 +106,6 @@
       { line: 6, note: "The position is displayed. Result check: ids[1] is 30. The loop compared all 3 elements.", print: "Position: 1" },
     ],
   };
-  const T_pair = {
-    code: ["a = [5, 1]", "if a[0] > a[1]:", "    a[0], a[1] = a[1], a[0]", "print(a)"],
-    steps: [
-      { line: -1, note: "No variable exists yet." },
-      { line: 0, note: "A list of two elements.", set: { a: "[5, 1]" } },
-      { line: 1, note: "5 > 1 is True: the pair is in the wrong order." },
-      { line: 2, note: "The right side is evaluated first: (1, 5). Then a[0] = 1 and a[1] = 5.", set: { a: "[1, 5]" } },
-      { line: 3, note: "The sorted pair is displayed. Result check: 5 and 1 were in the wrong order. After the swap, a is [1, 5].", print: "[1, 5]" },
-    ],
-  };
   const T_pass = {
     code: ["a = [4, 1, 5, 2]", "for j in range(len(a) - 1):", "    if a[j] > a[j + 1]:", "        a[j], a[j + 1] = a[j + 1], a[j]", "print(a)"],
     steps: [
@@ -333,9 +323,9 @@
             T("A step is one basic operation: an assignment, a comparison, or an arithmetic operation."),
           ] },
           { kind: "code", part: "Loops and steps", title: "Example: one loop", blocks: [
-            EX("def count_steps(n):\n    count = 0\n    for i in range(n):\n        count = count + 1\n    return count\nprint(count_steps(10), count_steps(100))", "the loop body runs n times", [
+            EX("def count_steps(n):\n    count = 0\n    for i in range(n):\n        count = count + 1\n    return count\nprint(count_steps(10))\nprint(count_steps(100))", "the loop body runs n times", [
               { c: "count = count + 1", e: "runs once for each i: n times" },
-              { c: "print(...)", e: "<code>10 100</code>: 10 times more items, 10 times more steps" },
+              { c: "print(...)", e: "<code>10</code>, then <code>100</code>: 10 times more items, 10 times more steps" },
             ]),
           ] },
           { kind: "concept", part: "Nested loops", title: "A loop inside a loop", blocks: [
@@ -348,7 +338,7 @@
           ] },
           { kind: "code", part: "Nested loops", title: "First example: execution step by step", blocks: [W("codeTrace", T_nested)] },
           { kind: "code", part: "Nested loops", title: "Example: n² steps", blocks: [
-            EX("def count_pairs(n):\n    count = 0\n    for i in range(n):\n        for j in range(n):\n            count = count + 1\n    return count\nprint(count_pairs(10), count_pairs(100))", "the inner statement runs n × n times", [
+            EX("def count_pairs(n):\n    count = 0\n    for i in range(n):\n        for j in range(n):\n            count = count + 1\n    return count\nprint(count_pairs(10))\nprint(count_pairs(100))", "the inner statement runs n × n times", [
               { c: "count_pairs(10)", e: "<code>100</code>" },
               { c: "count_pairs(100)", e: "<code>10000</code>: 10 times more items, 100 times more steps" },
             ]),
@@ -497,6 +487,7 @@
             ]),
           ] },
           { kind: "code", part: "Best, average, and worst case", title: "Example: a function that counts the comparisons", blocks: [
+            T("12 is the first element: best case. 7 is the last element and 99 is absent: worst case."),
             RUN("def comparisons(data, target):\n    count = 0\n    for value in data:\n        count = count + 1\n        if value == target:\n            return count\n    return count\nids = [12, 30, 18, 7]\nprint(comparisons(ids, 12), comparisons(ids, 7), comparisons(ids, 99))"),
           ] },
           { kind: "concept", part: "Binary search", title: "The idea of binary search", blocks: [
@@ -644,7 +635,13 @@
               "In the sorting programs, <code>a</code> is the list to be sorted.",
             ]),
           ] },
-          { kind: "code", part: "Swapping two elements", title: "First example: compare and swap", blocks: [W("codeTrace", T_pair)] },
+          { kind: "code", part: "Swapping two elements", title: "Example: compare and swap", blocks: [
+            EX("a = [5, 1]\nif a[0] > a[1]:\n    a[0], a[1] = a[1], a[0]\nprint(a)", "one comparison, one swap", [
+              { c: "a[0] > a[1]", e: "5 > 1 is True: the pair is in the wrong order." },
+              { c: "a[0], a[1] = a[1], a[0]", e: "The right side is evaluated first: (1, 5). Then a[0] = 1 and a[1] = 5." },
+              { c: "print(a)", e: "<code>[1, 5]</code>" },
+            ]),
+          ] },
           { kind: "concept", part: "One pass", title: "One pass through the list", blocks: [
             L([
               "A <b>pass</b> compares each neighbouring pair from left to right: a[0] and a[1], then a[1] and a[2], and so on.",
@@ -653,7 +650,7 @@
               "After one pass, the largest value is at the end.",
             ]),
           ] },
-          { kind: "code", part: "One pass", title: "Example: one pass, step by step", blocks: [W("codeTrace", T_pass)] },
+          { kind: "code", part: "One pass", title: "First example: one pass, step by step", blocks: [W("codeTrace", T_pass)] },
           { kind: "concept", part: "Bubble sort", title: "Bubble sort", blocks: [
             L([
               "<b>Bubble sort</b> repeats the pass. Each pass moves the next largest value to its final place.",
@@ -665,16 +662,8 @@
           { kind: "visual", part: "Bubble sort", title: "Bubble sort, comparison by comparison", blocks: [
             W("bubbleViz", { title: "Sorting [4, 1, 5, 2]", data: [4, 1, 5, 2] }),
           ] },
-          { kind: "trace", part: "Bubble sort", title: "The list after each pass", blocks: [
-            TB(["Pass", "Comparisons", "Swaps", "a after the pass"], [
-              ["1", "3", "2", "<code>[1, 4, 2, 5]</code>"],
-              ["2", "2", "1", "<code>[1, 2, 4, 5]</code>"],
-              ["3", "1", "0", "<code>[1, 2, 4, 5]</code>"],
-            ], null, "center"),
-            T("Result check: 3 + 2 + 1 = 6 comparisons. The result [1, 2, 4, 5] is in ascending order."),
-          ] },
           { kind: "code", part: "Bubble sort", title: "The bubble sort program", blocks: [
-            T("The outer loop counts the passes. The inner loop is one pass."),
+            T("The outer loop counts the passes. The inner loop is one pass. For [4, 1, 5, 2], the passes make 3 + 2 + 1 = 6 comparisons, and the result is [1, 2, 4, 5]."),
             RUN(BUBBLE),
           ] },
           { kind: "concept", part: "The cost of bubble sort", title: "Counting the comparisons", blocks: [
@@ -686,9 +675,10 @@
             TB(["n", "Comparisons"], [["4", "6"], ["10", "45"], ["1000", "499 500"]], null, "center"),
           ] },
           { kind: "code", part: "The cost of bubble sort", title: "Example: counting the comparisons", blocks: [
-            EX("def bubble_comparisons(n):\n    count = 0\n    for i in range(n - 1):\n        for j in range(n - 1 - i):\n            count = count + 1\n    return count\nprint(bubble_comparisons(10))", "one step for each comparison", [
+            EX("def bubble_comparisons(n):\n    count = 0\n    for i in range(n - 1):\n        for j in range(n - 1 - i):\n            count = count + 1\n    return count\nprint(bubble_comparisons(100))\nprint(bubble_comparisons(200))", "one step for each comparison", [
               { c: "count = count + 1", e: "runs once for each comparison" },
-              { c: "print(...)", e: "<code>45</code> = 10 × 9 / 2" },
+              { c: "bubble_comparisons(100)", e: "<code>4950</code> = 100 × 99 / 2" },
+              { c: "bubble_comparisons(200)", e: "<code>19900</code>: twice the elements, about 4 times the comparisons, as for O(n²)" },
             ]),
           ] },
           { kind: "concept", part: "Built-in sorting", title: "sort() and sorted()", blocks: [
@@ -796,15 +786,9 @@
               "The cost: a dictionary uses more memory than a list with the same values.",
             ]),
           ] },
-          { kind: "code", part: "The cost of dictionary operations", title: "Example: a list search", blocks: [
-            EX('names = ["pump", "fan", "heater"]\nvolts = [220, 110, 230]\nfor i in range(len(names)):\n    if names[i] == "heater":\n        print(volts[i])', "list: up to n comparisons", [
-              { c: 'names[i] == "heater"', e: "3 comparisons: O(n)" },
-            ]),
-          ] },
-          { kind: "code", part: "The cost of dictionary operations", title: "Example: a dictionary lookup", blocks: [
-            EX('volts = {"pump": 220, "fan": 110,\n         "heater": 230}\nprint(volts["heater"])', "dictionary: one lookup", [
-              { c: 'volts["heater"]', e: "1 step: O(1), the same output" },
-            ]),
+          { kind: "code", part: "The cost of dictionary operations", title: "Example: a list search and a dictionary lookup", cols: [
+            [EX('names = ["pump", "fan", "heater"]\nvolts = [220, 110, 230]\nfor i in range(len(names)):\n    if names[i] == "heater":\n        print(volts[i])', "list: 3 comparisons, O(n)")],
+            [EX('volts = {"pump": 220, "fan": 110,\n         "heater": 230}\nprint(volts["heater"])', "dictionary: 1 lookup, O(1); the same output")],
           ] },
           { kind: "concept", part: "The cost of dictionary operations", title: "Lookups for n devices", blocks: [
             TB(["n (devices)", "List search, O(n)", "Dictionary lookup, O(1)"], [["3", "up to 3", "1"], ["1000", "up to 1000", "1"], ["1 000 000", "up to 1 000 000", "1"]], null, "center"),
@@ -1000,7 +984,7 @@
           ] },
           { kind: "exercise", title: "Modify a program: NumPy", cols: [
             [T("Run the program. Then replace <code>sum(data) / len(data)</code> with <code>arr.mean()</code> and run it again.<br>Compare the two times.")],
-            [RUN("import time\nimport numpy as np\ndata = list(range(1000000))\narr = np.array(data)\nstart = time.perf_counter()\naverage = sum(data) / len(data)\nprint(average, round(time.perf_counter() - start, 4))")],
+            [RUN("import time\nimport numpy as np\ndata = list(range(1000000))\narr = np.array(data)\nstart = time.perf_counter()\naverage = sum(data) / len(data)\nelapsed = time.perf_counter() - start\nprint(average, round(elapsed, 4))")],
           ] },
           { kind: "exercise", title: "Write a program: join()", blocks: [
             PQ("Build the text <code>21.5, 22.0, 23.1</code> from the list with join(), and display it.",

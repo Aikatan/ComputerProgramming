@@ -294,9 +294,9 @@
             ]),
           ] },
           { kind: "code", part: "Positional arguments", title: "Example: the order matters", blocks: [
-            EX('def describe(name, voltage):\n    print(name, "runs at", voltage, "V")\n\ndescribe("Pump", 220)\ndescribe(220, "Pump")', "the same arguments, two orders", [
-              { c: 'describe("Pump", 220)', e: "<code>Pump runs at 220 V</code>" },
-              { c: 'describe(220, "Pump")', e: "The values are swapped: <code>220 runs at Pump V</code>" },
+            EX('def describe(name, voltage):\n    print(name, "at", voltage, "V")\n\ndescribe("Pump", 220)\ndescribe(220, "Pump")', "the same arguments, two orders", [
+              { c: 'describe("Pump", 220)', e: "<code>Pump at 220 V</code>" },
+              { c: 'describe(220, "Pump")', e: "The values are swapped: <code>220 at Pump V</code>" },
             ]),
           ] },
           { kind: "concept", part: "Keyword arguments", title: "Keyword arguments", blocks: [
@@ -305,7 +305,7 @@
               "With keyword arguments, the order does not matter, and the call is easier to read.",
               "Positional arguments must come before keyword arguments in a call.",
             ]),
-            CODE('describe(voltage=220, name="Pump")\ndescribe("Pump", voltage=220)', "Pump runs at 220 V\nPump runs at 220 V", "two calls with the same result"),
+            CODE('describe(voltage=220, name="Pump")\ndescribe("Pump", voltage=220)', "Pump at 220 V\nPump at 220 V", "two calls with the same result"),
           ] },
           { kind: "concept", part: "Default values", title: "Default parameter values", blocks: [
             L([
@@ -327,7 +327,7 @@
               ["<code>*args</code>", "any number of positional arguments", "<code>for value in args:</code>"],
               ["<code>**kwargs</code>", "any number of keyword arguments", "<code>for key in kwargs:</code>, and the value is <code>kwargs[key]</code>"],
             ]),
-            T("<code>args</code> is a tuple and <code>kwargs</code> is a dictionary. Topic 06 explains both. Here they are only used with a for loop."),
+            T("<code>args</code> holds the values in order (a tuple: a sequence that cannot be changed, Topic 06). <code>kwargs</code> holds the keyword names and their values (a dictionary, Topic 06). Here both are used only with a for loop."),
           ] },
           { kind: "code", part: "A variable number of arguments", title: "Example: *args", blocks: [
             EX("def total_resistance(*values):\n    total = 0\n    for r in values:\n        total = total + r\n    return total\n\nprint(total_resistance(100, 220, 330))", "resistors in series", [
@@ -336,9 +336,9 @@
             ]),
           ] },
           { kind: "code", part: "A variable number of arguments", title: "Example: **kwargs", blocks: [
-            EX('def print_profile(**info):\n    for key in info:\n        print(key, "=", info[key])\n\nprint_profile(name="Pump", voltage=220)', "keyword arguments with any names", [
-              { c: "**info", e: "Receives name and voltage with their values." },
-              { c: "info[key]", e: "The value of each keyword. Output: <code>name = Pump</code>, <code>voltage = 220</code>" },
+            EX('def print_profile(**info):\n    for key in info:\n        print(key, "=", info[key])\n\nprint_profile(name="Pump", phase=3)', "keyword arguments with any names", [
+              { c: "**info", e: "Receives name and phase with their values." },
+              { c: "info[key]", e: "The value of each keyword. Output: <code>name = Pump</code>, <code>phase = 3</code>" },
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [
@@ -360,8 +360,8 @@
               "Fan 110 V", 'def motor(voltage=220, name):\n    print(name, voltage, "V")\n\nmotor("Fan", 110)\n', null, "def motor(name, voltage=220):"),
           ] },
           { kind: "exercise", title: "Write a function with a default value", blocks: [
-            PQ("Define <code>power(v, i, efficiency=1.0)</code> that returns v × i × efficiency. Display power(12, 2) and power(12, 2, efficiency=0.8).",
-              "24.0 19.200000000000003", "# Write your program here\n", null, "return v * i * efficiency"),
+            PQ("Define <code>power(v, i, efficiency=1.0)</code> that returns v × i × efficiency. Display power(12, 2) and power(12, 2, efficiency=0.75).",
+              "24.0 18.0", "# Write your program here\n", null, "return v * i * efficiency"),
           ] },
           { kind: "exercise", title: "Write a function with *args", blocks: [
             PQ("Define <code>largest(*values)</code> that returns the largest argument. Display largest(3, 17, 9, 12).",
@@ -511,17 +511,8 @@
               { line: 3, frames: [f(3, "wait"), f(2, "wait"), f(1, "return", "1")], note: "factorial(1) returns 1 * 1 → 1." },
               { line: 3, frames: [f(3, "wait"), f(2, "return", "2")], note: "factorial(2) returns 2 * 1 → 2." },
               { line: 3, frames: [f(3, "return", "6")], note: "factorial(3) returns 3 * 2 → 6." },
-              { line: 5, frames: [], note: "print displays the result.", returned: "6" },
+              { line: 5, frames: [], note: "print displays the result. The calls went down to the base case; the results came back up in the opposite order.", returned: "6" },
             ] }),
-          ] },
-          { kind: "concept", part: "Recursion", title: "The calls and their results", blocks: [
-            TB(["Call", "Waits for", "Returns"], [
-              ["factorial(3)", "factorial(2)", "3 × 2 = 6"],
-              ["factorial(2)", "factorial(1)", "2 × 1 = 2"],
-              ["factorial(1)", "factorial(0)", "1 × 1 = 1"],
-              ["factorial(0)", "(base case)", "1"],
-            ], null, "center"),
-            T("The calls go down to the base case; the results come back up in the opposite order."),
           ] },
           { kind: "concept", part: "The base case", title: "The base case", blocks: [
             L([
@@ -617,9 +608,10 @@
             ]),
           ] },
           { kind: "code", part: "The standard library", title: "Example: math and random", blocks: [
-            EX("import math\nimport random\n\nprint(math.pow(2, 3))\nprint(math.sqrt(2))\nprint(random.randint(1, 10))", "run it twice: the last line changes", [
-              { c: "math.pow(2, 3)", e: "<code>8.0</code>" },
-              { c: "random.randint(1, 10)", e: "A different integer from 1 to 10 on most runs." },
+            EX("import math\nimport random\n\nprint(math.pow(2, 3))\nprint(math.sqrt(2))\nprint(random.randint(1, 10))", "the last value is random", [
+              { c: "math.pow(2, 3)", e: "<code>8.0</code>: pow always returns a float" },
+              { c: "math.sqrt(2)", e: "<code>1.4142135623730951</code>" },
+              { c: "random.randint(1, 10)", e: "An integer from 1 to 10; it changes from run to run." },
             ]),
           ] },
           { kind: "concept", part: "Third-party modules and pip", title: "Third-party modules and pip", blocks: [

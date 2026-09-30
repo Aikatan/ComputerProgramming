@@ -47,22 +47,31 @@
   const icon = (k) => '<svg class="fc-icon" width="80" height="40" viewBox="0 0 80 40">' + ICON[k] + "</svg>";
 
   /* ================= flowcharts ================= */
-  const F_seq = {
-    nodes: [ST("s", "START", 0, 0), PR("a", "x = 1", 0, 1), PR("b", "x = x + 2", 0, 2), IO("d", "DISPLAY x", 0, 3), ST("e", "END", 0, 4)],
-    edges: [E("s", "a"), E("a", "b"), E("b", "d"), E("d", "e")],
-    code: ["x = 1", "x = x + 2", "print(x)"], map: { a: [0], b: [1], d: [2] },
+  const F_kelvin = {
+    nodes: [ST("s", "START", 0, 0), IO("i", "INPUT celsius", 0, 1), PR("p", "kelvin = celsius + 273.15", 0, 2), IO("d", "DISPLAY kelvin", 0, 3), ST("e", "END", 0, 4)],
+    edges: [E("s", "i"), E("i", "p"), E("p", "d"), E("d", "e")],
+    code: ["celsius = float(input())", "kelvin = celsius + 273.15", "print(kelvin)"], map: { i: [0], p: [1], d: [2] },
     trace: [
-      { node: "s", note: "START: the algorithm begins." },
-      { node: "a", note: "Process: 1 is stored in x.", set: { x: "1" } },
-      { node: "b", note: "Process: x + 2 → 3. 3 is stored in x.", set: { x: "3" } },
-      { node: "d", note: "Output: the value of x is displayed.", print: "3" },
-      { node: "e", note: "END: the algorithm ends. The value of x after each shape is the value that the Python program has after the matching line." },
+      { node: "s", note: "START. Test input: 25." },
+      { node: "i", note: "Input: 25 is stored in celsius as 25.0.", set: { celsius: "25.0" } },
+      { node: "p", note: "Process: 25.0 + 273.15 → 298.15.", set: { kelvin: "298.15" } },
+      { node: "d", note: "Output: the value of kelvin is displayed.", print: "298.15" },
+      { node: "e", note: "END. Result check: 25 + 273.15 = 298.15." },
     ],
   };
   const F_area = {
     nodes: [ST("s", "START", 0, 0), IO("i1", "INPUT length", 0, 1), IO("i2", "INPUT width", 0, 2), PR("p", "area = length * width", 0, 3), IO("d", "DISPLAY area", 0, 4), ST("e", "END", 0, 5)],
     edges: [E("s", "i1"), E("i1", "i2"), E("i2", "p"), E("p", "d"), E("d", "e")],
     code: ["length = float(input())", "width = float(input())", "area = length * width", "print(area)"],
+  };
+  // the same three steps in two orders (lecture slide 7)
+  const F_seq = {
+    nodes: [ST("s", "START", 0, 0), PR("a", "x = 1", 0, 1), PR("b", "x = x + 2", 0, 2), IO("d", "DISPLAY x", 0, 3), ST("e", "END", 0, 4)],
+    edges: [E("s", "a"), E("a", "b"), E("b", "d"), E("d", "e")],
+  };
+  const F_order = {
+    nodes: [ST("s", "START", 0, 0), PR("a", "x = 1", 0, 1), IO("d", "DISPLAY x", 0, 2), PR("b", "x = x + 2", 0, 3), ST("e", "END", 0, 4)],
+    edges: [E("s", "a"), E("a", "d"), E("d", "b"), E("b", "e")],
   };
   const F_conn = {
     cols: [0, 330],
@@ -88,11 +97,15 @@
     edges: [E("s", "i"), E("i", "q"), E("q", "d", { label: "True" }), E("d", "e"), E("q", "e", { port: "right", lane: "right", label: "False" })],
     code: ["x = int(input())", "if x > 10:", "    print(x)"], map: { i: [0], q: [1], d: [2] },
     trace: [
-      { node: "s", note: "START. Test value: the user enters 12." },
+      { node: "s", note: "Run 1. Test value: the user enters 12." },
       { node: "i", note: "Input: 12 is stored in x.", set: { x: "12" } },
       { node: "q", note: "12 > 10 is True: follow the True arrow." },
       { node: "d", note: "Output: x is displayed.", print: "12" },
-      { node: "e", note: "END. With the input 7, <code>7 &gt; 10</code> is False: the False arrow goes directly to END, and nothing is displayed." },
+      { node: "e", note: "END of run 1." },
+      { node: "s", note: "Run 2. Test value: the user enters 7.", unset: ["x"] },
+      { node: "i", note: "Input: 7 is stored in x.", set: { x: "7" } },
+      { node: "q", note: "7 > 10 is False: the False arrow goes directly to END." },
+      { node: "e", note: "END of run 2. Nothing new is displayed: the output step is only on the True path." },
     ],
   };
   const F_ifelse = {
@@ -142,13 +155,15 @@
     edges: [E("s", "i"), E("i", "q"), E("q", "d", { label: "True" }), E("d", "e"), E("q", "i", { port: "left", lane: "left", label: "False" })],
     code: ["x = int(input())", "while not (x > 10):", "    x = int(input())", "print(x)"], map: { i: [0, 2], q: [1], d: [3] },
     trace: [
-      { node: "s", note: "START. Test values: the user enters 5, then 12." },
+      { node: "s", note: "START. Test values: the user enters 5, 8, then 12." },
       { node: "i", note: "Input: 5 is stored in x.", set: { x: "5" } },
       { node: "q", note: "5 > 10 is False: the arrow goes back to INPUT." },
+      { node: "i", note: "Input again: 8 is stored in x.", set: { x: "8" } },
+      { node: "q", note: "8 > 10 is False: back to INPUT again." },
       { node: "i", note: "Input again: 12 is stored in x.", set: { x: "12" } },
       { node: "q", note: "12 > 10 is True: the loop ends." },
       { node: "d", note: "Output: x is displayed.", print: "12" },
-      { node: "e", note: "END. The input step runs again after every False result, so the program asks until the value is above 10." },
+      { node: "e", note: "END. <code>while not (x &gt; 10)</code> repeats the input while the decision is False: until x is above 10." },
     ],
   };
   const F_count = {
@@ -166,7 +181,7 @@
       { node: "b", note: "x becomes 4.", set: { x: "4" } },
       { node: "q", note: "4 < 4 is False: leave the loop." },
       { node: "d", note: "Output: x is displayed.", print: "4" },
-      { node: "e", note: "END." },
+      { node: "e", note: "END. x = 4 ended the loop. After <code>for x in range(1, 4)</code>, x would be 3, the last value used." },
     ],
   };
   const F_step2 = {
@@ -277,8 +292,12 @@
               "The order of the symbols is the order of the statements.",
             ]),
           ] },
-          { kind: "code", part: "Sequence: steps in order", title: "First example: execution step by step", blocks: [FLOW(F_seq)] },
+          { kind: "code", part: "Sequence: steps in order", title: "First example: execution step by step", blocks: [FLOW(F_kelvin)] },
           { kind: "code", part: "Sequence: steps in order", title: "Example: area of a rectangle", blocks: [STATIC(F_area)] },
+          { kind: "code", part: "Sequence: steps in order", title: "Example: the order of the steps", cols: [
+            [CHART(F_seq), T("The value is displayed after <code>x = x + 2</code>. Output: <code>3</code>")],
+            [CHART(F_order), T("The value is displayed before <code>x = x + 2</code>. Output: <code>1</code>")],
+          ] },
           { kind: "concept", part: "Connectors and predefined processes", title: "Connectors and predefined processes", blocks: [
             L([
               "A <b>connector</b> is a circle with a letter. It joins two parts of a flowchart that are drawn apart. Both ends use the same letter.",
@@ -453,8 +472,7 @@
           { kind: "concept", part: "A counting loop", title: "A counting loop", blocks: [
             L([
               "A counting loop has three steps: initialize the counter, test it in the decision, update it in the loop.",
-              "<code>for x in range(1, 4)</code> uses the values 1, 2, 3, the same values as the chart.",
-              "After the loop, the while version has x = 4, the value that ended the loop. After the for version, x is 3, the last value used.",
+              "In Python, a counting loop with a decision is a while loop. <code>for x in range(1, 4)</code> uses the same values 1, 2, 3 (Topic 03).",
             ]),
           ] },
           { kind: "code", part: "A counting loop", title: "Example: execution step by step", blocks: [FLOW(F_count)] },
@@ -477,7 +495,10 @@
               "In the example, the search stops at the first multiple of 7.",
             ]),
           ] },
-          { kind: "code", part: "Leaving a loop early", title: "Example: the first multiple of 7 from 51", blocks: [STATIC(F_break)] },
+          { kind: "code", part: "Leaving a loop early", title: "Example: the first multiple of 7 from 51", blocks: [
+            STATIC(F_break),
+            T("51 to 55 are not multiples of 7. At n = 56, <code>56 % 7 == 0</code> is True: 56 is displayed, and the break arrow leads directly to END. Output: <code>56</code>"),
+          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
               "A loop is an arrow back to a decision (or to a step before it).",
@@ -562,12 +583,12 @@
           ] },
           { kind: "code", part: "Keywords", title: "First example: pseudocode and Python", cols: [
             [TB(["Pseudocode", "Python"], [
-              ["<code>INPUT length</code>", "<code>length = float(input())</code>"],
-              ["<code>INPUT width</code>", "<code>width = float(input())</code>"],
-              ["<code>SET area TO length × width</code>", "<code>area = length * width</code>"],
-              ["<code>DISPLAY area</code>", "<code>print(area)</code>"],
+              ["<code>INPUT voltage</code>", "<code>voltage = float(input())</code>"],
+              ["<code>INPUT current</code>", "<code>current = float(input())</code>"],
+              ["<code>SET power TO voltage × current</code>", "<code>power = voltage * current</code>"],
+              ["<code>DISPLAY power</code>", "<code>print(power)</code>"],
             ])],
-            [T("Each pseudocode line becomes one Python line. Test input: 4 and 2.5."), RUN("length = float(input())\nwidth = float(input())\narea = length * width\nprint(area)", "Program", ["4", "2.5"])],
+            [T("Each pseudocode line becomes one Python line. Test input: 12 and 2.5."), RUN("voltage = float(input())\ncurrent = float(input())\npower = voltage * current\nprint(power)", "Program", ["12", "2.5"])],
           ] },
           { kind: "concept", part: "Decisions in pseudocode", title: "IF … ELSE … END IF", blocks: [
             PSEUDO("IF condition THEN\n    steps\nELSE IF condition THEN\n    steps\nELSE\n    steps\nEND IF", "structure"),
@@ -627,9 +648,9 @@
             T("Read an integer n greater than 1. Display Prime if n has no divisor from 2 to n − 1, otherwise Not Prime."),
             IPO([["Input", "n (int)"], ["Output", "Prime or Not Prime"], ["Processing", "test every i from 2 to n − 1: is n % i == 0?"], ["Repetition", "FOR i FROM 2 TO n − 1"]]),
           ] },
-          { kind: "code", part: "From problem to pseudocode to Python", title: "The pseudocode", blocks: [
-            PSEUDO("INPUT n\nSET is_prime TO True\nFOR i FROM 2 TO n - 1\n    IF n modulo i equals 0 THEN\n        SET is_prime TO False\n    END IF\nEND FOR\nIF is_prime THEN DISPLAY \"Prime\"\nELSE DISPLAY \"Not Prime\""),
-            T("<code>is_prime</code> records whether a divisor was found."),
+          { kind: "code", part: "From problem to pseudocode to Python", title: "The pseudocode", cols: [
+            [PSEUDO("INPUT n\nSET is_prime TO True\nFOR i FROM 2 TO n - 1\n    IF n modulo i equals 0 THEN\n        SET is_prime TO False\n    END IF\nEND FOR\nIF is_prime THEN\n    DISPLAY \"Prime\"\nELSE\n    DISPLAY \"Not Prime\"\nEND IF")],
+            [T("<code>is_prime</code> records whether a divisor was found. It starts as True; any divisor sets it to False. The last IF displays the result.")],
           ] },
           { kind: "code", part: "From problem to pseudocode to Python", title: "The Python program", blocks: [
             RUN('n = int(input("n: "))\nis_prime = True\nfor i in range(2, n):\n    if n % i == 0:\n        is_prime = False\nif is_prime:\n    print("Prime")\nelse:\n    print("Not Prime")', "Program (test input: 13)", ["13"]),
