@@ -15,6 +15,7 @@
   const RUN = (code, title, inputs) => ({ type: "livecode", code, title: title || "Program", inputs });
   const PQ = (prompt, expected, starter, inputs, hint) => ({ type: "practiceq", prompt, expected, starter, inputs, hint });
   const QZ = (items) => ({ type: "quiz", items });
+  const W = (name, config) => ({ type: "widget", name, config });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
   const PAPER = T("Write the output of this program on paper, line by line.<br>Then run the program and compare.");
@@ -172,13 +173,13 @@
       {
         id: "what-is-programming",
         title: "What is programming?",
-        sub: "Programs, programming languages, compilers and interpreters, and the first Python program.",
+        sub: "Programs, algorithms, programming languages and translators, the first Python program, and the steps to develop a program.",
         slides: "00:2, 01:44",
-        keywords: "program instruction statement source code programming language machine language high-level compiler interpreter bytecode python print hello world operator comment",
+        keywords: "program instruction statement source code engineering algorithm steps programming language machine language high-level compiler interpreter bytecode python print hello world operator comment develop test hand calculation correct",
         deck: [
           { kind: "overview", title: "What is programming?", blocks: [
             T("A <b>program</b> is a sequence of instructions that a computer executes to perform a task.<br><b>Programming</b> is writing these instructions in a programming language."),
-            L(["Programs and instructions", "Programming languages", "Compilers and interpreters", "Python", "The first program", "How Python runs a program"], "Subtopics in this lesson", true),
+            L(["Programs and instructions", "Algorithms", "Programming languages and translators", "Python and the first program", "How Python runs a program", "Developing a program"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Programs and instructions", title: "A program is a sequence of instructions", blocks: [
             L([
@@ -189,16 +190,34 @@
               "The text of a program, as the programmer writes it, is the <b>source code</b>. One instruction of Python source code is a <b>statement</b>: in this chapter, one line.",
             ]),
           ] },
-          { kind: "code", part: "Programs and instructions", title: "Example: a task written as instructions", blocks: [
+          { kind: "concept", part: "Programs and instructions", title: "Programs in engineering", blocks: [
+            L([
+              "<b>Calculations</b>: a program computes results from given values, for example the power of a device from its voltage and current.",
+              "<b>Measurement data</b>: a program processes the values recorded by sensors and instruments: the average, the maximum, the values out of range (Topics 06 and 08).",
+              "<b>Charts</b>: a program draws the data as a graph (Topic 07).",
+              "<b>Control</b>: a program in a microcontroller reads sensors and switches devices on and off (Topic 10).",
+              "A program repeats the same steps exactly, as often as needed, for one value or for a million.",
+            ]),
+          ] },
+          { kind: "concept", part: "Algorithms", title: "An algorithm is a precise sequence of steps", blocks: [
+            L([
+              "An <b>algorithm</b> is a finite sequence of precise steps that solves a problem.",
+              "Each step is exact. The computer cannot guess a missing step or a vague one.",
+              "The order of the steps matters: a step can use only what the steps before it have produced.",
+              "An algorithm does not depend on a programming language. It can be written in words, as a flowchart, or as pseudocode (Topic 04).",
+              "A <b>program</b> is an algorithm written in a programming language.",
+            ]),
+          ] },
+          { kind: "code", part: "Algorithms", title: "Example: an algorithm for a task", blocks: [
             T("Task: display the area of a room that is 5 m long and 3 m wide."),
             TB(["Step", "Instruction"], [
               ["1", "Take the length, 5, and the width, 3."],
               ["2", "Multiply them: 5 × 3 = 15."],
               ["3", "Display the result: 15 m²."],
             ]),
-            T("The order matters: step 3 can display the area only after step 2 has computed it."),
+            T("The order matters: step 3 can display the area only after step 2 has computed it. The program for this algorithm is written later in this lesson."),
           ] },
-          { kind: "concept", part: "Programming languages", title: "Machine language and high-level languages", blocks: [
+          { kind: "concept", part: "Programming languages and translators", title: "Machine language and high-level languages", blocks: [
             TB(["", "Machine language", "High-level language"], [
               ["Written as", "binary numbers: 0 and 1", "words and symbols close to English and mathematics"],
               ["Example", "<code>10110000 01100001</code>", "<code>print(\"Hello\")</code>"],
@@ -207,7 +226,7 @@
             ]),
             T("Examples of high-level languages: Python, C, C++, Java.<br>A <b>translator</b> converts high-level source code into machine language."),
           ] },
-          { kind: "concept", part: "Compilers and interpreters", title: "Two kinds of translator", blocks: [
+          { kind: "concept", part: "Programming languages and translators", title: "Two kinds of translator", blocks: [
             TB(["", "Compiler", "Interpreter"], [
               ["Translates", "the whole program, before it runs", "one statement at a time, while the program runs"],
               ["Result", "an executable file, for example <code>program.exe</code>", "no executable file: the source code is run directly"],
@@ -217,7 +236,7 @@
             ]),
             T("Before the first statement runs, the Python interpreter checks the whole file. The subtopic <b>How Python runs a program</b> explains this step."),
           ] },
-          { kind: "concept", part: "Python", title: "Python", blocks: [
+          { kind: "concept", part: "Python and the first program", title: "Python", blocks: [
             L([
               "Python is a high-level language. Its programs are executed by the Python <b>interpreter</b>.",
               "Its syntax is short and readable, so a program stays close to the steps of the task.",
@@ -226,7 +245,7 @@
               "Python is slower than C. Topic 10 teaches C, which is used for hardware and microcontrollers.",
             ]),
           ] },
-          { kind: "concept", part: "The first program", title: "The first program", blocks: [
+          { kind: "concept", part: "Python and the first program", title: "The first program", blocks: [
             CODE('print("text")', null, "syntax"),
             L([
               "<code>print()</code> displays the value between its parentheses. The displayed text is the <b>output</b>.",
@@ -235,14 +254,14 @@
               "Each <code>print()</code> statement displays one line. Topic 02 explains <code>print()</code> in full.",
             ]),
           ] },
-          { kind: "code", part: "The first program", title: "First example: Hello, World!", blocks: [
+          { kind: "code", part: "Python and the first program", title: "First example: Hello, World!", blocks: [
             EX('print("Hello, World!")\nprint("I am learning to program.")', "two statements, two lines", [
               { c: 'print("Hello, World!")', e: "Output: <code>Hello, World!</code>" },
               { c: 'print("I am learning to program.")', e: "The second statement displays the second line." },
             ]),
             T("The examples on this site run in the web browser. Lessons 3 and 4 run the same code in VS Code."),
           ] },
-          { kind: "concept", part: "The first program", title: "Calculations, several values, and comments", blocks: [
+          { kind: "concept", part: "Python and the first program", title: "Calculations, several values, and comments", blocks: [
             TB(["Code", "Output", "Rule"], [
               ["<code>print(8 + 2)</code>", "<code>10</code>", "<code>+</code> adds"],
               ["<code>print(8 - 2)</code>", "<code>6</code>", "<code>-</code> subtracts"],
@@ -253,10 +272,10 @@
             ]),
             T("Topic 02 explains the operators and <code>print()</code> in full."),
           ] },
-          { kind: "code", part: "The first program", title: "Example: an instruction that computes", blocks: [
-            EX('print("Room area (m2):")\nprint(5 * 3)', "the area of the room", [
+          { kind: "code", part: "Python and the first program", title: "Example: the program for the room area", blocks: [
+            EX('print("Room area (m2):")\nprint(5 * 3)', "the algorithm of the room area, in Python", [
               { c: 'print("Room area (m2):")', e: "Text in quotes: displayed as written." },
-              { c: "print(5 * 3)", e: "A calculation: Python computes 15, then displays it. Output: <code>15</code>" },
+              { c: "print(5 * 3)", e: "Steps 2 and 3 of the algorithm: Python computes 15, then displays it. Output: <code>15</code>" },
             ]),
           ] },
           { kind: "concept", part: "How Python runs a program", title: "How Python runs a program", blocks: [
@@ -277,13 +296,29 @@
               { c: 'print("Line 4")', e: "This statement is never executed." },
             ]),
           ] },
+          { kind: "concept", part: "Developing a program", title: "From a problem to a program", blocks: [
+            TB(["Step", "What is done"], [
+              ["1. Understand", "State the given values and the required output."],
+              ["2. Design", "Write the algorithm: the steps from the given values to the output."],
+              ["3. Code", "Write each step as Python statements."],
+              ["4. Test", "Run the program. Compare its output with a hand calculation."],
+              ["5. Correct", "If the output differs, find the wrong step, correct it, and test again."],
+            ]),
+            T("A program can run without an error message and still display a wrong result. Only the test in step 4 finds such a mistake."),
+          ] },
+          { kind: "code", part: "Developing a program", title: "Example: a test finds a wrong result", blocks: [
+            EX('print("Room area (m2):")\nprint(5 + 3)', "a first version of the room-area program", [
+              { c: "print(5 + 3)", e: "Output <code>8</code>, with no error message: Python executes exactly what is written. By hand, 5 × 3 = 15: the test fails." },
+              { c: "Correction", e: "<code>print(5 * 3)</code> displays <code>15</code>: the test passes." },
+            ]),
+          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "A program is a sequence of instructions. The computer executes them in order.",
-              "The CPU executes only machine language. High-level source code must be translated.",
-              "A compiler translates the whole program before it runs. An interpreter translates and executes one statement at a time.",
+              "A program is an algorithm, a precise sequence of steps, written in a programming language.",
+              "The CPU executes only machine language. A compiler translates the whole program before it runs; an interpreter translates and executes one statement at a time.",
               "<code>print()</code> displays one or more values, separated by commas. Text is written between quotes.",
-              "Python runs with an interpreter: it checks the syntax of the whole file, executes the statements one at a time, and stops at a statement that fails.",
+              "Python checks the syntax of the whole file, executes the statements one at a time, and stops at a statement that fails.",
+              "A program is developed in steps: understand, design, code, test with a hand calculation, correct.",
             ]),
             NEXT("<b>Course tools</b>. A Python program needs an editor to write it and an interpreter to run it. The next lesson installs both."),
           ] },
@@ -318,13 +353,13 @@
             PQ("The program does not run: the interpreter reports a syntax error. Correct it.",
               "Hello, World!", 'print("Hello, World!)\n', null, "Text starts and ends with a quote."),
           ] },
-          { kind: "exercise", title: "Write a program", blocks: [
-            PQ("Write a program that displays the two lines of the target output exactly.",
-              "Hello, ComPro!\nPython is ready.", STARTER, null, 'Use one print() for each line: print("Hello, ComPro!")'),
+          { kind: "exercise", title: "Test and correct a program", blocks: [
+            PQ("The program should display the length 2.5 km in metres. It runs without an error message. Test it with a hand calculation (1 km = 1000 m), then correct it.",
+              "Length (m):\n2500.0", 'print("Length (m):")\nprint(2.5 / 1000)\n', null, "2.5 km is 2.5 × 1000 m."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "A compiler translates…", choices: ["one statement at a time, while the program runs", "the whole program, before it runs", "machine language into Python", "only the comments"], answer: 1, explain: "A compiler translates the whole program into an executable file before it runs." },
-            { q: "Python is…", choices: ["a high-level language run by an interpreter", "a high-level language run by an assembler", "a machine language", "a low-level language run by a compiler"], answer: 0, explain: "Python is a high-level language; its programs are executed by the Python interpreter." },
+            { q: "A program runs without an error message, but its output is wrong. How is the mistake found?", choices: ["The interpreter reports it", "Compare the output with a hand calculation", "Run the program again", "Install Python again"], answer: 1, explain: "Python executes exactly what is written, so only a test against a hand calculation shows a wrong result." },
           ])] },
         ],
       },
@@ -461,13 +496,23 @@
       {
         id: "first-run",
         title: "Creating and running a program",
-        sub: "A project folder, a .py file, a Jupyter notebook, and Google Colab.",
+        sub: "The VS Code window, a project folder, a .py file, first error messages, a Jupyter notebook, and Google Colab.",
         slides: "00:11–15",
-        keywords: "folder file create run interpreter select terminal output py ipynb jupyter notebook cell kernel colab google",
+        keywords: "vscode window explorer editor status bar folder file create run interpreter select terminal output error message nameerror syntaxerror indentationerror py ipynb jupyter notebook cell kernel colab google",
         deck: [
           { kind: "overview", title: "Creating and running a program", blocks: [
             T("A Python program is saved in a file inside a project folder. The interpreter then runs the file.<br>This lesson follows this workflow in VS Code, then runs code in a notebook and in Google Colab."),
-            L(["The project folder", "Creating a file", "Running a .py file", "Jupyter notebooks", "Google Colab"], "Subtopics in this lesson", true),
+            L(["The VS Code window", "The project folder", "Creating a file", "Running a .py file", "When the program does not run", "Jupyter notebooks", "Google Colab"], "Subtopics in this lesson", true),
+          ] },
+          { kind: "visual", part: "The VS Code window", title: "The parts of the VS Code window", cols: [
+            [W("vscodeMap", { folder: "COMPRO", file: "lab00.py", code: ['print("Lab 00")'], out: ["Lab 00"], python: "Python 3.12.8" })],
+            [L([
+              "<b>Explorer</b>: the files of the open folder.",
+              "<b>Editor</b>: the code of the selected file.",
+              "<b>Run Python File</b> (▶): runs the file.",
+              "<b>Terminal</b>: commands and the output of the program.",
+              "<b>Status bar</b>: the selected Python interpreter, at the bottom right.",
+            ], null, true)],
           ] },
           { kind: "concept", part: "The project folder", title: "Creating a project folder", blocks: [
             L([
@@ -507,6 +552,21 @@
               { c: 'print("Python is ready.")', e: "The third line of output. In VS Code, the three lines appear in the Terminal panel." },
             ]),
           ] },
+          { kind: "concept", part: "When the program does not run", title: "Mistakes found before the program runs", blocks: [
+            TB(["Mistake", "Last line of the error message", "Correction"], [
+              ['<code>print("Hi)</code>', "<code>SyntaxError: unterminated string literal …</code>", "close the quote"],
+              ['<code>print("Hi"</code>', "<code>SyntaxError: '(' was never closed</code>", "close the parenthesis"],
+              ['<code>&nbsp;print("Hi")</code>', "<code>IndentationError: unexpected indent</code>", "no space before the statement"],
+              ["<code>print(“Hi”)</code>", "<code>SyntaxError: invalid character '“' …</code>", 'straight quotes <code>"</code>'],
+            ]),
+            T("These are syntax errors: the check of the whole file finds them, so no statement runs (Lesson 2)."),
+          ] },
+          { kind: "code", part: "When the program does not run", title: "A mistake found while the program runs", blocks: [
+            EX('print("Lab 00")\nPrint("Python is ready.")', "Python is case-sensitive", [
+              { c: 'print("Lab 00")', e: "Line 1 runs: <code>Lab 00</code> appears." },
+              { c: "Print(…)", e: "Line 2 stops: <code>NameError: name 'Print' is not defined …</code> The last line names the error; the line above it gives <code>line 2</code>. Topic 02 explains error messages in full." },
+            ]),
+          ] },
           { kind: "concept", part: "Jupyter notebooks", title: "Jupyter notebooks", blocks: [
             L([
               "A notebook is a sequence of <b>cells</b>. A code cell holds Python code; a Markdown cell holds text.",
@@ -542,8 +602,8 @@
               "A project folder holds the files of a project: <b>File → Open Folder</b>.",
               "<code>.py</code> is a Python program; <code>.ipynb</code> is a notebook of cells.",
               "Before running a <code>.py</code> file, select the interpreter. The output appears in the Terminal.",
-              "A notebook cell runs on its own; its output appears below it.",
-              "Google Colab runs notebooks in the browser, without installation.",
+              "The last line of an error message names the error; the line above it gives the line number.",
+              "A notebook cell runs on its own, with its output below it. Google Colab runs notebooks in the browser.",
             ]),
             NEXT("<b>Chapter practice</b>. Short programs that display text and results, written and run with the tools of this chapter."),
           ] },
@@ -586,6 +646,10 @@
               "Run the file with the ▶ button.",
             ], null, true),
           ] },
+          { kind: "exercise", title: "Correct the errors", blocks: [
+            PQ("The program has two mistakes. Run it, read the last line of each error message, and correct one mistake at a time.",
+              "Lab 00\nPython is ready.", 'Print("Lab 00")\n print("Python is ready.")\n', null, "Python is case-sensitive, and a statement starts at the beginning of the line."),
+          ] },
           { kind: "exercise", title: "Write and run a program", blocks: [
             PQ("Write <code>lab00.py</code>, which displays the three lines of the target output. Run it in VS Code and in a Google Colab cell; then check it here.",
               "Lab 00\nComputer Programming\nMy first program runs.", STARTER, null, 'Use one print() for each line: print("Lab 00")'),
@@ -606,13 +670,12 @@
         keywords: "practice print calculation total score grade attendance assignment",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
-            T("Each problem uses the lessons of this chapter: the data comes from the course agreements, and the program uses <code>print()</code> with text and calculations. Solve every problem in the same order:"),
+            T("Each problem uses the lessons of this chapter: the data comes from the course agreements, and the program uses <code>print()</code> with text and calculations. Solve every problem with the steps of Lesson 2:"),
             L([
-              "<b>Given values</b>: the values stated in the problem.",
-              "<b>Required output</b>: the lines the program displays.",
-              "<b>Processing</b>: the calculation.",
+              "<b>Understand</b>: the given values and the required output.",
+              "<b>Design</b>: the processing, the calculation.",
               "<b>Code</b>: one <code>print()</code> statement for each line of output.",
-              "<b>Verify</b>: compare the output with a hand calculation.",
+              "<b>Test</b>: compare the output with a hand calculation, and correct the program if they differ.",
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: a welcome message", blocks: [
@@ -667,9 +730,9 @@
           { kind: "summary", title: "Chapter summary", blocks: [
             TB(["Lesson", "Key point"], [
               ["1. Course agreements", "Weights, grades, attendance, late submission, and classroom rules."],
-              ["2. What is programming?", "A program is a sequence of instructions. Python runs with an interpreter."],
+              ["2. What is programming?", "A program is an algorithm in a programming language. Python runs with an interpreter. Develop, then test with a hand calculation."],
               ["3. Course tools", "VS Code is the editor; Python 3.10 is the interpreter; extensions add Python and Jupyter."],
-              ["4. Creating and running a program", "Folder, <code>.py</code> file, interpreter, Run. Notebooks run cell by cell, also in Colab."],
+              ["4. Creating and running a program", "Folder, <code>.py</code> file, interpreter, Run; read the last line of an error message. Notebooks run cell by cell, also in Colab."],
             ]),
             N("<b>Topic 01: Computer operation and architecture</b>. The hardware that executes a program: the CPU, memory, and storage.", "Next topic"),
           ] },

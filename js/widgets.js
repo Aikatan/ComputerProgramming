@@ -29,6 +29,31 @@ App.widgets.diagram = function (cfg) {
 App.widgets.infocards = App.widgets.diagram;
 
 /* ============================================================
+   vscodeMap - a static sketch of the VS Code window (NOT interactive).
+   Numbered markers name the parts that the lessons refer to; the slide
+   explains each number beside it.
+   config: { folder, file, code:[lines], out:[lines], python }
+   ============================================================ */
+App.widgets.vscodeMap = function (cfg) {
+  const mark = (n) => h("span", { class: "vsm-mark" }, String(n));
+  const code = cfg.code || ['print("Hello, World!")'];
+  const out = cfg.out || ["Hello, World!"];
+  return h("div", { class: "vsm", role: "img", "aria-label": "The VS Code window: Explorer, editor, Run button, Terminal, and status bar" },
+    h("div", { class: "vsm-menu" }, "File  Edit  View  Terminal"),
+    h("div", { class: "vsm-explorer" },
+      h("div", { class: "vsm-head" }, "EXPLORER ", mark(1)),
+      h("div", null, "▾ " + (cfg.folder || "COMPRO")),
+      h("div", { class: "vsm-file" }, cfg.file || "lab00.py")),
+    h("div", { class: "vsm-editor" },
+      h("div", { class: "vsm-tab" }, h("span", null, cfg.file || "lab00.py"), h("span", { class: "vsm-run" }, "▶ ", mark(3))),
+      h("div", { class: "vsm-code" }, ...code.map((ln, i) => h("div", null, h("span", { class: "vsm-ln" }, String(i + 1)), ln)), mark(2))),
+    h("div", { class: "vsm-term" },
+      h("div", { class: "vsm-head" }, "TERMINAL ", mark(4)),
+      ...out.map((ln) => h("div", null, ln))),
+    h("div", { class: "vsm-status" }, h("span", null, mark(5)), h("span", null, cfg.python || "Python 3.12.8")));
+};
+
+/* ============================================================
    cpuCycle - animated fetch/decode/execute/store
    ============================================================ */
 App.widgets.cpuCycle = function (cfg) {

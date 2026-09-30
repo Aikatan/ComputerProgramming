@@ -1154,3 +1154,22 @@ body.slide-mode .deck-stage { min-height: calc(100vh - 56px - 8px - 64px); }
 @media (max-width: 820px) { .fc-grid { grid-template-columns: minmax(0, 1fr); } }
 .fc-state { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
 .fc-state .ct-vars { margin-bottom: 0; }
+
+/* vscodeMap: a static sketch of the VS Code window (t00) */
+.vsm { display: grid; grid-template-columns: minmax(180px, 34%) 1fr; grid-template-rows: auto 1fr auto auto;
+  grid-template-areas: "menu menu" "exp ed" "exp term" "status status";
+  border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--code-bg); max-width: 640px; }
+.vsm > div { padding: 6px 12px; }
+.vsm-menu { grid-area: menu; background: var(--bg-3); color: var(--text-dim); white-space: pre; border-bottom: 1px solid var(--border); }
+.vsm-explorer { grid-area: exp; background: var(--bg-2); border-right: 1px solid var(--border); }
+.vsm-file { padding-left: 1.2em; color: var(--accent); }
+.vsm-editor { grid-area: ed; font-family: ui-monospace, monospace; }
+.vsm-tab { display: flex; justify-content: space-between; align-items: center; color: var(--text-dim); border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-bottom: 6px; }
+.vsm-run { color: var(--accent-2); white-space: nowrap; }
+.vsm-ln { color: var(--text-dim); display: inline-block; width: 1.6em; }
+.vsm-term { grid-area: term; font-family: ui-monospace, monospace; border-top: 1px solid var(--border); }
+.vsm-head { color: var(--text-dim); font-family: inherit; }
+.vsm-status { grid-area: status; display: flex; justify-content: space-between; align-items: center; background: #0065a9; color: #fff; }
+.vsm-mark { display: inline-flex; align-items: center; justify-content: center; min-width: 1.4em; height: 1.4em; border-radius: 50%;
+  background: var(--warn); color: #111; font-weight: 700; font-family: system-ui, sans-serif; margin-left: 6px; }
+.slide .vsm, .slide .vsm * { font-size: 24px; }
