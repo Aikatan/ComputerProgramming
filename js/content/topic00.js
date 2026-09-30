@@ -174,7 +174,7 @@
         title: "What is programming?",
         sub: "Programs, programming languages, compilers and interpreters, and the first Python program.",
         slides: "00:2, 01:44",
-        keywords: "program instruction source code programming language machine language high-level compiler interpreter python print hello world",
+        keywords: "program instruction statement source code programming language machine language high-level compiler interpreter bytecode python print hello world operator comment",
         deck: [
           { kind: "overview", title: "What is programming?", blocks: [
             T("A <b>program</b> is a sequence of instructions that a computer executes to perform a task.<br><b>Programming</b> is writing these instructions in a programming language."),
@@ -186,7 +186,7 @@
               "A <b>program</b> is a sequence of instructions for one task.",
               "The computer executes the instructions in order, one after another.",
               "The computer does exactly what the instructions state. It cannot guess what the programmer meant.",
-              "The text of a program, as the programmer writes it, is the <b>source code</b>.",
+              "The text of a program, as the programmer writes it, is the <b>source code</b>. One instruction of Python source code is a <b>statement</b>: in this chapter, one line.",
             ]),
           ] },
           { kind: "code", part: "Programs and instructions", title: "Example: a task written as instructions", blocks: [
@@ -215,6 +215,7 @@
               ["Speed", "fast, because the machine code runs directly", "slower, because translation is part of the run"],
               ["Languages", "C, C++", "Python"],
             ]),
+            T("Before the first statement runs, the Python interpreter checks the whole file. The subtopic <b>How Python runs a program</b> explains this step."),
           ] },
           { kind: "concept", part: "Python", title: "Python", blocks: [
             L([
@@ -239,6 +240,18 @@
               { c: 'print("Hello, World!")', e: "Output: <code>Hello, World!</code>" },
               { c: 'print("I am learning to program.")', e: "The second statement displays the second line." },
             ]),
+            T("The examples on this site run in the web browser. Lessons 3 and 4 run the same code in VS Code."),
+          ] },
+          { kind: "concept", part: "The first program", title: "Calculations, several values, and comments", blocks: [
+            TB(["Code", "Output", "Rule"], [
+              ["<code>print(8 + 2)</code>", "<code>10</code>", "<code>+</code> adds"],
+              ["<code>print(8 - 2)</code>", "<code>6</code>", "<code>-</code> subtracts"],
+              ["<code>print(8 * 2)</code>", "<code>16</code>", "<code>*</code> multiplies"],
+              ["<code>print(8 / 2)</code>", "<code>4.0</code>", "<code>/</code> divides; the result always has a decimal point"],
+              ['<code>print("Area =", 5 * 3, "m2")</code>', "<code>Area = 15 m2</code>", "commas separate several values; a space is placed between them"],
+              ["<code># Write your program here</code>", "no output", "<code>#</code> starts a comment: Python ignores the rest of the line"],
+            ]),
+            T("Topic 02 explains the operators and <code>print()</code> in full."),
           ] },
           { kind: "code", part: "The first program", title: "Example: an instruction that computes", blocks: [
             EX('print("Room area (m2):")\nprint(5 * 3)', "the area of the room", [
@@ -249,11 +262,11 @@
           { kind: "concept", part: "How Python runs a program", title: "How Python runs a program", blocks: [
             TB(["Step", "What happens"], [
               ["1. Write", "The programmer writes the source code in a <code>.py</code> file."],
-              ["2. Check", "The interpreter reads the file and checks its syntax (the grammar of Python)."],
+              ["2. Check", "The interpreter checks the syntax (the grammar of Python) of the whole file and translates it into an internal form, <b>bytecode</b>."],
               ["3. Execute", "The interpreter executes the statements one at a time, from top to bottom."],
             ]),
             L([
-              "If the syntax is wrong, no statement is executed.",
+              "If the syntax is wrong anywhere in the file, no statement is executed, not even the first one.",
               "If a statement cannot be executed, the program stops at that statement. The statements before it have already run.",
             ]),
           ] },
@@ -269,8 +282,8 @@
               "A program is a sequence of instructions. The computer executes them in order.",
               "The CPU executes only machine language. High-level source code must be translated.",
               "A compiler translates the whole program before it runs. An interpreter translates and executes one statement at a time.",
-              "<code>print()</code> displays a value. Text is written between quotes.",
-              "Python runs with an interpreter: it checks the syntax, executes the statements one at a time, and stops at a statement that fails.",
+              "<code>print()</code> displays one or more values, separated by commas. Text is written between quotes.",
+              "Python runs with an interpreter: it checks the syntax of the whole file, executes the statements one at a time, and stops at a statement that fails.",
             ]),
             NEXT("<b>Course tools</b>. A Python program needs an editor to write it and an interpreter to run it. The next lesson installs both."),
           ] },
@@ -342,16 +355,16 @@
               "Visual Studio Code (VS Code) is a free <b>code editor</b>.",
               "It colours the syntax of the code, marks errors, and completes names while the programmer types.",
               "It opens a project folder and lists its files in the <b>Explorer</b> panel.",
-              "It runs programs in its <b>Terminal</b> panel, where the output appears.",
+              "It runs programs in its <b>Terminal</b> panel. A <b>terminal</b> is a text window in which commands are typed and their output appears.",
               "<b>Extensions</b> add support for languages and tools, such as Python and Jupyter.",
             ]),
             N("Download VS Code from <code>code.visualstudio.com</code> and run the installer with the default options.", "Installation"),
           ] },
           { kind: "concept", part: "Python and Miniconda", title: "Python and Miniconda", blocks: [
             L([
-              "Python 3.10 is the interpreter of this course. It executes <code>.py</code> files.",
-              "Download and install Python 3.10. On Windows, it can also be installed from the Microsoft Store.",
-              "Miniconda 3 installs Python together with <b>conda</b>, a tool that installs and updates packages.",
+              "Python 3.10 is the interpreter of this course. A later version, such as 3.12, also runs the course programs.",
+              "Download Python from <code>python.org</code>. On Windows, select the installer option that adds Python to <b>PATH</b> before selecting Install. PATH is the list of folders in which a terminal looks for commands.",
+              "Miniconda 3 installs Python together with <b>conda</b>, a tool that installs and updates packages. The Python version of Miniconda can be later than 3.10.",
               "A <b>package</b> (library) adds tools to Python, for example NumPy for calculations (Topic 08).",
               "Packages are installed in a terminal: <code>conda install numpy</code> or <code>pip install numpy</code>.",
             ]),
@@ -359,7 +372,8 @@
           { kind: "concept", part: "Python and Miniconda", title: "Checking the installation", blocks: [
             CODE("python --version", null, "in a terminal", "text"),
             L([
-              "The command displays the version of the installed interpreter, for example <code>Python 3.10.11</code>.",
+              "The command displays the version of the installed interpreter, for example <code>Python 3.10.11</code>. Version 3.10 or later is correct.",
+              "On macOS, the command is <code>python3 --version</code>.",
               "If the terminal reports that <code>python</code> is not recognized, Python is not installed or cannot be found.",
               "In that case, install Python again and select the installer option that adds Python to PATH.",
             ]),
@@ -384,7 +398,7 @@
               "VS Code is the editor. It writes, opens, and runs program files.",
               "Python 3.10 is the interpreter. It executes the programs.",
               "Miniconda installs Python and manages packages with conda. pip also installs packages.",
-              "<code>python --version</code> in a terminal checks the installation.",
+              "<code>python --version</code> in a terminal (<code>python3 --version</code> on macOS) checks the installation.",
               "The Python and Jupyter extensions add Python and notebook support to VS Code.",
             ]),
             NEXT("<b>Creating and running a program</b>. With the tools installed, the next lesson creates a project folder and a file, and runs the first program."),
@@ -430,10 +444,10 @@
             T("Complete these steps on your own computer before the next class."),
             L([
               "Install Visual Studio Code.",
-              "Install Python 3.10, or Miniconda 3.",
+              "Install Python 3.10 or later with the PATH option, or Miniconda 3.",
               "Install the Python and Jupyter extensions in VS Code.",
-              "Open a terminal in VS Code (<b>Terminal → New Terminal</b>) and run <code>python --version</code>.",
-              "Result check: the terminal displays <code>Python 3.10</code> followed by a third number.",
+              "Open a terminal in VS Code (<b>Terminal → New Terminal</b>) and run <code>python --version</code> (<code>python3 --version</code> on macOS).",
+              "Result check: the terminal displays <code>Python 3.10</code> or a later version, followed by a third number, for example <code>Python 3.12.8</code>.",
             ], null, true),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -481,11 +495,11 @@
           { kind: "concept", part: "Running a .py file", title: "Running a .py file", blocks: [
             L([
               "Write the code in the file, and save it with Ctrl+S.",
-              "Check the interpreter: the status bar at the bottom right shows the selected Python version. Select it to choose Python 3.10.",
+              "Check the interpreter: the status bar at the bottom right shows the selected Python version. Select it to choose Python 3.10 or the later version that is installed.",
               "Run the file with the ▶ button (<b>Run Python File</b>) at the top right of the editor.",
               "The output appears in the <b>Terminal</b> panel.",
             ], null, true),
-            T("The command <code>python lab00.py</code>, typed in the terminal, runs the file in the same way."),
+            T("The command <code>python lab00.py</code>, typed in the terminal, runs the file in the same way. The terminal must be in the project folder. Otherwise Python reports <code>can't open file '…lab00.py': [Errno 2] No such file or directory</code>."),
           ] },
           { kind: "code", part: "Running a .py file", title: "Example: lab00.py", blocks: [
             EX('print("Lab 00")\nprint("Computer Programming")\nprint("Python is ready.")', "lab00.py", [

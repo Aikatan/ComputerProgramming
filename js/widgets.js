@@ -214,6 +214,11 @@ App.widgets.loopViz = function (cfg) {
    - line  : 0-based index into code; -1 = before the program starts
    - set   : only the variables that change on this step (values accumulate)
    - print : text this step adds to the output (may contain \n)
+   - end   : what follows the print text, as in Python's print(..., end=...).
+             Default "\n": each print is a line of its own. end: " " (or "")
+             keeps the next print on the same line. print: "" alone prints an
+             empty line, like print(). C traces write print as the printf text
+             without its final "\n"; a printf with no "\n" uses end: "".
    ============================================================ */
 function pyLitType(text) {
   const s = String(text).trim();
@@ -228,8 +233,17 @@ function traceVal(x) {
   if (x && typeof x === "object") return { text: String(x.v), type: x.t || pyLitType(x.v) };
   return { text: String(x), type: pyLitType(x) };
 }
+/* The output as the terminal shows it: the text split into lines; a final "\n"
+   only moves the cursor, so it adds no visible line. */
+function outLines(text) {
+  const ls = text.split("\n");
+  if (ls[ls.length - 1] === "") ls.pop();
+  return ls;
+}
+App.outLines = outLines;
 App.traceStates = function (cfg) {
-  const names = [], vars = {}, out = [];
+  const names = [], vars = {};
+  let text = "", maxOut = 0;   // everything printed so far, exactly as written to the terminal
   const states = cfg.steps.map((st) => {
     const changed = [];
     // unset: local variables that disappear when their function returns
@@ -238,11 +252,20 @@ App.traceStates = function (cfg) {
       if (!names.includes(k)) names.push(k);
       vars[k] = traceVal(st.set[k]); changed.push(k);
     });
-    let printed = null;
-    if (st.print != null) { printed = String(st.print); printed.split("\n").forEach((ln) => out.push(ln)); }
-    return { line: st.line, note: st.note || "", vars: Object.assign({}, vars), changed, out: out.slice(), printed };
+    // printed: the text this step writes (without one final "\n"), for the trace table
+    // newFrom: the first output line this step writes to (it may continue a line)
+    let printed = null, newFrom = -1;
+    if (st.print != null || st.end != null) {
+      const add = (st.print != null ? String(st.print) : "") + (st.end != null ? String(st.end) : "\n");
+      newFrom = (text.match(/\n/g) || []).length;
+      text += add;
+      printed = add.endsWith("\n") ? add.slice(0, -1) : add;
+    }
+    const out = outLines(text);
+    maxOut = Math.max(maxOut, out.length);
+    return { line: st.line, note: st.note || "", vars: Object.assign({}, vars), changed, out, printed, newFrom };
   });
-  return { names, states, maxOut: out.length };
+  return { names, states, maxOut };
 };
 
 /* codeTrace - config: a trace object (+ optional title) */
@@ -272,7 +295,9 @@ App.widgets.codeTrace = function (cfg) {
     varEls[nm] = el;
     varsBox.appendChild(el);
   });
+  // shown over the reserved (hidden) slots, so it adds no height
   const noVars = h("div", { class: "ct-empty" }, "No variables yet.");
+  varsBox.insertBefore(noVars, varsBox.firstChild);
   const outBox = h("div", { class: "step-out ct-out" });
   outBox.style.setProperty("--ct-out-lines", Math.max(1, T.maxOut));
   const note = h("div", { class: "ct-note" });
@@ -299,8 +324,9 @@ App.widgets.codeTrace = function (cfg) {
       if (v) { any = true; el._ball.className = "bt-ball bt-" + v.type; el._ball.textContent = v.text; }
     });
     noVars.style.display = any ? "none" : "";
+    noVars.textContent = i === 0 ? "No variables yet." : "No variables.";
     outBox.replaceChildren(...(s.out.length ? s.out.map((ln, k) =>
-      h("div", { class: k >= s.out.length - (s.printed != null ? s.printed.split("\n").length : 0) ? "ct-new" : "" }, ln || " "))
+      h("div", { class: s.newFrom >= 0 && k >= s.newFrom ? "ct-new" : "" }, ln || " "))
       : [h("div", { class: "ct-dim" }, "(no output yet)")]));
     const where = s.line >= 0 ? "Line " + (s.line + 1) + ": " : (i === 0 ? "Start: " : "End: ");
     note.innerHTML = "<b>" + where + "</b>" + s.note;
@@ -323,7 +349,7 @@ App.widgets.codeTrace = function (cfg) {
     h("div", { class: "ct-grid" },
       codeBox,
       h("div", { class: "ct-state" },
-        hasVars ? h("div", { class: "ct-label" }, "Variables") : null, hasVars ? noVars : null, hasVars ? varsBox : null,
+        hasVars ? h("div", { class: "ct-label" }, "Variables") : null, hasVars ? varsBox : null,
         h("div", { class: "ct-label" }, "Output"), outBox,
         side ? note : null, side ? ctrl : null)),
     side ? null : note,
@@ -1187,13 +1213,18 @@ App.widgets.tryFlow = function (cfg) {
      steps:[{ line, mode, status:'open'|'closed', content:[lines],
               flow:'write'|'read', exists, note, out }]
    }
+   - out  : all the output so far, exactly as the program wrote it. A final
+            "\n" only ends the last line; "a\nb\n\n" shows a, b and an empty line
+            (print(f.read()) of "a\nb\n"). Lines new at this step are marked.
+   - line : when a with block ends (status 'closed'), point line at its with
+            statement: that is where Python closes the file.
    ============================================================ */
 App.widgets.fileFlow = function (cfg) {
   const code = cfg.code || [];
   return App.widgets.stepper({
     title: cfg.title || "Watch a file open, fill, and close",
     steps: cfg.steps,
-    render: (s) => {
+    render: (s, i) => {
       const codeBox = h("div", { class: "step-code" });
       code.forEach((ln, idx) => {
         const hl = idx === s.line;
@@ -1212,9 +1243,19 @@ App.widgets.fileFlow = function (cfg) {
         h("span", { class: "ff-status" }, s.status || ""));
       const fileBox = h("div", { class: "ff-file" + (s.flow ? " flow-" + s.flow : "") }, fhead, h("div", { class: "ff-body" }, body));
       const arrow = h("div", { class: "ff-arrow" }, s.flow === "write" ? "write →" : s.flow === "read" ? "← read" : "·");
-      // the output goes under the file, beside the program, so that the slide stays short
+      // the output goes beside the file (under it when there is no room), next to the program,
+      // so that the slide stays short
+      let outBox = null;
+      if (s.out != null) {
+        const lines = outLines(String(s.out));
+        const prevOut = i > 0 && cfg.steps[i - 1].out != null ? String(cfg.steps[i - 1].out) : "";
+        const same = prevOut !== "" && String(s.out).startsWith(prevOut) ? outLines(prevOut).length : 0;
+        outBox = h("div", { class: "step-out ct-out ff-out" }, ...(lines.length
+          ? lines.map((ln, k) => h("div", { class: k >= same ? "ct-new" : "" }, ln || " "))
+          : [h("div", { class: "ct-dim" }, "(no output yet)")]));
+      }
       const side = h("div", { class: "ff-side" }, fileBox,
-        s.out != null ? h("div", null, h("div", { class: "widget-title" }, "Output"), h("div", { class: "step-out" }, s.out)) : null);
+        outBox ? h("div", { class: "ff-outwrap" }, h("div", { class: "widget-title" }, "Output"), outBox) : null);
       const cols = h("div", { class: "ff-cols" },
         h("div", { class: "ff-prog" }, h("div", { class: "widget-title" }, "Program"), codeBox),
         arrow, side);
@@ -1350,19 +1391,34 @@ App.widgets.csvFlow = function (cfg) {
   const steps = [];
   steps.push({ phase: "write", tableActive: "header", textLines: [header], textActive: 0, arrow: "write", note: "writerow(header): the column names become one comma-separated line." });
   rows.forEach((r, i) => steps.push({ phase: "write", tableActive: i, textLines: [header].concat(dataLines.slice(0, i + 1)), textActive: i + 1, arrow: "write", note: "writerow(row " + i + "): its values join with commas." }));
-  allLines.forEach((ln, j) => steps.push({ phase: "read", textLines: allLines, textActive: j, arrow: "read", readRows: j, tableActive: j === 0 ? "header" : j - 1, note: j === 0 ? "reader reads the header line, split on commas." : "reader splits line " + j + " back into a list of values." }));
+  allLines.forEach((ln, j) => {
+    const num = j ? rows[j - 1].find((v) => typeof v === "number") : undefined;
+    steps.push({ phase: "read", textLines: allLines, textActive: j, arrow: "read", readRows: j, note: j === 0
+      ? "reader splits the header line at the commas: a list of strings."
+      : "reader splits line " + (j + 1) + " into a list of <b>strings</b>." +
+        (num !== undefined ? " The number " + num + " is now the text <code>'" + num + "'</code>." : "") });
+  });
+
+  // csv.reader gives every value back as a str: the lines as Python shows the lists
+  const strList = (vals, cur) => h("div", { class: "cv-list" + (cur ? " cur" : "") }, "[",
+    ...vals.flatMap((v, k) => (k ? [", "] : []).concat([h("span", { class: "cv-str bt-str" }, "'" + String(v) + "'")])), "]");
 
   return App.widgets.stepper({
     title: cfg.title || "CSV: a table becomes text, and back",
     steps,
     render: (s) => {
-      const tbl = h("table", { class: "dftbl" });
-      tbl.appendChild(h("tr", null, ...columns.map((c) => h("th", { class: s.tableActive === "header" ? "df-test" : "" }, c))));
-      const nRows = s.phase === "read" ? s.readRows : rows.length;
-      for (let i = 0; i < nRows; i++) {
-        const tr = h("tr", { class: s.tableActive === i ? "df-test" : "" });
-        columns.forEach((c, k) => tr.appendChild(h("td", null, String(rows[i][k]))));
-        tbl.appendChild(tr);
+      let tbl;
+      if (s.phase === "read") {
+        tbl = h("div", { class: "cv-lists" });
+        for (let j = 0; j <= s.readRows; j++) tbl.appendChild(strList(j === 0 ? columns : rows[j - 1], j === s.readRows));
+      } else {
+        tbl = h("table", { class: "dftbl" });
+        tbl.appendChild(h("tr", null, ...columns.map((c) => h("th", { class: s.tableActive === "header" ? "df-test" : "" }, c))));
+        for (let i = 0; i < rows.length; i++) {
+          const tr = h("tr", { class: s.tableActive === i ? "df-test" : "" });
+          columns.forEach((c, k) => tr.appendChild(h("td", null, String(rows[i][k]))));
+          tbl.appendChild(tr);
+        }
       }
       const txt = h("div", { class: "ff-body csvtext" });
       s.textLines.forEach((ln, idx) => txt.appendChild(h("div", { class: "ff-line" + (idx === s.textActive ? " cur" : "") }, ln)));
@@ -1370,7 +1426,7 @@ App.widgets.csvFlow = function (cfg) {
         h("div", { class: "ff-fhead" }, h("span", { class: "ff-dot open" }), h("span", { class: "mono" }, cfg.filename || "data.csv")), txt);
       const arrow = h("div", { class: "ff-arrow" }, s.arrow === "write" ? "write →" : "← read");
       const cols = h("div", { class: "ff-cols" },
-        h("div", null, h("div", { class: "widget-title" }, s.phase === "write" ? "Table in memory" : "Table rebuilt from text"), tbl),
+        h("div", { class: "cv-side" }, h("div", { class: "widget-title" }, s.phase === "write" ? "Table in memory" : "Rows read back by csv.reader"), tbl),
         arrow, fileBox);
       return h("div", { class: "fileflow" }, cols, h("div", { class: "tf-note", html: s.note || "" }));
     },
@@ -1501,17 +1557,59 @@ App.widgets.arrViz = function (cfg) {
    int=blue, float=teal, str=amber, bool=purple, None=grey.
    Used by boxTrain (lists/arrays) and dictTrain (dicts).
    ============================================================ */
+/* A value in a config: a JS number/string/boolean/null, an array (a Python list),
+   { tuple:[...] } (a tuple, e.g. what popitem() returns), or { v:"text", t:"type" }
+   for anything else (the text is shown as it is). */
 function btType(v) {
   if (typeof v === "boolean") return "bool";
   if (v === null || v === undefined) return "none";
   if (typeof v === "number") return Number.isInteger(v) ? "int" : "float";
+  if (Array.isArray(v)) return "list";
+  if (typeof v === "object" && Array.isArray(v.tuple)) return "tuple";
+  if (typeof v === "object" && "v" in v) return v.t || pyLitType(v.v);
   return "str";
 }
 function btLabel(v) {
   if (v === null || v === undefined) return "None";
   if (typeof v === "boolean") return v ? "True" : "False";
   if (typeof v === "string") return "'" + v + "'";
+  if (Array.isArray(v)) return "[" + v.map(btLabel).join(", ") + "]";
+  if (typeof v === "object" && Array.isArray(v.tuple))
+    return "(" + v.tuple.map(btLabel).join(", ") + (v.tuple.length === 1 ? ",)" : ")");
+  if (typeof v === "object" && "v" in v) return String(v.v);
   return String(v);
+}
+/* A value ball: a list or tuple is a frame holding one small ball per element,
+   each coloured by its own type ([4, 5] is a list of two ints, not a str). */
+function btBall(v, cls) {
+  const box = h("div", { class: (cls || "bt-ball") + " bt-" + btType(v) });
+  const seq = Array.isArray(v) ? v : v && typeof v === "object" && Array.isArray(v.tuple) ? v.tuple : null;
+  if (!seq) { box.textContent = btLabel(v); return box; }
+  const inner = (x) => h("span", { class: "bt-in bt-" + btType(x) }, btLabel(x));   // a deeper list: its text
+  const tuple = !Array.isArray(v);
+  box.appendChild(document.createTextNode(tuple ? "(" : "["));
+  seq.forEach((x, k) => { if (k) box.appendChild(document.createTextNode(", ")); box.appendChild(inner(x)); });
+  box.appendChild(document.createTextNode(tuple ? (seq.length === 1 ? ",)" : ")") : "]"));
+  return box;
+}
+
+/* Shared by boxTrain and dictTrain: the variable boxes (assign:{name, value},
+   kept from their step on) and, on its own step only, the value the operation
+   returns (returned: 220, or { tuple:["phase", 3] } for popitem()). */
+function btVarsRow(steps, i) {
+  const assigns = {};
+  for (let k = 0; k <= i; k++) { const a = steps[k].assign; if (a) assigns[a.name] = { value: a.value, set: k === i }; }
+  const names = Object.keys(assigns), ret = steps[i].returned;
+  if (!names.length && ret === undefined) return null;
+  const vars = h("div", { class: "bt-vars" });
+  names.forEach((nm) => {
+    const a = assigns[nm];
+    vars.appendChild(h("div", { class: "bt-var" + (a.set ? " bt-var-set" : "") },
+      h("div", { class: "bt-varname" }, nm), btBall(a.value)));
+  });
+  if (ret !== undefined)
+    vars.appendChild(h("div", { class: "bt-var bt-retbox" }, h("div", { class: "bt-varname" }, "returned"), btBall(ret)));
+  return vars;
 }
 
 /* Shared: the whole program on the right, current line marked (so the
@@ -1545,7 +1643,9 @@ function btTwoCol(left, code, line) {
        lift:[i,...],           // cars to lift+pulse -> "we read it"
        flash:[i,...],          // cars whose ball changed -> color flash
        leave:{value},          // a car rolling off the end (pop/remove) -> ghost
-       returned                // value returned by the op, shown in a tray
+       assign:{name, value},   // a variable box, kept from this step on
+       returned                // value the op returns, shown on this step only
+                               // (a nested list is [4, 5]; a tuple is { tuple:[...] })
      }]
    }
    ============================================================ */
@@ -1569,7 +1669,7 @@ App.widgets.boxTrain = function (cfg) {
         if (s.lift && s.lift.includes(idx)) cls.push("bt-lift");
         if (s.flash && s.flash.includes(idx)) cls.push("bt-flash");
         const car = h("div", { class: cls.join(" ") },
-          h("div", { class: "bt-ball bt-" + btType(v) }, btLabel(v)),
+          btBall(v),
           h("div", { class: "bt-odo" },
             h("span", { class: "bt-ix" }, "[" + idx + "]"),
             h("span", { class: "bt-nix" }, "[" + (idx - n) + "]")));
@@ -1581,25 +1681,14 @@ App.widgets.boxTrain = function (cfg) {
       if (s.leave) {
         const v = s.leave.value;
         track.appendChild(h("div", { class: "bt-car bt-leave" },
-          h("div", { class: "bt-ball bt-" + btType(v) }, btLabel(v)),
+          btBall(v),
           h("div", { class: "bt-odo" }, h("span", { class: "bt-ix" }, "off"))));
       }
       left.appendChild(track);
 
       // variable boxes: values returned into names (a = nums[1], b = nums.pop()), persisting
-      const assigns = {};
-      for (let k = 0; k <= i; k++) { const a = cfg.steps[k].assign; if (a) assigns[a.name] = { value: a.value, set: k === i }; }
-      const names = Object.keys(assigns);
-      if (names.length) {
-        const vars = h("div", { class: "bt-vars" });
-        names.forEach((nm) => {
-          const a = assigns[nm];
-          vars.appendChild(h("div", { class: "bt-var" + (a.set ? " bt-var-set" : "") },
-            h("div", { class: "bt-varname" }, nm),
-            h("div", { class: "bt-ball bt-" + btType(a.value) }, btLabel(a.value))));
-        });
-        left.appendChild(vars);
-      }
+      const vars = btVarsRow(cfg.steps, i);
+      if (vars) left.appendChild(vars);
       if (s.caption) left.appendChild(h("div", { class: "bt-cap", html: s.caption }));
 
       /* RIGHT: the whole program, current line marked (see past and upcoming lines) */
@@ -1628,7 +1717,9 @@ App.widgets.boxTrain = function (cfg) {
        flash:[k,...],           // keys whose value just changed
        probe:k,                 // key we jumped straight to (lookup)
        miss:k,                  // a missing key -> ghost locker appended
-       returned                 // value returned, shown in a tray
+       assign:{name, value},    // a variable box, kept from this step on
+       returned                 // value returned, shown on this step only, labelled
+                                // "returned" (popitem(): { tuple:["phase", 3] })
      }]
    }
    ============================================================ */
@@ -1651,7 +1742,7 @@ App.widgets.dictTrain = function (cfg) {
         if (s.probe === k) cls.push("dt-probe");
         wall.appendChild(h("div", { class: cls.join(" ") },
           h("div", { class: "dt-key" }, "'" + k + "'"),
-          h("div", { class: "dt-ball bt-" + btType(v) }, btLabel(v))));
+          btBall(v, "dt-ball")));
       });
       if (!pairs.length && !s.miss) wall.appendChild(h("div", { class: "dt-locker dt-empty" }, "{ }"));
       if (s.miss)
@@ -1660,19 +1751,8 @@ App.widgets.dictTrain = function (cfg) {
           h("div", { class: "dt-ball bt-none" }, "?")));
       left.appendChild(wall);
 
-      const assigns = {};
-      for (let k = 0; k <= i; k++) { const a = cfg.steps[k].assign; if (a) assigns[a.name] = { value: a.value, set: k === i }; }
-      const names = Object.keys(assigns);
-      if (names.length) {
-        const vars = h("div", { class: "bt-vars" });
-        names.forEach((nm) => {
-          const a = assigns[nm];
-          vars.appendChild(h("div", { class: "bt-var" + (a.set ? " bt-var-set" : "") },
-            h("div", { class: "bt-varname" }, nm),
-            h("div", { class: "bt-ball bt-" + btType(a.value) }, btLabel(a.value))));
-        });
-        left.appendChild(vars);
-      }
+      const vars = btVarsRow(cfg.steps, i);
+      if (vars) left.appendChild(vars);
       if (s.caption) left.appendChild(h("div", { class: "bt-cap", html: s.caption }));
 
       /* RIGHT: the whole program, current line marked */
@@ -1770,101 +1850,159 @@ App.widgets.aliasViz = function (cfg) {
 
 /* ============================================================
    searchViz - linear search and binary search on the same sorted
-   data, advanced one comparison per step so their step counts can be
-   compared directly. Linear scans left to right; binary keeps a
+   data, advanced one comparison per step so their comparison counts
+   can be compared directly. Linear scans left to right; binary keeps a
    low..high range and checks the middle, discarding half each step.
+   Each side shows the index of every cell, a one-line note per step,
+   and its result: the index, or -1 when the target is not in the data
+   (linear: after checking every element; binary: when low > high).
+   Binary also marks low, mid and high under the cells.
    config: { title, data:[sorted numbers], target }
    ============================================================ */
 App.widgets.searchViz = function (cfg) {
-  const data = cfg.data, target = cfg.target;
+  const data = cfg.data, target = cfg.target, n = data.length;
+  // linear: one event per comparison, then "return -1" if the loop ends without a match
   const lin = [];
-  for (let i = 0; i < data.length; i++) { lin.push(i); if (data[i] === target) break; }
+  for (let i = 0; i < n; i++) {
+    const eq = data[i] === target;
+    lin.push({ at: i, cmp: i + 1, found: eq ? i : -1, done: eq,
+      note: "i = " + i + " · data[" + i + "] = " + data[i] + " · " + data[i] + " == " + target + " is " +
+        (eq ? "True → return " + i : "False → " + (i < n - 1 ? "next i" : "the loop ends")) });
+    if (eq) break;
+  }
+  if (!lin.length || !lin[lin.length - 1].done)
+    lin.push({ at: n, cmp: n, found: -1, done: true, note: "every element was checked: no " + target + " → return -1" });
+  // binary: one event per comparison with data[mid], then "return -1" when low > high
   const bin = [];
-  { let lo = 0, hi = data.length - 1;
-    while (lo <= hi) { const mid = (lo + hi) >> 1; bin.push({ lo, hi, mid });
-      if (data[mid] === target) break; else if (data[mid] < target) lo = mid + 1; else hi = mid - 1; } }
+  { let lo = 0, hi = n - 1, cmp = 0, found = false;
+    while (lo <= hi) {
+      const mid = Math.floor((lo + hi) / 2), v = data[mid]; cmp++;
+      const head = "mid = (" + lo + "+" + hi + ")//2 = " + mid + " · data[" + mid + "] = " + v;
+      if (v === target) { bin.push({ lo, hi, mid, cmp, found: mid, done: true, note: head + " == " + target + " → return " + mid }); found = true; break; }
+      if (v < target) { bin.push({ lo, hi, mid, cmp, found: -1, note: head + " < " + target + " → low = " + (mid + 1) }); lo = mid + 1; }
+      else { bin.push({ lo, hi, mid, cmp, found: -1, note: head + " > " + target + " → high = " + (mid - 1) }); hi = mid - 1; }
+    }
+    if (!found) bin.push({ lo, hi, mid: -1, cmp, found: -1, done: true, note: "low = " + lo + " > high = " + hi + ": no element is left → return -1" });
+  }
+  // marker labels per index; low can pass the end (n) and high the start (-1): extra empty slots
+  const marksOf = (e) => {
+    const m = {};
+    const add = (idx, name) => { (m[idx] = m[idx] || []).push(name); };
+    add(e.lo, "low"); if (e.mid >= 0) add(e.mid, "mid"); add(e.hi, "high");
+    return m;
+  };
+  const padL = bin.some((e) => e.hi < 0), padR = bin.some((e) => e.lo > n - 1);
+  const stack = Math.max(1, ...bin.map((e) => Math.max(...Object.values(marksOf(e)).map((a) => a.length))));
+  const slots = [];
+  if (padL) slots.push(-1);
+  for (let i = 0; i < n; i++) slots.push(i);
+  if (padR) slots.push(n);
   const total = Math.max(lin.length, bin.length);
   const steps = []; for (let k = 0; k < total; k++) steps.push({ k });
 
-  function section(name, big, count, row) {
+  function row(cellCls, marks) {
+    const r = h("div", { class: "sv-row" });
+    slots.forEach((idx) => {
+      const ghost = idx < 0 || idx >= n;
+      const col = h("div", { class: "sv-col" + (ghost ? " sv-ghost" : "") },
+        h("div", { class: ghost ? "sv-cell" : cellCls(idx) }, ghost ? "\xa0" : String(data[idx])),
+        h("div", { class: "sv-ix" }, ghost ? "\xa0" : String(idx)));
+      if (marks) {
+        const mk = h("div", { class: "sv-mk" }, ...(marks[idx] || []).map((m) => h("span", { class: "sv-m-" + m }, m)));
+        mk.style.setProperty("--sv-mk", stack);
+        col.appendChild(mk);
+      }
+      r.appendChild(col);
+    });
+    return r;
+  }
+  function section(name, big, rowEl, e) {
     return h("div", { class: "sv-sect" },
-      h("div", { class: "sv-label" }, name + " ",
-        h("span", { class: "sv-big" }, big), h("span", { class: "sv-count" }, "steps: " + count)), row);
+      h("div", { class: "sv-side" }, h("div", { class: "sv-name" }, name), h("div", { class: "sv-big" }, big)),
+      rowEl,
+      h("div", { class: "sv-stat" },
+        h("div", { class: "sv-count" }, "comparisons: " + e.cmp),
+        h("div", { class: "sv-res" + (e.done ? (e.found >= 0 ? " sv-yes" : " sv-no") : "") },
+          e.done ? (e.found >= 0 ? "found: " + e.found : "not found: -1") : "\xa0")),
+      h("div", { class: "sv-note" }, e.note));
   }
 
   return App.widgets.stepper({
-    title: cfg.title || "Linear vs binary search",
+    title: cfg.title || "Linear vs binary search for " + target,   // the title names the target
     steps,
     render: (s) => {
       const k = s.k, out = h("div", { class: "sv-wrap" });
-      out.appendChild(h("div", { class: "sv-head" }, "target = ", h("b", null, String(target))));
-
-      const li = Math.min(k, lin.length - 1), linActive = lin[li], linDone = k >= lin.length - 1;
-      const linRow = h("div", { class: "sv-row" });
-      data.forEach((v, idx) => {
-        let cls = "sv-cell";
-        if (linDone && idx === lin[lin.length - 1]) cls += " sv-found";
-        else if (idx === linActive) cls += " sv-active";
-        else if (idx < linActive) cls += " sv-checked";
-        linRow.appendChild(h("div", { class: cls }, String(v)));
-      });
-      out.appendChild(section("Linear", "O(n)", Math.min(k + 1, lin.length), linRow));
-
-      const bi = Math.min(k, bin.length - 1), st = bin[bi], binDone = k >= bin.length - 1;
-      const binRow = h("div", { class: "sv-row" });
-      data.forEach((v, idx) => {
-        let cls = "sv-cell";
-        if (binDone && idx === bin[bin.length - 1].mid) cls += " sv-found";
-        else if (idx < st.lo || idx > st.hi) cls += " sv-out";
-        else if (idx === st.mid) cls += " sv-active";
-        binRow.appendChild(h("div", { class: cls }, String(v)));
-      });
-      out.appendChild(section("Binary", "O(log n)", Math.min(k + 1, bin.length), binRow));
-
-      if (k === total - 1)
-        out.appendChild(h("div", { class: "bt-cap" }, "Result - linear: " + lin.length + " steps, binary: " + bin.length + " steps"));
+      const L = lin[Math.min(k, lin.length - 1)];
+      out.appendChild(section("Linear", "O(n)", row((idx) =>
+        "sv-cell" + (idx === L.found ? " sv-found" : idx === L.at ? " sv-active" : idx < L.at ? " sv-checked" : "")), L));
+      const B = bin[Math.min(k, bin.length - 1)];
+      out.appendChild(section("Binary", "O(log n)", row((idx) =>
+        "sv-cell" + (idx === B.found ? " sv-found" : idx < B.lo || idx > B.hi ? " sv-out" : idx === B.mid ? " sv-active" : ""), marksOf(B)), B));
       return out;
     },
   });
 };
 
 /* ============================================================
-   bubbleViz - bubble sort as bars (height = value). Each step is one
-   comparison of a neighbouring pair; a swap is highlighted; after
-   each pass the largest remaining value settles at the end and locks.
+   bubbleViz - bubble sort as bars (height = value). Each comparison of
+   a neighbouring pair is one frame ("compare": the pair, j, the test and
+   its result); a swap adds a second frame ("after swap": the bars
+   exchanged, the same pair still marked). After the last comparison of a
+   pass, an "end of pass" frame locks the bar that is now in its final
+   place. Every frame names the pass and j.
    config: { title, data:[numbers] }
    ============================================================ */
 App.widgets.bubbleViz = function (cfg) {
   const src = cfg.data, n = src.length, max = Math.max.apply(null, src);
+  const passes = n - 1;
   const a = src.slice(), trace = [];
-  let comparisons = 0;
-  for (let i = 0; i < n - 1; i++) {
+  const list = (arr) => "[" + arr.join(", ") + "]";
+  let comparisons = 0, swaps = 0;
+  for (let i = 0; i < passes; i++) {
+    const pass = "Pass " + (i + 1) + " of " + passes;
     for (let j = 0; j < n - 1 - i; j++) {
       comparisons++;
       const swap = a[j] > a[j + 1];
-      trace.push({ arr: a.slice(), j, swap, lockedFrom: n - i, comparisons });
-      if (swap) { const tmp = a[j]; a[j] = a[j + 1]; a[j + 1] = tmp; }
+      trace.push({ arr: a.slice(), j, kind: "cmp", lockedFrom: n - i, comparisons, swaps,
+        note: pass + " · j = " + j + " · a[" + j + "] > a[" + (j + 1) + "]: " + a[j] + " > " + a[j + 1] +
+          " is " + (swap ? "True → swap" : "False → no swap") });
+      if (swap) {
+        const tmp = a[j]; a[j] = a[j + 1]; a[j + 1] = tmp; swaps++;
+        trace.push({ arr: a.slice(), j, kind: "swapped", lockedFrom: n - i, comparisons, swaps,
+          note: pass + " · j = " + j + " · swapped: a[" + j + "] = " + a[j] + ", a[" + (j + 1) + "] = " + a[j + 1] });
+      }
     }
+    const last = i === passes - 1, k = n - 1 - i;
+    trace.push({ arr: a.slice(), j: -1, kind: "pass", lockedFrom: last ? 0 : k, comparisons, swaps,
+      note: last
+        ? "End of pass " + (i + 1) + " of " + passes + ": " + a[k] + " and " + a[0] + " are in place. Sorted: " + list(a)
+        : "End of pass " + (i + 1) + " of " + passes + ": " + a[k] + " is in its final place" });
   }
-  trace.push({ arr: a.slice(), j: -1, swap: false, lockedFrom: 0, comparisons, done: true });
+  if (!trace.length) trace.push({ arr: a.slice(), j: -1, kind: "pass", lockedFrom: 0, comparisons, swaps, note: "One element: already sorted" });
 
   return App.widgets.stepper({
     title: cfg.title || "Bubble sort",
     steps: trace,
     render: (s) => {
-      const out = h("div", { class: "bv-wrap" });
-      const bars = h("div", { class: "bv-bars" });
+      const bars = h("div", { class: "bv-bars" }), ix = h("div", { class: "bv-ix" });
       s.arr.forEach((v, idx) => {
+        const pair = s.j >= 0 && (idx === s.j || idx === s.j + 1);
         let cls = "bv-bar";
         if (idx >= s.lockedFrom) cls += " bv-locked";
-        else if (idx === s.j || idx === s.j + 1) cls += s.swap ? " bv-swap" : " bv-cmp";
+        else if (pair) cls += s.kind === "swapped" ? " bv-swap" : " bv-cmp";
+        // after a swap, the two bars slide into their new places
+        if (s.kind === "swapped" && pair) cls += idx === s.j ? " bv-from-r" : " bv-from-l";
         bars.appendChild(h("div", { class: cls, style: "height:" + (v / max * 100) + "%" },
           h("span", { class: "bv-val" }, String(v))));
+        ix.appendChild(h("div", { class: "bv-i" + (pair ? " bv-i-on" : "") }, "a[" + idx + "]"));
       });
-      out.appendChild(bars);
-      const state = s.done ? "sorted" : s.swap ? "swap (left > right)" : "in order, no swap";
-      out.appendChild(h("div", { class: "bv-info" }, "comparisons: " + s.comparisons + " · " + state));
-      return out;
+      const side = h("div", { class: "bv-side" },
+        h("div", null, "a = " + list(s.arr)),
+        h("div", null, "comparisons: " + s.comparisons),
+        h("div", null, "swaps: " + s.swaps));
+      return h("div", { class: "bv-wrap" },
+        h("div", { class: "bv-main" }, h("div", { class: "bv-plot" }, bars, ix), side),
+        h("div", { class: "bv-info" }, s.note));
     },
   });
 };
@@ -1939,18 +2077,28 @@ App.widgets.powerToggle = function (cfg) {
 };
 
 /* ============================================================
-   seekViz - reading a block. HDD moves a head to the track, waits for
-   the sector to rotate under it, then reads (milliseconds). SSD
-   addresses the cell electronically and reads at once (microseconds).
-   config: { title }
+   seekViz - reading a block. HDD moves a head to the track (seek),
+   waits for the sector to rotate under it (rotational latency), then
+   reads (milliseconds). SSD addresses the cell electronically: it is
+   done at step 1, while the HDD is still seeking.
+   config: { title, seek: 9, latency: 4, read: 0, ssd: 0.1 }   (ms; defaults shown)
+     The HDD total is the access time, seek + latency, as the lesson defines
+     it; read (> 0) adds a transfer time for the sector after the wait.
    ============================================================ */
 App.widgets.seekViz = function (cfg) {
+  const num = (v, d) => (typeof v === "number" && isFinite(v) ? v : d);
+  const seek = num(cfg.seek, 9), lat = num(cfg.latency, 4), read = num(cfg.read, 0), ssd = num(cfg.ssd, 0.1);
+  const f = (x) => String(Math.round(x * 100) / 100);        // 6, 10, 13.1, 0.1
+  const acc = seek + lat, total = acc + read;
   const cx = 95, cy = 95;
   const pt = (r, aDeg) => { const a = aDeg * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
   const phases = [
-    { label: "HDD: move the head to the track", ms: 9.0, headR: 80, secA: 150, read: false },
-    { label: "HDD: wait for the sector to arrive", ms: 13.0, headR: 45, secA: 20, read: false },
-    { label: "HDD: read the sector", ms: 13.1, headR: 45, secA: -90, read: true },
+    { time: f(seek) + " ms", headR: 80, secA: 150, read: false,
+      label: "HDD: the head moves to the track (seek: " + f(seek) + " ms). SSD: already done." },
+    { time: f(seek) + " + " + f(lat) + " = " + f(acc) + " ms", headR: 45, secA: 20, read: false,
+      label: "HDD: it waits for the sector to rotate under the head (latency: " + f(lat) + " ms)." },
+    { time: (read > 0 ? f(acc) + " + " + f(read) + " = " + f(total) : f(acc)) + " ms · done", headR: 45, secA: -90, read: true,
+      label: "HDD: the sector is read after " + f(total) + " ms" + (ssd > 0 ? ": " + f(Math.round(total / ssd)) + " × the SSD's " + f(ssd) + " ms." : ".") },
   ];
   return App.widgets.stepper({
     title: "title" in cfg ? cfg.title : "Reading a block: HDD vs SSD",   // "" hides it
@@ -1972,10 +2120,10 @@ App.widgets.seekViz = function (cfg) {
         cells += '<div class="sk-ssd-cell' + (r === 1 && c === 2 ? " sk-hit" : "") + '"></div>';
       return '<div class="sk-grid">' +
         '<div class="sk-panel"><div class="sk-ptitle">HDD - moving parts</div>' + hdd +
-        '<div class="sk-time">' + s.ms.toFixed(1) + ' ms</div></div>' +
+        '<div class="sk-time">' + s.time + '</div></div>' +
         '<div class="sk-panel"><div class="sk-ptitle">SSD - no moving parts</div>' +
-        '<div class="sk-ssd">' + cells + '</div><div class="sk-time">0.1 ms</div></div>' +
-        '</div><div class="bt-cap">' + s.label + ' &nbsp;·&nbsp; SSD: the cell is read directly.</div>';
+        '<div class="sk-ssd">' + cells + '</div><div class="sk-time">' + f(ssd) + ' ms · done</div></div>' +
+        '</div><div class="bt-cap">' + s.label + '</div>';
     },
   });
 };
@@ -2107,11 +2255,10 @@ App.widgets.branchViz = function (cfg) {
 App.widgets.callStack = function (cfg) {
   const code = cfg.code || [];
   return App.widgets.stepper({
-    title: cfg.title || "The call stack",
+    title: (cfg.title ? cfg.title + " · " : "") + "the call stack, top = most recent",
     steps: cfg.steps,
     render: (s) => {
       const left = h("div", { class: "cs-wrap" });
-      left.appendChild(h("div", { class: "cs-head" }, "Call stack - top = most recent"));
       const stack = h("div", { class: "cs-stack" });
       const frames = s.frames || [];
       // one line per frame, so that a deep stack still fits beside the code
@@ -2253,14 +2400,24 @@ App.widgets.pyToC = function (cfg) {
 
 /* ============================================================
    jsonFlow - a dict becomes JSON text (dump) and back (load). Mirrors
-   csvFlow so JSON reads as its own complete lesson.
-   config: { title, data:{...} }
+   csvFlow so JSON reads as its own complete lesson. The text is what
+   Python's json.dumps writes: ", " and ": " separators, double quotes,
+   true/false/null for True/False/None, non-ASCII as \uXXXX.
+   config: { title, data:{...} }   (JS values: true/false/null are Python's True/False/None)
    ============================================================ */
+function pyJsonDumps(v) {
+  if (v === null || v === undefined) return "null";
+  if (typeof v === "boolean") return v ? "true" : "false";
+  if (typeof v === "number") return isFinite(v) ? String(v) : (isNaN(v) ? "NaN" : v > 0 ? "Infinity" : "-Infinity");
+  if (typeof v === "string")
+    return JSON.stringify(v).replace(/[^\x00-\x7f]/g, (c) => "\\u" + c.charCodeAt(0).toString(16).padStart(4, "0"));
+  if (Array.isArray(v)) return "[" + v.map(pyJsonDumps).join(", ") + "]";
+  return "{" + Object.keys(v).map((k) => pyJsonDumps(String(k)) + ": " + pyJsonDumps(v[k])).join(", ") + "}";
+}
+App.pyJsonDumps = pyJsonDumps;
 App.widgets.jsonFlow = function (cfg) {
   const data = cfg.data || { name: "Alice", age: 30, skills: ["py", "sql"] };
-  const text = JSON.stringify(data);
-  const disp = (v) => Array.isArray(v) ? "[" + v.map(btLabel).join(", ") + "]" : btLabel(v);
-  const typ = (v) => Array.isArray(v) ? "str" : btType(v);
+  const text = pyJsonDumps(data);
   const steps = [
     { dir: "", flashDict: true, note: "A Python <b>dict</b> in memory." },
     { dir: "dump", flashText: true, note: "<code>json.dump(data, f)</code> writes the dict as <b>text</b>." },
@@ -2274,10 +2431,10 @@ App.widgets.jsonFlow = function (cfg) {
       Object.keys(data).forEach((k) => wall.appendChild(
         h("div", { class: "dt-locker" + (s.flashDict ? " dt-flash" : "") },
           h("div", { class: "dt-key" }, "'" + k + "'"),
-          h("div", { class: "dt-ball bt-" + typ(data[k]) }, disp(data[k])))));
+          btBall(data[k], "dt-ball"))));
       const arrow = h("div", { class: "jf-arrow" }, s.dir === "dump" ? "dump →" : s.dir === "load" ? "← load" : "·");
-      const textBox = h("div", { class: "bt-code" + (s.flashText ? " bt-cur" : "") },
-        h("div", { class: "bt-codeline" }, h("span", { class: "jf-file" }, "data.json: "), h("span", { html: App.esc(text) })));
+      const textBox = h("div", { class: "bt-code jf-text" + (s.flashText ? " bt-cur" : "") },
+        h("div", { class: "jf-file" }, "data.json"), h("div", { class: "jf-json" }, text));
       return h("div", null,
         h("div", { class: "jf-grid" }, wall, arrow, textBox),
         h("div", { class: "bt-cap", html: s.note }));

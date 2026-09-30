@@ -138,7 +138,7 @@
         title: "Strings: more operations",
         sub: "Multi-line strings, slicing in both directions, and methods for processing text.",
         slides: "06:4–12",
-        keywords: "string triple quotes slicing reverse strip find count startswith endswith isdigit loop",
+        keywords: "string triple quotes slicing reverse strip find count startswith endswith isdigit case-sensitive chaining loop vowels",
         deck: [
           { kind: "overview", title: "Strings: more operations", blocks: [
             T("Topic 02 introduced strings: indexing, slicing, <code>len()</code>, <code>+</code>, <code>*</code>, <code>in</code>, <code>upper()</code>, <code>lower()</code>, <code>replace()</code>, and immutability. This lesson adds the operations that process text data."),
@@ -176,12 +176,13 @@
               ["<code>s.find(x)</code>", "<code>-1</code> when x is not found", "<code>\"sensor\".find(\"x\")</code> → <code>-1</code>"],
             ]),
             T("<code>lstrip()</code> and <code>rstrip()</code> remove spaces only at the start or only at the end."),
+            T("<code>find()</code> is case-sensitive: <code>\"Sensor\".find(\"s\")</code> → <code>3</code>, because <code>\"S\"</code> and <code>\"s\"</code> are different characters."),
           ] },
           { kind: "code", part: "strip() and find()", title: "Example: cleaning a sensor message", blocks: [
             EX('msg = "  TEMP=25  "\nclean = msg.strip()\npos = clean.find("=")\nprint(clean, pos)\nprint(clean[pos + 1:])\nprint(clean.find("#"))', "strip, find, then slice", [
               { c: "msg.strip()", e: "<code>TEMP=25</code>: the spaces are removed" },
               { c: "clean[pos + 1:]", e: "\"=\" is at index 4; the value starts after it: <code>25</code>" },
-              { c: 'find("#")', e: "Not found: <code>-1</code>" },
+              { c: 'find("#")', e: "Not found: <code>-1</code>. Check <code>pos != -1</code> first: with -1, the slice gives the whole string." },
             ]),
           ] },
           { kind: "concept", part: "count() and checking methods", title: "count() and checking methods", blocks: [
@@ -191,7 +192,8 @@
               ["<code>s.endswith(x)</code>", "True if s ends with x"],
               ["<code>s.isdigit()</code>", "True if s is not empty and contains only digits"],
             ]),
-            T("String methods return new values. The original string does not change."),
+            T("String methods return new values. The original string does not change. Methods can be chained: in <code>msg.strip().upper()</code>, <code>upper()</code> is applied to the result of <code>strip()</code>."),
+            T("<code>in</code>, <code>==</code>, <code>count()</code>, <code>startswith()</code>, and <code>endswith()</code> are case-sensitive: <code>\"pump\" in \"PUMP-2026\"</code> is <code>False</code>. Apply <code>lower()</code> first to ignore the case."),
           ] },
           { kind: "code", part: "count() and checking methods", title: "Example: checking a device code", blocks: [
             EX('code = "PUMP-2026-07"\nprint(code.count("-"))\nprint(code.startswith("PUMP"))\nprint(code.endswith("08"))\nyear = code[5:9]\nprint(year, year.isdigit())', "counting and checking", [
@@ -208,10 +210,11 @@
             ]),
           ] },
           { kind: "code", part: "Processing a string with a loop", title: "First example: execution step by step", blocks: [W("codeTrace", T_build)] },
-          { kind: "code", part: "Processing a string with a loop", title: "Example: counting a letter", blocks: [
-            EX('text = "Engineering"\ncount = 0\nfor ch in text:\n    if ch == "e" or ch == "E":\n        count = count + 1\nprint(count)', "a counter with a condition", [
-              { c: 'ch == "e" or ch == "E"', e: "True for E, e, e" },
-              { c: "print(count)", e: "<code>3</code>" },
+          { kind: "code", part: "Processing a string with a loop", title: "Example: counting vowels", blocks: [
+            EX('text = "Engineering"\ncount = 0\nfor ch in text.lower():\n    if ch in "aeiou":\n        count = count + 1\nprint(count)', "a counter with a condition", [
+              { c: "text.lower()", e: "<code>'engineering'</code>: E and e are counted the same." },
+              { c: 'ch in "aeiou"', e: "True for any vowel. <code>count()</code> finds one text only, so \"any vowel\" needs a loop." },
+              { c: "print(count)", e: "<code>5</code>: e, i, e, e, i" },
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [
@@ -257,7 +260,7 @@
         title: "Lists",
         sub: "Creating lists, indexing, slicing, changing elements, loops, and sum, max and min.",
         slides: "06:14–16, 21",
-        keywords: "list element index slice mutable len in loop sum max min average",
+        keywords: "list element index slice mutable len in loop range sum max min average",
         deck: [
           { kind: "overview", title: "Lists", blocks: [
             T("A <b>list</b> stores several values in one variable, in order. The values are called <b>elements</b>."),
@@ -307,6 +310,13 @@
             ]),
           ] },
           { kind: "code", part: "Looping over a list", title: "First example: execution step by step", blocks: [W("codeTrace", T_loop)] },
+          { kind: "code", part: "Looping over a list", title: "Example: changing elements by index", blocks: [
+            EX("readings = [20, 22, 21]\nfor r in readings:\n    r = r * 2\nprint(readings)\nfor i in range(len(readings)):\n    readings[i] = readings[i] * 2\nprint(readings)", "the loop variable or the index", [
+              { c: "r = r * 2", e: "r takes the value of each element. A new value for r does not change the list: <code>[20, 22, 21]</code>" },
+              { c: "range(len(readings))", e: "i takes the indexes 0, 1, and 2." },
+              { c: "readings[i] = readings[i] * 2", e: "Assignment to an index changes the element: <code>[40, 44, 42]</code>" },
+            ]),
+          ] },
           { kind: "concept", part: "sum(), max(), min(), and averages", title: "Functions for lists of numbers", blocks: [
             TB(["Expression", "Result for [20, 22, 21, 23]"], [
               ["<code>sum(readings)</code>", "86"],
@@ -316,7 +326,7 @@
             ]),
           ] },
           { kind: "code", part: "sum(), max(), min(), and averages", title: "Example: grade statistics", blocks: [
-            EX("grades = [85, 90, 78, 92]\nprint(max(grades), min(grades))\nprint(sum(grades) / len(grades))", "from the lecture", [
+            EX("grades = [85, 90, 78, 92]\nprint(max(grades), min(grades))\nprint(sum(grades) / len(grades))", "the highest, the lowest, and the average", [
               { c: "max, min", e: "<code>92 78</code>" },
               { c: "sum / len", e: "345 / 4 → <code>86.25</code>" },
             ]),
@@ -363,7 +373,7 @@
         keywords: "append insert extend remove pop del sort reverse split join list method",
         deck: [
           { kind: "overview", title: "Changing lists: methods", blocks: [
-            T("List methods change a list <b>in place</b>: they add, remove, and reorder its elements."),
+            T("List methods change a list <b>in place</b>: the same list is changed, and no new list is created. They add, remove, and reorder its elements. The last subtopic uses two string methods, <code>split()</code> and <code>join()</code>, which return new values instead."),
             L(["append() and insert()", "extend() and append()", "remove(), pop(), and del", "sort() and reverse()", "Strings and lists: split() and join()"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "append() and insert()", title: "Adding one element", blocks: [
@@ -398,7 +408,7 @@
               ["<code>a.remove(x)</code>", "removes the <b>first</b> element equal to x (ValueError if x is missing)"],
               ["<code>a.pop()</code>", "removes the last element and <b>returns</b> it"],
               ["<code>a.pop(i)</code>", "removes the element at index i and returns it"],
-              ["<code>del a[i]</code>", "removes the element at index i; returns nothing"],
+              ["<code>del a[i]</code>", "removes the element at index i. <code>del</code> is a statement, not a method: it gives no value"],
             ]),
           ] },
           { kind: "code", part: "remove(), pop(), and del", title: "First example: execution step by step", blocks: [W("codeTrace", T_pop)] },
@@ -620,8 +630,8 @@
           { kind: "concept", part: "Creating a dictionary", title: "Creating a dictionary", blocks: [
             L([
               "Curly braces with <code>key: value</code> pairs: <code>device = {\"name\": \"Pump\", \"voltage\": 220}</code>.",
-              "Each key is unique. Values may repeat.",
-              "Keys are usually strings or numbers. <code>{}</code> is an empty dictionary.",
+              "Each key is unique. Values may repeat. <code>{}</code> is an empty dictionary.",
+              "A key must be immutable: a string, a number, or a tuple. A list cannot be a key: <code>TypeError: unhashable type: 'list'</code>.",
               "<code>len(device)</code> is the number of pairs; <code>\"name\" in device</code> checks a key.",
             ]),
           ] },
@@ -764,7 +774,7 @@
               "<code>for x in s:</code> visits each element once, in no fixed order.",
             ]),
           ] },
-          { kind: "code", part: "Membership: in", title: "Example: checking a device code", blocks: [
+          { kind: "code", part: "Membership: in", title: "Example: accepting or rejecting a code", blocks: [
             EX('allowed = {"A1", "B2", "C3"}\ncode = input("Code: ")\nif code in allowed:\n    print("Accepted")\nelse:\n    print("Rejected")', "a set of allowed codes", [
               { c: "code in allowed", e: "True when the code is an element of the set." },
               { c: "input B2", e: "<code>Accepted</code>. With the input C9, the output is <code>Rejected</code>." },
@@ -773,7 +783,7 @@
           { kind: "concept", part: "Adding and removing elements", title: "Adding and removing elements", blocks: [
             TB(["Method", "Effect"], [
               ["<code>s.add(x)</code>", "adds x; nothing changes when x is already an element"],
-              ["<code>s.remove(x)</code>", "removes x; a KeyError when x is not an element"],
+              ["<code>s.remove(x)</code>", "removes x. When x is not an element, it causes a <b>KeyError</b>, the same error as a missing dictionary key"],
               ["<code>s.discard(x)</code>", "removes x when it is an element; no error otherwise"],
             ]),
             T("A set is mutable: these methods change the set in place."),
@@ -783,7 +793,7 @@
             EX("active = {1, 2, 3}\nactive.discard(5)\nprint(active)\nactive.remove(2)\nprint(active)\nactive.remove(5)", "machines that are running", [
               { c: "active.discard(5)", e: "5 is not an element: discard does nothing. <code>{1, 2, 3}</code>" },
               { c: "active.remove(2)", e: "2 is removed: <code>{1, 3}</code>" },
-              { c: "active.remove(5)", e: "5 is not an element: <code>KeyError: 5</code>. The program stops." },
+              { c: "active.remove(5)", e: "5 is not an element: <code>KeyError: 5</code> (although a set has no keys). The program stops." },
             ]),
           ] },
           { kind: "concept", part: "Set operations", title: "Union, intersection, and difference", blocks: [
@@ -923,7 +933,7 @@
           ] },
           { kind: "problem", part: "Problem 6", title: "Problem 6: settings from text", blocks: [
             T("A device sends its settings as text: \"mode=auto;speed=3\". Store them in a dictionary and display the value of speed."),
-            IPO([["Input", "a settings string"], ["Output", "the value of speed"], ["Processing", "split at \";\", then split each part at \"=\"; store key and value"]]),
+            IPO([["Input", "a settings string"], ["Output", "the value of speed"], ["Processing", "split at \";\", then split each part at \"=\"; store key and value. The values are strings: <code>settings[\"speed\"]</code> is <code>'3'</code>, not the integer 3"]]),
           ] },
           { kind: "exercise", part: "Problem 6", title: "Problem 6: write the program", blocks: [
             PQ("Use the string in the starter.", "3", 'text = "mode=auto;speed=3"\nsettings = {}\n# Write your program here\n', null, 'for part in text.split(";"): key, value = part.split("="); settings[key] = value'),

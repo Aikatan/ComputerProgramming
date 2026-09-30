@@ -2,7 +2,7 @@
    Authored deck format (see CHAPTER-IMPROVEMENT-PROMPT.md).
    Lesson order: algorithms -> growth rates and Big-O -> searching -> sorting
    -> choosing a data structure -> efficient Python -> practice.
-   Python level: t02-t08 material only (no sets, comprehensions, sorted(key=), decorators). No f-strings.
+   Python level: t02-t08 material only, including sets (Topic 06). No comprehensions, sorted(key=), or decorators. No f-strings.
    Only the time module (time.perf_counter) is new. There is no lecture deck for this chapter.
    ===================================================================== */
 (function () {
@@ -135,26 +135,26 @@
     ],
   };
   const T_seen = {
-    code: ["readings = [21, 25, 21]", "seen = {}", "for r in readings:", "    if r in seen:", '        print("Repeated:", r)', "    seen[r] = True"],
+    code: ["readings = [21, 23, 21]", "seen = set()", "for r in readings:", "    if r in seen:", '        print("Repeated:", r)', "    seen.add(r)"],
     steps: [
       { line: -1, note: "No variable exists yet." },
-      { line: 0, note: "The readings to check.", set: { readings: "[21, 25, 21]" } },
-      { line: 1, note: "An empty dictionary.", set: { seen: "{}" } },
+      { line: 0, note: "The readings to check.", set: { readings: "[21, 23, 21]" } },
+      { line: 1, note: "An empty set.", set: { seen: "set()" } },
       { line: 2, note: "r = 21.", set: { r: "21" } },
       { line: 3, note: "21 in seen is False: 21 is new." },
-      { line: 5, note: "21 becomes a key of seen.", set: { seen: "{21: True}" } },
-      { line: 2, note: "r = 25.", set: { r: "25" } },
-      { line: 3, note: "25 in seen is False." },
-      { line: 5, note: "25 becomes a key.", set: { seen: "{21: True, 25: True}" } },
+      { line: 5, note: "21 is added to seen.", set: { seen: "{21}" } },
+      { line: 2, note: "r = 23.", set: { r: "23" } },
+      { line: 3, note: "23 in seen is False." },
+      { line: 5, note: "23 is added.", set: { seen: "{21, 23}" } },
       { line: 2, note: "r = 21.", set: { r: "21" } },
       { line: 3, note: "21 in seen is True: 21 appeared before." },
       { line: 4, note: "The repeated reading is displayed.", print: "Repeated: 21" },
-      { line: 5, note: "seen[21] = True again: the dictionary does not change. Result check: only 21 appears twice." },
+      { line: 5, note: "21 is already in seen: the set does not change. Result check: only 21 appears twice." },
     ],
   };
 
   const BUBBLE = "a = [4, 1, 5, 2]\nn = len(a)\nfor i in range(n - 1):\n    for j in range(n - 1 - i):\n        if a[j] > a[j + 1]:\n            a[j], a[j + 1] = a[j + 1], a[j]\nprint(a)";
-  const BINARY = "def binary_search(data, target):\n    low = 0\n    high = len(data) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        \n    return -1\nids = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]\nprint(binary_search(ids, 72))";
+  const BINARY = "def binary_search(data, target):\n    low = 0\n    high = len(data) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        low = high + 1  # replace this line\n    return -1\nids = [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]\nprint(binary_search(ids, 72))";
 
   App.registerTopic({
     id: "t09",
@@ -171,22 +171,21 @@
         keywords: "algorithm steps properties correctness test edge case count comparisons time space",
         deck: [
           { kind: "overview", title: "Algorithms", blocks: [
-            T("An <b>algorithm</b> is a sequence of steps that solves a problem. Every program in the earlier chapters carries out an algorithm. This chapter compares algorithms by the amount of work they do."),
+            T("Every program in the earlier chapters carries out an <b>algorithm</b>: a sequence of steps that solves a problem (Topic 04). This chapter compares algorithms by the amount of work they do."),
             L(["Definition and properties", "From algorithm to program", "Correctness and testing", "Counting steps", "Time and space"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Definition and properties", title: "Properties of an algorithm", blocks: [
-            T("An algorithm is a finite sequence of well-defined steps that solves a problem."),
+            T("Topic 04 wrote algorithms as flowcharts and pseudocode. Every algorithm has these five properties."),
             TB(["Property", "Meaning"], [
               ["Input", "It receives zero or more values."],
               ["Output", "It produces at least one result."],
               ["Definite", "Each step has exactly one meaning."],
               ["Finite", "It stops after a finite number of steps."],
-              ["Effective", "Each step can be carried out exactly."],
+              ["Effective", "Each step is basic enough to be carried out by hand or by a computer."],
             ]),
           ] },
           { kind: "concept", part: "Definition and properties", title: "Algorithms and programs", blocks: [
             L([
-              "An algorithm can be written in words, as pseudocode, or as a flowchart (Topic 04).",
               "A <b>program</b> is an algorithm written in a programming language.",
               "The same algorithm can be written in Python, in C (Topic 10), or in any other language.",
               "One problem can have several algorithms. They give the same result, but they can do very different amounts of work.",
@@ -255,10 +254,11 @@
           { kind: "concept", part: "Time and space", title: "Time and space", blocks: [
             TB(["Cost", "Meaning", "Highest reading"], [
               ["Time", "the number of steps, as n grows", "n − 1 comparisons"],
-              ["Space", "the extra memory, as n grows", "one extra variable, for any n"],
+              ["Space", "the extra memory, as n grows", "two extra variables, highest and r, for any n"],
             ]),
             L([
               "The input itself is not counted as extra memory.",
+              "The slice <code>readings[1:]</code> also copies n − 1 readings, because a slice is a new list (Topic 06). A loop over <code>range(1, len(readings))</code> needs only the two variables.",
               "This chapter mainly compares time. Lessons 5 and 6 also consider memory.",
             ]),
           ] },
@@ -393,13 +393,14 @@
               ["O(1)", "stay the same"],
               ["O(log n)", "increase by 1"],
               ["O(n)", "double"],
+              ["O(n log n)", "grow a little more than 2 times: about 2.2 times from n = 1000 to 2000"],
               ["O(n²)", "become 4 times larger"],
               ["O(2ⁿ)", "are squared"],
             ]),
             T("This rule estimates the effect of more data without running the program."),
           ] },
           { kind: "code", part: "Common growth rates", title: "Example: plotting O(n) and O(n²) for n = 1 to 32", blocks: [
-            RUN('import matplotlib.pyplot as plt\nns = [1, 2, 4, 8, 16, 32]\nsquares = []\nfor n in ns:\n    squares.append(n * n)\nplt.plot(ns, ns, label="O(n)")\nplt.plot(ns, squares, label="O(n²)")\nplt.legend()\nplt.show()'),
+            RUN('import matplotlib.pyplot as plt\nimport numpy as np\nns = np.array([1, 2, 4, 8, 16, 32])\nplt.plot(ns, ns, label="O(n)")\nplt.plot(ns, ns * ns, label="O(n²)")\nplt.xlabel("n")\nplt.ylabel("steps")\nplt.legend()\nplt.show()'),
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
@@ -415,8 +416,8 @@
             [RUN("count = 0\nfor i in range(4):\n    for j in range(3):\n        count = count + 1\nprint(count)")],
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
-            PQ("Complete line 4, so that the program counts how many times 64 can be halved before it reaches 1.",
-              "Halvings: 6", 'n = 64\nhalvings = 0\nwhile n > 1:\n    \n    halvings = halvings + 1\nprint("Halvings:", halvings)', null, "n = n // 2"),
+            PQ("Replace line 4 with the statement that halves n, so that the program counts how many times 64 can be halved before it reaches 1.",
+              "Halvings: 6", 'n = 64\nhalvings = 0\nwhile n > 1:\n    n = 1  # replace this line\n    halvings = halvings + 1\nprint("Halvings:", halvings)', null, "n = n // 2"),
           ] },
           { kind: "exercise", title: "Modify a program", blocks: [
             PQ("Change the inner loop to <code>range(i)</code>, so that it counts only the pairs with j &lt; i.",
@@ -516,7 +517,7 @@
               ["2", "5", "9", "7", "56", "56 &gt; 23: high = 6"],
               ["3", "5", "6", "5", "23", "23 == 23: the result is 5"],
             ], null, "center"),
-            T("Result check: data[5] is 23. Binary search made 3 comparisons; linear search makes 6."),
+            T("<code>//</code> rounds down: in iteration 1, <code>(0 + 9) // 2</code> is 4, not 4.5.<br>Result check: data[5] is 23. Binary search made 3 comparisons; linear search makes 6."),
           ] },
           { kind: "code", part: "Binary search", title: "The function (part 1 of 2): the range and the loop", cols: [
             [CODE("def binary_search(data, target):\n    low = 0\n    high = len(data) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        # part 2: the comparison\n    return -1")],
@@ -545,7 +546,7 @@
           ] },
           { kind: "concept", part: "Linear and binary search compared", title: "Comparisons in the worst case", blocks: [
             TB(["n", "Linear search, O(n)", "Binary search, O(log n)"], [["10", "10", "4"], ["1000", "1000", "10"], ["1 000 000", "1 000 000", "20"]], null, "center"),
-            T("On large lists, binary search is much faster."),
+            T("On large lists, binary search is much faster.<br>After the last halving, one element is left, and it is also compared. So the worst case is the number of halvings + 1: for 1 000 000, 19 halvings (Lesson 2) and 20 comparisons."),
           ] },
           { kind: "concept", part: "Linear and binary search compared", title: "Which search to use", blocks: [
             TB(["Situation", "Search"], [
@@ -586,7 +587,7 @@
             T("Binary search needs 3 comparisons; linear search needs 9."),
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
-            PQ("Complete line 6 with the comparison from part 2, so that the function finds 72.",
+            PQ("Replace line 6 with the six lines of the comparison from part 2, so that the function finds 72.",
               "8", BINARY, null, "if data[mid] == target: return mid. elif data[mid] < target: low = mid + 1. else: high = mid - 1."),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
@@ -655,7 +656,7 @@
             L([
               "<b>Bubble sort</b> repeats the pass. Each pass moves the next largest value to its final place.",
               "n − 1 passes sort a list of n elements.",
-              "After pass i, the last i elements are in place, so the next pass can stop earlier.",
+              "In the code, i counts the passes from 0. When pass i starts, the last i elements are already in place, so it compares only n − 1 − i pairs.",
             ]),
             CODE("for i in range(n - 1):            # the passes\n    for j in range(n - 1 - i):    # one pass\n        compare a[j] and a[j + 1]; swap if needed", null, "structure", "text"),
           ] },
@@ -751,16 +752,17 @@
       {
         id: "data-structures",
         title: "Choosing a data structure",
-        sub: "The cost of list and dictionary operations, and how to choose between them.",
-        keywords: "list dictionary dict lookup membership in hash o(1) o(n) duplicates repeated choose data structure",
+        sub: "The cost of list, dictionary, and set operations, and how to choose between them.",
+        keywords: "list dictionary dict set lookup membership in hash reference o(1) o(n) duplicates repeated choose data structure",
         deck: [
           { kind: "overview", title: "Choosing a data structure", blocks: [
-            T("A <b>data structure</b> is a way of storing data, such as a list or a dictionary (Topic 06). The same task can take O(n) steps with one structure and O(1) with another."),
+            T("A <b>data structure</b> is a way of storing data, such as a list, a dictionary, or a set (Topic 06). The same task can take O(n) steps with one structure and O(1) with another."),
             L(["The cost of list operations", "The cost of dictionary operations", "Checking for repeated values", "Choosing a structure"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "The cost of list operations", title: "The cost of list operations", blocks: [
             TB(["Operation", "Big-O", "Reason"], [
               ["<code>a[i]</code>", "O(1)", "the index gives the position directly"],
+              ["<code>len(a)</code>", "O(1)", "the list stores its length"],
               ["<code>a.append(x)</code>", "O(1)", "adds at the end"],
               ["<code>x in a</code>", "O(n)", "a linear search"],
               ["<code>a.insert(0, x)</code>", "O(n)", "every element moves one place to the right"],
@@ -769,11 +771,11 @@
           ] },
           { kind: "concept", part: "The cost of list operations", title: "Why indexing takes one step", blocks: [
             L([
-              "A list stores its entries one after another in memory (Topic 02: addresses).",
-              "Each entry has the same size, 8 bytes.",
-              "The address of entry i is start + i × 8. One calculation finds it, for any i.",
+              "A list does not store the values themselves. Each entry is a <b>reference</b>: the address of a value in memory (Topic 02: addresses).",
+              "A Python int has no fixed size (Topic 02), but every reference has the same size, 8 bytes.",
+              "The entries are stored one after another. The address of entry i is start + i × 8. One calculation finds it, for any i.",
             ]),
-            TB(["Entry", "a[0]", "a[1]", "a[2]", "a[3]"], [["Address", "1000", "1008", "1016", "1024"]], null, "center"),
+            TB(["Entry", "a[0]", "a[1]", "a[2]", "a[3]"], [["Address of the entry", "1000", "1008", "1016", "1024"]], null, "center"),
           ] },
           { kind: "concept", part: "The cost of dictionary operations", title: "The cost of dictionary operations", blocks: [
             TB(["Operation", "Big-O (average)"], [
@@ -797,48 +799,48 @@
           { kind: "problem", part: "Checking for repeated values", title: "Problem: find repeated readings", blocks: [
             T("A sensor sends readings. Display each reading that has already appeared before."),
             IPO([
-              ["Input", "the list [21, 25, 21]"],
+              ["Input", "the list [21, 23, 21]"],
               ["Output", "Repeated: 21"],
               ["Processing", "remember each reading; check each new reading against the remembered ones"],
             ]),
           ] },
           { kind: "concept", part: "Checking for repeated values", title: "The algorithm", blocks: [
             L([
-              "Start with an empty dictionary <code>seen</code>.",
-              "For each reading r: if r is a key of seen, display it as repeated.",
-              "Then store r as a key: <code>seen[r] = True</code>.",
+              "Start with an empty set <code>seen</code> (Topic 06).",
+              "For each reading r: if r is in seen, display it as repeated.",
+              "Then add r to seen: <code>seen.add(r)</code>.",
             ], null, true),
-            T("Only the keys are used. The value True is a placeholder."),
+            T("A set finds an element by its hash, as a dictionary finds a key: <code>r in seen</code> is O(1) on average."),
           ] },
           { kind: "code", part: "Checking for repeated values", title: "First example: execution step by step", blocks: [W("codeTrace", T_seen)] },
-          { kind: "concept", part: "Checking for repeated values", title: "A list or a dictionary for seen", blocks: [
+          { kind: "concept", part: "Checking for repeated values", title: "A list or a set for seen", blocks: [
             TB(["seen is a…", "Cost of <code>r in seen</code>", "Total for n readings"], [
               ["list", "O(n)", "O(n²)"],
-              ["dictionary", "O(1)", "O(n)"],
+              ["set", "O(1)", "O(n)"],
             ]),
-            T("With a list, every check searches the earlier readings. With a dictionary, every check takes one step."),
+            T("With a list, every check searches the earlier readings. With a set, every check takes one step."),
           ] },
           { kind: "code", part: "Checking for repeated values", title: "Example: removing repeated readings", blocks: [
-            EX("readings = [21, 25, 21, 30, 25]\nseen = {}\nfor r in readings:\n    seen[r] = True\nprint(list(seen))", "the keys keep the order in which they were added", [
-              { c: "seen[r] = True", e: "a repeated key is stored only once" },
-              { c: "list(seen)", e: "a list of the keys: <code>[21, 25, 30]</code>" },
+            EX("readings = [21, 25, 21, 30, 25]\nkept = {}\nfor r in readings:\n    kept[r] = True\nprint(list(kept))", "the keys of a dictionary keep the order in which they were added", [
+              { c: "kept[r] = True", e: "a repeated key is stored only once; only the keys are used" },
+              { c: "list(kept)", e: "<code>[21, 25, 30]</code>, in the first-seen order; <code>list(set(readings))</code> (Topic 06) loses the order" },
             ]),
           ] },
           { kind: "concept", part: "Choosing a structure", title: "Choosing a structure", blocks: [
             TB(["Task", "Structure"], [
               ["keep values in order; access them by position", "list"],
               ["find a value by a name or an ID", "dictionary"],
-              ["check many times whether a value is present", "dictionary (keys)"],
+              ["check many times whether a value is present", "set (Topic 06)"],
               ["count how often each value occurs", "dictionary (Topic 06)"],
               ["search sorted data by value", "sorted list and binary search"],
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "List: <code>a[i]</code> and append are O(1); <code>in</code>, insert, and remove are O(n).",
-              "Dictionary: lookup, <code>in</code>, and adding a key are O(1) on average, because of hashing.",
-              "A dictionary uses more memory: it trades space for time.",
-              "Use a dictionary for lookups by key and for repeated membership checks.",
+              "List: <code>a[i]</code>, <code>len(a)</code>, and append are O(1); <code>in</code>, insert, and remove are O(n).",
+              "Dictionary and set: lookup, <code>in</code>, and adding are O(1) on average, because of hashing.",
+              "A dictionary or a set uses more memory than a list: it trades space for time.",
+              "Use a dictionary for lookups by key, and a set for repeated membership checks.",
             ]),
             NEXT("<b>Writing efficient Python</b>. Measuring time, avoiding repeated work, and storing results."),
           ] },
@@ -851,8 +853,8 @@
               "110", 'names = ["pump", "fan", "heater"]\nvalues = [220, 110, 230]\nvolts = {}\nfor i in range(len(names)):\n    \nprint(volts["fan"])', null, "volts[names[i]] = values[i]"),
           ] },
           { kind: "exercise", title: "Modify a program", blocks: [
-            PQ("seen is a list, so each check is O(n). Change it to a dictionary. The output stays the same.",
-              "Repeated: 21\nRepeated: 25", 'readings = [21, 25, 21, 30, 25]\nseen = []\nfor r in readings:\n    if r in seen:\n        print("Repeated:", r)\n    seen.append(r)', null, "seen = {} and seen[r] = True"),
+            PQ("seen is a list, so each check is O(n). Change it to a set. The output stays the same.",
+              "Repeated: 21\nRepeated: 25", 'readings = [21, 25, 21, 30, 25]\nseen = []\nfor r in readings:\n    if r in seen:\n        print("Repeated:", r)\n    seen.append(r)', null, "seen = set() and seen.add(r)"),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
             PQ("Count how often each error code occurs. Display each code and its count.",
@@ -920,7 +922,7 @@
             L([
               "A NumPy array (Topic 08) stores numbers of one type, one after another in memory.",
               "An operation such as <code>arr * 2</code> or <code>arr.mean()</code> runs as one compiled loop over that memory.",
-              "A Python list holds references to separate objects, which a Python loop handles one at a time.",
+              "A Python list holds references (Lesson 5) to values stored in separate places in memory. A Python loop handles them one at a time.",
               "For large arrays of numbers, NumPy is therefore many times faster than a Python loop.",
               "NumPy integers have a fixed size, like C integers (Topic 02). A very large integer sum can overflow and give a wrong result.",
             ]),
@@ -942,7 +944,7 @@
             CODE("def fib(n):\n    if n < 2:\n        return n\n    return fib(n - 1) + fib(n - 2)", null, "the Fibonacci numbers 0, 1, 1, 2, 3, 5, 8, … (recursion: Topic 05)"),
             L([
               "Each call makes two more calls. fib(n) calls fib(n − 2) twice, fib(n − 3) three times, and so on.",
-              "The number of calls grows about 1.6 times for each increase of n by 1. This exponential growth is written O(2ⁿ).",
+              "The number of calls grows about 1.6 times for each increase of n by 1. This growth is exponential. Since 1.6 is less than 2, it is at most O(2ⁿ).",
             ]),
           ] },
           { kind: "concept", part: "Storing results", title: "Calls made by fib(n)", blocks: [
@@ -961,7 +963,7 @@
             L([
               "Each fib(k) is computed once: O(n) calls instead of O(2ⁿ).",
               "memo stores n results: O(n) extra memory.",
-              "fib changes memo but does not assign to it, so no <code>global</code> is needed (Topic 05).",
+              "<code>memo[n] = …</code> changes an element of memo. It is not an assignment to the name memo, so no local variable is created and no <code>global</code> is needed (Topic 05).",
               "Memoization trades space for time, like the dictionary in Lesson 5.",
             ]),
           ] },
@@ -983,8 +985,8 @@
               "0.8\n1.0\n0.6", "readings = [4, 5, 3]\nfor r in readings:\n    print(r / max(readings))", null, "peak = max(readings), before the loop"),
           ] },
           { kind: "exercise", title: "Modify a program: NumPy", cols: [
-            [T("Run the program. Then replace <code>sum(data) / len(data)</code> with <code>arr.mean()</code> and run it again.<br>Compare the two times.")],
-            [RUN("import time\nimport numpy as np\ndata = list(range(1000000))\narr = np.array(data)\nstart = time.perf_counter()\naverage = sum(data) / len(data)\nelapsed = time.perf_counter() - start\nprint(average, round(elapsed, 4))")],
+            [T("Run the program. Then replace lines 5–8, which compute the average with a loop, with <code>average = arr.mean()</code> and run it again.<br>Compare the two times. The times differ on each run.")],
+            [RUN("import time\nimport numpy as np\narr = np.array(list(range(1000000)))\nstart = time.perf_counter()\ntotal = 0\nfor i in range(1000000):\n    total = total + i\naverage = total / 1000000\nelapsed = time.perf_counter() - start\nprint(average, round(elapsed, 4))")],
           ] },
           { kind: "exercise", title: "Write a program: join()", blocks: [
             PQ("Build the text <code>21.5, 22.0, 23.1</code> from the list with join(), and display it.",
@@ -1035,11 +1037,11 @@
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: the first repeated reading", blocks: [
             T("A logger records readings. Display the first reading that appears for the second time."),
-            IPO([["Input", "[22, 25, 23, 25, 22]"], ["Output", "25"], ["Processing", "a dictionary of the readings seen so far; stop at the first repeat"]]),
+            IPO([["Input", "[22, 25, 23, 25, 22]"], ["Output", "25"], ["Processing", "a set of the readings seen so far; stop at the first repeat"]]),
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
-            PQ("Write the program. Use a dictionary, so that the program is O(n).",
-              "25", "readings = [22, 25, 23, 25, 22]\n# Write your program here\n", null, "If r in seen: display r and break. Otherwise: seen[r] = True."),
+            PQ("Write the program. Use a set, so that the program is O(n).",
+              "25", "readings = [22, 25, 23, 25, 22]\n# Write your program here\n", null, "seen = set(). If r in seen: display r and break. Otherwise: seen.add(r)."),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: the median", blocks: [
             T("The <b>median</b> of an odd number of readings is the middle value after sorting."),
@@ -1062,9 +1064,9 @@
               ["1–2. Algorithms and Big-O", "Correct for every valid input. Big-O keeps the fastest-growing term: O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ)."],
               ["3. Searching", "Linear search O(n) on any list; binary search O(log n) on sorted data."],
               ["4. Sorting", "Bubble sort O(n²); sort() and sorted() O(n log n)."],
-              ["5–6. Efficiency", "Dictionaries for lookups; compute once; built-ins and NumPy; join(); memoization."],
+              ["5–6. Efficiency", "Dictionaries for lookups and sets for membership; compute once; built-ins and NumPy; join(); memoization."],
             ]),
-            N("<b>Topic 10: Programming in C</b>. The C language, built on the Python you know.", "Next topic"),
+            N("<b>Topic 10: Programming in C</b>. A compiled language that runs close to the hardware; most embedded systems are programmed in it.", "Next topic"),
           ] },
         ],
       },

@@ -105,7 +105,7 @@
       { node: "s", note: "Run 2. Test value: the user enters 7.", unset: ["x"] },
       { node: "i", note: "Input: 7 is stored in x.", set: { x: "7" } },
       { node: "q", note: "7 > 10 is False: the False arrow goes directly to END." },
-      { node: "e", note: "END of run 2. Nothing new is displayed: the output step is only on the True path." },
+      { node: "e", note: "END of run 2. Nothing new is displayed: the output step is only on the True path. Result check: only 12 is above 10." },
     ],
   };
   const F_ifelse = {
@@ -163,7 +163,7 @@
       { node: "i", note: "Input again: 12 is stored in x.", set: { x: "12" } },
       { node: "q", note: "12 > 10 is True: the loop ends." },
       { node: "d", note: "Output: x is displayed.", print: "12" },
-      { node: "e", note: "END. <code>while not (x &gt; 10)</code> repeats the input while the decision is False: until x is above 10." },
+      { node: "e", note: "END. Result check: 5 and 8 are not above 10; 12 is the first value above 10, so 12 is displayed." },
     ],
   };
   const F_count = {
@@ -181,7 +181,7 @@
       { node: "b", note: "x becomes 4.", set: { x: "4" } },
       { node: "q", note: "4 < 4 is False: leave the loop." },
       { node: "d", note: "Output: x is displayed.", print: "4" },
-      { node: "e", note: "END. x = 4 ended the loop. After <code>for x in range(1, 4)</code>, x would be 3, the last value used." },
+      { node: "e", note: "END. Result check: 1 + 1 + 1 + 1 = 4. After <code>for x in range(1, 4)</code>, x would be 3, the last value used." },
     ],
   };
   const F_step2 = {
@@ -260,40 +260,43 @@
             ]),
           ] },
           { kind: "concept", part: "Flowchart symbols", title: "The main symbols", blocks: [
-            TB(["Symbol", "Name", "Meaning", "Python"], [
-              [icon("terminator"), "Terminator", "START or END of the algorithm", "(none)"],
-              [icon("process"), "Process", "a calculation or an assignment", "<code>x = x + 2</code>"],
-              [icon("io"), "Input / Output", "read a value or display a value", "<code>input()</code>, <code>print()</code>"],
-              [icon("decision"), "Decision", "a condition with a True exit and a False exit", "<code>if</code>, <code>while</code>"],
+            TB(["Symbol", "Shape", "Name", "Meaning", "Python"], [
+              [icon("terminator"), "rounded rectangle", "Terminator", "START or END of the algorithm", "(none)"],
+              [icon("process"), "rectangle", "Process", "a calculation or an assignment", "<code>x = x + 2</code>"],
+              [icon("io"), "parallelogram", "Input / Output", "read a value or display a value", "<code>input()</code>, <code>print()</code>"],
+              [icon("decision"), "diamond", "Decision", "a condition with a True exit and a False exit", "<code>if</code>, <code>while</code>"],
             ]),
           ] },
           { kind: "concept", part: "Flowchart symbols", title: "More symbols", blocks: [
-            TB(["Symbol", "Name", "Meaning"], [
-              [icon("flowline"), "Flowline", "the order of the steps"],
-              [icon("connector"), "On-page connector", "joins two parts of a chart on the same page"],
-              [icon("offpage"), "Off-page connector", "continues the chart on another page"],
-              [icon("predefined"), "Predefined process", "a named sub-process with its own flowchart"],
-              [icon("document"), "Document", "a printed report or a file"],
+            TB(["Symbol", "Shape", "Name", "Meaning"], [
+              [icon("flowline"), "arrow", "Flowline", "the order of the steps"],
+              [icon("connector"), "circle", "On-page connector", "joins two parts of a chart on the same page"],
+              [icon("offpage"), "pentagon", "Off-page connector", "continues the chart on another page"],
+              [icon("predefined"), "rectangle with double side lines", "Predefined process", "a named sub-process with its own flowchart"],
+              [icon("document"), "rectangle with a wavy bottom", "Document", "a printed report or a file"],
             ]),
           ] },
           { kind: "concept", part: "Rules for drawing flowcharts", title: "Rules for drawing flowcharts", blocks: [
             L([
               "One START and one END terminator.",
               "The flow goes from top to bottom. Arrows show the order of the steps.",
-              "A process or input/output symbol has one arrow in and one arrow out.",
-              "A decision has one arrow in and two arrows out, labelled True and False.",
-              "Keep the text in a symbol short: one statement or one condition.",
+              "Several arrows may join before a symbol. A process or input/output symbol has one arrow out.",
+              "A decision has two arrows out, labelled True and False.",
+              "Keep the text in a symbol short: one condition, or one or two short assignments.",
             ]),
           ] },
           { kind: "concept", part: "Sequence: steps in order", title: "A sequence of steps", blocks: [
             L([
               "In a <b>sequence</b>, the steps run one after another, along the arrows.",
-              "Each process or input/output symbol becomes one Python statement.",
+              "Each input/output symbol becomes one Python statement. A process becomes one statement for each assignment.",
               "The order of the symbols is the order of the statements.",
             ]),
           ] },
           { kind: "code", part: "Sequence: steps in order", title: "First example: execution step by step", blocks: [FLOW(F_kelvin)] },
-          { kind: "code", part: "Sequence: steps in order", title: "Example: area of a rectangle", blocks: [STATIC(F_area)] },
+          { kind: "code", part: "Sequence: steps in order", title: "Example: area of a rectangle", blocks: [
+            STATIC(F_area),
+            T("Each symbol becomes one line of the program, in the same order: the two INPUT symbols become the two input lines."),
+          ] },
           { kind: "code", part: "Sequence: steps in order", title: "Example: the order of the steps", cols: [
             [CHART(F_seq), T("The value is displayed after <code>x = x + 2</code>. Output: <code>3</code>")],
             [CHART(F_order), T("The value is displayed before <code>x = x + 2</code>. Output: <code>1</code>")],
@@ -312,9 +315,9 @@
           { kind: "summary", title: "Summary", blocks: [
             L([
               "A flowchart draws an algorithm as symbols connected by arrows.",
-              "Terminator: START / END. Process: a calculation. Parallelogram: input or output. Diamond: a decision.",
+              "Rounded rectangle: START / END. Rectangle: a process. Parallelogram: input or output. Diamond: a decision.",
               "The flow goes from top to bottom. A decision has a True exit and a False exit.",
-              "In a sequence, each symbol becomes one Python statement, in the same order.",
+              "In a sequence, the symbols become Python statements in the same order.",
               "Connectors join the parts of a large chart.",
             ]),
             NEXT("<b>Decisions in flowcharts</b>. A diamond with two exits is the flowchart form of if and else."),
@@ -420,7 +423,9 @@
             ]),
             NEXT("<b>Loops in flowcharts</b>. An arrow that goes back to a decision repeats steps."),
           ] },
-          { kind: "exercise", title: "Determine the output for t = 35, 25, 12", blocks: [CHART(F_hot)] },
+          { kind: "exercise", title: "Determine the output on paper: t = 35, 25, 12", blocks: [
+            CHART(F_hot),
+          ] },
           { kind: "exercise", title: "Check your answers", cols: [
             [T("This program follows the flowchart. Run it three times, and enter 35, 25, and 12.")],
             [RUN('t = int(input("t: "))\nif t > 30:\n    print("HOT")\nelif t > 20:\n    print("WARM")\nelse:\n    print("COLD")')],
@@ -459,27 +464,35 @@
         deck: [
           { kind: "overview", title: "Loops in flowcharts", blocks: [
             T("A loop in a flowchart is an arrow that goes back to an earlier symbol. A decision decides whether the loop repeats or ends."),
-            L(["A loop with a condition", "A counting loop", "Infinite loops", "Leaving a loop early"], "Subtopics in this lesson", true),
+            L(["The loop structure", "A counting loop", "A loop that repeats an input", "Infinite loops", "Leaving a loop early"], "Subtopics in this lesson", true),
           ] },
-          { kind: "concept", part: "A loop with a condition", title: "A decision with an arrow back", blocks: [
+          { kind: "concept", part: "The loop structure", title: "A decision with an arrow back", blocks: [
             L([
               "The decision is checked before each repetition.",
               "One exit leads into the loop. The last arrow of the loop goes back to the decision, or to a step before it.",
               "The other exit leaves the loop. In Python this is a while loop.",
             ]),
           ] },
-          { kind: "code", part: "A loop with a condition", title: "First example: execution step by step", blocks: [FLOW(F_while)] },
           { kind: "concept", part: "A counting loop", title: "A counting loop", blocks: [
             L([
               "A counting loop has three steps: initialize the counter, test it in the decision, update it in the loop.",
               "In Python, a counting loop with a decision is a while loop. <code>for x in range(1, 4)</code> uses the same values 1, 2, 3 (Topic 03).",
             ]),
           ] },
-          { kind: "code", part: "A counting loop", title: "Example: execution step by step", blocks: [FLOW(F_count)] },
+          { kind: "code", part: "A counting loop", title: "First example: execution step by step", blocks: [FLOW(F_count)] },
           { kind: "code", part: "A counting loop", title: "Example: a step of 2", blocks: [
             STATIC(F_step2),
             T("x takes 1, 3, 5, 7, 9, and then 11. 11 &lt; 10 is False, so 11 is displayed."),
           ] },
+          { kind: "concept", part: "A loop that repeats an input", title: "A loop that repeats an input", blocks: [
+            L([
+              "The next chart reads x again and again, until x is above 10.",
+              "The <code>while</code> condition is the condition of the exit that enters the loop.",
+              "Here the False exit of <code>x &gt; 10 ?</code> enters the loop, so the condition is written with not: <code>while not (x &gt; 10):</code>",
+              "The arrow returns to INPUT, before the decision. So the input is written twice: once before the loop, and once at the end of the loop.",
+            ]),
+          ] },
+          { kind: "code", part: "A loop that repeats an input", title: "First example: execution step by step", blocks: [FLOW(F_while)] },
           { kind: "concept", part: "Infinite loops", title: "Infinite loops", blocks: [
             L([
               "If no step in the loop moves the value toward the exit, the decision always gives the same result, and the loop never ends.",
@@ -503,6 +516,7 @@
             L([
               "A loop is an arrow back to a decision (or to a step before it).",
               "A counting loop: initialize, test, update.",
+              "The while condition is the condition of the exit that enters the loop; use not when that exit is False.",
               "The loop must change the tested value toward the exit, or it never ends.",
               "break is an arrow from inside the loop to the first step after it.",
             ]),
@@ -576,16 +590,23 @@
               ["<code>START</code> / <code>END</code>", "the beginning and the end", "(none)"],
               ["<code>INPUT x</code>", "read a value", "<code>x = int(input())</code>"],
               ["<code>SET x TO 1</code>", "assign a value", "<code>x = 1</code>"],
+              ["<code>INCREMENT x BY 1</code>", "add to a variable", "<code>x = x + 1</code>"],
               ["<code>DISPLAY x</code>", "show a value", "<code>print(x)</code>"],
+            ]),
+          ] },
+          { kind: "concept", part: "Keywords", title: "Keywords for decisions and loops", blocks: [
+            TB(["Pseudocode", "Meaning", "Python"], [
               ["<code>IF … ELSE … END IF</code>", "a decision", "<code>if … else:</code>"],
               ["<code>WHILE … END WHILE</code>", "a loop with a condition", "<code>while …:</code>"],
+              ["<code>FOR i FROM 1 TO n … END FOR</code>", "a counting loop", "<code>for i in range(1, n + 1):</code>"],
             ]),
+            T("Conditions and calculations use the same operators as the flowcharts: <code>+ - * /</code>, <code>%</code>, <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>."),
           ] },
           { kind: "code", part: "Keywords", title: "First example: pseudocode and Python", cols: [
             [TB(["Pseudocode", "Python"], [
               ["<code>INPUT voltage</code>", "<code>voltage = float(input())</code>"],
               ["<code>INPUT current</code>", "<code>current = float(input())</code>"],
-              ["<code>SET power TO voltage × current</code>", "<code>power = voltage * current</code>"],
+              ["<code>SET power TO voltage * current</code>", "<code>power = voltage * current</code>"],
               ["<code>DISPLAY power</code>", "<code>print(power)</code>"],
             ])],
             [T("Each pseudocode line becomes one Python line. Test input: 12 and 2.5."), RUN("voltage = float(input())\ncurrent = float(input())\npower = voltage * current\nprint(power)", "Program", ["12", "2.5"])],
@@ -597,7 +618,7 @@
           { kind: "code", part: "Decisions in pseudocode", title: "Example: even or odd", blocks: [
             TB(["Pseudocode", "Python"], [
               ["<code>INPUT number</code>", "<code>number = int(input())</code>"],
-              ["<code>IF number modulo 2 equals 0 THEN</code>", "<code>if number % 2 == 0:</code>"],
+              ["<code>IF number % 2 == 0 THEN</code>", "<code>if number % 2 == 0:</code>"],
               ["<code>&nbsp;&nbsp;&nbsp;&nbsp;DISPLAY \"Number is even\"</code>", "<code>&nbsp;&nbsp;&nbsp;&nbsp;print(\"Number is even\")</code>"],
               ["<code>ELSE</code>", "<code>else:</code>"],
               ["<code>&nbsp;&nbsp;&nbsp;&nbsp;DISPLAY \"Number is odd\"</code>", "<code>&nbsp;&nbsp;&nbsp;&nbsp;print(\"Number is odd\")</code>"],
@@ -611,7 +632,7 @@
           { kind: "code", part: "Loops in pseudocode", title: "Example: WHILE", cols: [
             [TB(["Pseudocode", "Python"], [
               ["<code>SET x TO 1</code>", "<code>x = 1</code>"],
-              ["<code>WHILE x is less than or equal to 5</code>", "<code>while x &lt;= 5:</code>"],
+              ["<code>WHILE x &lt;= 5</code>", "<code>while x &lt;= 5:</code>"],
               ["<code>&nbsp;&nbsp;&nbsp;&nbsp;DISPLAY x</code>", "<code>&nbsp;&nbsp;&nbsp;&nbsp;print(x)</code>"],
               ["<code>&nbsp;&nbsp;&nbsp;&nbsp;INCREMENT x BY 1</code>", "<code>&nbsp;&nbsp;&nbsp;&nbsp;x = x + 1</code>"],
               ["<code>END WHILE</code>", ""],
@@ -645,20 +666,20 @@
             ], null, true),
           ] },
           { kind: "problem", part: "From problem to pseudocode to Python", title: "Problem: a prime number", blocks: [
-            T("Read an integer n greater than 1. Display Prime if n has no divisor from 2 to n − 1, otherwise Not Prime."),
-            IPO([["Input", "n (int)"], ["Output", "Prime or Not Prime"], ["Processing", "test every i from 2 to n − 1: is n % i == 0?"], ["Repetition", "FOR i FROM 2 TO n − 1"]]),
+            T("Read an integer n. Display Prime if n is at least 2 and has no divisor from 2 to n − 1, otherwise Not Prime."),
+            IPO([["Input", "n (int)"], ["Output", "Prime or Not Prime"], ["Decision", "n &lt; 2: Not Prime (0 and 1 are not prime)"], ["Processing", "test every i from 2 to n − 1: is n % i == 0?"], ["Repetition", "FOR i FROM 2 TO n − 1"]]),
           ] },
           { kind: "code", part: "From problem to pseudocode to Python", title: "The pseudocode", cols: [
-            [PSEUDO("INPUT n\nSET is_prime TO True\nFOR i FROM 2 TO n - 1\n    IF n modulo i equals 0 THEN\n        SET is_prime TO False\n    END IF\nEND FOR\nIF is_prime THEN\n    DISPLAY \"Prime\"\nELSE\n    DISPLAY \"Not Prime\"\nEND IF")],
-            [T("<code>is_prime</code> records whether a divisor was found. It starts as True; any divisor sets it to False. The last IF displays the result.")],
+            [PSEUDO("INPUT n\nSET result TO \"Prime\"\nIF n < 2 THEN\n    SET result TO \"Not Prime\"\nEND IF\nFOR i FROM 2 TO n - 1\n    IF n % i == 0 THEN\n        SET result TO \"Not Prime\"\n    END IF\nEND FOR\nDISPLAY result")],
+            [T("<code>result</code> starts as Prime. It changes to Not Prime when n is less than 2, or when a divisor is found. The last line displays it.")],
           ] },
           { kind: "code", part: "From problem to pseudocode to Python", title: "The Python program", blocks: [
-            RUN('n = int(input("n: "))\nis_prime = True\nfor i in range(2, n):\n    if n % i == 0:\n        is_prime = False\nif is_prime:\n    print("Prime")\nelse:\n    print("Not Prime")', "Program (test input: 13)", ["13"]),
+            RUN('n = int(input("n: "))\nresult = "Prime"\nif n < 2:\n    result = "Not Prime"\nfor i in range(2, n):\n    if n % i == 0:\n        result = "Not Prime"\nprint(result)', "Program (test input: 13)", ["13"]),
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
               "Pseudocode is structured plain language, independent of any programming language.",
-              "Keywords: INPUT, SET, DISPLAY, IF … END IF, WHILE … END WHILE, FOR … END FOR.",
+              "Keywords: INPUT, SET, INCREMENT, DISPLAY, IF … END IF, WHILE … END WHILE, FOR … END FOR.",
               "Indentation shows the steps inside a decision or a loop.",
               "Design order: analyse the problem, write pseudocode, trace it, convert it to Python.",
             ]),
@@ -666,7 +687,7 @@
           ] },
           { kind: "problem", title: "Problem: power check", blocks: [
             T("The next exercise converts this pseudocode into Python."),
-            PSEUDO("INPUT voltage\nINPUT current\nSET power TO voltage × current\nIF power > 100 THEN\n    DISPLAY \"Overload\"\nELSE\n    DISPLAY power\nEND IF"),
+            PSEUDO("INPUT voltage\nINPUT current\nSET power TO voltage * current\nIF power > 100 THEN\n    DISPLAY \"Overload\"\nELSE\n    DISPLAY power\nEND IF"),
           ] },
           { kind: "exercise", title: "Write the program for the pseudocode", blocks: [
             PQ("Write the Python program for the pseudocode on the previous slide. Use the prompts <code>Voltage: </code> and <code>Current: </code> and read floats. Test input: 12 and 10.",
@@ -677,7 +698,7 @@
             CODE("total = 0\nfor i in range(1, 6):\n    if i % 2 == 1:\n        total = total + i\nprint(total)", null, "program"),
           ] },
           { kind: "visual", title: "Model answer", blocks: [
-            PSEUDO("START\nSET total TO 0\nFOR i FROM 1 TO 5\n    IF i modulo 2 equals 1 THEN\n        SET total TO total + i\n    END IF\nEND FOR\nDISPLAY total\nEND"),
+            PSEUDO("START\nSET total TO 0\nFOR i FROM 1 TO 5\n    IF i % 2 == 1 THEN\n        SET total TO total + i\n    END IF\nEND FOR\nDISPLAY total\nEND"),
           ] },
           { kind: "exercise", title: "Design and write: sum of even numbers", blocks: [
             PQ("First write the pseudocode as comments. Then write the program: read n and display the sum of the even numbers from 1 to n. Use the prompt <code>n: </code>. Test input: 10.",
@@ -709,7 +730,7 @@
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: area of a rectangle", blocks: [
             T("Read the length and the width of a rectangle, and display its area."),
-            IPO([["Input", "length, width (float)"], ["Output", "the area"], ["Processing", "area = length × width"]]),
+            IPO([["Input", "length, width (float)"], ["Output", "the area"], ["Processing", "area = length * width"]]),
           ] },
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
             PQ("Use the prompts <code>Length: </code> and <code>Width: </code>. Test input: 4 and 2.5.", "Length: 4\nWidth: 2.5\nArea = 10.0", "# Write your program here\n", ["4", "2.5"], 'print("Area =", length * width)'),
@@ -743,8 +764,8 @@
             PQ("Use the prompt <code>Number: </code>. Test input: 7, 3, 12, 9, 5.", "Number: 7\nNumber: 3\nNumber: 12\nNumber: 9\nNumber: 5\nMax = 12", "# Write your program here\n", ["7", "3", "12", "9", "5"], "largest = first number; for k in range(4): if x > largest: largest = x"),
           ] },
           { kind: "problem", part: "Problem 6", title: "Problem 6: factorial", blocks: [
-            T("Read a positive integer n, and display n! = 1 × 2 × … × n. The course practice uses a predefined process (a function) for this calculation; functions come in Topic 05, so this program uses a loop."),
-            IPO([["Input", "n (int)"], ["Output", "n!"], ["Repetition", "result = result × i for i from 1 to n, starting with result = 1"]]),
+            T("Read a positive integer n, and display n! = 1 × 2 × … × n. The lecture version of this problem calls a predefined process factorial(n). Functions are taught in Topic 05, so this program uses a loop."),
+            IPO([["Input", "n (int)"], ["Output", "n!"], ["Repetition", "result = result * i for i from 1 to n, starting with result = 1"]]),
           ] },
           { kind: "exercise", part: "Problem 6", title: "Problem 6: write the program", blocks: [
             PQ("Use the prompt <code>n: </code> and display the result as in the target. Test input: 5.", "n: 5\n5! = 120", "# Write your program here\n", ["5"], 'print(str(n) + "! =", result)'),

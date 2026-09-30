@@ -27,14 +27,14 @@
       { line: 0, note: "<code>print()</code> displays the text inside the quotes. The quotes are not displayed.", print: "Battery check" },
       { line: 1, note: "<code>85</code> is a number. <code>print()</code> displays its value on the next line.", print: "85" },
       { line: 2, note: "The third statement displays its text on a new line.", print: "Check complete" },
-      { line: -1, note: "No statement is left. The program ends." },
+      { line: -1, note: "No statement is left. The program ends. Result check: three statements gave three output lines, in the same order." },
     ],
   };
 
   const T_power = {
     code: ["voltage = 12", "current = 2", "power = voltage * current", 'print("Power =", power, "W")'],
     steps: [
-      { line: -1, note: "No variable exists yet." },
+      { line: -1, note: "No variable exists yet. The colour of a value shows its data type (Lesson 3): whole number blue, decimal number green, text yellow, True or False purple." },
       { line: 0, note: "The value 12 is stored in the variable <code>voltage</code>.", set: { voltage: "12" } },
       { line: 1, note: "The value 2 is stored in the variable <code>current</code>.", set: { current: "2" } },
       { line: 2, note: "The right side is evaluated first: <code>voltage * current</code> → <code>12 * 2</code> → <code>24</code>. Then 24 is stored in <code>power</code>.", set: { power: "24" } },
@@ -79,13 +79,13 @@
   const T_types = {
     code: ["voltage = 12", "resistance = 4.7", 'unit = "ohm"', "is_on = True", "print(type(resistance))", "print(type(unit))"],
     steps: [
-      { line: -1, note: "No variable exists yet. Colours: int blue, float green, str yellow, bool purple." },
+      { line: -1, note: "No variable exists yet." },
       { line: 0, note: "12 has no decimal point, so it is an <code>int</code>.", set: { voltage: "12" } },
       { line: 1, note: "4.7 has a decimal point, so it is a <code>float</code>.", set: { resistance: "4.7" } },
       { line: 2, note: "Text in quotes is a <code>str</code>.", set: { unit: "'ohm'" } },
       { line: 3, note: "<code>True</code> is a <code>bool</code>.", set: { is_on: "True" } },
       { line: 4, note: "<code>type(resistance)</code> reports the type <code>float</code>.", print: "<class 'float'>" },
-      { line: 5, note: "<code>type(unit)</code> reports the type <code>str</code>.", print: "<class 'str'>" },
+      { line: 5, note: "<code>type(unit)</code> is <code>str</code>. Result check: 4.7 → float, <code>\"ohm\"</code> → str.", print: "<class 'str'>" },
     ],
   };
 
@@ -183,7 +183,7 @@
             L([
               "Each line of a program is one <b>statement</b>.",
               "Python executes line 1, then line 2, then line 3, and so on.",
-              "Each <code>print()</code> statement displays one line of output.",
+              "By default, each <code>print()</code> statement displays one line of output.",
               "The output therefore appears in the same order as the statements.",
               "The program ends after the last statement.",
             ]),
@@ -211,6 +211,7 @@
               "The values are separated by <b>commas</b>.",
               "<code>print()</code> displays the values in order and inserts <b>one space</b> between them.",
               "This form displays a label, a value, and a unit on one line.",
+              "<code>print()</code> with no value displays an empty line.",
             ]),
           ] },
           { kind: "code", part: "print() with several values", title: "Example: measurements with units", blocks: [
@@ -272,7 +273,7 @@
               "Sensor 1: ready", 'print("Sensor 1:")\nprint("ready")\n', null, 'print("Sensor 1:", end=" ")'),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("Write a program that displays this device label. Use commas between the values. Display the date on line 4 with <code>sep</code>.",
+            PQ("Write a program that displays this device label. Use commas between the values. Display the date on line 4 with <code>sep</code>. Write <code>\"09\"</code> as text in quotes: a number cannot be written with a leading 0.",
               "Device: Pump\nVoltage: 220 V\nCurrent: 1.5 A\n29/09/2026", "# Write your program here\n", null,
               'print("Voltage:", 220, "V") and print(29, "09", 2026, sep="/")'),
           ] },
@@ -312,6 +313,7 @@
               ["Processing", "power = voltage × current"],
               ["Algorithm", "1. Store the voltage.<br>2. Store the current.<br>3. Compute the power.<br>4. Display the power."],
             ]),
+            T("The full problem-solving method is in Lesson 6."),
           ] },
           { kind: "code", part: "Assignment", title: "First example: execution step by step", blocks: [W("codeTrace", T_power)] },
           { kind: "concept", part: "Using variables in calculations", title: "A name is replaced by its value", blocks: [
@@ -446,13 +448,13 @@
           ] },
           { kind: "concept", part: "Checking a type", title: "type() reports the type of a value", blocks: [
             CODE("type(value)", null, "syntax"),
-            T("<code>print(type(4.7))</code> displays <code>&lt;class 'float'&gt;</code>. The word in quotes is the type name."),
+            T("<code>print(type(4.7))</code> displays <code>&lt;class 'float'&gt;</code>. Here <b>class</b> means type. The word in quotes is the type name."),
           ] },
           { kind: "code", part: "Checking a type", title: "First example: execution step by step", blocks: [W("codeTrace", T_types)] },
           { kind: "concept", part: "Numbers and text are different", title: "The same digits, two different types", blocks: [
             TB(["Expression", "Result", "Reason"], [
               ["<code>12 + 3</code>", "<code>15</code>", "two ints: addition"],
-              ["<code>\"12\" + \"3\"</code>", "<code>\"123\"</code>", "two strs: the texts are joined"],
+              ["<code>\"12\" + \"3\"</code>", "<code>\"123\"</code>", "two strs: the texts are joined (concatenated)"],
               ["<code>\"12\" + 3</code>", "error", "a str and an int cannot be added (TypeError, Lesson 8)"],
             ]),
             T("Digits inside quotes are characters, not a number. Python does not calculate with them."),
@@ -472,6 +474,7 @@
             ]),
           ] },
           { kind: "visual", part: "A variable takes the type of its value", title: "One name, three values", blocks: [
+            T("A name <b>refers to</b> its value in memory. A value that no name refers to is <b>unreferenced</b>: the program cannot use it."),
             W("rebindViz", { title: "reading: one name, three values", name: "reading", code: ["reading = 25", "reading = 25.5", 'reading = "error"'], steps: [
               { value: 25, note: "<code>reading</code> refers to an int." },
               { value: 25.5, note: "The same name now refers to a float." },
@@ -526,13 +529,11 @@
             L(["Bits, bytes, and addresses", "Binary numbers", "Converting decimal to binary", "Characters (ASCII)", "Size of each data type", "float values are approximate"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Bits, bytes, and addresses", title: "Bits, bytes, and addresses", blocks: [
-            TB(["Unit", "Meaning"], [
-              ["bit", "one binary digit: 0 or 1"],
-              ["byte", "8 bits. One byte has 2⁸ = 256 bit patterns, so it stores the numbers 0 to 255."],
-              ["address", "the number that identifies one byte in memory"],
-            ]),
+            T("Topic 01 defined the bit and the byte (8 bits)."),
             L([
-              "Memory is a long sequence of bytes. Each byte has its own address.",
+              "One byte has 2⁸ = 256 bit patterns, so it stores the numbers 0 to 255.",
+              "Memory is a long sequence of bytes.",
+              "An <b>address</b> is the number that identifies one byte in memory. Each byte has its own address.",
               "A value that needs 4 bytes uses 4 consecutive addresses.",
             ]),
           ] },
@@ -579,7 +580,7 @@
           ] },
           { kind: "concept", part: "Size of each data type", title: "Each type uses a fixed number of bytes", blocks: [
             TB(["Type (C)", "Size", "Range or precision"], [
-              ["<code>char</code>", "1 byte", "one character (codes 0 to 255)"],
+              ["<code>char</code>", "1 byte", "one character: 8 bits hold codes 0 to 255. ASCII needs only 7 bits (0 to 127)."],
               ["<code>int</code>", "4 bytes", "about −2.1 billion to +2.1 billion"],
               ["<code>float</code>", "4 bytes", "about 7 significant digits"],
               ["<code>double</code>", "8 bytes", "about 15 to 16 significant digits"],
@@ -594,13 +595,13 @@
             L([
               "A float is stored in binary with a fixed number of bits.",
               "Many decimal fractions, such as 0.1, have no exact binary form. The float stores the nearest possible value.",
-              "For this reason <code>0.1 + 0.2</code> displays <code>0.30000000000000004</code>.",
-              "Fractions made of halves, such as 0.5 and 0.25, are stored exactly.",
+              "The error does not always appear. <code>0.1 + 0.2</code> displays <code>0.30000000000000004</code>, but <code>0.1 + 0.4</code> displays <code>0.5</code>.",
+              "Fractions with a denominator of 2, 4, 8, 16, …, such as 0.5 (1/2) and 0.25 (1/4), are stored exactly.",
               "<code>round()</code> (Lesson 5) shortens a displayed result.",
             ]),
           ] },
           { kind: "code", part: "float values are approximate", title: "Example: exact and approximate results", blocks: [
-            EX("print(0.1 + 0.2)\nprint(0.25 + 0.5)\nprint(1.1 + 2.2)", "tenths are approximate; halves and quarters are exact", [
+            EX("print(0.1 + 0.2)\nprint(0.25 + 0.5)\nprint(1.1 + 2.2)", "some results show the error; 1/2 and 1/4 are exact", [
               { c: "0.1 + 0.2", e: "Approximate: <code>0.30000000000000004</code>" },
               { c: "0.25 + 0.5", e: "Exact: <code>0.75</code>" },
               { c: "1.1 + 2.2", e: "Approximate: <code>3.3000000000000003</code>" },
@@ -608,12 +609,11 @@
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "A bit is 0 or 1. A byte is 8 bits and has 256 patterns.",
-              "Every byte in memory has an address.",
+              "One byte has 256 bit patterns: 0 to 255. Every byte has an address.",
               "A binary number is the sum of the place values of its 1 bits.",
               "Decimal to binary: divide by 2 repeatedly and read the remainders upward.",
               "A character is stored as its ASCII code: <code>'A'</code> is 65.",
-              "The type decides the size. A float stores an approximate value.",
+              "The type decides the size. A float value can be approximate.",
             ]),
             NEXT("<b>Arithmetic operations</b>. Python computes new values from stored numbers with arithmetic operators."),
           ] },
@@ -638,7 +638,7 @@
             [RUN("print(0.5 + 0.25)\nprint(0.1 + 0.7)\nprint(1.5 * 2)")],
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
-            { q: "How many bits are in one byte?", choices: ["4", "8", "16", "32"], answer: 1, explain: "One byte is 8 bits." },
+            { q: "How many different bit patterns does one byte have?", choices: ["8", "16", "255", "256"], answer: 3, explain: "One byte has 8 bits, so it has 2⁸ = 256 patterns: the numbers 0 to 255." },
             { q: "The ASCII code of 'A' is…", choices: ["1", "48", "65", "97"], answer: 2, explain: "'A' is 65. 'a' is 97, and '0' is 48." },
           ])] },
         ],
@@ -694,10 +694,12 @@
             TB(["Priority", "Operators"], [
               ["1 (first)", "<code>( )</code> parentheses"],
               ["2", "<code>**</code>"],
-              ["3", "<code>*</code> &nbsp; <code>/</code> &nbsp; <code>//</code> &nbsp; <code>%</code>"],
-              ["4 (last)", "<code>+</code> &nbsp; <code>-</code>"],
+              ["3", "<code>-x</code>: a minus sign before one value"],
+              ["4", "<code>*</code> &nbsp; <code>/</code> &nbsp; <code>//</code> &nbsp; <code>%</code>"],
+              ["5 (last)", "<code>+</code> &nbsp; <code>-</code>"],
             ]),
-            T("Operators with the same priority are evaluated from left to right. Parentheses change the order."),
+            T("Operators with the same priority are evaluated from left to right. Only <code>**</code> groups from the right: <code>2 ** 3 ** 2</code> → <code>2 ** 9</code> → <code>512</code>."),
+            T("<code>**</code> comes before the minus sign: <code>-2 ** 2</code> → <code>-(2 ** 2)</code> → <code>-4</code>. Parentheses change the order."),
           ] },
           { kind: "concept", part: "Order of operations", title: "Evaluating an expression step by step", blocks: [
             TB(["Step", "Expression"], [
@@ -721,7 +723,7 @@
           { kind: "concept", part: "int and float results", title: "The type of an arithmetic result", blocks: [
             L([
               "<code>/</code> always gives a float.",
-              "If one operand is a float, the result is a float.",
+              "If one <b>operand</b> (a value on either side of an operator) is a float, the result is a float.",
               "If both operands are ints, <code>+</code>, <code>-</code>, <code>*</code>, <code>//</code>, and <code>%</code> give an int.",
             ]),
             TB(["Expression", "Result", "Type"], [
@@ -752,7 +754,7 @@
           { kind: "summary", title: "Summary", blocks: [
             L([
               "<code>/</code> gives a float. <code>//</code> gives the whole-number part. <code>%</code> gives the remainder.",
-              "Order: parentheses, then <code>**</code>, then <code>* / // %</code>, then <code>+ -</code>. The same level runs left to right.",
+              "Order: parentheses, <code>**</code>, a minus sign <code>-x</code>, <code>* / // %</code>, then <code>+ -</code>. The same level runs left to right, except <code>**</code>.",
               "A float operand gives a float result.",
               "<code>round()</code> and <code>abs()</code> are built in. <code>math.sqrt()</code> and <code>math.pi</code> need <code>import math</code>.",
             ]),
@@ -780,7 +782,7 @@
               "P = 25.0 W", "current = 0.5\nresistance = 100\n# compute and display the power\n", null, 'power = current ** 2 * resistance, then print("P =", power, "W")'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
-            { q: "`9 // 2 + 9 % 2` equals…", choices: ["4", "4.5", "5", "5.5"], answer: 2, explain: "9 // 2 is 4 and 9 % 2 is 1, so 4 + 1 = 5." },
+            { q: "`13 // 4 + 13 % 4` equals…", choices: ["3", "3.25", "4", "4.25"], answer: 2, explain: "13 // 4 is 3 and 13 % 4 is 1, so 3 + 1 = 4." },
             { q: "The type of `6 / 2` is…", choices: ["int", "float", "str", "bool"], answer: 1, explain: "The operator / always gives a float: 3.0." },
           ])] },
         ],
@@ -803,7 +805,7 @@
             L([
               "<code>input()</code> displays the prompt text.",
               "The program waits until the user types a value and presses Enter.",
-              "<code>input()</code> returns the typed characters as a <b>str</b>, even when they are digits.",
+              "<code>input()</code> returns (gives back) the typed characters as a <b>str</b>, even when they are digits.",
               "The assignment stores the returned text in the variable.",
             ]),
           ] },
@@ -946,7 +948,7 @@
           { kind: "concept", part: "Length, joining, and repeating", title: "len(), +, and *", blocks: [
             TB(["Operation", "Example", "Result"], [
               ["<code>len(s)</code>: number of characters", "<code>len(\"Motor A\")</code>", "<code>7</code> (the space counts)"],
-              ["<code>s1 + s2</code>: join", "<code>\"Motor\" + \"-\" + \"A\"</code>", "<code>\"Motor-A\"</code>"],
+              ["<code>s1 + s2</code>: join (concatenate)", "<code>\"Motor\" + \"-\" + \"A\"</code>", "<code>\"Motor-A\"</code>"],
               ["<code>s * n</code>: repeat n times", "<code>\"=\" * 5</code>", "<code>\"=====\"</code>"],
             ]),
           ] },
@@ -1006,6 +1008,7 @@
             CODE('word = "motor"\nword = "M" + word[1:]\nprint(word)', "Motor", "building a new string"),
           ] },
           { kind: "concept", part: "Checking and changing text", title: "in, upper(), lower(), and replace()", blocks: [
+            T("A <b>method</b> is a function that belongs to a value and is called with a dot: <code>s.upper()</code>. A function such as <code>len(s)</code> takes the value in its parentheses."),
             TB(["Operation", "Result", "Example with s = \"motor ok\""], [
               ["<code>x in s</code>", "<code>True</code> if x appears in s, otherwise <code>False</code>", "<code>\"ok\" in s</code> → <code>True</code>"],
               ["<code>s.upper()</code>", "a copy in capital letters", "<code>\"MOTOR OK\"</code>"],
@@ -1028,7 +1031,7 @@
               "<code>s[start:end]</code> stops before <code>end</code>.",
               "Strings are immutable. The methods return new strings.",
             ]),
-            NEXT("<b>Errors and debugging</b>. The error messages of all statements in this chapter, and a method to find a wrong result."),
+            NEXT("<b>Errors and debugging</b>. The error messages of all statements in this chapter, and the steps to find a wrong result."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
             [T("Write the output on paper, line by line.<br>Then run the program and compare.")],
@@ -1062,7 +1065,7 @@
       {
         id: "errors",
         title: "Errors and debugging",
-        sub: "The three kinds of error, error messages, and a method to find a wrong result.",
+        sub: "The three kinds of error, error messages, and the steps to find a wrong result.",
         slides: "02:3–9",
         keywords: "error syntax runtime logical nameerror typeerror valueerror zerodivisionerror indexerror traceback debug",
         deck: [
@@ -1071,10 +1074,10 @@
             L(["Three kinds of error", "Reading an error message", "Common runtime errors", "Finding a logical error"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Three kinds of error", title: "Syntax, runtime, and logical errors", blocks: [
-            TB(["Kind", "When it appears", "What happens"], [
+            TB(["Kind", "When it is found", "What happens"], [
               ["Syntax error", "before the program starts", "The code breaks the rules of Python. No line is executed."],
               ["Runtime error", "while the program runs", "An operation cannot be performed. The program stops at that line."],
-              ["Logical error", "after the program ends", "The program runs without a message, but the result is wrong."],
+              ["Logical error", "when the output is checked", "The program runs without a message, but the result is wrong."],
             ]),
           ] },
           { kind: "code", part: "Three kinds of error", title: "Example: a syntax error", blocks: [
@@ -1093,6 +1096,7 @@
           { kind: "concept", part: "Reading an error message", title: "Reading an error message", blocks: [
             CODE('Traceback (most recent call last):\n  File "<program>", line 4, in <module>\n    resistance = voltage / current\n                 ~~~~~~~~^~~~~~~~~\nZeroDivisionError: division by zero', null, "error message of the previous example", "text"),
             L([
+              "<code>Traceback</code> starts the error message. <code>in &lt;module&gt;</code> means the main program.",
               "Read the <b>last line</b> first. It names the error type and describes the problem.",
               "Then read the <b>line number</b> and the source line. The marker <code>^</code> points to the part that failed.",
               "Correct that line, or the earlier line that gave a variable its wrong value.",
@@ -1109,29 +1113,29 @@
           ] },
           { kind: "code", part: "Common runtime errors", title: "NameError", blocks: [
             EX("Voltage = 12\nprint(voltage)", "a misspelled name", [
-              { c: "print(voltage)", e: "NameError: name 'voltage' is not defined. Line 1 created <code>Voltage</code> with a capital V." },
+              { c: "print(voltage)", e: "The last line: <code>NameError: name 'voltage' is not defined. Did you mean: 'Voltage'?</code> Line 1 created <code>Voltage</code> with a capital V." },
               { c: "Correction", e: "Use exactly the same name in both lines." },
             ]),
           ] },
           { kind: "code", part: "Common runtime errors", title: "TypeError", blocks: [
             EX('count = 5\nprint("Count: " + count)', "a str joined with an int", [
-              { c: '"Count: " + count', e: "TypeError: a str can only be joined with a str." },
+              { c: '"Count: " + count', e: 'The last line: <code>TypeError: can only concatenate str (not "int") to str</code> <i>Concatenate</i> means join: a str joins only with a str.' },
               { c: "Correction", e: '<code>"Count: " + str(count)</code> or <code>print("Count:", count)</code>' },
             ]),
           ] },
           { kind: "code", part: "Common runtime errors", title: "ValueError", blocks: [
             EX('reading = int("25.5")\nprint(reading)', "unsuitable text for int()", [
-              { c: 'int("25.5")', e: "ValueError: the text is not a whole number." },
+              { c: 'int("25.5")', e: "The last line: <code>ValueError: invalid literal for int() with base 10: '25.5'</code> The <i>literal</i> (the text) is not a whole decimal (<i>base 10</i>) number." },
               { c: "Correction", e: '<code>float("25.5")</code>' },
             ]),
           ] },
           { kind: "code", part: "Common runtime errors", title: "IndexError", blocks: [
             EX('code = "TMP36"\nprint(code[5])', "an index outside the string", [
-              { c: "code[5]", e: "IndexError: the indexes of <code>\"TMP36\"</code> are 0 to 4." },
+              { c: "code[5]", e: "The last line: <code>IndexError: string index out of range</code> The indexes of <code>\"TMP36\"</code> are 0 to 4." },
               { c: "Correction", e: "<code>code[4]</code> or <code>code[-1]</code>" },
             ]),
           ] },
-          { kind: "concept", part: "Finding a logical error", title: "A method to find a logical error", blocks: [
+          { kind: "concept", part: "Finding a logical error", title: "Steps to find a logical error", blocks: [
             L([
               "Compute the expected result by hand.",
               "Run the program and compare its output with the expected result.",

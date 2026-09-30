@@ -24,10 +24,10 @@
     { line: 0, mode: "w", status: "open", content: [], exists: true, note: "open(..., 'w') creates the file (or empties it) and opens it for writing." },
     { line: 1, mode: "w", status: "open", content: ["21.5"], flow: "write", note: "write adds the text \"21.5\\n\": one line." },
     { line: 2, mode: "w", status: "open", content: ["21.5", "22.0"], flow: "write", note: "A second line." },
-    { line: 3, status: "closed", content: ["21.5", "22.0"], note: "The with block ends: the file is closed." },
+    { line: 0, status: "closed", content: ["21.5", "22.0"], note: "The with block ends: the file is closed." },
     { line: 3, mode: "r", status: "open", content: ["21.5", "22.0"], note: "The file is opened again, for reading." },
-    { line: 4, mode: "r", status: "open", content: ["21.5", "22.0"], flow: "read", out: "21.5\n22.0", note: "read() returns one string, <code>'21.5\\n22.0\\n'</code>; print displays it." },
-    { line: 4, status: "closed", content: ["21.5", "22.0"], out: "21.5\n22.0", note: "The with block ends: the file is closed." },
+    { line: 4, mode: "r", status: "open", content: ["21.5", "22.0"], flow: "read", out: "21.5\n22.0\n\n", note: "read() returns <code>'21.5\\n22.0\\n'</code>; print adds one more \\n: the empty last line." },
+    { line: 3, status: "closed", content: ["21.5", "22.0"], out: "21.5\n22.0\n\n", note: "The file is closed. Result check: two write() calls, two lines." },
   ];
 
   App.registerTopic({
@@ -85,12 +85,20 @@
               ["<code>f.read(n)</code>", "the next n characters"],
             ]),
             T("The file object remembers its position: the next read continues where the previous one stopped."),
+            T("A line break <code>\"\\n\"</code> is one character: read(n) counts it like any other character."),
           ] },
           { kind: "code", part: "Reading a whole file", title: "Example: read(n) continues", blocks: [
             EX('with open("code.txt", "w") as f:\n    f.write("ABCDEFG")\nwith open("code.txt") as f:\n    print(f.read(3))\n    print(f.read(2))\n    print(f.read())', "the position moves on", [
               { c: "f.read(3)", e: "<code>ABC</code>" },
               { c: "f.read(2)", e: "Continues: <code>DE</code>" },
               { c: "f.read()", e: "The rest: <code>FG</code>" },
+            ]),
+          ] },
+          { kind: "code", part: "Reading a whole file", title: "Example: read(n) counts the line break", blocks: [
+            EX('with open("two.txt", "w") as f:\n    f.write("ab\\ncd\\n")\nwith open("two.txt") as f:\n    part = f.read(4)\nprint(len(part))\nprint(part)', "the file holds two lines", [
+              { c: "f.read(4)", e: "a, b, the line break, c: <code>'ab\\nc'</code>" },
+              { c: "len(part)", e: "<code>4</code>: the line break is one character" },
+              { c: "print(part)", e: "<code>ab</code> and <code>c</code> on two lines" },
             ]),
           ] },
           { kind: "concept", part: "Reading line by line", title: "readline(), readlines(), and a for loop", blocks: [
@@ -200,6 +208,7 @@
               ["<code>os.remove(name)</code>", "deletes a file"],
             ]),
             T("A file name without a folder refers to the current working folder."),
+            T("On this site, files are kept in the browser's memory, not on the computer's disk."),
           ] },
           { kind: "code", part: "The os module", title: "Example: exists() before and after remove()", blocks: [
             EX('import os\n\nwith open("temp.txt", "w") as f:\n    f.write("x")\nprint(os.path.exists("temp.txt"))\nos.remove("temp.txt")\nprint(os.path.exists("temp.txt"))', "exists, remove, exists", [
@@ -254,12 +263,9 @@
               "The module <code>csv</code> reads and writes this format: <code>import csv</code>.",
             ]),
           ] },
-          { kind: "visual", part: "The CSV format", title: "Table and text", blocks: [
-            W("csvFlow", { filename: "devices.csv", columns: ["Name", "Voltage", "Current"], rows: [["pump", 220, 1.5], ["fan", 110, 0.4]] }),
-          ] },
           { kind: "concept", part: "Writing rows", title: "csv.writer", blocks: [
             L([
-              "Open the file with <code>newline=\"\"</code>, so that no empty lines appear between the rows.",
+              "Open the file with <code>newline=\"\"</code>. Without it, Windows adds an empty line after every row, and csv.reader later returns these lines as empty rows <code>[]</code>.",
               "<code>w = csv.writer(f)</code> creates a writer.",
               "<code>w.writerow(list)</code> writes one row; <code>w.writerows(list_of_lists)</code> writes several.",
             ]),
@@ -276,6 +282,9 @@
               "The header is also a row. Skip it with a counter, or read all rows with <code>list(csv.reader(f))</code> and slice <code>[1:]</code>.",
               "Convert numbers: <code>float(row[1])</code>.",
             ]),
+          ] },
+          { kind: "visual", part: "Reading rows", title: "Writing rows and reading them back", blocks: [
+            W("csvFlow", { filename: "devices.csv", columns: ["Name", "Voltage", "Current"], rows: [["pump", 220, 1.5], ["fan", 110, 0.4]] }),
           ] },
           { kind: "code", part: "Reading rows", title: "Example: the total voltage", blocks: [
             T("<code>rows[1:]</code> skips the header row, and <code>int()</code> converts each voltage. The output is 330 = 220 + 110."),
@@ -465,12 +474,12 @@
               ["<code>np.mean(a)</code>", "<code>5.0</code>"],
               ["<code>np.max(a)</code>, <code>np.min(a)</code>", "<code>9</code>, <code>2</code>"],
             ]),
-            T("For a two-dimensional array, <code>axis=1</code> works along each row, and <code>axis=0</code> along each column: <code>np.sum(m, axis=1)</code> gives the row sums."),
+            T("For a two-dimensional array, <code>axis=0</code> gives one result for each column, and <code>axis=1</code> one result for each row."),
           ] },
-          { kind: "code", part: "Aggregation", title: "Example: row sums and the maximum", blocks: [
-            EX("import numpy as np\nm = np.array([[1, 2, 3], [4, 5, 6]])\nprint(np.sum(m))\nprint(np.sum(m, axis=1))\nprint(np.mean(m))\nprint(np.max(m))", "the whole array, or row by row", [
-              { c: "np.sum(m)", e: "<code>21</code>" },
-              { c: "np.sum(m, axis=1)", e: "Row sums: <code>[ 6 15]</code>" },
+          { kind: "code", part: "Aggregation", title: "Example: column sums, row sums, and the maximum", blocks: [
+            EX("import numpy as np\nm = np.array([[1, 2, 3], [4, 5, 6]])\nprint(np.sum(m))\nprint(np.sum(m, axis=0))\nprint(np.sum(m, axis=1))\nprint(np.mean(m))\nprint(np.max(m))", "the whole array, each column, or each row", [
+              { c: "np.sum(m)", e: "All six elements: <code>21</code>" },
+              { c: "axis=0, axis=1", e: "Column sums 1 + 4, 2 + 5, 3 + 6: <code>[5 7 9]</code>. Row sums: <code>[ 6 15]</code>" },
               { c: "np.mean(m), np.max(m)", e: "<code>3.5</code> and <code>6</code>" },
             ]),
           ] },
@@ -479,7 +488,7 @@
               "<code>np.array(list)</code> creates an array; it prints without commas.",
               "<code>shape</code>, <code>ndim</code>, <code>size</code> describe it; <code>m[row, col]</code> indexes 2-D arrays.",
               "Operators and np functions work element by element, without loops.",
-              "<code>np.sum</code>, <code>np.mean</code>, <code>np.max</code>, <code>np.min</code>; <code>axis=1</code> for rows.",
+              "<code>np.sum</code>, <code>np.mean</code>, <code>np.max</code>, <code>np.min</code>; <code>axis=0</code>: each column, <code>axis=1</code>: each row.",
             ]),
             NEXT("<b>pandas DataFrames</b>. Tables with named columns."),
           ] },
@@ -576,7 +585,7 @@
             PQ("Create a DataFrame of students with the columns name and score: Ann 78, Ben 85, Cat 92. Display the average score.",
               "85.0", "import pandas as pd\n# Write your program here\n", null, 'print(df["score"].mean())'),
           ] },
-          { kind: "exercise", title: "Write a program: the first rows", blocks: [
+          { kind: "exercise", title: "Write a program: the number of rows and the maximum", blocks: [
             PQ("The starter writes a CSV file. Read it with pandas and display the number of rows and the largest temp.",
               "4\n31", 'import pandas as pd\nwith open("log.csv", "w") as f:\n    f.write("hour,temp\\n0,22\\n6,24\\n12,31\\n18,26\\n")\n# Write your program here\n', null, 'print(df.shape[0]); print(df["temp"].max())'),
           ] },
@@ -643,6 +652,12 @@
               { c: 'df["Voltage"] * df["Current"]', e: "Row by row: 220 × 1.5 = 330.0 and 110 × 0.4 = 44.0" },
               { c: 'df["Power"] = power', e: "Stores the results as a new column." },
               { c: "print(df)", e: "The table now has four columns." },
+            ]),
+          ] },
+          { kind: "code", part: "Adding and changing columns", title: "Example: joining two tables with concat", blocks: [
+            EX('import pandas as pd\nday1 = pd.DataFrame({\n    "Hour": [8, 12],\n    "Temp": [24, 31]})\nday2 = pd.DataFrame({\n    "Hour": [8, 12],\n    "Temp": [23, 30]})\nboth = pd.concat([day1, day2])\nprint(both)\nprint(len(both))', "two tables with the same columns", [
+              { c: "pd.concat([day1, day2])", e: "The rows of day2 are placed below the rows of day1: <code>4</code> rows." },
+              { c: "print(both)", e: "Each row keeps its index label: 0, 1, 0, 1. <code>reset_index(drop=True)</code> renumbers them." },
             ]),
           ] },
           { kind: "concept", part: "Groups", title: "groupby", blocks: [

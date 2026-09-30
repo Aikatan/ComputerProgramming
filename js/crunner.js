@@ -167,9 +167,109 @@ App.c = {
     }
     return lines.join("\n");
   },
+  /* Mistakes that a C compiler accepts with only a warning (and the program then runs with a
+     wrong value) stop the run here with an error, so that they are found at once:
+     = used as a condition, a chained comparison such as 0 < x < 10, and a local variable that
+     is read before it has a value. printf conversions are checked in _printf. */
+  _blank(code) {
+    // comments and the insides of literals become spaces; positions and line breaks stay the same
+    return code.replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'/g, (m) =>
+      (m[0] === '"' || m[0] === "'" ? m[0] + m.slice(1, -1).replace(/[^\n]/g, " ") + m[m.length - 1] : m.replace(/[^\n]/g, " ")));
+  },
+  _checkPitfalls(code) {
+    const src = this._blank(code);
+    const lineAt = (pos) => src.slice(0, pos).split("\n").length;
+    const warned = "A C compiler only warns about this, and the program then runs with a wrong value.";
+    // 1. if (x = 5) / while (x = 5): = at the top level of the condition
+    const cond = /\b(if|while)\s*\(/g;
+    let m;
+    while ((m = cond.exec(src))) {
+      let i = cond.lastIndex, depth = 1, top = "";
+      for (; i < src.length && depth > 0; i++) {
+        const ch = src[i];
+        if (ch === "(") depth++;
+        else if (ch === ")") depth--;
+        top += depth === 1 && ch !== "(" && ch !== ")" ? ch : " ";
+      }
+      if (/(^|[^=!<>+\-*/%&|^])=(?!=)/.test(top)) {
+        throw new Error("Error: line " + lineAt(m.index) + ": = in the condition of " + m[1] + " stores a value; it does not compare.\n" +
+          "Use == to compare, for example " + m[1] + " (level == 50). " + warned);
+      }
+    }
+    // 2. a < b < c
+    src.split("\n").forEach((ln, k) => {
+      if (/^\s*#/.test(ln)) return;
+      const s = ln.replace(/->/g, "..").replace(/<<=|>>=/g, "   ").replace(/<<|>>/g, "  ");
+      const c = s.match(/([\w.\[\]]+)\s*(<=|>=|<|>)\s*([\w.\[\]]+)\s*(<=|>=|<|>)\s*([\w.\[\]]+)/);
+      if (c) {
+        throw new Error("Error: line " + (k + 1) + ": " + c[0] + " does not test a range in C: " + c[1] + " " + c[2] + " " + c[3] +
+          " gives 1 or 0, and that result is compared with " + c[5] + ".\nWrite " + c[1] + " " + c[2] + " " + c[3] + " && " + c[3] + " " + c[4] + " " + c[5] + ". " + warned);
+      }
+    });
+    // 3. a local variable of a basic type that is read before it has a value
+    const basic = "(?:(?:unsigned|signed)\\s+)?(?:int|double|float|char|bool|long(?:\\s+long)?(?:\\s+int)?|short(?:\\s+int)?|unsigned|signed|u?int(?:8|16|32)_t)";
+    const head = /^[ \t]*[\w \t*]*?\b\w+\s*\([^;{}()]*\)\s*\{/gm;
+    while ((m = head.exec(src))) {
+      let i = head.lastIndex, depth = 1;
+      for (; i < src.length && depth > 0; i++) {
+        if (src[i] === "{") depth++;
+        else if (src[i] === "}") depth--;
+      }
+      const start = head.lastIndex, body = src.slice(start, i - 1);
+      // the { } bodies of the loops in this function: a read may follow a value set in an earlier pass
+      const loops = [];
+      const loopHead = /\b(for|while)\s*\(|\bdo\s*\{/g;
+      let h;
+      while ((h = loopHead.exec(body))) {
+        let j = loopHead.lastIndex;
+        if (h[1]) {
+          for (let dp = 1; j < body.length && dp > 0; j++) dp += body[j] === "(" ? 1 : body[j] === ")" ? -1 : 0;
+          while (/\s/.test(body[j] || "")) j++;
+          if (body[j] !== "{") continue;
+          j++;
+        }
+        let e = j;
+        for (let dp = 1; e < body.length && dp > 0; e++) dp += body[e] === "{" ? 1 : body[e] === "}" ? -1 : 0;
+        loops.push([j, e]);
+      }
+      // name = expression (the expression does not read name), or &name
+      const gives = (name, text) => {
+        const own = new RegExp("(?<![\\w.]|->)" + name + "\\b");
+        const set = new RegExp("(?<![\\w.]|->)" + name + "\\s*=(?!=)([^;]*)|(?<!&)&\\s*" + name + "\\b", "g");
+        let s;
+        while ((s = set.exec(text))) if (s[1] === undefined || !own.test(s[1])) return true;
+        return false;
+      };
+      const decl = new RegExp("(^|[;{}])(\\s*)(static\\s+|const\\s+)?(" + basic + ")\\s+([^;(){}\\[\\]=*]+(?:,[^;(){}\\[\\]=*]+)*);", "g");
+      let d;
+      while ((d = decl.exec(body))) {
+        if (d[3]) continue;                                         // static locals start at 0
+        d[5].split(",").map((v) => v.trim()).filter((v) => /^\w+$/.test(v)).forEach((name) => {
+          const use = new RegExp("(?<![\\w.]|->)" + name + "\\b", "g");
+          use.lastIndex = decl.lastIndex;
+          let u;
+          while ((u = use.exec(body))) {
+            const before = body.slice(0, u.index), after = body.slice(u.index + name.length);
+            if (/sizeof\s*\(?\s*$/.test(before)) continue;
+            if (/(^|[^&])&\s*$/.test(before)) return;                // &x: scanf or a pointer gives it a value
+            if (/\bscanf\s*\([^;]*$/.test(before)) return;           // scanf("%d", x): the missing & is reported when it runs
+            if (new RegExp(basic + "\\s+$").test(before)) return;    // declared again in another block
+            const set = after.match(/^\s*=(?!=)([^;]*)/);
+            if (set && !new RegExp("(?<![\\w.]|->)" + name + "\\b").test(set[1])) return;   // x = ... gives it a value
+            if (loops.some(([a, b]) => a <= u.index && u.index < b && gives(name, body.slice(a, b)))) return;
+            throw new Error("Error: line " + lineAt(start + u.index) + ": " + name + " is used before it has a value.\n" +
+              "C does not give a variable a starting value: " + name + " holds an unknown value. Give it one first, for example " +
+              d[4] + " " + name + " = 0; " + warned);
+          }
+        });
+      }
+      head.lastIndex = i;
+    }
+  },
   _prep(code) {
     const types = this._types(code);
     this._checkDeclared(code, types);
+    this._checkPitfalls(code);
     if (/^[ \t]*#include\s*<stdint\.h>/m.test(code)) {
       code = code.replace(/^[ \t]*#include\s*<stdint\.h>[ \t]*$/m, "");
       const re = /\b(u?int(?:8|16|32)_t)\b/g;
@@ -261,7 +361,10 @@ App.c = {
       inc.load = function (rt) {
         const reg = rt.regFunc;
         rt.regFunc = function (f, scope, name, ...rest) {
-          if (replace[name]) f = replace[name](f);
+          if (replace[name]) {
+            f = replace[name](f);
+            if (replace[name].params) rest[0] = replace[name].params(rt);
+          }
           return reg.call(this, f, scope, name, ...rest);
         };
         let r;
@@ -288,8 +391,12 @@ App.c = {
       },
       strcat: () => (rt, _this, dest, src) => self._putString(rt, dest, rt.getStringFromCharArray(dest) + rt.getStringFromCharArray(src), "strcat"),
     };
+    // 9. JSCPP registers pow with one parameter and returns a bare number
+    const pow = () => (rt, _this, x, y) => rt.val(rt.doubleTypeLiteral, Math.pow(x.v, y.v));
+    pow.params = (rt) => [rt.doubleTypeLiteral, rt.doubleTypeLiteral];
     ["stdio.h", "cstdio"].forEach((n) => JS.includes[n] && wrapLoad(JS.includes[n], stdio, addFgets));
     ["string.h", "cstring"].forEach((n) => JS.includes[n] && wrapLoad(JS.includes[n], cstring));
+    ["math.h", "cmath"].forEach((n) => JS.includes[n] && wrapLoad(JS.includes[n], { pow }));
   },
   /* 6: wrap integer values into the range of their type, as C does */
   _wrapIntegers(rt) {
@@ -619,11 +726,33 @@ App.c = {
     arr[pos].v = 0;
     return dest;
   },
+  /* %d with a double (or %f with an int) compiles with only a warning in C and prints a wrong
+     value; here it stops with an error that names the conversion and the type of the value */
+  _checkFormat(rt, text, args) {
+    const specs = text.replace(/%%/g, "").match(/%[-+ #0]*(\d+|\*)?(\.(\d+|\*))?(hh|h|ll|l|L|z)?[a-zA-Z]/g) || [];
+    let k = 0;
+    specs.forEach((spec) => {
+      k += (spec.match(/\*/g) || []).length;                    // a * width or precision takes an int
+      const conv = spec[spec.length - 1], a = args[k++];
+      if (!a || !a.t) return;
+      const type = rt.makeTypeString(a.t), name = (/^[aeiou]/.test(type) ? "an " : "a ") + type;
+      const isInt = rt.isIntegerType(a.t) || rt.isBoolType(a.t), isFloat = rt.isFloatType(a.t);
+      let need = null;
+      if ("diouxXc".includes(conv) && !isInt) need = conv === "c" ? "a char" : "an int";
+      else if ("fFeEgG".includes(conv) && !isFloat) need = "a double";
+      if (!need) return;
+      rt.raiseException("printf: " + spec + " needs " + need + ", but the value " + k + " after the format is " + name + ".\n" +
+        (isFloat ? "Use %f (or %.2f) for a double, or convert it with (int)." : "Use %d for an int, or convert it with (double).") +
+        " A C compiler only warns about this, and the program then prints a wrong value.");
+    });
+  },
   _printf(orig) {
+    const self = this;
     return function (rt, _this, fmt, ...args) {
       args = args.map((a) => (a && typeof a.v === "boolean") ? rt.val(rt.intTypeLiteral, a.v ? 1 : 0) : a);
       // JSCPP reads "%% d" as the specifier "% d"; %% is passed through as \u0001 and restored on output
       const text = rt.getStringFromCharArray(fmt);
+      self._checkFormat(rt, text, args);
       if (text.indexOf("%%") >= 0) fmt = rt.makeCharArrayFromString(text.replace(/%%/g, "\u0001"));
       return orig.call(this, rt, _this, fmt, ...args);
     };

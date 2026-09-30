@@ -44,7 +44,7 @@
               ["<b>Storage</b>", "saving data and instructions for immediate or future use"],
               ["<b>Output</b>", "delivering the processed information through output devices"],
             ]),
-            T("The four functions occur in this order. Together they form the <b>information processing cycle</b>:<br>input → processing → storage → output."),
+            T("The four functions usually occur in this order. Together they form the <b>information processing cycle</b>:<br>input → processing → storage → output."),
           ] },
           { kind: "visual", part: "The four functions", title: "The cycle for one temperature reading", blocks: [
             W("cycleFlow", { title: "Input → Processing → Storage → Output", stages: [
@@ -59,7 +59,7 @@
             TB(["Group", "Function", "Examples"], [
               ["Input devices", "enter data into the computer", "keyboard, mouse"],
               ["Processing unit", "interprets and executes instructions", "CPU (Lesson 2)"],
-              ["Storage devices", "store data and programs, temporarily or permanently", "RAM, SSD, HDD (Lessons 3 and 4)"],
+              ["Memory and storage devices", "store data and programs, temporarily or permanently", "memory: RAM (Lesson 3); storage: SSD, HDD (Lesson 4)"],
               ["Output devices", "present the results of the processing", "monitor, printer"],
             ]),
           ] },
@@ -101,7 +101,7 @@
           { kind: "code", part: "A program uses the four functions", title: "Example: one program and the four functions", blocks: [
             RUN('print("Power =", 12 * 2, "W")', "Program: the power of a 12 V, 2 A device"),
             TB(["Function", "In this program"], [
-              ["Input", "the code is typed with the keyboard"],
+              ["Input", "none: the values 12 and 2 are written in the code. Topic 02 reads values from the keyboard with <code>input()</code>."],
               ["Storage", "the program file is saved on the disk and loaded into memory to run"],
               ["Processing", "the CPU computes <code>12 * 2</code> → <code>24</code>"],
               ["Output", "the monitor displays <code>Power = 24 W</code>"],
@@ -110,10 +110,10 @@
           { kind: "summary", title: "Summary", blocks: [
             L([
               "A computer performs four functions: input, processing, storage, and output.",
-              "The information processing cycle runs in this order: input → processing → storage → output.",
-              "Hardware is the tangible part: input devices, the processing unit, storage devices, and output devices.",
+              "The information processing cycle usually runs in this order: input → processing → storage → output.",
+              "Hardware is the tangible part: input devices, the processing unit, memory and storage devices, and output devices.",
               "Software is the intangible part. System software manages the hardware. Application software performs tasks for the user.",
-              "A Python program is application software. It uses all four functions.",
+              "A Python program is application software. It uses processing, storage, and output; with <code>input()</code> (Topic 02), it also uses input.",
             ]),
             NEXT("<b>The CPU and the instruction cycle</b>. The processing unit executes the instructions of every program, one instruction after another."),
           ] },
@@ -277,7 +277,7 @@
         title: "Memory: RAM and ROM",
         sub: "Classes of storage, volatile and non-volatile memory, and the types of RAM and ROM.",
         slides: "01:14–26",
-        keywords: "memory primary secondary tertiary ram rom volatile non-volatile dram sram cache prom eprom eeprom bios firmware",
+        keywords: "memory primary secondary tertiary bit byte kb mb gb tb units ram random access rom volatile non-volatile dram sram refresh flip-flop cache prom eprom eeprom bios firmware",
         deck: [
           { kind: "overview", title: "Memory: RAM and ROM", blocks: [
             T("<b>Memory</b> stores data and instructions, temporarily or permanently. The CPU exchanges data with memory for every instruction, so a computer cannot operate without memory."),
@@ -291,9 +291,21 @@
             ]),
             T("This lesson explains primary memory: RAM and ROM."),
           ] },
+          { kind: "concept", part: "Classes of storage", title: "Units of memory and storage size", blocks: [
+            TB(["Unit", "Size"], [
+              ["bit", "one binary digit: 0 or 1"],
+              ["byte", "8 bits"],
+              ["KB (kilobyte)", "1024 bytes"],
+              ["MB (megabyte)", "1024 KB"],
+              ["GB (gigabyte)", "1024 MB"],
+              ["TB (terabyte)", "1024 GB"],
+            ], null, "center"),
+            T("Drive manufacturers often use 1000 instead of 1024. Topic 02 explains how values are stored in bits."),
+          ] },
           { kind: "concept", part: "RAM", title: "RAM: Random Access Memory", blocks: [
             T("<b>RAM</b> temporarily stores the data and instructions of the programs that are running."),
             L([
+              "<b>Random access</b>: any location can be read or written directly, in about the same time.",
               "<b>Volatile</b>: its data is erased when the power is off.",
               "<b>Read and write</b>: data can be read and changed many times.",
               "<b>High speed</b>: fast access keeps the system responsive.",
@@ -306,7 +318,7 @@
               "<b>Non-volatile</b>: it keeps its data when the power is off.",
               "<b>Read-only</b>: its data cannot be changed easily.",
               "<b>Pre-written</b>: the instructions are written during manufacturing.",
-              "Uses: <b>firmware</b>, the basic instructions that start the hardware; embedded systems in microwaves, washing machines, and calculators.",
+              "Uses: <b>firmware</b>, the basic instructions that start the hardware, such as the <b>BIOS</b> of a PC; embedded systems in microwaves, washing machines, and calculators.",
             ]),
           ] },
           { kind: "visual", part: "Volatile and non-volatile memory", title: "Power off: RAM and ROM", blocks: [
@@ -315,8 +327,8 @@
           ] },
           { kind: "concept", part: "Types of RAM", title: "DRAM and SRAM", blocks: [
             TB(["Feature", "DRAM (dynamic RAM)", "SRAM (static RAM)"], [
-              ["Stores each bit in", "a capacitor", "a flip-flop"],
-              ["Refresh", "needed periodically", "not needed while powered"],
+              ["Stores each bit in", "a capacitor", "a flip-flop: a circuit that holds one bit"],
+              ["Refresh", "needed periodically: each bit is rewritten, because the capacitor slowly loses its charge", "not needed while powered"],
               ["Speed and cost", "slower, less expensive", "faster, more expensive"],
               ["Used in", "main memory: DDR4 and DDR5 modules in PCs, laptops, and phones", "CPU caches (L1, L2, L3) and GPUs"],
             ]),
@@ -468,7 +480,7 @@
             ], "Limitations")],
           ] },
           { kind: "visual", part: "Access time", title: "Reading one block: HDD and SSD", blocks: [
-            W("seekViz", { title: "" }),
+            W("seekViz", { title: "", seek: 6, latency: 4 }),
           ] },
           { kind: "concept", part: "HDD compared with SSD", title: "Operation and speed", blocks: [
             TB(["Parameter", "HDD", "SSD"], [
@@ -478,7 +490,7 @@
               ["Transfer rate", "80–200 MB/s (SATA)", "500 MB/s (SATA) to over 7000 MB/s (NVMe)"],
               ["IOPS", "about 100–300", "over 100,000"],
             ]),
-            T("IOPS: input/output operations per second, for small reads and writes at random locations."),
+            T("IOPS: input/output operations per second, for small reads and writes at random locations.<br>SATA and NVMe are interfaces that connect a drive to the computer. NVMe is the faster one."),
           ] },
           { kind: "concept", part: "HDD compared with SSD", title: "Durability, power, and cost", blocks: [
             TB(["Parameter", "HDD", "SSD"], [
@@ -506,7 +518,7 @@
               ["HDD access time", "seek time + rotational latency", "ms"],
               ["Transfer time", "file size ÷ transfer rate", "MB ÷ (MB/s) = s"],
             ]),
-            T("In Python, <code>+</code> adds and <code>/</code> divides. The result of <code>/</code> is displayed with a decimal point, for example <code>8.0</code>. Topic 02 explains the arithmetic operators."),
+            T("Topic 00, Lesson 2 explains <code>+</code>, <code>/</code> (its result has a decimal point), and <code>print()</code> with several values."),
           ] },
           { kind: "code", part: "Access and transfer time", title: "Example: access time and copy time", blocks: [
             EX('print("HDD access:", 6 + 4, "ms")\nprint("SSD access:", 0.1, "ms")\nprint("Copy on HDD:", 1000 / 125, "s")\nprint("Copy on SSD:", 1000 / 500, "s")', "seek + latency; size ÷ rate", [
@@ -601,7 +613,7 @@
             ], "Level 0: Digital logic"),
             L([
               "Manages the digital logic and coordinates its activities.",
-              "<b>Microcode</b> defines the control logic. The <b>control unit</b> directs the processor.",
+              "<b>Microcode</b>: in many CPUs, a small built-in program that turns each machine instruction into control signals. The <b>control unit</b> directs the processor.",
             ], "Level 1: Control"),
             L([
               "The instruction set architecture (ISA): the instructions that the hardware executes directly.",
@@ -622,26 +634,24 @@
           { kind: "concept", part: "Levels 5 and 6", title: "Levels 5 and 6: high-level language and user", blocks: [
             L([
               "Languages close to human language, such as Python, C++, and Java. They hide the hardware details.",
-              "<b>Compilers</b> and <b>interpreters</b> translate the code into machine code or intermediate code.",
+              "<b>Compilers</b> and <b>interpreters</b> translate the code into machine code or into an internal form, such as Python bytecode (Topic 00).",
             ], "Level 5: High-level language"),
             L([
               "The user works with the computer through application programs: word processors, web browsers, games.",
               "<b>User interface</b>: graphical (GUI) or command line.",
             ], "Level 6: User"),
           ] },
-          { kind: "concept", part: "Translators", title: "Assembler, compiler, and interpreter", blocks: [
+          { kind: "concept", part: "Translators", title: "Translators: the assembler", blocks: [
             TB(["Translator", "Translates", "When"], [
               ["Assembler", "assembly language (Level 4) into machine code (Level 2)", "before the program runs"],
-              ["Compiler", "a whole high-level program into machine code, for example C and C++", "before the program runs"],
-              ["Interpreter", "a high-level program, one statement at a time, and executes it; for example Python", "while the program runs"],
             ]),
-            T("Python is a high-level language. It is usually run by an interpreter."),
+            T("The translators of Level 5, compilers (for example for C) and interpreters (for example for Python), are explained in Topic 00, Lesson 2."),
           ] },
           { kind: "visual", part: "One statement through the levels", title: 'The statement print("Hi"): Levels 6 to 3', blocks: [
             W("levelDrop", { title: "Software levels", levels: [
               { n: 6, name: "User", token: "runs the program", desc: "The user starts the program." },
               { n: 5, name: "High-level language", token: 'print("Hi")', desc: "The Python interpreter reads the statement." },
-              { n: 4, name: "Assembly language", token: "CALL write", desc: "Machine instructions carry out the statement (here in assembly)." },
+              { n: 4, name: "Assembly language", token: "CALL write", desc: "The interpreter runs as machine code, for example CALL write." },
               { n: 3, name: "Operating system", token: "write request", desc: "The OS displays the text with the driver of the screen." },
             ] }),
           ] },

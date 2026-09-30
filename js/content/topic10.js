@@ -41,11 +41,11 @@
   const T_hello = { lang: "c",
     code: ["#include <stdio.h>", "", "int main(void) {", '    printf("Power check\\n");', '    printf("Status: OK\\n");', "    return 0;", "}"],
     steps: [
-      { line: -1, note: "The program has been compiled. Running starts in main." },
-      { line: 2, note: "main starts. Its statements run from top to bottom." },
-      { line: 3, note: "printf displays the text. <code>\\n</code> ends the line.", print: "Power check" },
+      { line: -1, note: "The program has been compiled. Line 1, <code>#include &lt;stdio.h&gt;</code>, added the standard input/output library, which contains printf." },
+      { line: 2, note: "Line 3: running starts in <code>main</code>. <code>int</code>: main returns a whole number to the operating system. <code>(void)</code>: main takes no values." },
+      { line: 3, note: "A <b>statement</b>; it ends with <code>;</code>. printf displays the text. <code>\\n</code> ends the line.", print: "Power check" },
       { line: 4, note: "The second printf displays the second line.", print: "Status: OK" },
-      { line: 5, note: "<code>return 0;</code> ends main: the program finished without an error. Result check: two lines are displayed, one for each printf, because each string ends with <code>\\n</code>." },
+      { line: 5, note: "<code>return 0;</code> ends main and reports success (0) to the operating system. Result check: two lines are displayed, one for each printf, because each string ends with <code>\\n</code>." },
     ] };
   const T_vars = { lang: "c",
     code: ["int voltage = 12;", "double current = 1.5;", "double power = voltage * current;", 'printf("P = %.1f W\\n", power);', "current = 2.0;", "power = voltage * current;", 'printf("P = %.1f W\\n", power);'],
@@ -74,9 +74,9 @@
     steps: [
       { line: -1, note: "The statements inside main." },
       { line: 0, note: "age is declared. It has no value yet." },
-      { line: 1, note: "The prompt is displayed. Without <code>\\n</code>, the cursor stays on the same line." },
-      { line: 2, note: "scanf waits. The user types 19 and presses Enter; 19 is stored at the address &age.", set: { age: "19" }, print: "Enter age: 19" },
-      { line: 3, note: "age + 1 → 20. The typed 19 appears after the prompt, because the terminal shows what the user types.", print: "Next year: 20" },
+      { line: 1, note: "The prompt is displayed. Without <code>\\n</code>, the cursor stays on the same line.", print: "Enter age: ", end: "" },
+      { line: 2, note: "scanf waits. The user types 19 and presses Enter: the terminal shows 19 after the prompt, and 19 is stored at the address &age.", set: { age: "19" }, print: "19" },
+      { line: 3, note: "age + 1 → 20. Result check: 19 + 1 = 20.", print: "Next year: 20" },
     ] };
   const T_div = { lang: "c",
     code: ["int sum = 7, count = 2;", "double avg1 = sum / count;", "double avg2 = (double) sum / count;", 'printf("%.1f %.1f\\n", avg1, avg2);'],
@@ -157,11 +157,11 @@
       { line: -1, note: "The statements inside main. The user types 9, then 3." },
       { line: 0, note: "n is declared. It has no value yet." },
       { line: 1, note: "do: the block starts without a check." },
-      { line: 2, note: "The prompt is displayed." },
-      { line: 3, note: "The user types 9.", set: { n: "9" }, print: "Enter 1-5: 9" },
+      { line: 2, note: "The prompt is displayed.", print: "Enter 1-5: ", end: "" },
+      { line: 3, note: "The user types 9.", set: { n: "9" }, print: "9" },
       { line: 4, note: "9 > 5, so the condition is true: the block runs again." },
-      { line: 2, note: "The prompt is displayed again." },
-      { line: 3, note: "The user types 3.", set: { n: "3" }, print: "Enter 1-5: 3" },
+      { line: 2, note: "The prompt is displayed again.", print: "Enter 1-5: ", end: "" },
+      { line: 3, note: "The user types 3.", set: { n: "3" }, print: "3" },
       { line: 4, note: "3 is from 1 to 5, so the condition is false: the loop ends." },
       { line: 5, note: "Result check: the invalid 9 was rejected; the block ran twice.", print: "OK: 3" },
     ] };
@@ -223,20 +223,20 @@
     code: ["double t[3] = {21.0, 25.5, 30.0};", "for (int i = 0; i < 3; i++) {", "    t[i] = t[i] + 0.5;", '    printf("t[%d] = %.1f\\n", i, t[i]);', "}"],
     steps: [
       { line: -1, note: "The statements inside main. Each reading is corrected by +0.5." },
-      { line: 0, note: "Three elements, index 0 to 2.", set: { t: "{21.0, 25.5, 30.0}" } },
+      { line: 0, note: "Three elements, index 0 to 2.", set: { "t[0]": "21.0", "t[1]": "25.5", "t[2]": "30.0" } },
       { line: 1, note: "i = 0. 0 < 3 is true.", set: { i: "0" } },
-      { line: 2, note: "t[0] = 21.0 + 0.5", set: { t: "{21.5, 25.5, 30.0}" } },
+      { line: 2, note: "t[0] = 21.0 + 0.5", set: { "t[0]": "21.5" } },
       { line: 3, note: "t[0] is displayed.", print: "t[0] = 21.5" },
       { line: 1, note: "i = 1. 1 < 3 is true.", set: { i: "1" } },
-      { line: 2, note: "t[1] = 25.5 + 0.5", set: { t: "{21.5, 26.0, 30.0}" } },
+      { line: 2, note: "t[1] = 25.5 + 0.5", set: { "t[1]": "26.0" } },
       { line: 3, note: "t[1] is displayed.", print: "t[1] = 26.0" },
       { line: 1, note: "i = 2. 2 < 3 is true.", set: { i: "2" } },
-      { line: 2, note: "t[2] = 30.0 + 0.5", set: { t: "{21.5, 26.0, 30.5}" } },
+      { line: 2, note: "t[2] = 30.0 + 0.5", set: { "t[2]": "30.5" } },
       { line: 3, note: "t[2] is displayed.", print: "t[2] = 30.5" },
       { line: 1, note: "i = 3: 3 < 3 is false, the loop ends. Result check: each element grew by 0.5.", set: { i: "3" } },
     ] };
   const T_stats = { lang: "c",
-    code: ["int d[3] = {4, 9, 2};", "int max = d[0], sum = 0;", "for (int i = 0; i < 3; i++) {", "    sum += d[i];", "    if (d[i] > max) { max = d[i]; }", "}", "double avg = (double) sum / 3;", 'printf("%d %d %.2f\\n", max, sum, avg);'],
+    code: ["int d[3] = {4, 9, 2};", "int max = d[0], sum = 0;", "for (int i = 0; i < 3; i++) {", "    sum += d[i];", "    if (d[i] > max) { max = d[i]; }", "}", 'printf("%d %d\\n", max, sum);', 'printf("%.2f\\n", (double) sum / 3);'],
     steps: [
       { line: -1, note: "The statements inside main." },
       { line: 0, note: "Three readings.", set: { d: "{4, 9, 2}" } },
@@ -251,29 +251,29 @@
       { line: 3, note: "sum = 13 + 2", set: { sum: "15" } },
       { line: 4, note: "2 > 9 is false." },
       { line: 2, note: "i = 3: 3 < 3 is false, the loop ends.", set: { i: "3" } },
-      { line: 6, note: "The average as a double: 15.0 / 3 → 5.0.", unset: ["i"], set: { avg: "5.0" } },
-      { line: 7, note: "Result check: the largest of 4, 9, 2 is 9; 4 + 9 + 2 = 15; 15 / 3 = 5.00.", print: "9 15 5.00" },
+      { line: 6, note: "The maximum and the sum are displayed.", unset: ["i"], print: "9 15" },
+      { line: 7, note: "Result check: max of 4, 9, 2 is 9; 4 + 9 + 2 = 15; 15.0 / 3 = 5.00.", print: "5.00" },
     ] };
   const T_str = { lang: "c",
     code: ['char unit[6] = "volts";', "unit[0] = 'V';", 'printf("%s\\n", unit);', "unit[4] = '\\0';", 'printf("%s\\n", unit);'],
     steps: [
       { line: -1, note: "The statements inside main." },
-      { line: 0, note: "6 chars: the 5 letters, and '\\0' at index 5.", set: { unit: '"volts"' } },
+      { line: 0, note: "6 chars: the 5 letters, and '\\0' at index 5.", set: { unit: '"volts"', "unit[4]": "'s'", "unit[5]": "'\\0'" } },
       { line: 1, note: "unit[0], the first character, becomes 'V'.", set: { unit: '"Volts"' } },
       { line: 2, note: "%s displays the characters up to the first '\\0'.", print: "Volts" },
-      { line: 3, note: "unit[4], the 's', becomes '\\0'. The text now ends after index 3.", set: { unit: '"Volt"' } },
-      { line: 4, note: "%s stops at the new '\\0'. Result check: only V, o, l, t come before the first '\\0'.", print: "Volt" },
+      { line: 3, note: "unit[4], the 's', becomes '\\0'. The array still has 6 chars: unit[5] is also '\\0'.", set: { "unit[4]": "'\\0'", unit: '"Volt"' } },
+      { line: 4, note: "%s stops at the first '\\0', unit[4]. Result check: only V, o, l, t come before it.", print: "Volt" },
     ] };
   const T_swap = { lang: "c",
     code: ["void swap(int *a, int *b) {", "    int t = *a;", "    *a = *b;", "    *b = t;", "}", "int main(void) {", "    int x = 1, y = 2;", "    swap(&x, &y);", '    printf("%d %d\\n", x, y);', "    return 0;", "}"],
     steps: [
       { line: -1, note: "Running starts in main." },
       { line: 6, note: "Two variables.", set: { x: "1", y: "2" } },
-      { line: 7, note: "swap(&x, &y): a receives the address of x, b the address of y.", set: { "a (swap)": { v: "&x", t: "obj" }, "b (swap)": { v: "&y", t: "obj" } } },
+      { line: 7, note: "swap(&x, &y): a receives the address of x, b the address of y.", set: { "a, b (swap)": { v: "&x, &y", t: "obj" } } },
       { line: 1, note: "*a is x: t = 1.", set: { "t (swap)": "1" } },
       { line: 2, note: "*a = *b: x receives the value of y.", set: { x: "2" } },
       { line: 3, note: "*b = t: y receives 1.", set: { y: "1" } },
-      { line: 4, note: "swap ends: a, b, and t disappear; x and y stay changed.", unset: ["a (swap)", "b (swap)", "t (swap)"] },
+      { line: 4, note: "swap ends: a, b, and t disappear; x and y stay changed.", unset: ["a, b (swap)", "t (swap)"] },
       { line: 8, note: "Result check: x and y are exchanged, because swap worked on their addresses.", print: "2 1" },
     ] };
 
@@ -289,7 +289,7 @@
     ] };
   const H = (x) => ({ v: x, t: "int" });   // a hexadecimal value shown as an int
   const T_ops = { lang: "c",
-    code: ["uint8_t port = 0x00;", "port |= (1 << 3);", "port |= (1 << 0);", "port &= ~(1 << 3);", "port ^= (1 << 7);", 'printf("%02X %d\\n", port, (port & 1) != 0);'],
+    code: ["uint8_t port = 0x00;", "port |= (1 << 3);", "port |= (1 << 0);", "port &= ~(1 << 3);", "port ^= (1 << 7);", 'printf("%02X\\n", port);', 'printf("%d\\n", (port & 1) != 0);'],
     steps: [
       { line: -1, note: "The statements inside main. port simulates an output register." },
       { line: 0, note: "All 8 bits are 0: every pin is low.", set: { port: H("0x00") } },
@@ -297,7 +297,8 @@
       { line: 2, note: "Set bit 0: 0000 1001. Bit 3 stays 1.", set: { port: H("0x09") } },
       { line: 3, note: "Clear bit 3: ~0x08 is 1111 0111; AND keeps the other bits.", set: { port: H("0x01") } },
       { line: 4, note: "Toggle bit 7: 1000 0001.", set: { port: H("0x81") } },
-      { line: 5, note: "Test bit 0: port & 1 is not 0, so the result is 1. Result check: only bits 7 and 0 are 1: 1000 0001 = 0x81.", print: "81 1" },
+      { line: 5, note: "port is displayed in hexadecimal: 1000 0001 is 81.", print: "81" },
+      { line: 6, note: "Test bit 0: port & 1 is not 0, so the comparison gives 1. Result check: only bits 7 and 0 are 1: 1000 0001 = 0x81.", print: "1" },
     ] };
   const T_exBits = { lang: "c",
     code: ["uint8_t reg = 0xF0;", "reg &= ~(1 << 7);", "reg |= 0x03;", "reg ^= 0x11;", 'printf("%02X\\n", reg);'],
@@ -408,24 +409,15 @@
               "On this site, <b>Run</b> compiles and runs the program in one step.",
             ]),
           ] },
-          { kind: "concept", part: "The structure of a C program", title: "The first program", cols: [
-            [CODE('#include <stdio.h>\n\nint main(void) {\n    printf("Hello, world\\n");\n    return 0;\n}', "Hello, world", "hello.c")],
-            [L([
-              "Line 1: <code>#include &lt;stdio.h&gt;</code> adds the standard input/output library, which contains printf.",
-              "Line 3: <code>main</code> is the function where every C program starts.",
-              "Line 4: a <b>statement</b>. Every statement ends with <code>;</code>.",
-              "Line 5: <code>return 0;</code> ends main and reports success.",
-            ])],
-          ] },
           { kind: "concept", part: "The structure of a C program", title: "Rules of C syntax", blocks: [
             L([
-              "Every statement ends with a semicolon <code>;</code>.",
+              "A <b>statement</b> is one instruction. Every statement ends with a semicolon <code>;</code>.",
               "Braces <code>{ }</code> group statements into a block. Indentation is only for the reader.",
               "C is case-sensitive: <code>printf</code> is correct; <code>Printf</code> is an error.",
               "Text in double quotes, <code>\"...\"</code>, is a <b>string</b>.",
             ]),
           ] },
-          { kind: "code", part: "The structure of a C program", title: "First example: execution step by step", blocks: [TRACE(T_hello)] },
+          { kind: "code", part: "The structure of a C program", title: "The first program: execution step by step", blocks: [TRACE(T_hello)] },
           { kind: "concept", part: "Output with printf", title: "printf and escape sequences", blocks: [
             TB(["Escape sequence", "Meaning"], [
               ["<code>\\n</code>", "new line"],
@@ -462,7 +454,9 @@ int main(void) {
               ["Syntax (compile) error", "the compiler finds it; no program is created", "a missing <code>;</code> or <code>}</code>"],
               ["Run-time error", "the program stops while it runs", "a division by zero"],
               ["Logical error", "the program runs, but the output is wrong", "a wrong formula"],
+              ["Warning", "the compiler creates the program, but reports a probable mistake", "a value that does not match its printf specifier (Lesson 2)"],
             ]),
+            T("Read every warning. This site stops with an error message for the most common of these mistakes."),
           ] },
           { kind: "code", part: "Errors", title: "Example: a missing semicolon", cols: [
             [L([
@@ -471,6 +465,14 @@ int main(void) {
               "Add the ; and run the program again.",
             ])],
             [RUN('#include <stdio.h>\nint main(void) {\n    printf("Line 1\\n")\n    printf("Line 2\\n");\n    return 0;\n}')],
+          ] },
+          { kind: "concept", part: "Errors", title: "Reading a compiler message", blocks: [
+            TXT('semi.c:3:23: error: expected \';\' after expression\n    3 |     printf("Line 1\\n")\n      |                       ^\n      |                       ;', "clang, a C compiler, for the program above saved as semi.c"),
+            L([
+              "<code>semi.c:3:23</code>: the file, line 3, column 23. Then the kind (error or warning) and the description.",
+              "The compiler shows the line and marks the position with <code>^</code>.",
+              "Fix the first error first, then compile again: one mistake can cause several messages.",
+            ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
@@ -509,13 +511,24 @@ int main(void) {
       {
         id: "types",
         title: "Variables and data types",
-        sub: "Declaring variables, displaying values, the basic types and their sizes, constants, and characters.",
+        sub: "The basic types, declaring variables, displaying values, sizes and ranges, constants, and characters.",
         slides: "09:10–14",
         keywords: "variable declare initialize int double float char bool sizeof const define printf format specifier ascii",
         deck: [
           { kind: "overview", title: "Variables and data types", blocks: [
             T("A <b>variable</b> is a named memory location that stores a value. In C, every variable has a fixed <b>type</b>, stated when the variable is created."),
-            L(["Declaring variables", "Displaying values", "The basic data types", "Sizes and ranges", "Constants", "Characters are numbers", "Names"], "Subtopics in this lesson", true),
+            L(["The basic data types", "Declaring variables", "Displaying values", "Sizes and ranges", "Constants", "Characters are numbers", "Names"], "Subtopics in this lesson", true),
+          ] },
+          { kind: "concept", part: "The basic data types", title: "The basic data types", blocks: [
+            TB(["Type", "Stores", "Example"], [
+              ["<code>int</code>", "whole numbers", "<code>int count = -3;</code>"],
+              ["<code>double</code>", "decimal numbers (about 15 digits)", "<code>double v = 3.3;</code>"],
+              ["<code>float</code>", "decimal numbers (about 7 digits)", "<code>float t = 21.5f;</code>"],
+              ["<code>char</code>", "one character, in single quotes", "<code>char unit = 'V';</code>"],
+              ["<code>bool</code>", "true or false (<code>#include &lt;stdbool.h&gt;</code>)", "<code>bool on = true;</code>"],
+            ]),
+            T("Use double for decimal values unless memory is very limited."),
+            T("The f in <code>21.5f</code> makes the value a float; without the f, 21.5 is a double."),
           ] },
           { kind: "concept", part: "Declaring variables", title: "Declaration and initialization", blocks: [
             CODE("int count;            // declaration\ncount = 10;           // assignment\ndouble price = 9.99;  // declaration with initialization", null, "syntax: type name = value;"),
@@ -528,9 +541,14 @@ int main(void) {
           { kind: "concept", part: "Declaring variables", title: "A variable without a value", blocks: [
             L([
               "A declared variable that is not initialized contains an unknown leftover value (\"garbage\").",
-              "Always give a variable a value before its value is read.",
+              "Always give a variable a value before its value is read. A real compiler only warns about this mistake; the program then uses the leftover value.",
               "Several variables of one type can be declared together: <code>int a = 1, b = 2;</code>",
             ]),
+          ] },
+          { kind: "code", part: "Declaring variables", title: "Example: a variable without a value", blocks: [
+            CODE('int count;\ncount = count + 1;\nprintf("%d\\n", count);', "-402653671", "the statements inside main, compiled with clang; %d displays an int (next slides)"),
+            TXT("warning: variable 'count' is uninitialized when used here", "the warning of clang"),
+            T("A real compiler only warns and creates the program, which displays a leftover value, a different one on each run. This site stops with an error message instead, so the mistake is found at once."),
           ] },
           { kind: "concept", part: "Displaying values", title: "Format specifiers", blocks: [
             CODE('printf("V = %d\\n", voltage);', null, "a specifier is replaced by the value after the string"),
@@ -547,21 +565,11 @@ int main(void) {
             L([
               "The values follow the string, separated by commas, in the order of the specifiers.",
               "The type of each value must match its specifier: %d for int, %f for double.",
-              "A wrong specifier is not always reported by the compiler; the output is then wrong.",
+              "A wrong specifier is a common error: a real compiler only warns, and the program displays a wrong value.",
             ]),
           ] },
           { kind: "code", part: "Displaying values", title: "First example: execution step by step", blocks: [TRACE(T_vars)] },
-          { kind: "concept", part: "The basic data types", title: "The basic data types", blocks: [
-            TB(["Type", "Stores", "Example"], [
-              ["<code>int</code>", "whole numbers", "<code>int count = -3;</code>"],
-              ["<code>double</code>", "decimal numbers (about 15 digits)", "<code>double v = 3.3;</code>"],
-              ["<code>float</code>", "decimal numbers (about 7 digits)", "<code>float t = 21.5f;</code>"],
-              ["<code>char</code>", "one character, in single quotes", "<code>char unit = 'V';</code>"],
-              ["<code>bool</code>", "true or false (<code>#include &lt;stdbool.h&gt;</code>)", "<code>bool on = true;</code>"],
-            ]),
-            T("Use double for decimal values unless memory is very limited."),
-          ] },
-          { kind: "code", part: "The basic data types", title: "Example: variables of three types", blocks: [
+          { kind: "code", part: "Displaying values", title: "Example: variables of three types", blocks: [
             EX(`#include <stdio.h>
 int main(void) {
     int rpm = 1500;
@@ -575,6 +583,11 @@ int main(void) {
               { c: "char unit = 'C';", e: "one character, in single quotes" },
               { c: "printf(...)", e: "<code>1500 rpm</code> and <code>36.6 C</code>" },
             ]),
+          ] },
+          { kind: "code", part: "Displaying values", title: "Example: a wrong specifier", blocks: [
+            CODE('double current = 1.5;\nprintf("I = %d A\\n", current);', "I = 0 A", "the statements inside main, compiled with clang"),
+            TXT("warning: format specifies type 'int' but the argument has type 'double'", "the warning of clang"),
+            T("A real compiler only warns and creates the program, which displays a wrong value. A double needs %f or %.1f. This site stops with an error message instead, so the mistake is found at once."),
           ] },
           { kind: "concept", part: "Sizes and ranges", title: "Sizes and ranges", blocks: [
             TB(["Type", "Size (typical)", "Range or precision"], [
@@ -594,7 +607,7 @@ int main(void) {
     printf("%d %d %d\\n", c, i, d);
     return 0;
 }`, "sizes in bytes", [
-              { c: "(int) sizeof(...)", e: "(int) turns the size into an int, for %d" },
+              { c: "(int) sizeof(...)", e: "(int) turns the size into an int, for %d. This is a <b>cast</b> (Lesson 4)." },
               { c: "output", e: "<code>1 4 8</code>" },
             ]),
           ] },
@@ -708,7 +721,7 @@ int main(void) {
         deck: [
           { kind: "overview", title: "Input and formatted output", blocks: [
             T("Programs read data from the user and display results in a clear format. <b>scanf</b> reads values from the keyboard; <b>printf</b> controls how values are displayed."),
-            L(["Width and precision", "Reading a value with scanf", "Reading several values", "Reading characters and words", "A complete input program"], "Subtopics in this lesson", true),
+            L(["Width and precision", "Reading a value with scanf", "Reading several values", "Reading a character", "A complete input program"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Width and precision", title: "Width and precision", blocks: [
             TB(["Format", "Value", "Output (· is a space)"], [
@@ -736,7 +749,8 @@ int main(void) {
             L([
               "scanf waits until the user types a value and presses Enter.",
               "The specifier gives the type: <code>%d</code> for an int.",
-              "<code>&amp;age</code> is the <b>address</b> of age: scanf stores the value there. Forgetting &amp; is a common error.",
+              "<code>&amp;age</code> is the <b>address</b> of age: the location of age in memory. scanf stores the value there.",
+              "Forgetting &amp; is a common error. A real compiler only warns, and the program crashes without an error message. This site stops with an error message.",
               "Display a prompt with printf first, so that the user knows what to type.",
             ]),
           ] },
@@ -747,7 +761,7 @@ int main(void) {
               ["double", "<code>%lf</code>", "<code>%f</code>"],
               ["float", "<code>%f</code>", "<code>%f</code>"],
               ["char", "<code>%c</code>", "<code>%c</code>"],
-              ["string (one word)", "<code>%s</code>, without &amp;", "<code>%s</code>"],
+              ["string", "<code>%s</code> (Lesson 9)", "<code>%s</code>"],
             ]),
             T("For a double, scanf needs <code>%lf</code> (long float); printf uses <code>%f</code>."),
           ] },
@@ -756,7 +770,7 @@ int main(void) {
             L([
               "The specifiers and the addresses are in the same order.",
               "The user separates the values with spaces or with Enter.",
-              "scanf returns the number of values it has read. A letter typed for %d stops scanf, and the variable keeps its old value.",
+              "A letter typed for %d stops scanf, and the variable keeps its old value.",
             ]),
           ] },
           { kind: "code", part: "Reading several values", title: "Example: two values in one line", blocks: [
@@ -772,15 +786,13 @@ int main(void) {
               { c: "v * i", e: "<code>P = 18.00 W</code>" },
             ], ["12 1.5"]),
           ] },
-          { kind: "concept", part: "Reading characters and words", title: "Reading a char and a word", blocks: [
+          { kind: "concept", part: "Reading a character", title: "Reading a char", blocks: [
             L([
-              "%d, %lf, and %s skip spaces and line breaks before a value. %c does not: it reads the next character, even a space or the Enter.",
+              "%d and %lf skip spaces and line breaks before a value. %c does not: it reads the next character, even a space or the Enter.",
               "<code>scanf(\" %c\", &amp;c)</code>: the space before %c skips the Enter left by an earlier scanf. Without it, %c reads that line break.",
-              "<code>scanf(\"%s\", name)</code> reads one word into a char array (Lesson 9). An array name needs no &amp;.",
-              "%s stops at the first space: for the input <code>Anan Suk</code>, it reads only <code>Anan</code>.",
             ]),
           ] },
-          { kind: "code", part: "Reading characters and words", title: "Example: a number and a character", blocks: [
+          { kind: "code", part: "Reading a character", title: "Example: a number and a character", blocks: [
             EX(`#include <stdio.h>
 int main(void) {
     int qty;
@@ -823,7 +835,7 @@ int main(void) {
               "printf: width %5d, left-aligned %-5d, precision %.2f, and %% for the % sign.",
               "<code>scanf(\"%d\", &amp;x)</code>: the specifier gives the type; &amp; gives the address.",
               "double: %lf in scanf, %f in printf.",
-              "\" %c\" skips the line break before a character; %s reads one word, without &amp;.",
+              "\" %c\" skips the line break before a character.",
             ]),
             NEXT("<b>Operators and expressions</b>. Arithmetic, integer division, casting, and conditions."),
           ] },
@@ -836,8 +848,8 @@ int main(void) {
               "Price: 4.5\n4.50", '#include <stdio.h>\nint main(void) {\n    double price;\n    printf("Price: ");\n    scanf("%d", price);\n    printf("%.2f\\n", price);\n    return 0;\n}', ["4.5"], "A double needs %lf, and scanf needs the address &price."),
           ] },
           { kind: "exercise", title: "Write a program: temperature", blocks: [
-            PQ("Read a temperature in °C (a double). Display it in °F with 1 decimal place: F = C × 9 / 5 + 32.",
-              "Temperature (C): 25\n77.0 F", '#include <stdio.h>\nint main(void) {\n    double c;\n    printf("Temperature (C): ");\n    // read c and display the result\n    return 0;\n}', ["25"], 'scanf("%lf", &c); then printf("%.1f F\\n", c * 9 / 5 + 32);'),
+            PQ("Read a temperature in °C (a double). Display it in °F with 1 decimal place: F = C × 1.8 + 32.",
+              "Temperature (C): 25\n77.0 F", '#include <stdio.h>\nint main(void) {\n    double c;\n    printf("Temperature (C): ");\n    // read c and display the result\n    return 0;\n}', ["25"], 'scanf("%lf", &c); then printf("%.1f F\\n", c * 1.8 + 32);'),
           ] },
           { kind: "exercise", title: "Write a program: a total", blocks: [
             PQ("Read a quantity (int) and a unit price (double). Display the total with 2 decimals, aligned right in 10 characters.",
@@ -952,6 +964,7 @@ int main(void) {
             ]),
             L([
               "<code>score &gt;= 50 &amp;&amp; score &lt;= 100</code> checks a range.",
+              "<code>0 &lt; x &lt; 10</code> does not test a range in C: it compares <code>0 &lt; x</code> (1 or 0) with 10, so it is always 1. Write <code>x &gt; 0 &amp;&amp; x &lt; 10</code>.",
               "Any value other than 0 counts as true; 0 is false.",
             ]),
           ] },
@@ -1075,6 +1088,15 @@ int main(void) {
               { c: 'printf("Level ...', e: "after the if: <code>Level 15%</code>" },
             ]),
           ] },
+          { kind: "concept", part: "if and else", title: "= instead of ==", blocks: [
+            CODE("if (level = 50)    // assigns 50: always true\nif (level == 50)   // compares level with 50"),
+            TXT("warning: using the result of an assignment as a condition without parentheses", "the warning of clang for the first line"),
+            L([
+              "<code>=</code> in a condition assigns a value; the condition is then the assigned value.",
+              "Any value other than 0 is true, so <code>if (level = 50)</code> is always true, and level is changed.",
+              "A real compiler only warns, and the block always runs. This site stops with an error message instead, so the mistake is found at once.",
+            ]),
+          ] },
           { kind: "concept", part: "else if", title: "else if: several conditions", cols: [
             [CODE('if (score >= 80) {\n    printf("A\\n");\n} else if (score >= 70) {\n    printf("B\\n");\n} else {\n    printf("F\\n");\n}')],
             [L([
@@ -1118,21 +1140,13 @@ int main(void) {
               { c: "correction", e: "put both statements in braces: <code>{ }</code>" },
             ]),
           ] },
-          { kind: "concept", part: "Blocks and braces", title: "= instead of ==", blocks: [
-            CODE("if (x = 5)    // assigns 5: always true\nif (x == 5)   // compares x with 5"),
+          { kind: "concept", part: "Nested decisions", title: "An if inside an if", blocks: [
+            CODE("if (outer condition) {\n    if (inner condition) { ... } else { ... }\n} else { ... }", null, "syntax"),
             L([
-              "<code>=</code> in a condition assigns a value; the condition is then the assigned value.",
-              "Any value other than 0 is true, so <code>if (x = 5)</code> is always true, and x is changed.",
-              "Most compilers warn about it. Read the warnings.",
-            ]),
-          ] },
-          { kind: "concept", part: "Nested decisions", title: "An if inside an if", cols: [
-            [CODE('if (power_on) {\n    if (temp > 80) {\n        printf("Overheat\\n");\n    } else {\n        printf("Running\\n");\n    }\n} else {\n    printf("Off\\n");\n}')],
-            [L([
               "The inner if runs only when the outer condition is true.",
               "Each else belongs to the if of its own block.",
               "Deep nesting is hard to read: combine conditions with &amp;&amp; when possible.",
-            ])],
+            ]),
           ] },
           { kind: "code", part: "Nested decisions", title: "Example: a decision inside a decision", blocks: [
             RUN(`#include <stdio.h>
@@ -1244,7 +1258,7 @@ int main(void) {
         deck: [
           { kind: "overview", title: "Loops", blocks: [
             T("A <b>loop</b> repeats a block of statements while a condition is true. C has three loops: <b>while</b>, <b>do-while</b>, and <b>for</b>."),
-            L(["while", "do-while", "for", "break and continue", "Nested loops", "Common loop errors"], "Subtopics in this lesson", true),
+            L(["while", "do-while", "for", "Choosing a loop", "break and continue", "Nested loops", "Common loop errors"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "while", title: "The while loop", blocks: [
             CODE("while (condition) {\n    statements\n}", null, "syntax"),
@@ -1298,7 +1312,7 @@ int main(void) {
     return 0;
 }`),
           ] },
-          { kind: "concept", part: "for", title: "Choosing a loop", blocks: [
+          { kind: "concept", part: "Choosing a loop", title: "Choosing a loop", blocks: [
             TB(["Loop", "Use it when"], [
               ["for", "the number of repetitions is known: counting"],
               ["while", "the loop continues until a condition changes; the count is unknown"],
@@ -1308,7 +1322,7 @@ int main(void) {
           { kind: "concept", part: "break and continue", title: "break and continue", blocks: [
             L([
               "<code>break</code> ends the loop at once; execution continues after the loop.",
-              "<code>continue</code> skips the rest of the block and starts the next repetition. In a for loop, the update runs first.",
+              "<code>continue</code> skips the rest of the block and starts the next repetition. In a for loop, continue jumps to the update (<code>i++</code>), then to the condition.",
               "<code>while (1)</code> repeats until a break: the exit is inside the block.",
             ]),
           ] },
@@ -1551,7 +1565,7 @@ int main(void) {
               "<code>type name(parameters) { ... return value; }</code>; a call passes the arguments.",
               "void: no return value, or no parameters.",
               "A prototype declares a function that is defined below main.",
-              "Arguments are copied: a function cannot change the caller's variables.",
+              "Arguments are copied: a function cannot change the caller's variables through its parameters.",
               "Local variables exist only in their function; globals are visible everywhere.",
             ]),
             NEXT("<b>Arrays</b>. Many values of one type under one name."),
@@ -1581,8 +1595,8 @@ int main(void) {
               "77.0\n212.0", '#include <stdio.h>\ndouble c_to_f(double c) {\n    \n}\nint main(void) {\n    printf("%.1f\\n", c_to_f(25));\n    printf("%.1f\\n", c_to_f(100));\n    return 0;\n}', null, "return c * 9 / 5 + 32;"),
           ] },
           { kind: "exercise", title: "Write a program: maximum of two", blocks: [
-            PQ("Write the function <code>int max2(int a, int b)</code>, which returns the larger value. Display max2(7, 12) and max2(-3, -8).",
-              "12 -3", STARTER, null, "if (a > b) return a; return b;"),
+            PQ("Write the function <code>int max2(int a, int b)</code>, which returns the larger value. Display max2(7, 12) and max2(-3, -8) on one line, separated by a space.",
+              "12 -3", STARTER, null, "if (a > b) { return a; } return b;"),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
             PQ("The function is called before the compiler knows it. Add a prototype.",
@@ -1608,10 +1622,11 @@ int main(void) {
             L(["Declaring an array", "Index and elements", "Loops over an array", "Sum, average, and maximum", "Arrays and functions", "Two-dimensional arrays"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Declaring an array", title: "Declaring an array", blocks: [
-            CODE("int nums[5] = {10, 20, 30, 40, 50};\ndouble v[3];         // 3 values, not initialized\nint z[4] = {0};      // all 4 elements are 0\nint a[] = {5, 6, 7}; // size 3, from the list"),
+            CODE("int nums[5] = {10, 20, 30, 40, 50};\ndouble v[3];         // values unknown (Lesson 2)\nint z[4] = {0};      // 0, 0, 0, 0\nint w[4] = {5};      // 5, 0, 0, 0\nint a[] = {5, 6, 7}; // size 3, from the list"),
             L([
               "The size is fixed when the array is created; the array cannot grow.",
               "All elements have the same type.",
+              "Elements not listed in the braces are 0: <code>{5}</code> gives 5, 0, 0, 0.",
               "The elements are stored one after another in memory.",
             ]),
           ] },
@@ -1690,14 +1705,15 @@ int main(void) {
     }
     printf("Max: t[%d] = %.1f\\n", best, t[best]);
     return 0;
-}`),
+}`, "best stores an index. Output: Max: t[2] = 26.5"),
           ] },
           { kind: "concept", part: "Arrays and functions", title: "Passing an array to a function", blocks: [
             CODE("double average(int v[], int n)", null, "the size is a separate parameter"),
             L([
               "An array parameter is written with empty brackets: <code>int v[]</code>.",
               "The function does not know the size: pass it as another argument.",
-              "The array is <b>not copied</b>: the function works on the caller's elements, so it can change them.",
+              "The array is <b>not copied</b>: the function receives the address of element 0 (details in Lesson 11), so it works on the caller's elements and can change them.",
+              "An int argument, in contrast, is copied (Lesson 7).",
             ]),
           ] },
           { kind: "code", part: "Arrays and functions", title: "Example: scale changes the caller's array", blocks: [
@@ -1710,7 +1726,7 @@ int main(void) {
     scale(r, 3, 2.0);
     printf("%.1f %.1f %.1f\\n", r[0], r[1], r[2]);
     return 0;
-}`),
+}`, "scale changes r itself. Output: 2.0 5.0 8.0"),
           ] },
           { kind: "concept", part: "Two-dimensional arrays", title: "Two-dimensional arrays", blocks: [
             CODE("int m[2][3] = {{1, 2, 3},\n               {4, 5, 6}};", null, "2 rows, 3 columns"),
@@ -1730,7 +1746,7 @@ int main(void) {
         printf("Row %d: %d\\n", r, total);
     }
     return 0;
-}`),
+}`, "One total per row. Output: Row 0: 6, Row 1: 15"),
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
@@ -1845,15 +1861,23 @@ int main(void) {
             L([
               "The loop stops at the null character, so it works for any length.",
               "Each s[i] is a char: it can be compared, <code>s[i] == 'a'</code>, or changed.",
-              "<code>#include &lt;ctype.h&gt;</code>: <code>toupper(c)</code>, <code>tolower(c)</code>, <code>isdigit(c)</code>, <code>isupper(c)</code>.",
             ]),
+          ] },
+          { kind: "concept", part: "The characters of a string", title: "Functions for one character: ctype.h", blocks: [
+            TB(["Function", "Result"], [
+              ["<code>toupper(c)</code>", "the upper-case letter: <code>toupper('a')</code> is 'A'; other characters stay the same"],
+              ["<code>tolower(c)</code>", "the lower-case letter: <code>tolower('B')</code> is 'b'"],
+              ["<code>isdigit(c)</code>", "not 0 (true) if c is '0' to '9'; otherwise 0"],
+              ["<code>isupper(c)</code>", "not 0 (true) if c is 'A' to 'Z'; otherwise 0"],
+            ]),
+            T("<code>#include &lt;ctype.h&gt;</code> is required. In an if, a result that is not 0 counts as true."),
           ] },
           { kind: "code", part: "The characters of a string", title: "Example: counting a character", blocks: [
             EX(`#include <stdio.h>
 int main(void) {
     char s[] = "temperature";
-    int count = 0;
-    for (int i = 0; s[i] != '\\0'; i++) {
+    int count = 0, i;
+    for (i = 0; s[i] != '\\0'; i++) {
         if (s[i] == 'e') { count++; }
     }
     printf("%d\\n", count);
@@ -1867,8 +1891,8 @@ int main(void) {
             TB(["Function", "Result"], [
               ["<code>strlen(s)</code>", "the number of characters, without '\\0'"],
               ["<code>strcpy(dest, src)</code>", "copies src into dest"],
-              ["<code>strcat(dest, src)</code>", "appends src to the end of dest"],
-              ["<code>strcmp(a, b)</code>", "0 if equal; less than 0 if a comes first; greater than 0 if b comes first"],
+              ["<code>strcat(dest, src)</code>", "appends src to the end of dest; dest must already hold a string that ends with '\\0'"],
+              ["<code>strcmp(a, b)</code>", "0 if equal; less than 0 if a comes first; greater than 0 if b comes first. The order is that of the ASCII codes: 'B' (66) comes before 'a' (97)."],
             ]),
             T("<code>#include &lt;string.h&gt;</code> is required. dest must be large enough for the result."),
           ] },
@@ -1887,7 +1911,7 @@ int main(void) {
     strcat(msg, " ready");
     printf("%s (%d)\\n", msg, (int) strlen(msg));
     return 0;
-}`),
+}`, "(int) turns the size from strlen into an int, for %d"),
             T("strcpy stores \"Motor\"; strcat appends \" ready\"; strlen counts 11 characters, without '\\0'."),
           ] },
           { kind: "code", part: "String functions", title: "Example: checking a command", blocks: [
@@ -1923,6 +1947,7 @@ int main(void) {
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
             PAPER,
+            T("<code>(int)</code> turns the size from strlen into an int, for %d, as for sizeof (Lesson 2)."),
             RUN(`#include <stdio.h>
 #include <string.h>
 int main(void) {
@@ -1968,7 +1993,7 @@ int main(void) {
           ] },
           { kind: "concept", part: "Defining a struct", title: "Why a struct", cols: [
             [T("Without a struct: one array for each value. The data of one student is linked only by the index."),
-              CODE("char name[3][20];\nint score[3];\ndouble gpa[3];")],
+              CODE("// 3 names, up to 19 chars each\nchar name[3][20];\nint score[3];\ndouble gpa[3];")],
             [T("With a struct: the values of one student stay together, and one array holds all the records."),
               CODE("struct student {\n    char name[20];\n    int score;\n    double gpa;\n};\nstruct student list[3];")],
           ] },
@@ -2000,10 +2025,7 @@ int main(void) {
           ] },
           { kind: "code", part: "Members and initialization", title: "Example: reading a record", blocks: [
             RUN(`#include <stdio.h>
-struct student {
-    char name[20];
-    int score;
-};
+struct student { char name[20]; int score; };
 int main(void) {
     struct student s;
     scanf("%s %d", s.name, &s.score);
@@ -2073,7 +2095,7 @@ int main(void) {
 }`),
           ] },
           { kind: "concept", part: "Structs and functions", title: "Structs as parameters and results", cols: [
-            [CODE("double area(struct rect r) {\n    return r.w * r.h;\n}\n\nstruct rect make(double w, double h) {\n    struct rect r = {w, h};\n    return r;\n}")],
+            [CODE("struct rect { double w; double h; };\n\ndouble area(struct rect r) {\n    return r.w * r.h;\n}\n\nstruct rect make(double w, double h) {\n    struct rect r = {w, h};\n    return r;\n}")],
             [L([
               "A struct parameter receives a <b>copy</b> of the argument, as an int parameter does (Lesson 7).",
               "A function can return a struct: several values in one result.",
@@ -2162,6 +2184,7 @@ int main(void) {
             L([
               "<code>int *p</code> declares p as a pointer to an int.",
               "<code>p = &amp;x</code> makes p point to x.",
+              "<code>int *p = &amp;x;</code> stores &amp;x in p, not in *p; here * is part of the declaration.",
               "The type matters: an int pointer points to an int.",
             ]),
           ] },
@@ -2213,6 +2236,7 @@ int main(void) {
             L([
               "The name of an array is the address of its first element: <code>int *p = nums;</code> is the same as <code>p = &amp;nums[0];</code>",
               "<code>p + i</code> points to element i: <code>*(p + i)</code>, <code>p[i]</code>, and <code>nums[i]</code> are the same element.",
+              "If nums starts at address 1000, p + 1 is 1004, not 1001: it moves by the size of one element (an int has 4 bytes).",
               "This is why an array parameter lets a function change the caller's elements, and why <code>scanf(\"%s\", name)</code> needs no &amp;.",
             ]),
           ] },
@@ -2280,7 +2304,7 @@ int main(void) {
               "60", '#include <stdio.h>\nvoid add_bonus(int *score) {\n    score = score + 10;\n}\nint main(void) {\n    int s = 50;\n    add_bonus(&s);\n    printf("%d\\n", s);\n    return 0;\n}', null, "score is the address; *score is the variable."),
           ] },
           { kind: "exercise", title: "Write a program: two results", blocks: [
-            PQ("Write <code>void min_max(int v[], int n, int *lo, int *hi)</code>, which stores the smallest and the largest element. Test it with {4, 9, 2, 7, 5}.",
+            PQ("Write <code>void min_max(int v[], int n, int *lo, int *hi)</code>, which stores the smallest and the largest element. Test it with {4, 9, 2, 7, 5}, and display lo and hi separated by a space: <code>2 9</code>.",
               "2 9", STARTER, null, "*lo = v[0]; *hi = v[0]; then compare each element."),
           ] },
           { kind: "exercise", title: "Write a program: a pointer parameter", blocks: [
@@ -2340,8 +2364,7 @@ int main(void) {
     printf("%d %d %d\\n", a, b, c);
     return 0;
 }`, "%d displays every value in decimal", [
-              { c: "0x1F", e: "1 × 16 + 15 = 31" },
-              { c: "0b1010", e: "8 + 2 = 10" },
+              { c: "0x1F, 0b1010", e: "1 × 16 + 15 = 31; 8 + 2 = 10" },
               { c: "017", e: "octal: 1 × 8 + 7 = 15" },
               { c: "printf", e: "<code>31 10 15</code>" },
             ]),
@@ -2390,7 +2413,7 @@ int main(void) {
               ["<code>int16_t</code>", "16", "−32 768 to 32 767"],
               ["<code>uint32_t</code>", "32", "0 to 4 294 967 295"],
             ]),
-            T("u means unsigned: no sign, values from 0. The number is the size in bits. printf uses %u (or %d) for them."),
+            T("u means unsigned: no sign, values from 0. The number is the size in bits. printf uses %d for the signed types and %u for the unsigned types; a uint8_t also works with %d, because it becomes an int."),
           ] },
           { kind: "code", part: "Fixed-size integer types", title: "Example: an 8-bit register and a 16-bit reading", blocks: [
             RUN(`#include <stdio.h>
@@ -2417,7 +2440,6 @@ int main(void) {
             L([
               "A value stored in a smaller type keeps only its low bits: <code>(uint8_t) 0x1234</code> is 0x34.",
               "A negative value stored in an unsigned type becomes large: <code>(uint8_t) -1</code> is 255 (1111 1111).",
-              "In a comparison, do not mix signed and unsigned values: convert them to one type first.",
             ]),
           ] },
           { kind: "code", part: "Conversion to a smaller type", title: "Example: keeping the low byte", blocks: [
@@ -2450,7 +2472,8 @@ int main(void) {
 int main(void) {
     int a = 0x20, b = 0b111, c = 012;
     printf("%d %d %d\\n", a, b, c);
-    printf("%X %02x %o\\n", 255, 10, 64);
+    printf("%X %02x\\n", 255, 10);
+    printf("%o\\n", 64);
     return 0;
 }`)],
           ] },
@@ -2568,10 +2591,10 @@ int main(void) {
             ]),
           ] },
           { kind: "concept", part: "Setting, clearing, toggling, and testing a bit", title: "The four bit operations", blocks: [
-            TB(["Operation", "Code", "Why it works"], [
-              ["set bit n to 1", "<code>reg |= (1 &lt;&lt; n);</code>", "x | 1 = 1; x | 0 = x"],
-              ["clear bit n to 0", "<code>reg &amp;= ~(1 &lt;&lt; n);</code>", "x &amp; 0 = 0; x &amp; 1 = x"],
-              ["toggle bit n", "<code>reg ^= (1 &lt;&lt; n);</code>", "x ^ 1 = not x; x ^ 0 = x"],
+            TB(["Operation", "Code", "Why it works (b is one bit)"], [
+              ["set bit n to 1", "<code>reg |= (1 &lt;&lt; n);</code>", "b | 1 = 1; b | 0 = b"],
+              ["clear bit n to 0", "<code>reg &amp;= ~(1 &lt;&lt; n);</code>", "b &amp; 0 = 0; b &amp; 1 = b"],
+              ["toggle bit n", "<code>reg ^= (1 &lt;&lt; n);</code>", "b ^ 1 = not b; b ^ 0 = b"],
               ["test bit n", "<code>if (reg &amp; (1 &lt;&lt; n))</code>", "not 0 only when bit n is 1"],
             ]),
             T("The other bits keep their values: a program switches one pin without changing the others."),
@@ -2642,8 +2665,10 @@ int main(void) {
             [RUN(`#include <stdio.h>
 int main(void) {
     int a = 0x5C, b = 0x0F;
-    printf("%02X %02X\\n", a & b, a | b);
-    printf("%02X %d\\n", a ^ 0xFF, a >> 2);
+    printf("%02X ", a & b);
+    printf("%02X\\n", a | b);
+    printf("%02X ", a ^ 0xFF);
+    printf("%d\\n", a >> 2);
     printf("%d %d\\n", 6 & 1, 6 && 1);
     return 0;
 }`)],
@@ -2669,7 +2694,7 @@ int main(void) {
               "6", '#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n    uint8_t r = 0xB7;\n    // count the 1 bits\n    return 0;\n}', null, "Test bit 0 with r & 1, then shift r >> 1; repeat 8 times."),
           ] },
           { kind: "exercise", title: "Write a program: swap the nibbles", blocks: [
-            PQ("Exchange the high and low 4 bits of x = 0x3C, and display the result as two hexadecimal digits.",
+            PQ("A <b>nibble</b> is a group of 4 bits: one hexadecimal digit. Exchange the high and low nibbles of x = 0x3C, and display the result as two hexadecimal digits.",
               "C3", '#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n    uint8_t x = 0x3C;\n    // swap the nibbles\n    return 0;\n}', null, "x = (x << 4) | (x >> 4); the uint8_t keeps the low 8 bits."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -2694,7 +2719,8 @@ int main(void) {
             L([
               "Each input/output register has a fixed address, given in the data sheet of the microcontroller.",
               "Writing to that address changes the pins; reading it returns the pin levels.",
-              "C reaches the address through a pointer: <code>*(volatile uint8_t *) 0x25</code> is the byte at address 0x25.",
+              "C reaches the address through a pointer, in two steps. The cast <code>(uint8_t *) 0x25</code> makes the number 0x25 an address; the <code>*</code> in front of it is the byte at that address.",
+              "Written for a register: <code>*(volatile uint8_t *) 0x25</code> (volatile: the next subtopic).",
             ]),
             TB(["Register (ATmega328P)", "Address", "Purpose"], [
               ["DDRB", "0x24", "direction of the pins of port B (1 = output)"],
@@ -2712,13 +2738,13 @@ int main(void) {
           { kind: "concept", part: "volatile", title: "volatile", blocks: [
             CODE("volatile uint8_t button_pressed = 0;   // changed by an interrupt"),
             L([
-              "<code>volatile</code> tells the compiler that the value can change outside the program: by the hardware, or by an interrupt routine.",
+              "<code>volatile</code> tells the compiler that the value can change outside the program: by the hardware, or by an interrupt routine (a function that the hardware starts when an event occurs, for example a button press).",
               "The compiler then reads the value from memory every time, instead of reusing an old copy.",
               "Hardware registers and variables shared with an interrupt must be volatile.",
             ]),
           ] },
           { kind: "concept", part: "The main loop", title: "Setup, then an endless loop", cols: [
-            [CODE("int main(void) {\n    DDRB |= (1 << 5);        // setup: once\n    while (1) {              // loop: forever\n        PORTB ^= (1 << 5);   // toggle the LED\n        _delay_ms(500);\n    }\n}", null, "a blinking LED on an AVR (read-only)")],
+            [CODE("int main(void) {\n    DDRB |= (1 << 5);        // setup: once\n    while (1) {              // loop: forever\n        PORTB ^= (1 << 5);   // toggle the LED\n        _delay_ms(500);      // wait 500 ms\n    }\n}", null, "a blinking LED on an AVR (read-only)")],
             [L([
               "A microcontroller program never ends: main contains an endless loop, <code>while (1)</code>.",
               "Before the loop, the setup runs once.",
@@ -2895,7 +2921,7 @@ int main(void) {
           ] },
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
             PQ("Write the program. Use if / else for the two cases.",
-              "Units: 150\nBill: 525.00", '#include <stdio.h>\nint main(void) {\n    int units;\n    printf("Units: ");\n    scanf("%d", &units);\n    // compute and display the bill\n    return 0;\n}', ["150"], "if (units <= 100) bill = units * 3.0; else bill = 300.0 + (units - 100) * 4.5;"),
+              "Units: 150\nBill: 525.00", '#include <stdio.h>\nint main(void) {\n    int units;\n    printf("Units: ");\n    scanf("%d", &units);\n    // compute and display the bill\n    return 0;\n}', ["150"], "if (units <= 100) { bill = units * 3.0; } else { bill = 300.0 + (units - 100) * 4.5; }"),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: a menu", blocks: [
             T("Repeat: read an operator (+, -, *, /) and two numbers, and display the result. The operator q ends the program."),
@@ -2911,7 +2937,7 @@ int main(void) {
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
             PQ("Write <code>int is_prime(int n)</code>, which returns 1 or 0. Then display the primes up to 30 on one line.",
-              "2 3 5 7 11 13 17 19 23 29", STARTER, null, "In is_prime: for (int d = 2; d < n; d++) { if (n % d == 0) return 0; } return 1;"),
+              "2 3 5 7 11 13 17 19 23 29", STARTER, null, "In is_prime: for (int d = 2; d < n; d++) { if (n % d == 0) { return 0; } } return 1;"),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: temperature statistics", blocks: [
             T("Read 6 temperatures into an array. Display the average with 1 decimal, and the number of readings above the average."),
@@ -2946,20 +2972,36 @@ int main(void) {
               "sum 67, max 30", STARTER, null, "In main: int s, m; stats(v, 4, &s, &m); printf(\"sum %d, max %d\\n\", s, m);"),
           ] },
           { kind: "problem", part: "Problem 8", title: "Problem 8: an LED bar", blocks: [
-            T("A bar of 8 LEDs is connected to one port. Read a level from 0 to 8, switch on that many LEDs from bit 0 upward, and display the port value in binary."),
-            IPO([["Input", "the level, for example 5"], ["Output", "00011111"], ["Processing", "the mask (1 << level) - 1, then the bits 7 to 0"]]),
+            T("A bar of 8 LEDs is connected to one port. The program switches on 5 LEDs, from bit 0 upward, and displays the port value in binary."),
+            IPO([["Input", "the level 5 (in the program)"], ["Output", "the 8 bits of the port, from bit 7 to bit 0"], ["Processing", "the mask (1 &lt;&lt; 5) - 1, then (port &gt;&gt; n) &amp; 1 for n = 7 down to 0"]]),
           ] },
-          { kind: "exercise", part: "Problem 8", title: "Problem 8: write the program", blocks: [
-            PQ("Write the program. Store the port value in a uint8_t.",
-              "Level: 5\n00011111", '#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n    int level;\n    printf("Level: ");\n    scanf("%d", &level);\n    // build and display the port value\n    return 0;\n}', ["5"], "uint8_t port = (1 << level) - 1; then display (port >> n) & 1 for n = 7 down to 0."),
+          { kind: "exercise", part: "Problem 8", title: "Problem 8: determine the output", cols: [
+            [PAPER],
+            [RUN(`#include <stdio.h>
+#include <stdint.h>
+int main(void) {
+    uint8_t port = (1 << 5) - 1;
+    for (int n = 7; n >= 0; n--) {
+        printf("%d", (port >> n) & 1);
+    }
+    printf("\\n");
+    return 0;
+}`)],
           ] },
           { kind: "problem", part: "Problem 9", title: "Problem 9: a status register", blocks: [
-            T("A device reports a status byte. Bit 0 means READY, bit 3 ERROR, and bit 5 BUSY. Read the byte in hexadecimal and display the name of each flag that is set."),
-            IPO([["Input", "29 (hexadecimal: 0010 1001)"], ["Output", "READY, ERROR, BUSY (one per line)"], ["Processing", "#define a name for each bit; test each bit with &"]]),
+            T("A device reports a status byte. Bit 0 means READY, bit 3 ERROR, and bit 5 BUSY. The program tests each bit with &amp; and displays the name of each flag that is set."),
+            IPO([["Input", "the status byte 0x21 (in the program)"], ["Output", "the name of each flag that is set, one per line"], ["Processing", "status &amp; (1 &lt;&lt; n) is not 0 only when bit n is 1"]]),
           ] },
-          { kind: "exercise", part: "Problem 9", title: "Problem 9: write the program", blocks: [
-            PQ("Write the program. Read the byte with <code>scanf(\"%x\", &amp;status)</code>, into an unsigned int.",
-              "29\nREADY\nERROR\nBUSY", '#include <stdio.h>\n#define READY (1 << 0)\n#define ERROR (1 << 3)\n#define BUSY  (1 << 5)\nint main(void) {\n    unsigned int status;\n    // read and test the flags\n    return 0;\n}', ["29"], "if (status & READY) { printf(\"READY\\n\"); } and the same for ERROR and BUSY."),
+          { kind: "exercise", part: "Problem 9", title: "Problem 9: determine the output", blocks: [
+            PAPER,
+            RUN(`#include <stdio.h>
+int main(void) {
+    unsigned int status = 0x21;
+    if (status & (1 << 0)) { printf("READY\\n"); }
+    if (status & (1 << 3)) { printf("ERROR\\n"); }
+    if (status & (1 << 5)) { printf("BUSY\\n"); }
+    return 0;
+}`),
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [
             TB(["Lessons", "Key rules"], [

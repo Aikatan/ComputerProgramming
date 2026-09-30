@@ -36,14 +36,14 @@
     ],
   };
   const T_raise = {
-    code: ["def check_voltage(v):", "    if v < 0:", '        raise ValueError("negative voltage")', "    return v", "try:", "    check_voltage(-5)", "except ValueError as e:", '    print("Error:", e)'],
+    code: ["def check_voltage(v):", "    if v < 0:", '        raise ValueError("voltage < 0")', "    return v", "try:", "    check_voltage(-5)", "except ValueError as e:", '    print("Error:", e)'],
     steps: [
       { line: 0, note: "def creates the function." },
       { line: 5, note: "Inside try: check_voltage(-5) is called.", set: { "v (check_voltage)": "-5" } },
-      { line: 1, note: "-5 < 0 is True." },
-      { line: 2, note: "raise creates a ValueError with a message. The function stops.", unset: ["v (check_voltage)"] },
-      { line: 6, note: "except ValueError catches it. e holds the error; its text is the message.", set: { e: "'negative voltage'" } },
-      { line: 7, note: "The message is displayed.", print: "Error: negative voltage" },
+      { line: 1, note: "-5 &lt; 0 is True." },
+      { line: 2, note: "raise creates a ValueError with the message \"voltage &lt; 0\". The rest of the function is skipped; Python goes to the matching except.", unset: ["v (check_voltage)"] },
+      { line: 6, note: "except ValueError matches. e holds the exception object, not a string.", set: { e: { v: "ValueError('voltage < 0')", t: "obj" } } },
+      { line: 7, note: "print(e) displays the message of the exception. Result check: -5 &lt; 0, so the message is displayed.", print: "Error: voltage < 0" },
     ],
   };
 
@@ -121,12 +121,13 @@
             ]),
           ] },
           { kind: "code", part: "Line styles", title: "Example: a styled line", blocks: [
-            EX('import matplotlib.pyplot as plt\n\nx = [1, 2, 3, 4]\ny = [3, 5, 4, 6]\nplt.plot(x, y, color="red", linestyle="--", marker="o")\nplt.show()', "a red dashed line with circles", null),
+            EX('import matplotlib.pyplot as plt\n\nx = [1, 2, 3, 4]\ny = [3, 5, 4, 6]\nplt.plot(x, y, color="red",\n         linestyle="--", marker="o")\nplt.show()', "a red dashed line with circles", null),
           ] },
           { kind: "concept", part: "Saving a figure", title: "Saving a figure", blocks: [
             L([
               "<code>plt.savefig(\"chart.png\")</code> saves the figure as an image file.",
-              "Call savefig before <code>plt.show()</code>: after show, the figure may be empty.",
+              "Call savefig before <code>plt.show()</code>.",
+              "In VS Code or Thonny, show() opens a window. Closing the window clears the figure, so a savefig after show() saves an empty image.",
               "The file type follows the name: <code>.png</code>, <code>.pdf</code>, <code>.jpg</code>.",
             ]),
             CODE('plt.plot(hours, temps)\nplt.savefig("temperature.png")\nplt.show()', null, "example"),
@@ -141,17 +142,18 @@
             ]),
             NEXT("<b>Other chart types</b>. Bar charts, scatter plots, and histograms."),
           ] },
-          { kind: "exercise", title: "Write a program: a labelled plot", cols: [
-            [T("Plot the battery level over time: minutes 0, 10, 20, 30 and levels 100, 82, 65, 47. Add the axis labels \"Time (min)\" and \"Battery (%)\" and a title. Run the program and check the chart.")],
-            [RUN("import matplotlib.pyplot as plt\n\n# Write your program here\n")],
+          { kind: "exercise", title: "Write a program: a labelled plot", blocks: [
+            T("Plot the battery level over time: minutes 0, 10, 20, 30 and levels 100, 82, 65, 47. Add the axis labels \"Time (min)\" and \"Battery (%)\" and a title."),
+            T("Expected chart: one blue line through 4 points, falling from 100 at 0 min to 47 at 30 min, with both axis labels and the title above the chart."),
+            RUN("import matplotlib.pyplot as plt\n\n# Write your program here\n"),
           ] },
           { kind: "exercise", title: "Modify the plot", cols: [
-            [T("Change the plot: green color, dotted line, and a square marker at each point.")],
+            [T("Change the plot: green color, dotted line, and a square marker at each point.<br>Expected chart: one green dotted line with a square at each of the 4 points.")],
             [RUN('import matplotlib.pyplot as plt\n\nx = [1, 2, 3, 4]\ny = [3, 5, 4, 6]\nplt.plot(x, y)\nplt.show()')],
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which function adds the names of the lines to a chart?", choices: ["plt.title()", "plt.legend()", "plt.xlabel()", "plt.grid()"], answer: 1, explain: "legend() displays the label of each line." },
-            { q: "When should `plt.savefig()` be called?", choices: ["before plt.show()", "after plt.show()", "before import", "never"], answer: 0, explain: "After show(), the figure may already be closed and empty." },
+            { q: "When should `plt.savefig()` be called?", choices: ["before plt.show()", "after plt.show()", "before import", "never"], answer: 0, explain: "Closing the show() window clears the figure, so a later savefig saves an empty image." },
           ])] },
         ],
       },
@@ -185,7 +187,7 @@
             ]),
           ] },
           { kind: "code", part: "Scatter plots", title: "Example: voltage and current", blocks: [
-            EX('import matplotlib.pyplot as plt\n\nvoltage = [1, 2, 3, 4, 5]\ncurrent = [0.21, 0.39, 0.62, 0.80, 1.01]\nplt.scatter(voltage, current)\nplt.xlabel("Voltage (V)")\nplt.ylabel("Current (A)")\nplt.show()', "points close to a straight line", null),
+            EX('import matplotlib.pyplot as plt\n\nvoltage = [1, 2, 3, 4, 5]\ncurrent = [0.21, 0.39, 0.62,\n           0.80, 1.01]\nplt.scatter(voltage, current)\nplt.xlabel("Voltage (V)")\nplt.ylabel("Current (A)")\nplt.show()', "points close to a straight line", null),
           ] },
           { kind: "concept", part: "Histograms", title: "Histograms", blocks: [
             L([
@@ -199,6 +201,15 @@
               { c: "bins=4", e: "97 to 103 is divided into 4 intervals, each 1.5 ohm wide." },
               { c: "plt.hist(ohms, bins=4)", e: "Bar heights 2, 1, 5, 2: most values are close to 100 ohm." },
             ]),
+          ] },
+          { kind: "concept", part: "Histograms", title: "How the values fall into the bins", blocks: [
+            TB(["Bin", "Range (ohm)", "Values", "Count"], [
+              ["1", "97 ≤ value &lt; 98.5", "97, 98", "2"],
+              ["2", "98.5 ≤ value &lt; 100", "99", "1"],
+              ["3", "100 ≤ value &lt; 101.5", "100, 100, 100, 101, 101", "5"],
+              ["4", "101.5 ≤ value ≤ 103", "102, 103", "2"],
+            ], "The previous example: bins=4, each (103 − 97) / 4 = 1.5 ohm wide", "center"),
+            T("A value on a bin edge belongs to the bin on its right: 100 is in bin 3. The largest value, 103, is in the last bin."),
           ] },
           { kind: "concept", part: "Choosing a chart", title: "Choosing a chart", blocks: [
             TB(["Question", "Chart", "Function"], [
@@ -226,12 +237,20 @@
               ["Speed and fuel consumption of 30 test drives", ""],
             ]),
           ] },
+          { kind: "exercise", title: "Check your table", blocks: [
+            TB(["Data", "Chart", "Reason"], [
+              ["The power consumption of 5 departments", "bar chart", "named groups are compared"],
+              ["The motor temperature every minute for one hour", "line plot", "a value changes over time"],
+              ["200 measured cable lengths", "histogram", "the distribution of many values"],
+              ["Speed and fuel consumption of 30 test drives", "scatter plot", "the relation of two quantities"],
+            ]),
+          ] },
           { kind: "exercise", title: "Write a program: a bar chart", cols: [
-            [T("Draw a bar chart of the monthly production: Jan 120, Feb 135, Mar 128 units. Add a y-axis label and a title.")],
+            [T("Draw a bar chart of the monthly production: Jan 120, Feb 135, Mar 128 units, with a y-axis label and a title.<br>Expected chart: three bars with heights 120, 135, 128.")],
             [RUN("import matplotlib.pyplot as plt\n\n# Write your program here\n")],
           ] },
           { kind: "exercise", title: "Write a program: a histogram", cols: [
-            [T("Draw a histogram with 3 bins of these test scores: 55, 62, 68, 70, 71, 75, 78, 80, 85, 92.")],
+            [T("Draw a histogram with 3 bins of these test scores: 55, 62, 68, 70, 71, 75, 78, 80, 85, 92.<br>Expected chart: three bars with heights 2, 5, 3.")],
             [RUN("import matplotlib.pyplot as plt\n\nscores = [55, 62, 68, 70, 71,\n          75, 78, 80, 85, 92]\n# Write the histogram here\n")],
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -269,6 +288,7 @@
               "Python runs the try block. If no error occurs, the except block is skipped.",
               "If an error occurs, the rest of the try block is skipped. If the error type matches, the except block runs.",
               "After the try statement, the program continues normally.",
+              "If no except block matches the error type, the error is not handled: the program stops with a traceback (Topic 02).",
             ]),
           ] },
           { kind: "code", part: "try and except", title: "First example: execution step by step", blocks: [W("codeTrace", T_try)] },
@@ -300,6 +320,7 @@
               ["<code>finally</code>", "always, last, with or without an error"],
             ]),
             T("finally is used for work that must always happen, such as closing a file (Topic 08)."),
+            T("If no except block matches the error, finally still runs; then the program stops with the traceback."),
           ] },
           { kind: "code", part: "else and finally", title: "Example: all four blocks", blocks: [
             EX('try:\n    r = 10 / int(input("Divisor: "))\nexcept ZeroDivisionError:\n    print("Division by zero")\nelse:\n    print("Result:", r)\nfinally:\n    print("Finished")', "test input: 4", [
@@ -312,7 +333,9 @@
             TB(["Divisor", "try", "except ZeroDivisionError", "else", "finally", "Output"], [
               ["4", "completes", "skipped", "runs", "runs", "Result: 2.5, Finished"],
               ["0", "stops at the division", "runs", "skipped", "runs", "Division by zero, Finished"],
-            ], "The example with two different inputs", "center"),
+              ["abc", "stops at int(): ValueError", "skipped: no match", "skipped", "runs", "Finished, then the traceback"],
+            ], "The example with three different inputs", "center"),
+            T("With abc, the last line of the traceback is <code>ValueError: invalid literal for int() with base 10: 'abc'</code>."),
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
@@ -360,9 +383,10 @@
           ] },
           { kind: "concept", part: "raise", title: "raise creates an exception", blocks: [
             L([
-              "<code>raise ValueError(\"message\")</code> stops the current function and creates a ValueError with a message.",
+              "<code>raise ValueError(\"message\")</code> creates a ValueError with a message.",
+              "The rest of the current block is skipped. Python goes to the nearest matching except, also in the code that called the function. Without one, the program stops with a traceback.",
               "Use it when a function receives values that it cannot process, for example a negative voltage.",
-              "The caller catches it with <code>except ValueError as e:</code>; <code>e</code> gives the message.",
+              "The caller catches it with <code>except ValueError as e:</code>; <code>print(e)</code> displays the message.",
             ]),
           ] },
           { kind: "code", part: "raise", title: "First example: execution step by step", blocks: [W("codeTrace", T_raise)] },
@@ -396,8 +420,8 @@
               "Error: speed too high", "# Write your program here\n", null, 'except ValueError as e: print("Error:", e)'),
           ] },
           { kind: "exercise", title: "Write an assert", blocks: [
-            PQ("Complete line 2 with an assert: a negative length raises an AssertionError with the message \"length must be positive\".",
-              "length must be positive", 'def area(length):\n    \n    return length * length\ntry:\n    area(-3)\nexcept AssertionError as e:\n    print(e)\n', null, 'assert length > 0, "length must be positive"'),
+            PQ("Insert an assert as the first statement in the body of area(): a length that is not positive raises an AssertionError with the message \"length must be positive\".",
+              "length must be positive", 'def area(length):\n    return length * length\ntry:\n    area(-3)\nexcept AssertionError as e:\n    print(e)', null, 'assert length > 0, "length must be positive"'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`assert x > 0` with x = -1 raises…", choices: ["ValueError", "AssertionError", "TypeError", "nothing"], answer: 1, explain: "A false assert condition raises an AssertionError." },
@@ -439,15 +463,28 @@
               "Temperature: warm\nTry again\nTemperature: 2x\nTry again\nTemperature: 25.5\n25.5", "# Write your program here\n", ["warm", "2x", "25.5"], "while True: try: t = float(input(...)); break  except ValueError: print(\"Try again\")"),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: safe list access", blocks: [
-            T("A list holds the readings of 4 sensors. Read a sensor number and display its reading, or \"No such sensor\" for an invalid number."),
-            IPO([["Input", "a sensor index (int)"], ["Output", "the reading, or a message"], ["Errors", "IndexError: index outside the list; ValueError: not an integer"]]),
+            T("A list holds the readings of 4 sensors, numbered 1 to 4: sensor n is <code>readings[n - 1]</code>. Read a sensor number and display its reading, or \"No such sensor\" for an invalid number."),
+            IPO([
+              ["Input", "a sensor number (int), valid from 1 to 4"],
+              ["Output", "the reading, or \"No such sensor\""],
+              ["Processing", "index = number − 1. A number below 1 gives a negative index, which Python accepts: check it with if and raise an IndexError."],
+              ["Errors", "IndexError: number below 1 or above 4; ValueError: not an integer"],
+            ]),
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
             PQ("Use the prompt <code>Sensor: </code>. Test input: 7.",
-              "Sensor: 7\nNo such sensor", "readings = [21.5, 22.0, 23.1, 20.8]\n# Write your program here\n", ["7"], "except (IndexError, ValueError): print(\"No such sensor\")"),
+              "Sensor: 7\nNo such sensor", "readings = [21.5, 22.0, 23.1, 20.8]\n# Write your program here\n", ["7"], "if number < 1: raise IndexError(\"no such sensor\"); print(readings[number - 1]); except (IndexError, ValueError): print(\"No such sensor\")"),
           ] },
-          { kind: "exercise", part: "Problem 4", title: "Problem 4: plot measured data", cols: [
-            [T("Plot these motor measurements as a line with circle markers: speed 500, 1000, 1500, 2000 rpm and current 1.2, 2.0, 2.9, 3.7 A. Label both axes with units, and add a title.")],
+          { kind: "problem", part: "Problem 4", title: "Problem 4: plot measured data", blocks: [
+            T("A motor test gives the current at four speeds. Show how the current changes with the speed."),
+            IPO([
+              ["Input", "speed 500, 1000, 1500, 2000 rpm; current 1.2, 2.0, 2.9, 3.7 A"],
+              ["Output", "a line plot with a circle marker at each point, both axes labelled with units, and a title"],
+              ["Processing", "<code>plt.plot(speed, current, marker=\"o\")</code>, <code>xlabel</code>, <code>ylabel</code>, <code>title</code>, <code>show</code>"],
+            ]),
+          ] },
+          { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", cols: [
+            [T("Write the program.<br>Expected chart: one line through 4 points with a circle at each point, rising from 1.2 A at 500 rpm to 3.7 A at 2000 rpm.")],
             [RUN("import matplotlib.pyplot as plt\n\n# Write your program here\n")],
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [

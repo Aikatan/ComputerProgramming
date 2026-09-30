@@ -1,6 +1,6 @@
 /* ===================== Topic 05 - Functions and Modules =====================
    Authored deck format (see CHAPTER-IMPROVEMENT-PROMPT.md).
-   Lesson order: defining -> parameters and return -> arguments -> scope -> functions that call functions -> modules -> practice.
+   Lesson order: defining -> parameters and return -> arguments -> scope -> nested calls and recursion -> modules -> practice.
    Python level: t02-t04 material plus def, return, import. No lists, dicts (except *args/**kwargs with a for loop), or try.
    Local variables in traces are named "name (function)" and are removed when the function returns.
    ============================================================================ */
@@ -26,22 +26,23 @@
       { line: 0, note: "def creates the function <code>line</code>. Its body does not run now." },
       { line: 3, note: "Call: the program jumps into the function." },
       { line: 1, note: "The body runs.", print: "----------" },
-      { line: 4, note: "The function ends. The program continues after the call.", print: "Motor report" },
+      { line: 3, note: "The body has ended. The program returns to the call and continues after it." },
+      { line: 4, note: "The next statement displays Motor report.", print: "Motor report" },
       { line: 5, note: "Second call: the program jumps into the function again." },
       { line: 1, note: "The body runs again.", print: "----------" },
-      { line: -1, note: "The program ends: one definition, two calls. The body (line 2) ran twice, once for each call. Line 1 only created the function." },
+      { line: -1, note: "The program ends. The body (line 2) ran once for each call; line 1 only created the function. Result check: 2 calls → 2 separator lines." },
     ],
   };
 
   const T_power = {
     code: ["def power(v, i):", "    p = v * i", "    return p", "", "result = power(12, 2)", 'print("Power =", result, "W")'],
     steps: [
-      { line: 0, note: "def creates the function <code>power</code> with the parameters v and i." },
+      { line: 0, note: "def creates the function <code>power</code> with the parameters v and i. In the Variables panel, v (power) means the variable v inside power." },
       { line: 4, note: "Call power(12, 2): the parameters receive the arguments.", set: { "v (power)": "12", "i (power)": "2" } },
       { line: 1, note: "v * i → 24, stored in the local variable p.", set: { "p (power)": "24" } },
       { line: 2, note: "return sends 24 back. The local variables disappear.", unset: ["v (power)", "i (power)", "p (power)"] },
       { line: 4, note: "The call is replaced by 24, which is stored in result.", set: { result: "24" } },
-      { line: 5, note: "result is displayed. The local variables exist only during the call.", print: "Power = 24 W" },
+      { line: 5, note: "result is displayed. The local variables existed only during the call. Result check: 12 × 2 = 24.", print: "Power = 24 W" },
     ],
   };
 
@@ -53,7 +54,7 @@
       { line: 1, note: "The body displays both values.", print: "Pump 220 V" },
       { line: 4, note: "Two arguments: 110 replaces the default.", unset: ["name (motor)", "voltage (motor)"], set: { "name (motor)": "'Fan'", "voltage (motor)": "110" } },
       { line: 1, note: "The body displays both values.", print: "Fan 110 V" },
-      { line: -1, note: "The program ends.", unset: ["name (motor)", "voltage (motor)"] },
+      { line: -1, note: "Result check: Pump used the default 220; Fan gave 110.", unset: ["name (motor)", "voltage (motor)"] },
     ],
   };
 
@@ -65,7 +66,7 @@
       { line: 5, note: "Call show()." },
       { line: 2, note: "Assignment inside a function creates a new <b>local</b> value. The global value does not change.", set: { "value (show)": "2" } },
       { line: 3, note: "Inside show, the name value means the local variable.", print: "2" },
-      { line: 6, note: "show has ended; its local value is gone. The global value is still 1.", unset: ["value (show)"], print: "1" },
+      { line: 6, note: "show has ended; its local value is gone. The global value is still 1. Result check: 2 inside show, 1 outside.", unset: ["value (show)"], print: "1" },
     ],
   };
 
@@ -77,7 +78,7 @@
       { line: 4, note: "add(a, b) is called with 1 and 2. add has its own a and b.", set: { "a (add)": "1", "b (add)": "2" } },
       { line: 1, note: "add returns 1 + 2 → 3. Its variables disappear.", unset: ["a (add)", "b (add)"] },
       { line: 4, note: "double_sum returns 3 * 2 → 6. Its variables disappear.", unset: ["a (double_sum)", "b (double_sum)"] },
-      { line: 6, note: "print displays the returned value.", print: "6" },
+      { line: 6, note: "Result check: (1 + 2) × 2 = 6.", print: "6" },
     ],
   };
 
@@ -89,7 +90,7 @@
     title: "Functions and Modules",
     short: "Functions & Modules",
     blurb: "Defining and calling functions, parameters and return values, arguments, scope, recursion, and modules.",
-    intro: "This chapter covers functions, named blocks of code that can be reused, and modules, files that group functions. Each lesson uses only what the lessons before it have explained:<br>defining → parameters and return → arguments → scope → functions that call functions → modules → practice.",
+    intro: "This chapter covers functions, named blocks of code that can be reused, and modules, files that group functions. Each lesson uses only what the lessons before it have explained:<br>defining → parameters and return → arguments → scope → nested calls and recursion → modules → practice.",
     lessons: [
       /* =============================== 1. DEFINING =============================== */
       {
@@ -113,7 +114,7 @@
             T("Functions are already in use: <code>print()</code>, <code>input()</code>, <code>len()</code>, and <code>round()</code> are built-in functions."),
           ] },
           { kind: "concept", part: "Defining a function", title: "The def statement", blocks: [
-            CODE('def function_name(parameters):\n    """Docstring: what the function does."""\n    statements\n    return value', null, "syntax"),
+            CODE('def function_name(parameters):\n    """Docstring: what the function does."""\n    statements\n    return value   # optional (Lesson 2)', null, "syntax"),
             L([
               "<code>def</code> starts the definition. The name follows the variable naming rules.",
               "The parentheses hold the parameters (Lesson 2). They may be empty.",
@@ -195,7 +196,7 @@
             ]),
             L([
               "At a call, each parameter is assigned its argument: <code>v = 12</code>, <code>i = 2</code>.",
-              "Parameters are local variables: they exist only while the function runs.",
+              "Parameters are <b>local variables</b>: variables that exist only inside the function, while it runs (Lesson 4).",
             ]),
           ] },
           { kind: "concept", part: "Return values", title: "return sends a value back", blocks: [
@@ -264,8 +265,8 @@
               "15 16", "# Write your program here\n", null, "return w * h, 2 * (w + h); then a, p = rect(5, 3)"),
           ] },
           { kind: "exercise", title: "Design and write", blocks: [
-            PQ("First write the input, output, and processing as comments. Then define <code>average(a, b, c)</code> that returns the average, and display it rounded to 2 decimal places for 20, 22, and 27.",
-              "23.0", "# Input:\n# Output:\n# Processing:\n\n", null, "return (a + b + c) / 3"),
+            PQ("First write the input, output, and processing as comments. Then define <code>average(a, b, c)</code> that returns the average, and display it rounded to 2 decimal places for 20, 22, and 26.",
+              "22.67", "# Input:\n# Output:\n# Processing:\n\n", null, "return (a + b + c) / 3, then print(round(average(20, 22, 26), 2))"),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "In `def power(v, i):`, v and i are…", choices: ["arguments", "parameters", "return values", "global variables"], answer: 1, explain: "The names in the definition are parameters." },
@@ -290,7 +291,7 @@
             L([
               "Positional arguments are matched to the parameters in order: the first argument to the first parameter, and so on.",
               "The order matters: <code>describe(\"Pump\", 220)</code> and <code>describe(220, \"Pump\")</code> give different results.",
-              "The number of arguments must equal the number of parameters without a default value.",
+              "Each parameter without a default value must receive exactly one argument. A parameter with a default value (later in this lesson) may receive one.",
             ]),
           ] },
           { kind: "code", part: "Positional arguments", title: "Example: the order matters", blocks: [
@@ -364,12 +365,12 @@
               "24.0 18.0", "# Write your program here\n", null, "return v * i * efficiency"),
           ] },
           { kind: "exercise", title: "Write a function with *args", blocks: [
-            PQ("Define <code>largest(*values)</code> that returns the largest argument. Display largest(3, 17, 9, 12).",
-              "17", "# Write your program here\n", null, "Start with the first value, then compare in a for loop."),
+            PQ("Define <code>average(*values)</code> that returns the average of its arguments. Use a for loop to add the values and to count them. Display average(3, 17, 9, 12).",
+              "10.25", "# Write your program here\n", null, "total = total + v and count = count + 1 in the loop; return total / count"),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`def calc(a, b=2, c=3): return a + b * c`. What is `calc(1, 3)`?", choices: ["7", "10", "12", "Error"], answer: 1, explain: "3 goes to b (the second position): 1 + 3 * 3 = 10." },
-            { q: "Which call is valid for `def f(a, b):`?", choices: ["f(a=1, 2)", "f(1, b=2)", "f(b=2, 1)", "f(1, a=2)"], answer: 1, explain: "Positional arguments must come first, and each parameter gets one value." },
+            { q: "Which call is valid for `def f(a, b):`?", choices: ["f(a=1, 2)", "f(1, b=2)", "f(b=2, 1)", "f(1)"], answer: 1, explain: "Positional arguments must come first, and b has no default value, so it needs an argument." },
           ])] },
         ],
       },
@@ -442,7 +443,7 @@
               "An assignment inside a function creates a local variable, even with a global name.",
               "<code>global x</code> lets a function change the global x.",
             ]),
-            NEXT("<b>Functions that call functions</b>. A function can call another function, or itself."),
+            NEXT("<b>Nested calls and recursion</b>. A function can call another function, or itself."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
             [T("Write the output on paper. Decide for each name whether it is local or global.<br>Then run the program and compare.")],
@@ -467,15 +468,15 @@
         ],
       },
 
-      /* =============================== 5. FUNCTIONS THAT CALL FUNCTIONS =============================== */
+      /* =============================== 5. NESTED CALLS AND RECURSION =============================== */
       {
         id: "recursion",
-        title: "Functions that call functions",
-        sub: "Nested calls and recursion.",
+        title: "Nested calls and recursion",
+        sub: "A function that calls another function, and a function that calls itself.",
         slides: "05:7–8",
         keywords: "nested call function calls function recursion base case factorial call stack",
         deck: [
-          { kind: "overview", title: "Functions that call functions", blocks: [
+          { kind: "overview", title: "Nested calls and recursion", blocks: [
             T("A function can call another function. It can also call itself; this is <b>recursion</b>."),
             L(["Nested calls", "Recursion", "The base case"], "Subtopics in this lesson", true),
           ] },
@@ -511,7 +512,7 @@
               { line: 3, frames: [f(3, "wait"), f(2, "wait"), f(1, "return", "1")], note: "factorial(1) returns 1 * 1 → 1." },
               { line: 3, frames: [f(3, "wait"), f(2, "return", "2")], note: "factorial(2) returns 2 * 1 → 2." },
               { line: 3, frames: [f(3, "return", "6")], note: "factorial(3) returns 3 * 2 → 6." },
-              { line: 5, frames: [], note: "print displays the result. The calls went down to the base case; the results came back up in the opposite order.", returned: "6" },
+              { line: 5, frames: [], note: "The calls went down to the base case; the results came back up. Result check: 3 × 2 × 1 = 6.", returned: "6" },
             ] }),
           ] },
           { kind: "concept", part: "The base case", title: "The base case", blocks: [
@@ -566,7 +567,7 @@
         title: "Modules",
         sub: "Using functions from other files, the standard library, and third-party packages.",
         slides: "05:18–21",
-        keywords: "module import from as math random os datetime pip install help",
+        keywords: "module import from as math sqrt pow pi ceil floor random os pip install help",
         deck: [
           { kind: "overview", title: "Modules", blocks: [
             T("A <b>module</b> is a <code>.py</code> file that contains functions and variables. Other programs can import it and use its functions."),
@@ -601,10 +602,12 @@
           { kind: "concept", part: "The standard library", title: "The standard library", blocks: [
             T("Python includes more than 200 modules, the <b>standard library</b>. They need no installation."),
             TB(["Module", "Example", "Result"], [
-              ["<code>math</code>", "<code>math.pow(2, 3)</code>", "<code>8.0</code>"],
+              ["<code>math</code>", "<code>math.sqrt(9)</code>", "<code>3.0</code>: the square root"],
+              ["<code>math</code>", "<code>math.pow(2, 3)</code>", "<code>8.0</code>: 2 to the power 3"],
+              ["<code>math</code>", "<code>math.pi</code>", "<code>3.141592653589793</code>: the constant π"],
+              ["<code>math</code>", "<code>math.ceil(2.1)</code>, <code>math.floor(2.9)</code>", "<code>3</code> (round up), <code>2</code> (round down)"],
               ["<code>random</code>", "<code>random.randint(1, 10)</code>", "a random integer from 1 to 10"],
               ["<code>os</code>", "<code>os.getcwd()</code>", "the current folder"],
-              ["<code>datetime</code>", "<code>datetime.now()</code> (from datetime import datetime)", "the current date and time"],
             ]),
           ] },
           { kind: "code", part: "The standard library", title: "Example: math and random", blocks: [
@@ -633,7 +636,7 @@
             L([
               "A module is a .py file; its name is the file name without .py.",
               "<code>import m</code> → <code>m.f()</code>. <code>from m import f</code> → <code>f()</code>. <code>import m as a</code> → <code>a.f()</code>.",
-              "The standard library (math, random, os, datetime) needs no installation.",
+              "The standard library (math, random, os) needs no installation.",
               "<code>pip install name</code> installs a third-party module.",
               "<code>help()</code> displays documentation.",
             ]),
