@@ -85,11 +85,13 @@
   // to keep the old read-only static block.
   function staticExample(b) {
     if (b.norun) return staticExampleReadonly(b);
-    const editor = App.makeLive(b.code, { title: b.caption, lang: b.lang, inputs: b.inputs });
-    if (!(b.annot && b.annot.length)) return editor;
+    const hasNotes = b.annot && b.annot.length;
+    // With notes, the caption heads the notes, so the narrow editor header keeps one row.
+    const editor = App.makeLive(b.code, { title: hasNotes ? "Program" : b.caption, lang: b.lang, inputs: b.inputs });
+    if (!hasNotes) return editor;
     const list = h("ul", { class: "annot" });
     b.annot.forEach((a) => list.appendChild(h("li", null, h("code", null, a.c), h("span", { class: "ex", html: a.e }))));
-    const expl = h("div", { class: "ex-explain" }, h("div", { class: "widget-title" }, "Line by line"), list);
+    const expl = h("div", { class: "ex-explain" }, h("div", { class: "widget-title" }, b.caption || "Line by line"), list);
     return h("div", { class: "example-run" }, h("div", { class: "example-split" }, expl, editor));
   }
 
@@ -98,9 +100,9 @@
     const head = h("div", { class: "codeblock-head" },
       h("span", { class: "lang" }, b.lang || "python"),
       b.caption ? h("span", null, " · " + b.caption) : null);
-    // Python highlighter only fits Python; show other languages as plain escaped text
-    const isPy = !b.lang || b.lang === "python";
-    const pre = h("pre", { html: isPy ? App.highlight(b.code) : App.esc(b.code) });
+    // Python and C are highlighted; other languages (for example "text") are plain
+    const known = !b.lang || b.lang === "python" || b.lang === "c";
+    const pre = h("pre", { html: known ? App.highlight(b.code, b.lang) : App.esc(b.code) });
     const parts = [head, pre];
     if (b.output != null) {
       parts.push(h("div", { class: "code-out" }, h("span", { class: "ot" }, "Output"), b.output));

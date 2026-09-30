@@ -377,9 +377,9 @@ body.slide-mode .flow .flbl { font-size: 18px; }
 .slide .card, .slide .card p, .slide p, .slide li { font-size: 24px; line-height: 1.6; }
 .slide .card h4 { font-size: 24px; }
 .slide .note { font-size: 24px; padding: 16px 20px; }
-.slide .codeblock pre, .slide pre { font-size: 24px; line-height: 1.55; }
-.slide .code-out, .slide .live-out, .slide .step-out { font-size: 24px; }
-.slide .CodeMirror { font-size: 24px; }
+.slide .codeblock pre, .slide pre { font-size: 24px; line-height: 1.4; }
+.slide .code-out, .slide .live-out, .slide .step-out { font-size: 24px; line-height: 1.4; }
+.slide .CodeMirror { font-size: 24px; line-height: 1.4; }   /* 1.4: two more lines of code fit on a slide */
 .slide .annot code { font-size: 24px; }
 .slide .annot .ex { font-size: 24px; }
 .slide .quiz-q .q { font-size: 24px; }
@@ -930,7 +930,7 @@ body.slide-mode .deck-nav .btn, body.slide-mode .deck-counter, body.slide-mode .
 .chap-map-wrap { max-width: 1100px; margin: 28px auto 0; text-align: left; }
 .chap-map-head { font-size: 24px; font-weight: 700; color: var(--text-dim); margin-bottom: 8px; }
 .chap-map { columns: 2 18em; column-gap: 40px; margin: 0; padding-left: 1.8em; }
-.chap-map li { font-size: 24px; line-height: 1.5; padding: 3px 10px; margin: 2px 0; break-inside: avoid; border-radius: 8px; }
+.chap-map li { font-size: 24px; line-height: 1.5; padding: 1px 10px; margin: 1px 0; break-inside: avoid; border-radius: 8px; }
 .chap-map li a { color: var(--text); }
 .chap-map li.cur { background: var(--accent); color: #00131f; }
 .chap-map li.cur a { color: #00131f; font-weight: 700; }

@@ -14,10 +14,6 @@
       { prompt: "A program needs 4 bytes per <code>int</code>. Write code to print how many bytes <b>10 ints</b> take.", expected: "40" },
       { prompt: "Write code to print the four CPU instruction-cycle stages, one per line: <b>Fetch, Decode, Execute, Store</b>.", expected: "Fetch\nDecode\nExecute\nStore", hint: "Loop over a list of the four stage names." },
     ],
-    t10: [
-      { prompt: "In C you'd need pointers to swap two variables. In <b>Python</b>, write code to swap <code>a = 1, b = 2</code> and print <b>a=2 b=1</b>.", starter: "a, b = 1, 2\n# swap a and b, then print 'a=2 b=1'\n", expected: "a=2 b=1", hint: "Python swaps with: a, b = b, a" },
-      { prompt: "Like summing a C array with a loop: write code to sum <code>[10, 20, 30, 40]</code> and print the <b>total</b>.", expected: "100", hint: "Loop and accumulate, or use sum()." },
-    ],
   };
 
   function buildLesson(qs) {

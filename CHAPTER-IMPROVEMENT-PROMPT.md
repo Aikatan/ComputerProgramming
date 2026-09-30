@@ -54,7 +54,7 @@ File handling overview
 2. **For each subtopic, in order:**
    - **Concept** slide(s): the principle, the rule, the algorithm, or a diagram. When a statement is introduced, add a 1–3 line syntax card.
    - **Problem** slide, when the subtopic solves a task: the given values, required output, processing, and algorithm.
-   - **First example:** a `codeTrace` slide, then a `traceTable` slide (§4).
+   - **First example:** a `codeTrace` slide (§4). The example must be worth stepping through: several branches, several loop iterations, or a function call. A 3–4 line example is an annotated `example` instead.
    - **Further examples:** one per slide, each harder than the one before.
 3. **Summary**: the rules of the lesson and a "Next lesson" note.
 4. **Exercises**: 4–6, graded easy → hard, of different types (§5).
@@ -111,7 +111,9 @@ The chapter ends with a **practice lesson**:
 
 ### Code style
 - **Output (Python): no f-strings.** Use `print("Voltage =", voltage, "V")` or `print("Voltage = " + str(voltage) + " V")`. For decimals, use `round(x, 2)`.
-- **Output (C, t10):** `printf` is allowed. Frame t10 as "your Python knowledge → C syntax" (`pyToC`).
+- **C (t10):** a complete first course in C, taught as its own language. No Python code and no Python/C comparisons; the students know the concepts, so the pace is faster. Output uses `printf`. See "C programs" in section 6.
+- **t10 emphasis:** the core is `if`/`else`, `while`, `for`, arrays, and structs; the students must read and write them. Lesson order: … arrays → strings → structures (10) → pointers (11), so that pointers (with `->`) come right before the hardware lessons, which use them.
+- **t10 prepares Digital and Microprocessor at a reading level:** lessons 12–14 cover hexadecimal and binary literals, `%X`, `stdint.h` types and wrap-around, bitwise operators and bit manipulation (set, clear, toggle, test, fields), registers at fixed addresses, `volatile`, the `while (1)` main loop, `#define` pin names and bit macros, lookup tables, `static`, `enum`, and registers as a struct. Keep this block when the chapter is edited, but do not expand it.
 - Readable, explicit code over short or clever code. Use descriptive `snake_case` names.
 - **Examples:**
   - short and easy to trace by hand
@@ -128,15 +130,15 @@ The chapter ends with a **practice lesson**:
 - **Never** combine a large code block with a large amount of explanation.
 
 ### First example of a new concept
-It is explained line by line on two slides:
-1. **`codeTrace`** shows which line executes (`▸`), what it does (the note), the current variable values and what changed, the output, and what happens next.
-2. **`traceTable`** shows the same trace as a static table, followed by a result check ("12 × 2 = 24").
+It is explained line by line on one slide: the **`codeTrace`** shows which line executes (`▸`), what it does (the note), the current variable values and what changed, the output, and what happens next. The note of the last step ends with a result check ("Result check: 12 × 2 = 24.").
+
+No `traceTable` slide repeats the same trace: the lecturer found it redundant (2026-09-30). Trace tables are used in exercises (`blank:true`), where the students fill them in.
 
 Later examples use a runnable `example` with 2–3 short `annot` notes.
 
 ### Animation and visibility
 - **Animation** only explains execution: the current line, changing values, a condition's result and the chosen branch, loop iterations, accumulated values. It is never decoration.
-- **Every animation has a static equivalent.** A `codeTrace` is always followed by its `traceTable`.
+- **No repeated slides.** A slide never shows again what the previous slide showed (a trace table after its `codeTrace`, a table of values after the `ptrViz` steps, a trace of the numbers a concept table already computed).
 - **Nothing is hidden:**
   - Not allowed: show-more, accordions or `deepdive`, `tabs`, hidden code, hover-only content, and guess-before-teaching beats (`predict`).
   - Allowed: normal slide navigation, and feedback after an exercise attempt (the quiz explanation, the Check result, a hint after a wrong answer).
@@ -156,12 +158,12 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 | Slide | Limit |
 |---|---|
 | Concept | 5 list items or fewer, or one table of 6 rows or fewer plus 2 short lines |
-| `example` + `annot` | 7 lines or fewer, 40 characters or fewer per line, 3 short notes or fewer. A longer program (8–9 lines) goes on its own slide as one line of text plus a `livecode`. |
-| `livecode` | 9 lines or fewer with no text line (the editor has 38px lines). A longer program (for example binary search, 12 lines) is shown read-only in parts: `cols` with a `code` part on the left and notes on the right, one slide per part. The complete runnable version becomes a "complete missing code" exercise. |
-| `codeTrace` | 7 lines or fewer, 40 characters or fewer per line, 4 variables or fewer, 4 output lines or fewer. Loop traces: one-line notes (80 characters or fewer). |
+| `example` + `annot` | 10 lines or fewer, 38 characters or fewer per line, 3 short notes or fewer. The caption heads the notes. A program with longer lines goes on its own slide as a full-width `livecode`. |
+| `livecode` | Full width: 10 lines or fewer with no text line, 9 with one line of text. In a half column: 10 lines of 38 characters or fewer. Code lines are 33.6px (24px text, line height 1.4). A longer program (for example binary search, 12 lines) is shown read-only in parts: `cols` with a `code` part on the left and notes on the right, one slide per part. The complete runnable version becomes a "complete missing code" exercise. |
+| `codeTrace` | 8 lines or fewer, 40 characters or fewer per line, 4 variables or fewer, 4 output lines or fewer. A trace of 9–11 lines places its note and buttons beside the code (automatic). Loop traces: one-line notes (80 characters or fewer). |
 | `traceTable` | 6 rows with two-line notes, or 7 rows with one-line notes. Split longer traces (loops) into parts with `rows:[a,b]`, titled "Trace table (part 1 of 2)". |
 | `practiceq` | prompt of about 40 words or fewer, starter of 6 lines or fewer, target of 3 lines or fewer |
-| Exercise with `cols` | 4 task lines or fewer on the left, 6 code lines or fewer on the right |
+| Exercise with `cols` | 4 task lines or fewer on the left, 10 code lines (38 characters or fewer) on the right |
 | Summary | 5 items or fewer, or a table of 4 rows or fewer |
 | Check | 2 questions, short options, one-sentence explanations |
 | `flowchart` | 6 rows or fewer, with 2 decisions or fewer. A chart wider than about 550px gets its own slide (not a half column). A traced chart places its panel beside it. |
@@ -187,7 +189,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 ### Lesson format
 ```js
 (function () {   // wrap the file: top-level consts must not leak between script files
-  const T_power = { code: [...], steps: [...] };           // trace: defined once, used twice
+  const T_power = { code: [...], steps: [...] };           // trace object, defined above the topic
   App.registerTopic({ id: "t02", title, short, blurb, intro, lessons: [
     { id: "variables", title: "Variables", sub: "…", keywords: "…", slides: "02:18–22",
       deck: [
@@ -195,8 +197,6 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
         { kind: "concept", part: "Assignment", title: "Assignment stores a value", blocks: [ … ] },
         { kind: "code", part: "Assignment", title: "First example: execution step by step",
           blocks: [ { type: "widget", name: "codeTrace", config: T_power } ] },
-        { kind: "trace", part: "Assignment", title: "Trace table and result check",
-          blocks: [ { type: "widget", name: "traceTable", config: { trace: T_power } } ] },
         { kind: "exercise", title: "Determine the output", cols: [[ …left ], [ …right ]] },
         { kind: "check", title: "Check", blocks: [ { type: "quiz", items: [q1, q2] } ] },
       ] },
@@ -249,7 +249,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
   - `tryFlow` (t07)
   - `fileFlow`, `csvFlow`, `jsonFlow`, `arrayOp`, `dfFilter` (t08)
   - `searchViz`, `bubbleViz` (t09). `bigOViz` is no longer used: it animates numbers, not execution. Growth is shown with tables and a Matplotlib plot.
-  - `pyToC`, `buildPipeline`, `ptrViz`, `heapViz`, `arrViz` (t10)
+  - `ptrViz` (t10). `pyToC` is no longer used (it hid all but one comparison at a time), nor are `buildPipeline`, `heapViz`, and `arrViz`: t10 shows the build steps and the array addresses as tables.
   - `cpuCycle`, `cycleFlow`, `powerToggle`, `seekViz`, `levelDrop` (t01)
 - **Values shown as balls** use the shared colours: int blue, float teal, str amber, bool purple, None grey (`bt-int` … `bt-none`).
 - **New widgets:** follow the same visual language. A new stepping widget also needs a static equivalent.
@@ -273,7 +273,14 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 
 ### Other rules
 - **Injected content:** the `zz-*.js` files add examples and quizzes to unconverted lessons and skip `deck` lessons. When a chapter is converted, delete its entries there.
-- **Content strings:** write code as single-quoted JS strings when it contains double quotes. `\n` separates lines; `\\n` is a Python escape inside the code. Escape `<` in HTML (`&lt;class 'float'&gt;`).
+- **Content strings:** write code as single-quoted JS strings when it contains double quotes. `\n` separates lines; `\\n` is a Python escape inside the code. Escape `<` in HTML (`&lt;class 'float'&gt;`). C programs, with both kinds of quotes, are easiest as template literals (`` `...` ``), where `\\n` is the C escape.
+
+### C programs (t10)
+- **Language:** set `lang: "c"` on `example`, `livecode`, `code`, and `practiceq` blocks, and on trace objects (`{ lang: "c", code, steps }`). C is highlighted, and **Step Run works for C** (line, variables, output).
+- **Complete programs:** every runnable program has `#include`, `main`, and `return 0;`. From Lesson 2 on, a `codeTrace` shows only the statements inside main (its first note says so), unless the example has its own functions.
+- **Engine:** JSCPP, patched in `crunner.js` so that it behaves like C for the course material: printf with comparisons (1/0) and `%%`; scanf (`%d %lf %c %s %x %u`) reads the queued `inputs` line by line, echoes each line like a terminal, and stores into array elements; `fgets`, `<stdbool.h>`, `<stdint.h>`, `strcat`, `strcmp`; prototypes; 2D initializers with nested braces; integer wrap-around and C's integer promotion (so `(high << 8) | low` works on `uint8_t`); `volatile`; `enum`; `static` local variables; `struct` (definitions, `typedef`, initializers with nested braces, members of every type, `=` copies, by-value parameters and results, arrays of structs, pointers and `->`, `sizeof`, and clear messages for `p.x` on a pointer, `s->x` on a struct, and `==` on structs); pointers that move over arrays (`p++`, `p += n`, `p - q`, comparisons, `p == 0`); macro names inside string literals stay text; `s == "text"` is 0 as in C; a call to an undeclared function is an error, as in C99; a program is stopped after 4 seconds.
+- **Avoid (the engine differs from C):** `union`, bit-fields, designated initializers (`.x = 1`), negative integer division (`-7 / 2`), `NULL` in running code, 2D initializers without inner braces, `malloc`/`free`, a `static` declaration on the same line as its function header, and arguments whose evaluation order matters (`f(tick(), tick())`, unspecified in C).
+- **Verification:** run every program with a real compiler as well. The scratchpad harness (`zig cc`, installed with `pip install --target <scratchpad>/zig ziglang`) compiles and runs a JSON list of programs; the browser engine, run with `echo:false`, must give byte-identical output.
 
 ## 7. Workflow
 
@@ -291,7 +298,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 - **Bump `?v=N` in `index.html`** for every changed file.
 
 ### Verify in the browser preview (`.claude/launch.json` → "compro-static")
-1. **Hidden pane:** a hidden preview pane pauses animation frames, so editors are not created. Run `window.requestAnimationFrame = (cb) => setTimeout(() => cb(performance.now()), 16)` in the page before measuring.
+1. **Hidden pane:** a hidden preview pane pauses animation frames, so editors are not created. Run `window.requestAnimationFrame = (cb) => setTimeout(() => cb(performance.now()), 16)` in the page before measuring. The local helper `.claude/tmp/audit.js` (not committed) sets this and defines `__audit2(topic)` (the slide audit below), `__endAudit(topic)` (every step of every trace), and `__hs(topic)` (horizontal scroll).
 2. **Slide audit.** At 1280×720, 1536×864, and 1920×1080, walk every slide (`App._deckNav.next()`, ~120 ms each) and check:
    - no "Unknown block/widget"
    - every element with its own text is exactly 24px or 40px
@@ -301,7 +308,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
    At tablet and phone width, check only for horizontal scroll.
 3. **Examples:** run every `example` and `livecode` with `App.py.run(code, {inputs, sink})`. The output must match the notes.
 4. **Exercises:** run a reference solution for every `practiceq`. Its output must equal `expected` (trailing spaces and blank edge lines ignored).
-5. **Traces:** step each `codeTrace` with its buttons and the arrow keys, and compare it with its table.
+5. **Traces:** step each `codeTrace` with its buttons and the arrow keys, and compare its values and output with a real run of the program.
 6. **Scroll view:** every slide appears as a section.
 7. **Console and theme:** no console errors; light-theme contrast is sufficient.
 8. **Grep the topic file** for `f"`, `f'`, `—`, `<sup>`, `predict`, `deepdive`, `tabs`, and syntax not yet taught.
@@ -323,6 +330,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 Commit per chapter with a clear message. Push to `main` only when asked, because it publishes to GitHub Pages.
 
 ## 8. Known issues in unconverted chapters (verify and fix when you reach them)
+- **t00, t01:** not converted yet (legacy `learn/live/quiz`, plus `zz-*.js` content).
 - **Older widgets:** some use fixed pixel widths that were sized for smaller text. Check them for overflow at 24px.
 
 ## 9. Review checklist (before finishing)
@@ -334,7 +342,7 @@ Commit per chapter with a clear message. Push to `main` only when asked, because
 6. No advanced or not-yet-taught syntax. No f-strings.
 7. The language is simple, formal, and direct (§2).
 8. Concept slides and code slides are separate.
-9. Every first example has a `codeTrace` and a `traceTable`.
+9. Every first example has a `codeTrace` that is worth stepping through; no slide repeats the previous one.
 10. Animation is used only where it explains execution.
 11. Several graded examples, and 4–6 varied exercises per lesson.
 12. The chapter teaches problem-solving, not only syntax.

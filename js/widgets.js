@@ -257,7 +257,7 @@ App.widgets.codeTrace = function (cfg) {
     const el = h("span", { class: "ln" },
       h("span", { class: "ct-no" }, String(idx + 1)),
       h("span", { class: "marker" }, "  "),
-      h("span", { html: App.highlight(ln) || "&nbsp;" }));
+      h("span", { html: App.highlight(ln, cfg.lang) || "&nbsp;" }));
     codeBox.appendChild(el);
     return el;
   });
@@ -314,15 +314,20 @@ App.widgets.codeTrace = function (cfg) {
   next.addEventListener("click", () => go(i + 1));
 
   const hasVars = T.names.length > 0; // a print-only program shows no variables panel
-  const wrap = h("div", { class: "widget ctrace" },
+  // A long program (more than 8 lines) keeps the note and the buttons in the right
+  // column, under the output, so that the trace is no taller than its code.
+  const side = cfg.code.length > 8;
+  const ctrl = h("div", { class: "w-row ct-ctrl" }, first, prev, next, count);
+  const wrap = h("div", { class: "widget ctrace" + (side ? " ct-side" : "") },
     cfg.title ? h("div", { class: "widget-title" }, cfg.title) : null,
     h("div", { class: "ct-grid" },
       codeBox,
       h("div", { class: "ct-state" },
         hasVars ? h("div", { class: "ct-label" }, "Variables") : null, hasVars ? noVars : null, hasVars ? varsBox : null,
-        h("div", { class: "ct-label" }, "Output"), outBox)),
-    note,
-    h("div", { class: "w-row ct-ctrl" }, first, prev, next, count));
+        h("div", { class: "ct-label" }, "Output"), outBox,
+        side ? note : null, side ? ctrl : null)),
+    side ? null : note,
+    side ? null : ctrl);
   // used by the deck: keyboard steps the trace before changing slide
   wrap._step = (dir) => go(i + dir);
   wrap._goto = (where) => { i = where === "end" ? n - 1 : 0; draw(); };
@@ -357,7 +362,7 @@ App.widgets.traceTable = function (cfg) {
       if (!cfg.blank) tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
     } else {
       tr.appendChild(h("td", { class: "tt-line", "data-label": "Line" }, String(s.line + 1)));
-      if (cfg.blank) tr.appendChild(h("td", { class: "tt-code", "data-label": "Code", html: App.highlight(code[s.line] || "") }));
+      if (cfg.blank) tr.appendChild(h("td", { class: "tt-code", "data-label": "Code", html: App.highlight(code[s.line] || "", trace.lang) }));
       else tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
     }
     T.names.forEach((nm) => {
@@ -2234,7 +2239,7 @@ App.widgets.pyToC = function (cfg) {
       const col = (label, lines, cls, isPy) => {
         const box = h("div", { class: "bt-code" });
         (lines || []).forEach((ln) => box.appendChild(h("div", { class: "bt-codeline" },
-          h("span", { html: isPy ? (App.highlight(ln) || "&nbsp;") : (App.esc(ln) || "&nbsp;") }))));
+          h("span", { html: App.highlight(ln, isPy ? "python" : "c") || "&nbsp;" }))));
         return h("div", { class: "p2c-col" }, h("div", { class: "p2c-lang " + cls }, label), box);
       };
       const grid = h("div", { class: "p2c-grid" },

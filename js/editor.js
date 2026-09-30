@@ -8,15 +8,14 @@ App.makeLive = function (code, opts) {
   const isC = opts.lang === "c";
   const engine = isC ? App.c : App.py;
   const cmMode = isC ? "text/x-csrc" : "python";
-  const hintText = isC ? "Run the code to compile and run it." : "Run the code, or Step Run to walk it line by line.";
+  const hintText = "Run it, or Step Run it line by line.";
   const wrap = h("div", { class: "live" });
   const head = h("div", { class: "live-head" }, h("span", { class: "title" }, opts.title || (isC ? "Edit and run real C" : "Edit and run real Python")));
   const spacer = h("span", { class: "spacer" });
   const resetBtn = h("button", { class: "btn ghost", title: "Reset code" }, "Reset");
   const stepBtn = h("button", { class: "btn ghost" }, "▶ Step Run");
   const runBtn = h("button", { class: "btn" }, "▶ Run");
-  // JSCPP has no line-by-line tracer, so C editors show Run only.
-  if (isC) { head.append(spacer, resetBtn, runBtn); } else { head.append(spacer, resetBtn, stepBtn, runBtn); }
+  head.append(spacer, resetBtn, stepBtn, runBtn);
 
   const taHost = h("div");
   const out = h("div", { class: "live-out muted" }, hintText);
@@ -57,7 +56,7 @@ App.makeLive = function (code, opts) {
     if (!cm) return;
     stopPlay(); stage.classList.add("hidden");
     out.classList.remove("hidden");
-    runBtn.disabled = true; if (!isC) stepBtn.disabled = true; runBtn.textContent = "Running…";
+    runBtn.disabled = stepBtn.disabled = true; runBtn.textContent = "Running…";
     out.className = "live-out"; out.textContent = "";
     let printed = false;
     const res = await engine.run(cm.getValue(), {
@@ -66,7 +65,7 @@ App.makeLive = function (code, opts) {
       onImage: (url) => { printed = true; out.appendChild(h("img", { src: url, alt: "plot output" })); },
     });
     if (!printed && res.ok) out.appendChild(h("span", { class: "muted" }, "(ran with no output)"));
-    runBtn.disabled = false; if (!isC) stepBtn.disabled = false; runBtn.textContent = "▶ Run";
+    runBtn.disabled = stepBtn.disabled = false; runBtn.textContent = "▶ Run";
   }
 
   /* ---- Step Run ---- */
@@ -77,7 +76,7 @@ App.makeLive = function (code, opts) {
       const hl = idx === s.line - 1;
       codeView.appendChild(h("span", { class: "ln" + (hl ? " hl" : "") },
         h("span", { class: "marker" }, hl ? "▸ " : "  "),
-        h("span", { html: App.highlight(ln) || "&nbsp;" })));
+        h("span", { html: App.highlight(ln, isC ? "c" : "python") || "&nbsp;" })));
     });
     varsView.innerHTML = "";
     const keys = Object.keys(s.vars);
@@ -103,7 +102,7 @@ App.makeLive = function (code, opts) {
     if (!cm) return;
     stopPlay(); out.classList.add("hidden");
     stepBtn.disabled = runBtn.disabled = true; stepBtn.textContent = "Tracing…";
-    const data = await App.py.trace(cm.getValue(), { inputs: opts.inputs });
+    const data = await engine.trace(cm.getValue(), { inputs: opts.inputs });
     stepBtn.disabled = runBtn.disabled = false; stepBtn.textContent = "▶ Step Run";
     lines = cm.getValue().split("\n");
     steps = data.steps || [];
@@ -132,7 +131,7 @@ App.makeLive = function (code, opts) {
 
 /* ============================================================
    makePractice - a "write code to…" question with Run + Check
-   cfg: { prompt(html), starter, expected, inputs?, hint? }
+   cfg: { prompt(html), starter, expected, inputs?, hint?, lang? ("c") }
    ============================================================ */
 App.makePractice = function (cfg) {
   const wrap = App.h("div", { class: "practiceq" });
@@ -155,11 +154,12 @@ App.makePractice = function (cfg) {
   editorWrap.append(head, taHost, out);
   wrap.append(editorWrap, badge);
 
-  const starter = cfg.starter != null ? cfg.starter : "# Write your code here\n";
+  const isC = cfg.lang === "c";
+  const starter = cfg.starter != null ? cfg.starter : (isC ? "// Write your code here\n" : "# Write your code here\n");
   let cm;
   requestAnimationFrame(() => {
     cm = CodeMirror(taHost, {
-      value: starter, mode: "python",
+      value: starter, mode: isC ? "text/x-csrc" : "python",
       theme: document.body.dataset.theme === "light" ? "default" : "material-darker",
       lineNumbers: true, indentUnit: 4, viewportMargin: Infinity,
       extraKeys: { "Shift-Enter": () => doRun(), Tab: (c) => c.replaceSelection("    ") },
@@ -171,7 +171,7 @@ App.makePractice = function (cfg) {
 
   async function collect() {
     let buf = "";
-    const res = await App.py.run(cm.getValue(), { inputs: cfg.inputs, sink: (t) => { buf += t; }, onImage: () => {} });
+    const res = await (isC ? App.c : App.py).run(cm.getValue(), { inputs: cfg.inputs, sink: (t) => { buf += t; }, onImage: () => {} });
     return { buf, ok: res.ok, error: res.error };
   }
 

@@ -63,7 +63,8 @@ App.progress = {
 (function () {
   const KW = new Set(("False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield").split(" "));
   const BUILTIN = new Set(("print input int float str bool list dict tuple set range len type abs round pow sum min max sorted open enumerate zip map filter id help complex frozenset").split(" "));
-  App.highlight = function (code) {
+  App.highlight = function (code, lang) {
+    if (lang === "c") return highlightC(code);
     const out = [];
     const re = /(#[^\n]*)|("""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(\b\d+\.?\d*\b)|([A-Za-z_]\w*)|([\s\S])/g;
     let m;
@@ -82,4 +83,27 @@ App.progress = {
     }
     return out.join("");
   };
+
+  // the same token classes for C: line and block comments, #include lines, strings, chars
+  const C_KW = new Set(("int double float char void bool long short unsigned signed const if else switch case default break continue for while do return sizeof true false struct").split(" "));
+  const C_LIB = new Set(("printf scanf fgets puts strlen strcpy strcmp strcat main").split(" "));
+  function highlightC(code) {
+    const out = [];
+    const re = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|(^[ \t]*#[^\n]*)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*')|(\b\d+\.?\d*[fF]?\b)|([A-Za-z_]\w*)|([\s\S])/gm;
+    let m;
+    while ((m = re.exec(code))) {
+      if (m[1]) out.push('<span class="tok-com">' + App.esc(m[1]) + "</span>");
+      else if (m[2]) out.push('<span class="tok-kw">' + App.esc(m[2]) + "</span>");
+      else if (m[3]) out.push('<span class="tok-str">' + App.esc(m[3]) + "</span>");
+      else if (m[4]) out.push('<span class="tok-num">' + App.esc(m[4]) + "</span>");
+      else if (m[5]) {
+        const w = m[5];
+        if (C_KW.has(w)) out.push('<span class="tok-kw">' + w + "</span>");
+        else if (C_LIB.has(w)) out.push('<span class="tok-builtin">' + w + "</span>");
+        else if (code[re.lastIndex] === "(") out.push('<span class="tok-fn">' + w + "</span>");
+        else out.push(App.esc(w));
+      } else out.push(App.esc(m[6]));
+    }
+    return out.join("");
+  }
 })();
