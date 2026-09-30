@@ -512,6 +512,9 @@ body.slide-mode .flow .flbl { font-size: 18px; }
 
 /* file lifecycle animation (fileFlow widget) */
 .ff-cols { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: start; }
+.ff-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; margin-top: 4px; }
+.ff-bottom .widget-title { margin-top: 0; }
+.ff-bottom .tf-note { margin-top: 0; }
 .ff-arrow { align-self: center; font-family: ui-monospace, monospace; color: var(--warn); font-weight: 700; }
 .ff-file { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--bg-2); transition: box-shadow .25s, border-color .25s; }
 .ff-file.flow-write { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(77,171,247,.25); }
@@ -527,7 +530,7 @@ body.slide-mode .flow .flbl { font-size: 18px; }
 .ff-line.cur { background: rgba(77,171,247,.2); }
 .ff-empty { color: var(--text-dim); }
 .csvtext { line-height: 1.7; }
-@media (max-width: 700px) { .ff-cols { grid-template-columns: 1fr; } .ff-arrow { transform: rotate(90deg); } }
+@media (max-width: 700px) { .ff-cols, .ff-bottom { grid-template-columns: 1fr; } .ff-arrow { transform: rotate(90deg); } }
 .slide .ff-fhead, .slide .ff-body, .slide .ff-arrow, .slide .ff-status, .slide .ff-mode { font-size: 24px; }
 .slide .ff-dot { width: 14px; height: 14px; }
 
@@ -819,10 +822,10 @@ body.slide-mode .flow .flbl { font-size: 18px; }
 .cs-head { font-family: ui-monospace, monospace; color: var(--text-dim); font-size: 13px; margin-bottom: 8px; }
 .cs-stack { display: flex; flex-direction: column; gap: 6px; }
 .cs-frame { border: 1px solid var(--border); border-radius: 8px; padding: 10px 13px; background: var(--bg-2); transition: opacity .2s, border-color .2s, background .2s; }
-.cs-line { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.cs-line { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .cs-fn { font-family: ui-monospace, monospace; font-weight: 800; }
-.cs-detail { font-family: ui-monospace, monospace; font-size: 13px; color: var(--text-dim); margin-top: 4px; }
-.cs-ret { font-family: ui-monospace, monospace; font-weight: 800; color: var(--accent-2); }
+.cs-detail { font-family: ui-monospace, monospace; font-size: 13px; color: var(--text-dim); }
+.cs-ret { font-family: ui-monospace, monospace; font-weight: 800; color: var(--accent-2); margin-left: auto; }
 .cs-call { border-color: var(--accent); background: rgba(77,171,247,.12); }
 .cs-wait { opacity: .6; }
 .cs-base { border-color: var(--warn); background: rgba(255,180,84,.14); }

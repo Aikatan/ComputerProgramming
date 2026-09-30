@@ -18,7 +18,6 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
-  const TT = (trace, rows) => W("traceTable", rows ? { trace, rows } : { trace });
 
   /* ---------- traces: one object drives codeTrace and traceTable ---------- */
   const T_cmp = {
@@ -28,7 +27,7 @@
       { line: 0, note: "12 is stored in <code>voltage</code>.", set: { voltage: "12" } },
       { line: 1, note: "<code>12 > 15</code> is False. The result False is stored in <code>is_high</code>.", set: { is_high: "False" } },
       { line: 2, note: "<code>12 >= 11</code> is True. The result is stored in <code>is_ok</code>.", set: { is_ok: "True" } },
-      { line: 3, note: "Both bool values are displayed.", print: "False True" },
+      { line: 3, note: "Both bool values are displayed. A comparison does not change any variable. It produces a new bool value, which can be stored or displayed.", print: "False True" },
     ],
   };
 
@@ -50,7 +49,7 @@
       { line: 0, note: "75 is stored in <code>temperature</code>.", set: { temperature: "75" } },
       { line: 1, note: "<code>75 > 70</code> is True, so the indented block runs.", },
       { line: 2, note: "The block displays the warning.", print: "Warning: too hot" },
-      { line: 3, note: "Not indented: this line runs in every case.", print: "Reading: 75" },
+      { line: 3, note: "Not indented: this line runs in every case. With <code>temperature = 60</code>, the condition is False: line 3 is skipped, and only <code>Reading: 60</code> is displayed.", print: "Reading: 75" },
     ],
   };
 
@@ -81,7 +80,7 @@
       { line: 2, note: "The current value is displayed.", print: "3" },
       { line: 3, note: "Update: count becomes 4.", set: { count: "4" } },
       { line: 1, note: "4 <= 3 is False: the loop ends." },
-      { line: 4, note: "The first line after the loop runs.", print: "Done" },
+      { line: 4, note: "After the loop. The block ran 3 times; the condition was checked 4 times.", print: "Done" },
     ],
   };
 
@@ -117,7 +116,7 @@
       { line: 1, note: "Inner loop: j = 2.", set: { j: "2" } },
       { line: 2, note: "Display i and j.", print: "2 2" },
       { line: 1, note: "Inner range finished: back to the outer loop." },
-      { line: 0, note: "Outer range finished: the loop ends." },
+      { line: 0, note: "The loop ends. For each i, j went through 1 and 2 again." },
     ],
   };
 
@@ -242,10 +241,6 @@
             ]),
           ] },
           { kind: "code", part: "Comparison operators", title: "First example: execution step by step", blocks: [W("codeTrace", T_cmp)] },
-          { kind: "trace", part: "Comparison operators", title: "Trace table", blocks: [
-            TT(T_cmp),
-            T("A comparison does not change any variable. It produces a new bool value, which can be stored or displayed."),
-          ] },
           { kind: "code", part: "Comparison operators", title: "Example: comparing numbers and text", blocks: [
             EX('temperature = 25.0\nprint(temperature == 25)\nprint(temperature != 30)\nprint("A" == "a")', "comparisons with int, float and str", [
               { c: "temperature == 25", e: "25.0 and 25 are equal numbers: <code>True</code>" },
@@ -350,7 +345,6 @@
             T("Example: a motor may start when the voltage is correct <b>and</b> the door is closed."),
           ] },
           { kind: "code", part: "and", title: "First example: execution step by step", blocks: [W("codeTrace", T_and)] },
-          { kind: "trace", part: "and", title: "Trace table", blocks: [TT(T_and)] },
           { kind: "concept", part: "or", title: "or: at least one condition must be True", blocks: [
             T("<code>A or B</code> is True when at least one of A and B is True. It is False only when both are False."),
             TB(["A", "B", "A or B"], [["True", "True", "True"], ["True", "False", "True"], ["False", "True", "True"], ["False", "False", "False"]], null, "center"),
@@ -474,10 +468,6 @@
             ]),
           ] },
           { kind: "code", part: "if", title: "First example: execution step by step", blocks: [W("codeTrace", T_if)] },
-          { kind: "trace", part: "if", title: "Trace table", blocks: [
-            TT(T_if),
-            T("With <code>temperature = 60</code>, the condition is False: line 3 is skipped, and only <code>Reading: 60</code> is displayed."),
-          ] },
           { kind: "concept", part: "Blocks and indentation", title: "A block is defined by indentation", blocks: [
             L([
               "The block of an if is the group of lines indented under it.",
@@ -515,7 +505,6 @@
             ]),
           ] },
           { kind: "code", part: "if, elif, and else", title: "First example: execution step by step", blocks: [W("codeTrace", T_elif)] },
-          { kind: "trace", part: "if, elif, and else", title: "Trace table", blocks: [TT(T_elif)] },
           { kind: "visual", part: "if, elif, and else", title: "Which block runs", blocks: [
             W("branchViz", { title: "", var: "t",
               branches: [
@@ -630,11 +619,6 @@
             T("Without the update, the condition never becomes False."),
           ] },
           { kind: "code", part: "The three parts of a loop", title: "First example: execution step by step", blocks: [W("codeTrace", T_while)] },
-          { kind: "trace", part: "The three parts of a loop", title: "Trace table (part 1 of 2)", blocks: [TT(T_while, [0, 6])] },
-          { kind: "trace", part: "The three parts of a loop", title: "Trace table (part 2 of 2)", blocks: [
-            TT(T_while, [6, 12]),
-            T("The block ran 3 times. The condition was checked 4 times: the last check was False."),
-          ] },
           { kind: "concept", part: "Counting", title: "Counting up and down", blocks: [
             L([
               "A <b>counter</b> is the loop variable. The update decides the step: <code>+ 1</code>, <code>- 1</code>, <code>+ 5</code>.",
@@ -753,9 +737,6 @@
             ]),
           ] },
           { kind: "code", part: "The for statement", title: "First example: execution step by step", blocks: [W("codeTrace", T_forStr)] },
-          { kind: "trace", part: "The for statement", title: "Trace table", blocks: [
-            TT(T_forStr),
-          ] },
           { kind: "code", part: "The for statement", title: "Example: counting the characters", blocks: [
             EX('text = "A string"\ncount = 0\nfor c in text:\n    count = count + 1\nprint(count)', "one iteration for each character", [
               { c: "for c in text", e: "8 characters, including the space: 8 iterations" },
@@ -862,11 +843,6 @@
             ]),
           ] },
           { kind: "code", part: "The structure of a nested loop", title: "First example: execution step by step", blocks: [W("codeTrace", T_nest)] },
-          { kind: "trace", part: "The structure of a nested loop", title: "Trace table (part 1 of 2)", blocks: [TT(T_nest, [0, 7])] },
-          { kind: "trace", part: "The structure of a nested loop", title: "Trace table (part 2 of 2)", blocks: [
-            TT(T_nest, [7, 13]),
-            T("For each value of i, j went through 1 and 2 again."),
-          ] },
           { kind: "concept", part: "Counting the iterations", title: "How often the inner block runs", blocks: [
             L([
               "If the outer loop runs m times and the inner loop runs n times, the inner block runs <b>m × n</b> times.",
@@ -954,8 +930,6 @@
             ]),
           ] },
           { kind: "code", part: "break", title: "First example: execution step by step", blocks: [W("codeTrace", T_break)] },
-          { kind: "trace", part: "break", title: "Trace table (part 1 of 2)", blocks: [TT(T_break, [0, 5])] },
-          { kind: "trace", part: "break", title: "Trace table (part 2 of 2)", blocks: [TT(T_break, [5, 10])] },
           { kind: "code", part: "break", title: "Example: break in a while loop", blocks: [
             EX("i = 10\nwhile i >= 0:\n    i -= 1\n    if i == 5:\n        break\n    print(i)", "the loop stops at 5", [
               { c: "i -= 1", e: "i becomes 9, 8, 7, 6, and then 5." },
@@ -970,8 +944,6 @@
             ]),
           ] },
           { kind: "code", part: "continue", title: "First example: execution step by step", blocks: [W("codeTrace", T_cont)] },
-          { kind: "trace", part: "continue", title: "Trace table (part 1 of 2)", blocks: [TT(T_cont, [0, 6])] },
-          { kind: "trace", part: "continue", title: "Trace table (part 2 of 2)", blocks: [TT(T_cont, [6, 12])] },
           { kind: "code", part: "continue", title: "Example: continue in a while loop", blocks: [
             EX("i = 10\nwhile i >= 0:\n    i -= 1\n    if i % 3 != 0:\n        continue\n    print(i)", "only multiples of 3 are displayed", [
               { c: "i % 3 != 0", e: "True for numbers that are not multiples of 3: they are skipped." },
@@ -1000,7 +972,6 @@
             ]),
           ] },
           { kind: "code", part: "else on a loop", title: "First example: execution step by step", blocks: [W("codeTrace", T_else)] },
-          { kind: "trace", part: "else on a loop", title: "Trace table", blocks: [TT(T_else)] },
           { kind: "code", part: "else on a loop", title: "Example: a prime number", blocks: [
             EX('n = 7\nfor i in range(2, n):\n    if n % i == 0:\n        print("Not prime")\n        break\nelse:\n    print("Prime")', "no divisor is found", [
               { c: "for i in range(2, n)", e: "7 % i is never 0 for i = 2 to 6." },

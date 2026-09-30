@@ -19,7 +19,6 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
-  const TT = (trace, rows) => W("traceTable", rows ? { trace, rows } : { trace });
 
   /* ---------- traces ---------- */
   const T_max = {
@@ -36,7 +35,7 @@
       { line: 2, note: "r takes the last value, 27.", set: { r: "27" } },
       { line: 3, note: "27 > 25 is True." },
       { line: 4, note: "27 is the new highest so far.", set: { highest: "27" } },
-      { line: 5, note: "The loop has ended. The result is displayed.", print: "Highest: 27" },
+      { line: 5, note: "The loop has ended. The result is displayed. Result check: the highest of 21, 25, 19, and 27 is 27.", print: "Highest: 27" },
     ],
   };
   const T_exMin = {
@@ -68,7 +67,7 @@
       { line: 4, note: "count → 3.", set: { count: "3" } },
       { line: 3, note: "Inner loop: j = 1.", set: { j: "1" } },
       { line: 4, note: "count → 4. Both loops have ended.", set: { count: "4" } },
-      { line: 5, note: "The number of steps is displayed.", print: "Steps: 4" },
+      { line: 5, note: "The number of steps is displayed. Result check: n × n = 2 × 2 = 4 steps.", print: "Steps: 4" },
     ],
   };
   const T_halve = {
@@ -87,7 +86,7 @@
       { line: 3, note: "2 // 2 → 1.", set: { n: "1" } },
       { line: 4, note: "Three halvings.", set: { halvings: "3" } },
       { line: 2, note: "1 > 1 is False: the loop ends." },
-      { line: 5, note: "The number of halvings is displayed.", print: "Halvings: 3" },
+      { line: 5, note: "The number of halvings is displayed. Result check: 8 → 4 → 2 → 1 is 3 halvings, and 2³ = 8.", print: "Halvings: 3" },
     ],
   };
   const T_lin = {
@@ -104,7 +103,7 @@
       { line: 5, note: "The index is stored.", set: { position: "1" } },
       { line: 3, note: "i = 2: the loop continues.", set: { i: "2" } },
       { line: 4, note: "ids[2] is 18. 18 == 30 is False." },
-      { line: 6, note: "The position is displayed.", print: "Position: 1" },
+      { line: 6, note: "The position is displayed. Result check: ids[1] is 30. The loop compared all 3 elements.", print: "Position: 1" },
     ],
   };
   const T_pair = {
@@ -114,7 +113,7 @@
       { line: 0, note: "A list of two elements.", set: { a: "[5, 1]" } },
       { line: 1, note: "5 > 1 is True: the pair is in the wrong order." },
       { line: 2, note: "The right side is evaluated first: (1, 5). Then a[0] = 1 and a[1] = 5.", set: { a: "[1, 5]" } },
-      { line: 3, note: "The sorted pair is displayed.", print: "[1, 5]" },
+      { line: 3, note: "The sorted pair is displayed. Result check: 5 and 1 were in the wrong order. After the swap, a is [1, 5].", print: "[1, 5]" },
     ],
   };
   const T_pass = {
@@ -130,7 +129,7 @@
       { line: 1, note: "j = 2.", set: { j: "2" } },
       { line: 2, note: "a[2] > a[3]: 5 > 2 is True." },
       { line: 3, note: "Swap: 5 reaches the end.", set: { a: "[1, 4, 2, 5]" } },
-      { line: 4, note: "One pass is complete.", print: "[1, 4, 2, 5]" },
+      { line: 4, note: "One pass is complete. Result check: the largest value, 5, is at the end. The rest of the list is not sorted yet.", print: "[1, 4, 2, 5]" },
     ],
   };
   const T_exPass = {
@@ -160,7 +159,7 @@
       { line: 2, note: "r = 21.", set: { r: "21" } },
       { line: 3, note: "21 in seen is True: 21 appeared before." },
       { line: 4, note: "The repeated reading is displayed.", print: "Repeated: 21" },
-      { line: 5, note: "seen[21] = True again: the dictionary does not change." },
+      { line: 5, note: "seen[21] = True again: the dictionary does not change. Result check: only 21 appears twice." },
     ],
   };
 
@@ -220,11 +219,6 @@
             T("Each step has one meaning, and the algorithm stops after the last reading."),
           ] },
           { kind: "code", part: "From algorithm to program", title: "The program: execution step by step", blocks: [W("codeTrace", T_max)] },
-          { kind: "trace", part: "From algorithm to program", title: "Trace table (part 1 of 2)", blocks: [TT(T_max, [0, 6])] },
-          { kind: "trace", part: "From algorithm to program", title: "Trace table (part 2 of 2) and result check", blocks: [
-            TT(T_max, [6, 11]),
-            T("Result check: the highest of 21, 25, 19, and 27 is 27."),
-          ] },
           { kind: "concept", part: "Correctness and testing", title: "Correctness", blocks: [
             L([
               "An algorithm is <b>correct</b> when it gives the right output for every valid input.",
@@ -353,11 +347,6 @@
             ]),
           ] },
           { kind: "code", part: "Nested loops", title: "First example: execution step by step", blocks: [W("codeTrace", T_nested)] },
-          { kind: "trace", part: "Nested loops", title: "Trace table (part 1 of 2)", blocks: [TT(T_nested, [0, 7])] },
-          { kind: "trace", part: "Nested loops", title: "Trace table (part 2 of 2) and result check", blocks: [
-            TT(T_nested, [7, 13]),
-            T("Result check: n × n = 2 × 2 = 4 steps."),
-          ] },
           { kind: "code", part: "Nested loops", title: "Example: n² steps", blocks: [
             EX("def count_pairs(n):\n    count = 0\n    for i in range(n):\n        for j in range(n):\n            count = count + 1\n    return count\nprint(count_pairs(10), count_pairs(100))", "the inner statement runs n × n times", [
               { c: "count_pairs(10)", e: "<code>100</code>" },
@@ -373,11 +362,6 @@
             ]),
           ] },
           { kind: "code", part: "Halving and log n", title: "First example: execution step by step", blocks: [W("codeTrace", T_halve)] },
-          { kind: "trace", part: "Halving and log n", title: "Trace table (part 1 of 2)", blocks: [TT(T_halve, [0, 7])] },
-          { kind: "trace", part: "Halving and log n", title: "Trace table (part 2 of 2) and result check", blocks: [
-            TT(T_halve, [7, 13]),
-            T("Result check: 8 → 4 → 2 → 1 is 3 halvings, and 2³ = 8."),
-          ] },
           { kind: "concept", part: "Halving and log n", title: "log₂ n grows slowly", blocks: [
             TB(["n", "Halvings to reach 1"], [["8", "3"], ["1024", "10"], ["1 000 000", "19"], ["1 000 000 000", "29"]], null, "center"),
             T("A thousand times more data needs only about 10 more halvings."),
@@ -487,11 +471,6 @@
             ], null, true),
           ] },
           { kind: "code", part: "Linear search", title: "First example: execution step by step", blocks: [W("codeTrace", T_lin)] },
-          { kind: "trace", part: "Linear search", title: "Trace table (part 1 of 2)", blocks: [TT(T_lin, [0, 6])] },
-          { kind: "trace", part: "Linear search", title: "Trace table (part 2 of 2) and result check", blocks: [
-            TT(T_lin, [6, 11]),
-            T("Result check: ids[1] is 30. The loop compared all 3 elements."),
-          ] },
           { kind: "concept", part: "Stopping at the first match", title: "Stopping at the first match", blocks: [
             L([
               "The first program continues after the target is found. The remaining comparisons are unnecessary.",
@@ -666,10 +645,6 @@
             ]),
           ] },
           { kind: "code", part: "Swapping two elements", title: "First example: compare and swap", blocks: [W("codeTrace", T_pair)] },
-          { kind: "trace", part: "Swapping two elements", title: "Trace table and result check", blocks: [
-            TT(T_pair),
-            T("Result check: 5 and 1 were in the wrong order. After the swap, a is [1, 5]."),
-          ] },
           { kind: "concept", part: "One pass", title: "One pass through the list", blocks: [
             L([
               "A <b>pass</b> compares each neighbouring pair from left to right: a[0] and a[1], then a[1] and a[2], and so on.",
@@ -679,11 +654,6 @@
             ]),
           ] },
           { kind: "code", part: "One pass", title: "Example: one pass, step by step", blocks: [W("codeTrace", T_pass)] },
-          { kind: "trace", part: "One pass", title: "Trace table (part 1 of 2)", blocks: [TT(T_pass, [0, 5])] },
-          { kind: "trace", part: "One pass", title: "Trace table (part 2 of 2) and result check", blocks: [
-            TT(T_pass, [5, 10]),
-            T("Result check: the largest value, 5, is at the end. The rest of the list is not sorted yet."),
-          ] },
           { kind: "concept", part: "Bubble sort", title: "Bubble sort", blocks: [
             L([
               "<b>Bubble sort</b> repeats the pass. Each pass moves the next largest value to its final place.",
@@ -857,12 +827,6 @@
             T("Only the keys are used. The value True is a placeholder."),
           ] },
           { kind: "code", part: "Checking for repeated values", title: "First example: execution step by step", blocks: [W("codeTrace", T_seen)] },
-          { kind: "trace", part: "Checking for repeated values", title: "Trace table (part 1 of 3)", blocks: [TT(T_seen, [0, 4])] },
-          { kind: "trace", part: "Checking for repeated values", title: "Trace table (part 2 of 3)", blocks: [TT(T_seen, [4, 8])] },
-          { kind: "trace", part: "Checking for repeated values", title: "Trace table (part 3 of 3) and result check", blocks: [
-            TT(T_seen, [8, 12]),
-            T("Result check: only 21 appears twice."),
-          ] },
           { kind: "concept", part: "Checking for repeated values", title: "A list or a dictionary for seen", blocks: [
             TB(["seen is a…", "Cost of <code>r in seen</code>", "Total for n readings"], [
               ["list", "O(n)", "O(n²)"],

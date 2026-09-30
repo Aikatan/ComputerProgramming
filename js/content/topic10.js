@@ -723,7 +723,7 @@ int main(void) {
               ["int", "<code>%d</code>", "<code>%d</code>"],
               ["double", "<code>%lf</code>", "<code>%f</code>"],
               ["float", "<code>%f</code>", "<code>%f</code>"],
-              ["char", "<code>\" %c\"</code> (with a space)", "<code>%c</code>"],
+              ["char", "<code>%c</code>", "<code>%c</code>"],
               ["string (one word)", "<code>%s</code>, without &amp;", "<code>%s</code>"],
             ]),
             T("For a double, scanf needs <code>%lf</code> (long float); printf uses <code>%f</code>."),
@@ -751,6 +751,7 @@ int main(void) {
           ] },
           { kind: "concept", part: "Reading characters and words", title: "Reading a char and a word", blocks: [
             L([
+              "%d, %lf, and %s skip spaces and line breaks before a value. %c does not: it reads the next character, even a space or the Enter.",
               "<code>scanf(\" %c\", &amp;c)</code>: the space before %c skips the Enter left by an earlier scanf. Without it, %c reads that line break.",
               "<code>scanf(\"%s\", name)</code> reads one word into a char array (Lesson 9). An array name needs no &amp;.",
               "%s stops at the first space: for the input <code>Anan Suk</code>, it reads only <code>Anan</code>.",

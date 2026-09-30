@@ -18,7 +18,6 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
-  const TT = (trace, rows) => W("traceTable", rows ? { trace, rows } : { trace });
 
   /* ---------- traces ---------- */
   const T_np = {
@@ -430,7 +429,6 @@
             ]),
           ] },
           { kind: "code", part: "Arrays", title: "First example: execution step by step", blocks: [W("codeTrace", T_np)] },
-          { kind: "trace", part: "Arrays", title: "Trace table", blocks: [TT(T_np)] },
           { kind: "concept", part: "Shape and two-dimensional arrays", title: "Shape", blocks: [
             TB(["Attribute", "Meaning", "For np.array([[1, 2, 3], [4, 5, 6]])"], [
               ["<code>a.shape</code>", "the size along each dimension", "<code>(2, 3)</code>: 2 rows, 3 columns"],

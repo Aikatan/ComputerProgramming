@@ -17,7 +17,6 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
-  const TT = (trace, rows) => W("traceTable", rows ? { trace, rows } : { trace });
 
   /* ---------- traces ---------- */
   const T_slice = {
@@ -96,7 +95,6 @@
             ]),
           ] },
           { kind: "code", part: "Slicing in both directions", title: "First example: execution step by step", blocks: [W("codeTrace", T_slice)] },
-          { kind: "trace", part: "Slicing in both directions", title: "Trace table", blocks: [TT(T_slice)] },
           { kind: "concept", part: "strip() and find()", title: "strip() and find()", blocks: [
             TB(["Method", "Result", "Example"], [
               ["<code>s.strip()</code>", "a copy without spaces at the start and the end", "<code>\"  hi  \".strip()</code> → <code>'hi'</code>"],
@@ -213,7 +211,6 @@
             ]),
           ] },
           { kind: "code", part: "Indexing and slicing", title: "First example: execution step by step", blocks: [W("codeTrace", T_list)] },
-          { kind: "trace", part: "Indexing and slicing", title: "Trace table", blocks: [TT(T_list)] },
           { kind: "concept", part: "Changing an element", title: "Lists are mutable", blocks: [
             L([
               "An element can be replaced: <code>readings[1] = 25</code>.",
@@ -341,7 +338,6 @@
             ]),
           ] },
           { kind: "code", part: "remove(), pop(), and del", title: "First example: execution step by step", blocks: [W("codeTrace", T_pop)] },
-          { kind: "trace", part: "remove(), pop(), and del", title: "Trace table", blocks: [TT(T_pop)] },
           { kind: "code", part: "remove(), pop(), and del", title: "Example: remove takes the first match", blocks: [
             EX("values = [3, 1, 3, 2]\nvalues.remove(3)\nprint(values)\ndel values[0]\nprint(values)", "remove, then del", [
               { c: "values.remove(3)", e: "Only the first 3 is removed: <code>[1, 3, 2]</code>" },
@@ -440,7 +436,6 @@
             ]),
           ] },
           { kind: "code", part: "Reading values: [] and get()", title: "First example: execution step by step", blocks: [W("codeTrace", T_dict)] },
-          { kind: "trace", part: "Reading values: [] and get()", title: "Trace table", blocks: [TT(T_dict)] },
           { kind: "concept", part: "Adding, changing, and removing pairs", title: "Changing a dictionary", blocks: [
             TB(["Statement", "Effect"], [
               ["<code>d[key] = value</code>", "changes the value of an existing key, or adds a new pair"],

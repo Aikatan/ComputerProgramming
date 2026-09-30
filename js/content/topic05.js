@@ -18,7 +18,6 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
-  const TT = (trace, rows) => W("traceTable", rows ? { trace, rows } : { trace });
 
   /* ---------- traces ---------- */
   const T_line = {
@@ -30,7 +29,7 @@
       { line: 4, note: "The function ends. The program continues after the call.", print: "Motor report" },
       { line: 5, note: "Second call: the program jumps into the function again." },
       { line: 1, note: "The body runs again.", print: "----------" },
-      { line: -1, note: "The program ends: one definition, two calls." },
+      { line: -1, note: "The program ends: one definition, two calls. The body (line 2) ran twice, once for each call. Line 1 only created the function." },
     ],
   };
 
@@ -42,7 +41,7 @@
       { line: 1, note: "v * i → 24, stored in the local variable p.", set: { "p (power)": "24" } },
       { line: 2, note: "return sends 24 back. The local variables disappear.", unset: ["v (power)", "i (power)", "p (power)"] },
       { line: 4, note: "The call is replaced by 24, which is stored in result.", set: { result: "24" } },
-      { line: 5, note: "result is displayed.", print: "Power = 24 W" },
+      { line: 5, note: "result is displayed. The local variables exist only during the call.", print: "Power = 24 W" },
     ],
   };
 
@@ -130,10 +129,6 @@
             ]),
           ] },
           { kind: "code", part: "Calling a function", title: "First example: execution step by step", blocks: [W("codeTrace", T_line)] },
-          { kind: "trace", part: "Calling a function", title: "Trace table", blocks: [
-            TT(T_line),
-            T("The body (line 2) ran twice, once for each call. Line 1 only created the function."),
-          ] },
           { kind: "code", part: "Calling a function", title: "Example: a function that displays a menu", blocks: [
             EX('def concessions():\n    print("Food and drink options:")\n    print("Popcorn: 8 to 10 dollars")\n    print("Soft drink: 5 to 7 dollars")\n\nconcessions()', "from the lecture", [
               { c: "def concessions():", e: "Creates the function. Nothing is displayed yet." },
@@ -211,11 +206,6 @@
             ]),
           ] },
           { kind: "code", part: "Return values", title: "First example: execution step by step", blocks: [W("codeTrace", T_power)] },
-          { kind: "trace", part: "Return values", title: "Trace table (part 1 of 2)", blocks: [TT(T_power, [0, 3])] },
-          { kind: "trace", part: "Return values", title: "Trace table (part 2 of 2)", blocks: [
-            TT(T_power, [3, 6]),
-            T("A dash means that the variable does not exist at that moment. The local variables exist only during the call."),
-          ] },
           { kind: "code", part: "Return values", title: "Example: temperature conversion", blocks: [
             EX("def c_to_f(c):\n    return c * 9 / 5 + 32\n\nprint(c_to_f(25))\nprint(c_to_f(100))", "one function, two calls", [
               { c: "c_to_f(25)", e: "c = 25: returns <code>77.0</code>" },
@@ -325,7 +315,6 @@
             ]),
           ] },
           { kind: "code", part: "Default values", title: "First example: execution step by step", blocks: [W("codeTrace", T_default)] },
-          { kind: "trace", part: "Default values", title: "Trace table", blocks: [TT(T_default)] },
           { kind: "code", part: "Default values", title: "Example: defaults and positions together", blocks: [
             EX("def calc(a, b=2, c=3):\n    return a + b * c\n\nprint(calc(1))\nprint(calc(1, 3))\nprint(calc(1, c=10))", "which default is replaced", [
               { c: "calc(1)", e: "a = 1, b = 2, c = 3: 1 + 2 * 3 → <code>7</code>" },
@@ -432,7 +421,6 @@
             ]),
           ] },
           { kind: "code", part: "The same name: local and global", title: "First example: execution step by step", blocks: [W("codeTrace", T_scope)] },
-          { kind: "trace", part: "The same name: local and global", title: "Trace table", blocks: [TT(T_scope)] },
           { kind: "concept", part: "The global keyword", title: "The global keyword", blocks: [
             L([
               "<code>global x</code> inside a function means: x in this function is the global variable.",
@@ -499,9 +487,6 @@
             ]),
           ] },
           { kind: "code", part: "Nested calls", title: "First example: execution step by step", blocks: [W("codeTrace", T_nested)] },
-          { kind: "trace", part: "Nested calls", title: "Trace table", blocks: [
-            TT(T_nested),
-          ] },
           { kind: "code", part: "Nested calls", title: "Example: power from voltage and resistance", blocks: [
             EX("def current(v, r):\n    return v / r\n\ndef power(v, r):\n    return v * current(v, r)\n\nprint(power(12, 4))", "power calls current", [
               { c: "current(v, r)", e: "12 / 4 → 3.0" },

@@ -39,7 +39,7 @@
       { line: 1, note: "The value 2 is stored in the variable <code>current</code>.", set: { current: "2" } },
       { line: 2, note: "The right side is evaluated first: <code>voltage * current</code> → <code>12 * 2</code> → <code>24</code>. Then 24 is stored in <code>power</code>.", set: { power: "24" } },
       { line: 3, note: "<code>print()</code> displays the text, the value of <code>power</code>, and the unit.", print: "Power = 24 W" },
-      { line: -1, note: "The program ends. Result: Power = 24 W." },
+      { line: -1, note: "The program ends. Result: Power = 24 W. <b>Check:</b> 12 × 2 = 24. The output <code>Power = 24 W</code> is correct." },
     ],
   };
 
@@ -97,7 +97,7 @@
       { line: 1, note: "2 (hours) is stored in <code>time</code>.", set: { time: "2" } },
       { line: 2, note: "<code>distance / time</code> → <code>150 / 2</code> → <code>75.0</code>. The operator <code>/</code> always gives a float, even when the division is exact.", set: { speed: "75.0" } },
       { line: 3, note: "The speed is displayed with its unit.", print: "Speed = 75.0 km/h" },
-      { line: -1, note: "The program ends. Result: Speed = 75.0 km/h." },
+      { line: -1, note: "The program ends. Result: Speed = 75.0 km/h. <b>Check:</b> 150 ÷ 2 = 75. The output shows <code>75.0</code>, because <code>/</code> produces a float." },
     ],
   };
 
@@ -128,7 +128,7 @@
       { line: 0, note: "The prompt is displayed. The user types 12. <code>input()</code> returns <code>'12'</code>. <code>float()</code> converts it to <code>12.0</code>.", set: { voltage: "12.0" }, print: "Voltage (V): 12" },
       { line: 1, note: "The user types 1.5. It is converted to the float <code>1.5</code>.", set: { current: "1.5" }, print: "Current (A): 1.5" },
       { line: 2, note: "<code>12.0 * 1.5</code> → <code>18.0</code>.", set: { power: "18.0" } },
-      { line: 3, note: "The power is displayed with its unit.", print: "Power = 18.0 W" },
+      { line: 3, note: "The power is displayed. <b>Verify:</b> 12 × 1.5 = 18, as displayed.", print: "Power = 18.0 W" },
     ],
   };
 
@@ -308,10 +308,6 @@
             ]),
           ] },
           { kind: "code", part: "Assignment", title: "First example: execution step by step", blocks: [W("codeTrace", T_power)] },
-          { kind: "trace", part: "Assignment", title: "Trace table and result check", blocks: [
-            W("traceTable", { trace: T_power }),
-            T("A <b>trace table</b> records the value of every variable after each line. A coloured value changed on that line.<br><b>Check:</b> 12 × 2 = 24. The output <code>Power = 24 W</code> is correct."),
-          ] },
           { kind: "concept", part: "Using variables in calculations", title: "A name is replaced by its value", blocks: [
             L([
               "When Python evaluates an expression, each variable name is replaced by its <b>current value</b>.",
@@ -386,7 +382,7 @@
             NEXT("<b>Data types</b>. Every value stored in a variable has a type, such as a whole number, a decimal number, or text."),
           ] },
           { kind: "exercise", title: "Trace the code", cols: [
-            [T("Complete the trace table on paper. The first row is done.<br>Then use <b>Step Run</b> in the editor to check each line."),
+            [T("A trace table records the value of every variable after each line. Complete it on paper; the first row is done. Then check each line with <b>Step Run</b>."),
               W("traceTable", { trace: T_abc, blank: true, given: 1 })],
             [RUN("a = 5\nb = a + 3\na = b * 2\nprint(a, b)")],
           ] },
@@ -447,7 +443,6 @@
             T("<code>print(type(4.7))</code> displays <code>&lt;class 'float'&gt;</code>. The word in quotes is the type name."),
           ] },
           { kind: "code", part: "Checking a type", title: "First example: execution step by step", blocks: [W("codeTrace", T_types)] },
-          { kind: "trace", part: "Checking a type", title: "Trace table", blocks: [W("traceTable", { trace: T_types })] },
           { kind: "concept", part: "Numbers and text are different", title: "The same digits, two different types", blocks: [
             TB(["Expression", "Result", "Reason"], [
               ["<code>12 + 3</code>", "<code>15</code>", "two ints: addition"],
@@ -676,10 +671,6 @@
             ]),
           ] },
           { kind: "code", part: "The arithmetic operators", title: "First example: execution step by step", blocks: [W("codeTrace", T_speed)] },
-          { kind: "trace", part: "The arithmetic operators", title: "Trace table and result check", blocks: [
-            W("traceTable", { trace: T_speed }),
-            T("<b>Check:</b> 150 ÷ 2 = 75. The output shows <code>75.0</code>, because <code>/</code> produces a float."),
-          ] },
           { kind: "concept", part: "Division: /, //, and %", title: "Floor division and remainder", blocks: [
             L([
               "<code>a // b</code> gives the whole-number part of the division (for positive numbers).",
@@ -811,10 +802,6 @@
             ]),
           ] },
           { kind: "code", part: "Reading text with input()", title: "First example: execution step by step", blocks: [W("codeTrace", T_name)] },
-          { kind: "trace", part: "Reading text with input()", title: "Trace table and program", blocks: [
-            W("traceTable", { trace: T_name }),
-            RUN('name = input("Name: ")\nprint("Hello", name)', "Program (test input: Anan)", ["Anan"]),
-          ] },
           { kind: "concept", part: "Converting text to numbers", title: "Text digits are not numbers", blocks: [
             T("<code>input()</code> returns a str. Two inputs joined with <code>+</code> are placed side by side. They are not added:"),
             TB(["User types", "Stored values", "a + b"], [
@@ -878,10 +865,6 @@
             ]),
           ] },
           { kind: "code", part: "Solving a problem step by step", title: "Code: execution step by step", blocks: [W("codeTrace", T_powerIn)] },
-          { kind: "trace", part: "Solving a problem step by step", title: "Trace table and verification", blocks: [
-            W("traceTable", { trace: T_powerIn }),
-            T("<b>Verify:</b> 12 × 1.5 = 18. The output <code>Power = 18.0 W</code> matches the hand calculation."),
-          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
               "<code>input(prompt)</code> displays the prompt and returns the typed text as a str.",
@@ -985,7 +968,6 @@
           ] },
           { kind: "visual", part: "Indexing", title: "Indexing: one character", blocks: [W("stringIndex", { text: "TMP36" })] },
           { kind: "code", part: "Indexing", title: "First example: execution step by step", blocks: [W("codeTrace", T_index)] },
-          { kind: "trace", part: "Indexing", title: "Trace table", blocks: [W("traceTable", { trace: T_index })] },
           { kind: "concept", part: "Slicing", title: "A slice takes part of a string", blocks: [
             CODE("s[start:end]\ns[start:end:step]", null, "syntax"),
             L([

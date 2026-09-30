@@ -22,7 +22,6 @@
   const FLOW = (f) => W("flowchart", f);
   const STATIC = (f) => W("flowchart", Object.assign({}, f, { trace: null }));
   const CHART = (f) => W("flowchart", Object.assign({}, f, { trace: null, code: null }));
-  const FTT = (f, rows, blank) => W("traceTable", Object.assign({ flow: f }, rows ? { rows } : {}, blank ? { blank: true, given: 1 } : {}));
 
   /* ---------- flowchart shapes ---------- */
   const ST = (id, text, col, row) => ({ id, type: "terminator", text, col, row });
@@ -57,7 +56,7 @@
       { node: "a", note: "Process: 1 is stored in x.", set: { x: "1" } },
       { node: "b", note: "Process: x + 2 → 3. 3 is stored in x.", set: { x: "3" } },
       { node: "d", note: "Output: the value of x is displayed.", print: "3" },
-      { node: "e", note: "END: the algorithm ends." },
+      { node: "e", note: "END: the algorithm ends. The value of x after each shape is the value that the Python program has after the matching line." },
     ],
   };
   const F_area = {
@@ -93,7 +92,7 @@
       { node: "i", note: "Input: 12 is stored in x.", set: { x: "12" } },
       { node: "q", note: "12 > 10 is True: follow the True arrow." },
       { node: "d", note: "Output: x is displayed.", print: "12" },
-      { node: "e", note: "END." },
+      { node: "e", note: "END. With the input 7, <code>7 &gt; 10</code> is False: the False arrow goes directly to END, and nothing is displayed." },
     ],
   };
   const F_ifelse = {
@@ -149,7 +148,7 @@
       { node: "i", note: "Input again: 12 is stored in x.", set: { x: "12" } },
       { node: "q", note: "12 > 10 is True: the loop ends." },
       { node: "d", note: "Output: x is displayed.", print: "12" },
-      { node: "e", note: "END." },
+      { node: "e", note: "END. The input step runs again after every False result, so the program asks until the value is above 10." },
     ],
   };
   const F_count = {
@@ -279,10 +278,6 @@
             ]),
           ] },
           { kind: "code", part: "Sequence: steps in order", title: "First example: execution step by step", blocks: [FLOW(F_seq)] },
-          { kind: "trace", part: "Sequence: steps in order", title: "Trace table", blocks: [
-            FTT(F_seq),
-            T("The value of x after each shape is the value that the Python program has after the matching line."),
-          ] },
           { kind: "code", part: "Sequence: steps in order", title: "Example: area of a rectangle", blocks: [STATIC(F_area)] },
           { kind: "concept", part: "Connectors and predefined processes", title: "Connectors and predefined processes", blocks: [
             L([
@@ -353,10 +348,6 @@
             ]),
           ] },
           { kind: "code", part: "The decision symbol and if", title: "First example: execution step by step", blocks: [FLOW(F_if)] },
-          { kind: "trace", part: "The decision symbol and if", title: "Trace table", blocks: [
-            FTT(F_if),
-            T("With the input 7, <code>7 &gt; 10</code> is False: the False arrow goes directly to END, and nothing is displayed."),
-          ] },
           { kind: "concept", part: "if and else", title: "Two branches: if and else", blocks: [
             L([
               "When both exits have their own steps, the flowchart has two branches.",
@@ -459,10 +450,6 @@
             ]),
           ] },
           { kind: "code", part: "A loop with a condition", title: "First example: execution step by step", blocks: [FLOW(F_while)] },
-          { kind: "trace", part: "A loop with a condition", title: "Trace table", blocks: [
-            FTT(F_while),
-            T("The input step runs again after every False result, so the program asks until the value is above 10."),
-          ] },
           { kind: "concept", part: "A counting loop", title: "A counting loop", blocks: [
             L([
               "A counting loop has three steps: initialize the counter, test it in the decision, update it in the loop.",
@@ -471,8 +458,6 @@
             ]),
           ] },
           { kind: "code", part: "A counting loop", title: "Example: execution step by step", blocks: [FLOW(F_count)] },
-          { kind: "trace", part: "A counting loop", title: "Trace table (part 1 of 2)", blocks: [FTT(F_count, [0, 6])] },
-          { kind: "trace", part: "A counting loop", title: "Trace table (part 2 of 2)", blocks: [FTT(F_count, [6, 10])] },
           { kind: "code", part: "A counting loop", title: "Example: a step of 2", blocks: [
             STATIC(F_step2),
             T("x takes 1, 3, 5, 7, 9, and then 11. 11 &lt; 10 is False, so 11 is displayed."),

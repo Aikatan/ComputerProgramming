@@ -17,7 +17,6 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
-  const TT = (trace, rows) => W("traceTable", rows ? { trace, rows } : { trace });
 
   /* ---------- traces ---------- */
   const T_try = {
@@ -28,7 +27,7 @@
       { line: 2, note: "int('12a') raises a ValueError. The rest of the try block is skipped." },
       { line: 4, note: "The error type matches except ValueError: its block runs." },
       { line: 5, note: "The except block displays a message.", print: "Not a number" },
-      { line: 6, note: "The program continues normally after the try statement.", print: "Done" },
+      { line: 6, note: "The program continues normally after the try statement. With <code>text = \"12\"</code>, no error occurs: the output is <code>Value: 12</code> and <code>Done</code>; the except block is skipped.", print: "Done" },
     ],
   };
   const T_raise = {
@@ -265,10 +264,6 @@
             ]),
           ] },
           { kind: "code", part: "try and except", title: "First example: execution step by step", blocks: [W("codeTrace", T_try)] },
-          { kind: "trace", part: "try and except", title: "Trace table", blocks: [
-            TT(T_try),
-            T("With <code>text = \"12\"</code>, no error occurs: the output is <code>Value: 12</code> and <code>Done</code>; the except block is skipped."),
-          ] },
           { kind: "code", part: "try and except", title: "Example: safe input", blocks: [
             EX('try:\n    n = int(input("Number: "))\n    print("Double:", n * 2)\nexcept ValueError:\n    print("Please enter a whole number.")', "test input: abc", [
               { c: 'int(input("Number: "))', e: "\"abc\" raises a ValueError." },
@@ -363,8 +358,6 @@
             ]),
           ] },
           { kind: "code", part: "raise", title: "First example: execution step by step", blocks: [W("codeTrace", T_raise)] },
-          { kind: "trace", part: "raise", title: "Trace table (part 1 of 2)", blocks: [TT(T_raise, [0, 3])] },
-          { kind: "trace", part: "raise", title: "Trace table (part 2 of 2)", blocks: [TT(T_raise, [3, 6])] },
           { kind: "concept", part: "assert", title: "assert checks a condition", blocks: [
             CODE('assert condition, "message"', null, "syntax"),
             L([

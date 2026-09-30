@@ -150,6 +150,12 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 | **40px** | titles only: the slide title and the cover title |
 
 - **No other sizes.** Never shrink text to fit: split the slide.
+- **Fitting the screen (the lecturer's rule, 2026-09-30):**
+  - Explanations (concept text, lists, tables, notes, and the note of a trace or widget step) always fit on one screen, at every step.
+  - A short example fits on one screen, with its output.
+  - A code block or a flowchart may run below the screen: the lecturer scrolls it.
+  - A long example may run below the screen when its length is justified: it explains many steps, or it is a real program that shows or proves an idea clearly.
+  - A slide with several elements: when an element is not part of the same point, or needs its own explanation, move it to its own slide.
 - **No small-text markup:** no `<sup>`, `<sub>`, `<small>`, or inline `font-size` in content. Write `2⁸`, `m²` with Unicode.
 - **Readability:** high contrast (4.5:1 or more in both themes), clear spacing, clear hierarchy.
 - **Zoom:** it must work: no horizontal page scroll at any width.
@@ -303,7 +309,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
    - no "Unknown block/widget"
    - every element with its own text is exactly 24px or 40px
    - no horizontal scroll
-   - the slide plus the bottom bar fits the height
+   - the slide plus the bottom bar fits the height (exceptions: code blocks, flowcharts, and justified long examples; see §4 "Fitting the screen")
 
    At tablet and phone width, check only for horizontal scroll.
 3. **Examples:** run every `example` and `livecode` with `App.py.run(code, {inputs, sink})`. The output must match the notes.

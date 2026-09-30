@@ -1215,12 +1215,12 @@ App.widgets.fileFlow = function (cfg) {
       const cols = h("div", { class: "ff-cols" },
         h("div", { class: "ff-prog" }, h("div", { class: "widget-title" }, "Program"), codeBox),
         arrow, fileBox);
-      const wrap = h("div", { class: "fileflow" }, cols, h("div", { class: "tf-note", html: s.note || "" }));
-      if (s.out != null) {
-        wrap.appendChild(h("div", { class: "widget-title", style: "margin-top:10px" }, "Output"));
-        wrap.appendChild(h("div", { class: "step-out" }, s.out));
-      }
-      return wrap;
+      // the note and the output side by side, so that both stay on the slide
+      const note = h("div", { class: "tf-note", html: s.note || "" });
+      const bottom = s.out != null
+        ? h("div", { class: "ff-bottom" }, note, h("div", null, h("div", { class: "widget-title" }, "Output"), h("div", { class: "step-out" }, s.out)))
+        : note;
+      return h("div", { class: "fileflow" }, cols, bottom);
     },
   });
 };
@@ -2116,12 +2116,13 @@ App.widgets.callStack = function (cfg) {
       left.appendChild(h("div", { class: "cs-head" }, "Call stack - top = most recent"));
       const stack = h("div", { class: "cs-stack" });
       const frames = s.frames || [];
+      // one line per frame, so that a deep stack still fits beside the code
       frames.slice().reverse().forEach((f) => {
         stack.appendChild(h("div", { class: "cs-frame cs-" + (f.state || "wait") },
           h("div", { class: "cs-line" },
             h("span", { class: "cs-fn" }, f.call),
-            f.ret != null ? h("span", { class: "cs-ret" }, "→ " + f.ret) : null),
-          f.detail ? h("div", { class: "cs-detail" }, f.detail) : null));
+            f.detail ? h("span", { class: "cs-detail" }, f.detail) : null,
+            f.ret != null ? h("span", { class: "cs-ret" }, "→ " + f.ret) : null)));
       });
       if (!frames.length) stack.appendChild(h("div", { class: "cs-empty" }, "(stack empty)"));
       left.appendChild(stack);
