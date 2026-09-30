@@ -105,10 +105,10 @@
             ]),
           ] },
           { kind: "concept", part: "Assignments", title: "Late submission", blocks: [
+            T("Each assignment is due 7 days after it is given."),
             TB(["Submission", "Score"], [
-              ["On time", "the full score"],
-              ["Late, up to 7 days", "half of the score"],
-              ["Late, more than 7 days", "no score"],
+              ["On time: within the 7 days", "the full score"],
+              ["Late: after the 7 days", "half of the score"],
             ]),
             T("Example: an assignment earns 8 of 10 points and is submitted 3 days late. It receives 8 ÷ 2 = 4 points."),
           ] },
@@ -125,7 +125,7 @@
               "Weights: attendance 10%, assignments 30%, project 10%, midterm 20%, final 30%.",
               "The total score gives the grade: 80 or more is A; below 40 is F.",
               "Attendance starts at 10 points. More than 3 absences: no right to sit the examinations.",
-              "Late assignments: up to 7 days, half of the score; after 7 days, no score.",
+              "Assignments are due 7 days after they are given; a late assignment receives half of the score.",
               "No AI tools in class without permission. Appointments: at least 24 hours in advance.",
             ]),
             NEXT("<b>What is programming?</b> The course teaches programming, so the next lesson explains what a program is and how a computer runs it."),
@@ -643,7 +643,7 @@
             IPO([
               ["Given values", "9 points; 2 days late"],
               ["Required output", "a label and the score"],
-              ["Processing", "up to 7 days late: half of the score, 9 / 2"],
+              ["Processing", "late: half of the score, 9 / 2"],
             ]),
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", blocks: [
