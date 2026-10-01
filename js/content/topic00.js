@@ -240,7 +240,6 @@
             L([
               "Python is a high-level language. Its programs are executed by the Python <b>interpreter</b>.",
               "Its syntax is short and readable, so a program stays close to the steps of the task.",
-              "The interpreter manages the memory, so the programmer can focus on the logic.",
               "Libraries such as NumPy, pandas, and Matplotlib add tools for calculations, data, and charts (Topics 07 and 08).",
               "Python is slower than C. Topic 10 teaches C, which is used for hardware and microcontrollers.",
             ]),
@@ -263,10 +262,10 @@
           ] },
           { kind: "concept", part: "Python and the first program", title: "Calculations, several values, and comments", blocks: [
             TB(["Code", "Output", "Rule"], [
-              ["<code>print(8 + 2)</code>", "<code>10</code>", "<code>+</code> adds"],
-              ["<code>print(8 - 2)</code>", "<code>6</code>", "<code>-</code> subtracts"],
+              ["<code>print(8 + 2 - 3)</code>", "<code>7</code>", "<code>+</code> adds; <code>-</code> subtracts"],
               ["<code>print(8 * 2)</code>", "<code>16</code>", "<code>*</code> multiplies"],
               ["<code>print(8 / 2)</code>", "<code>4.0</code>", "<code>/</code> divides; the result always has a decimal point"],
+              ['<code>print("5 * 3")</code><br><code>print(5 * 3)</code>', "<code>5 * 3</code><br><code>15</code>", "text in quotes is displayed as written, not computed"],
               ['<code>print("Area =", 5 * 3, "m2")</code>', "<code>Area = 15 m2</code>", "commas separate several values; a space is placed between them"],
               ["<code># Write your program here</code>", "no output", "<code>#</code> starts a comment: Python ignores the rest of the line"],
             ]),
@@ -316,7 +315,7 @@
             L([
               "A program is an algorithm, a precise sequence of steps, written in a programming language.",
               "The CPU executes only machine language. A compiler translates the whole program before it runs; an interpreter translates and executes one statement at a time.",
-              "<code>print()</code> displays one or more values, separated by commas. Text is written between quotes.",
+              "<code>print()</code> displays one or more values, separated by commas. Text in quotes is displayed as written, not computed.",
               "Python checks the syntax of the whole file, executes the statements one at a time, and stops at a statement that fails.",
               "A program is developed in steps: understand, design, code, test with a hand calculation, correct.",
             ]),
@@ -399,9 +398,8 @@
             L([
               "Python 3.10 is the interpreter of this course. A later version, such as 3.12, also runs the course programs.",
               "Download Python from <code>python.org</code>. On Windows, select the installer option that adds Python to <b>PATH</b> before selecting Install. PATH is the list of folders in which a terminal looks for commands.",
-              "Miniconda 3 installs Python together with <b>conda</b>, a tool that installs and updates packages. The Python version of Miniconda can be later than 3.10.",
-              "A <b>package</b> (library) adds tools to Python, for example NumPy for calculations (Topic 08).",
-              "Packages are installed in a terminal: <code>conda install numpy</code> or <code>pip install numpy</code>.",
+              "Miniconda 3 is another way to install Python. The Python version of Miniconda can be later than 3.10.",
+              "<b>conda</b> (in Miniconda) and <b>pip</b> (in Python) install <b>packages</b>: libraries that add tools to Python. Packages are taught where they are first used (Topics 05, 07 and 08).",
             ]),
           ] },
           { kind: "concept", part: "Python and Miniconda", title: "Checking the installation", blocks: [
@@ -409,8 +407,11 @@
             L([
               "The command displays the version of the installed interpreter, for example <code>Python 3.10.11</code>. Version 3.10 or later is correct.",
               "On macOS, the command is <code>python3 --version</code>.",
-              "If the terminal reports that <code>python</code> is not recognized, Python is not installed or cannot be found.",
-              "In that case, install Python again and select the installer option that adds Python to PATH.",
+              "If the terminal reports that <code>python</code> is not recognized, install Python again and select the installer option that adds Python to PATH.",
+            ]),
+            TB(["", "Where it is typed", "Examples"], [
+              ["Terminal command", "in the terminal", "<code>python --version</code>, <code>python lab00.py</code> (Lesson 4)"],
+              ["Python statement", "in a <code>.py</code> file", '<code>print("Hi")</code>'],
             ]),
           ] },
           { kind: "concept", part: "The Python and Jupyter extensions", title: "The Python and Jupyter extensions", blocks: [
@@ -418,15 +419,12 @@
               ["Python", "runs <code>.py</code> files and selects the interpreter"],
               ["Jupyter", "opens and runs notebooks (<code>.ipynb</code> files)"],
             ]),
-            T("Both extensions are published by Microsoft. They are installed with the same three steps."),
-          ] },
-          { kind: "concept", part: "The Python and Jupyter extensions", title: "Installing an extension", blocks: [
-            TB(["Step", "Python extension", "Jupyter extension"], [
-              ["1. Open the Extensions view", "Ctrl+Shift+X", "Ctrl+Shift+X"],
-              ["2. Search", "<code>Python</code>", "<code>Jupyter</code>"],
-              ["3. Install", "Python (Microsoft)", "Jupyter (Microsoft)"],
-            ]),
-            T("The Extensions view is also opened with the Extensions icon in the bar on the left of VS Code."),
+            T("Both extensions are published by Microsoft. Each is installed with the same three steps:"),
+            L([
+              "Open the Extensions view: Ctrl+Shift+X, or the Extensions icon in the bar on the left of VS Code.",
+              "Type the name of the extension, <code>Python</code> or <code>Jupyter</code>, in the search box.",
+              "Select <b>Install</b> on the extension published by Microsoft.",
+            ], null, true),
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
@@ -456,24 +454,6 @@
               ["Open a notebook in VS Code", "the Jupyter extension"],
               ["Run a notebook without installing anything", "Google Colab"],
             ]),
-          ] },
-          { kind: "exercise", title: "Put the steps in order", blocks: [
-            T("The steps to install the Jupyter extension are in the wrong order. Write the letters in the correct order on paper. The next exercise checks it."),
-            TB(["Letter", "Step"], [
-              ["A", "Type <code>Jupyter</code> in the search box."],
-              ["B", "Open VS Code."],
-              ["C", "Select <b>Install</b> on the Jupyter extension by Microsoft."],
-              ["D", "Open the Extensions view (Ctrl+Shift+X)."],
-            ], null, "center"),
-          ] },
-          { kind: "exercise", title: "Check your order", blocks: [
-            T("The correct order is <b>B, D, A, C</b>:"),
-            L([
-              "Open VS Code.",
-              "Open the Extensions view (Ctrl+Shift+X).",
-              "Type <code>Jupyter</code> in the search box.",
-              "Select <b>Install</b> on the Jupyter extension by Microsoft.",
-            ], null, true),
           ] },
           { kind: "exercise", title: "Set up your computer", blocks: [
             T("Complete these steps on your own computer before the next class."),
@@ -529,14 +509,6 @@
               "The <b>extension</b> at the end of the name selects the file type: <code>.py</code> for a Python program, <code>.ipynb</code> for a Jupyter notebook.",
             ], null, true),
           ] },
-          { kind: "concept", part: "Creating a file", title: "A Python file and a Jupyter notebook", blocks: [
-            TB(["", "Python file (.py)", "Jupyter notebook (.ipynb)"], [
-              ["Content", "Python code only", "cells of code and text, with their output"],
-              ["Execution", "the whole file, from top to bottom", "one cell at a time"],
-              ["Output", "in the Terminal panel", "below each cell"],
-              ["Used for", "complete programs", "trying code step by step, calculations, charts"],
-            ]),
-          ] },
           { kind: "concept", part: "Running a .py file", title: "Running a .py file", blocks: [
             L([
               "Write the code in the file, and save it with Ctrl+S.",
@@ -582,6 +554,14 @@
               "The output of each cell is displayed directly below it.",
               "A cell can be changed and run again without running the other cells.",
             ])],
+          ] },
+          { kind: "concept", part: "Jupyter notebooks", title: "A Python file and a Jupyter notebook", blocks: [
+            TB(["", "Python file (.py)", "Jupyter notebook (.ipynb)"], [
+              ["Content", "Python code only", "cells of code and text, with their output"],
+              ["Execution", "the whole file, from top to bottom", "one cell at a time"],
+              ["Output", "in the Terminal panel", "below each cell"],
+              ["Used for", "complete programs", "trying code step by step, calculations, charts"],
+            ]),
           ] },
           { kind: "concept", part: "Google Colab", title: "Google Colab", blocks: [
             L([
@@ -670,12 +650,13 @@
         keywords: "practice print calculation total score grade attendance assignment",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
-            T("Each problem uses the lessons of this chapter: the data comes from the course agreements, and the program uses <code>print()</code> with text and calculations. Solve every problem with the steps of Lesson 2:"),
+            T("Each problem uses the lessons of this chapter: the data comes from the course agreements, and the program uses <code>print()</code> with text and calculations. Solve every problem with the five steps of Lesson 2:"),
             L([
               "<b>Understand</b>: the given values and the required output.",
               "<b>Design</b>: the processing, the calculation.",
               "<b>Code</b>: one <code>print()</code> statement for each line of output.",
-              "<b>Test</b>: compare the output with a hand calculation, and correct the program if they differ.",
+              "<b>Test</b>: compare the output with a hand calculation.",
+              "<b>Correct</b>: if the output differs, find the wrong step, correct it, and test again.",
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: a welcome message", blocks: [
@@ -694,14 +675,14 @@
             T("A student has these scores: attendance 7, assignments 22, project 8, midterm 12, final 18. Display the total score, and then the grade."),
             IPO([
               ["Given values", "the five scores"],
-              ["Required output", "a label, the total score, and the grade"],
+              ["Required output", "line 1: a label and the total score; line 2: the grade"],
               ["Processing", "total = 7 + 22 + 8 + 12 + 18. The grade is read from the grade table by hand."],
             ]),
             N("A program can choose the grade itself with a decision, <code>if</code> (Topic 03).", "Note"),
           ] },
           { kind: "exercise", part: "Problem 2", title: "Problem 2: write the program", blocks: [
-            PQ("Line 2 computes the total with <code>print()</code>. Line 3 displays the grade that you found by hand. Check by hand: the total is 67, in the range 60–69.",
-              "Total score:\n67\nGrade: C+", STARTER, null, "print(7 + 22 + 8 + 12 + 18)"),
+            PQ("Write the program. The first <code>print()</code> statement displays two values: the label and the calculated total. The second displays the grade that you found by hand. Check by hand: the total is 67, in the range 60–69.",
+              "Total score: 67\nGrade: C+", STARTER, null, 'print("Total score:", 7 + 22 + 8 + 12 + 18)'),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: an attendance score", blocks: [
             T("A student was late 2 times and absent 2 times. Display the attendance score."),
@@ -717,14 +698,14 @@
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: a late assignment", blocks: [
             T("An assignment earns 9 of 10 points, but it is submitted 2 days late. Display the score that it receives."),
-            IPO([
-              ["Given values", "9 points; 2 days late"],
-              ["Required output", "a label and the score"],
-              ["Processing", "late: half of the score, 9 / 2"],
-            ]),
+            T("This problem gives no table. Before writing the program, do steps 1 and 2 of the five steps on paper:"),
+            L([
+              "<b>Understand</b>: write the given values and the required output.",
+              "<b>Design</b>: write the processing. The late-submission rule is in Lesson 1.",
+            ], null, true),
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", blocks: [
-            PQ("Write the program. Check by hand: 9 ÷ 2 = 4.5.",
+            PQ("Write the program from your notes on paper. Test it: compare the output with your hand calculation.",
               "Assignment score:\n4.5", STARTER, null, "print(9 / 2)"),
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [
