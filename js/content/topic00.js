@@ -18,7 +18,9 @@
   const W = (name, config) => ({ type: "widget", name, config });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
-  const PAPER = T("Determine the output of the program.<br>1. Write the output on paper, line by line.<br>2. Run the program.<br>3. Compare the output with your answer on paper.");
+  const PAPER = T("Write the output of the program on paper, line by line.");
+  const HIDE = (b) => Object.assign(b, { hideOnAnswer: true });   // the block is hidden while the answer of its slide is shown
+  const OUT = (text) => ({ type: "code", code: text, caption: "output", lang: "text" });   // the expected output, in the answer of a slide
   const STARTER = "# Write your program here\n";
 
   App.registerTopic({
@@ -132,28 +134,26 @@
             NEXT("<b>What is programming?</b> The course teaches programming, so the next lesson explains what a program is and how a computer runs it."),
           ] },
           { kind: "exercise", title: "Complete the table: grades", blocks: [
-            T("Write the grade for each total score on paper. The next exercise checks it."),
-            TB(["Student", "Total score", "Grade"], [
+            T("Write the grade for each total score on paper."),
+            HIDE(TB(["Student", "Total score", "Grade"], [
               ["1", "85", ""], ["2", "79", ""], ["3", "60", ""], ["4", "47", ""], ["5", "39", ""],
-            ], null, "center"),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ], null, "center")),
+          ], answer: [
             TB(["Student", "Total score", "Grade"], [
               ["1", "85", "A"], ["2", "79", "B+"], ["3", "60", "C+"], ["4", "47", "D+"], ["5", "39", "F"],
             ], null, "center"),
             T("A score equal to the lower limit of a range gets that grade: 60 is C+."),
           ] },
           { kind: "exercise", title: "Complete the table: attendance scores", blocks: [
-            T("Each row is the record of one student for the semester. Complete the table on paper. The next exercise checks it."),
-            TB(["Record", "Points deducted", "Attendance score"], [
+            T("Each row is the record of one student for the semester. Complete the table on paper."),
+            HIDE(TB(["Record", "Points deducted", "Attendance score"], [
               ["Late 3 times", "", ""],
               ["Absent 2 times", "", ""],
               ["Late 1 time, absent 1 time", "", ""],
               ["Absent 3 times, sick leave 1 time", "", ""],
               ["Absent 4 times", "", ""],
-            ], null, "center"),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ], null, "center")),
+          ], answer: [
             TB(["Record", "Points deducted", "Attendance score"], [
               ["Late 3 times", "3", "7"],
               ["Absent 2 times", "3", "7"],
@@ -322,16 +322,15 @@
             NEXT("<b>Course tools</b>. A Python program needs an editor to write it and an interpreter to run it. The next lesson installs both."),
           ] },
           { kind: "exercise", title: "Complete the table: compiler or interpreter", blocks: [
-            T("On paper, write <b>compiler</b> or <b>interpreter</b> for each statement in the table.<br>The next exercise shows the completed table."),
-            TB(["Statement", "Compiler or interpreter?"], [
+            T("On paper, write <b>compiler</b> or <b>interpreter</b> for each statement in the table."),
+            HIDE(TB(["Statement", "Compiler or interpreter?"], [
               ["Translates the whole program before it runs", ""],
               ["Translates and executes one statement at a time", ""],
               ["Creates an executable file", ""],
               ["Runs Python programs", ""],
               ["Is used to build C programs", ""],
-            ]),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ])),
+          ], answer: [
             TB(["Statement", "Compiler or interpreter?"], [
               ["Translates the whole program before it runs", "compiler"],
               ["Translates and executes one statement at a time", "interpreter"],
@@ -343,10 +342,13 @@
           { kind: "exercise", title: "Determine the output", cols: [
             [PAPER],
             [RUN('print("Program start")\nprint(4 * 25)\nprint("Program end")')],
-          ] },
+          ], answerCol: 0, answer: [OUT("Program start\n100\nProgram end")] },
           { kind: "exercise", title: "Determine the output: a program that stops", cols: [
-            [T("Determine the output of the program.<br>1. On paper, write the lines that the program displays before the program stops.<br>2. Explain why Python does not execute line 3 of the program.<br>3. Run the program.<br>4. Compare the output with your answer on paper.")],
+            [T("Determine the output of the program.<br>1. On paper, write the lines that the program displays before the program stops.<br>2. Explain why Python does not execute line 3 of the program.")],
             [RUN('print("Motor ON")\nprint(100 / 0)\nprint("Motor OFF")')],
+          ], answerCol: 0, answer: [
+            OUT("Motor ON"),
+            T("Line 2 cannot be executed: a division by zero. The program stops at line 2 with the error <code>ZeroDivisionError</code>, so Python never executes line 3."),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
             PQ("Correct the program, so that the program displays the target output.<br>The error: the interpreter reports a syntax error, and the program does not run.",
@@ -437,16 +439,15 @@
             NEXT("<b>Creating and running a program</b>. With the tools installed, the next lesson creates a project folder and a file, and runs the first program."),
           ] },
           { kind: "exercise", title: "Complete the table: tools", blocks: [
-            T("On paper, write the tool for each task in the table.<br>The next exercise shows the completed table."),
-            TB(["Task", "Tool"], [
+            T("On paper, write the tool for each task in the table."),
+            HIDE(TB(["Task", "Tool"], [
               ["Write and edit a <code>.py</code> file", ""],
               ["Execute a Python program", ""],
               ["Install the NumPy package", ""],
               ["Open a notebook in VS Code", ""],
               ["Run a notebook without installing anything", ""],
-            ]),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ])),
+          ], answer: [
             TB(["Task", "Tool"], [
               ["Write and edit a <code>.py</code> file", "Visual Studio Code"],
               ["Execute a Python program", "the Python 3.10 interpreter"],
@@ -588,16 +589,15 @@
             NEXT("<b>Chapter practice</b>. Short programs that display text and results, written and run with the tools of this chapter."),
           ] },
           { kind: "exercise", title: "Complete the table: .py or .ipynb", blocks: [
-            T("On paper, write <code>.py</code> or <code>.ipynb</code> for each description in the table.<br>The next exercise shows the completed table."),
-            TB(["Description", ".py or .ipynb?"], [
+            T("On paper, write <code>.py</code> or <code>.ipynb</code> for each description in the table."),
+            HIDE(TB(["Description", ".py or .ipynb?"], [
               ["The whole file runs from top to bottom", ""],
               ["The output appears below each cell", ""],
               ["Code and text are mixed in one file", ""],
               ["A new Google Colab notebook", ""],
               ["Runs with <code>python lab00.py</code> in a terminal", ""],
-            ]),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ])),
+          ], answer: [
             TB(["Description", ".py or .ipynb?"], [
               ["The whole file runs from top to bottom", "<code>.py</code>"],
               ["The output appears below each cell", "<code>.ipynb</code>"],
@@ -607,16 +607,15 @@
             ]),
           ] },
           { kind: "exercise", title: "Put the steps in order", blocks: [
-            T("On paper, write the letters of the steps in the correct order.<br>The table lists the steps to run a first program in VS Code, in the wrong order.<br>The next exercise shows the correct order."),
-            TB(["Letter", "Step"], [
+            T("On paper, write the letters of the steps in the correct order.<br>The table lists the steps to run a first program in VS Code, in the wrong order."),
+            HIDE(TB(["Letter", "Step"], [
               ["A", "Run the file with the ▶ button."],
               ["B", "Create the file <code>lab00.py</code>."],
               ["C", "Open the project folder."],
               ["D", "Write the code and save the file."],
               ["E", "Select the Python 3.10 interpreter."],
-            ], null, "center"),
-          ] },
-          { kind: "exercise", title: "Check your order", blocks: [
+            ], null, "center")),
+          ], answer: [
             T("The correct order is <b>C, B, D, E, A</b>:"),
             L([
               "Open the project folder.",

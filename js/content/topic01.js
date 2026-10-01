@@ -16,7 +16,8 @@
   const W = (name, config) => ({ type: "widget", name, config });
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
-  const CHECK_NEXT = "The next exercise shows the completed table.";
+  const HIDE = (b) => Object.assign(b, { hideOnAnswer: true });   // the block is hidden while the answer of its slide is shown
+  const OUT = (text) => ({ type: "code", code: text, caption: "output", lang: "text" });   // the expected output, in the answer of a slide
 
   /* ---------- trace: three assembly instructions through the instruction cycle ----------
      The code lines are assembly, not Python. Addresses are the line numbers 1 to 3.
@@ -141,17 +142,16 @@
             NEXT("<b>The CPU and the instruction cycle</b>. The processing unit executes the instructions of every program, one instruction after another."),
           ] },
           { kind: "exercise", title: "Classify hardware and software", blocks: [
-            T("Complete the table on paper. The first row is an example. " + CHECK_NEXT + "<br>1. Column 2: write <b>hardware</b> or <b>software</b>.<br>2. Column 3, hardware: write input, processing, storage, or output device.<br>3. Column 3, software: write system or application software."),
-            TB(["Item", "Hardware or software", "Group"], [
+            T("Complete the table on paper. The first row is an example.<br>1. Column 2: write <b>hardware</b> or <b>software</b>.<br>2. Column 3, hardware: write input, processing, storage, or output device.<br>3. Column 3, software: write system or application software."),
+            HIDE(TB(["Item", "Hardware or software", "Group"], [
               ["Keyboard", "hardware", "input device"],
               ["Projector", "", ""],
               ["SSD", "", ""],
               ["Linux", "", ""],
               ["Web browser", "", ""],
               ["CPU", "", ""],
-            ], null, "center"),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ], null, "center")),
+          ], answer: [
             TB(["Item", "Hardware or software", "Group"], [
               ["Keyboard", "hardware", "input device"],
               ["Projector", "hardware", "output device"],
@@ -163,10 +163,9 @@
           ] },
           { kind: "exercise", title: "Complete the table: a smart thermostat", blocks: [
             T("A smart thermostat measures the room temperature with a sensor, and it reads the set temperature from two buttons. A processor compares the two values. The thermostat keeps a log of the readings, shows the temperature on a small screen, and switches the heater on or off."),
-            T("On paper, write the hardware that performs each function.<br>" + CHECK_NEXT),
-            TB(["Function", "Hardware in the thermostat"], [["Input", ""], ["Processing", ""], ["Storage", ""], ["Output", ""]]),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            T("On paper, write the hardware that performs each function."),
+            HIDE(TB(["Function", "Hardware in the thermostat"], [["Input", ""], ["Processing", ""], ["Storage", ""], ["Output", ""]])),
+          ], answer: [
             TB(["Function", "Hardware in the thermostat"], [
               ["Input", "the temperature sensor and the two buttons"],
               ["Processing", "the processor, which compares the two temperatures"],
@@ -243,16 +242,15 @@
             NEXT("<b>Memory: RAM and ROM</b>. The CPU fetches every instruction and every value from memory."),
           ] },
           { kind: "exercise", title: "Complete the table: parts of the CPU", blocks: [
-            T("On paper, write the CPU part that performs each task: ALU, control unit, or register.<br>The first row is an example. " + CHECK_NEXT),
-            TB(["Task", "CPU part"], [
+            T("On paper, write the CPU part that performs each task: ALU, control unit, or register.<br>The first row is an example."),
+            HIDE(TB(["Task", "CPU part"], [
               ["computes 17 − 5", "ALU"],
               ["holds the value 42 for the next instruction", ""],
               ["decides which instruction runs next", ""],
               ["checks whether 35 °C is greater than 30 °C", ""],
               ["interprets (decodes) an instruction", ""],
-            ]),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ])),
+          ], answer: [
             TB(["Task", "CPU part"], [
               ["computes 17 − 5", "ALU"],
               ["holds the value 42 for the next instruction", "register"],
@@ -263,10 +261,9 @@
           ] },
           { kind: "exercise", title: "Complete the table: the instruction cycle", blocks: [
             T("Register R1 holds 50 and register R2 holds 8. The CPU executes <code>SUB R1, R2</code>: the instruction subtracts R2 from R1 and stores the result in R1."),
-            T("Complete the table on paper. " + CHECK_NEXT + "<br>1. Column <b>Part</b>: write the part that works in the stage.<br>2. Column <b>What happens</b>: write what happens in the stage."),
-            TB(["Stage", "Part", "What happens"], [["Fetch", "", ""], ["Decode", "", ""], ["Execute", "", ""], ["Store", "", ""]]),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            T("Complete the table on paper.<br>1. Column <b>Part</b>: write the part that works in the stage.<br>2. Column <b>What happens</b>: write what happens in the stage."),
+            HIDE(TB(["Stage", "Part", "What happens"], [["Fetch", "", ""], ["Decode", "", ""], ["Execute", "", ""], ["Store", "", ""]])),
+          ], answer: [
             TB(["Stage", "Part", "What happens"], [
               ["Fetch", "control unit", "copies <code>SUB R1, R2</code> from memory to the IR; the PC increases by 1"],
               ["Decode", "control unit", "finds the operation (subtraction) and the values (R1 and R2)"],
@@ -275,9 +272,9 @@
             ]),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Determine the output of the program. Each line is one operation of the ALU.<br>1. Write the output on paper.<br>2. Run the program.<br>3. Compare the output with your answer on paper.")],
+            [T("Write the output of the program on paper, line by line.<br>Each line of the program is one operation of the ALU.")],
             [RUN("print(17 + 5)\nprint(17 - 5)\nprint(17 * 5)\nprint(17 > 5)\nprint(5 > 17)")],
-          ] },
+          ], answerCol: 0, answer: [OUT("22\n12\n85\nTrue\nFalse")] },
           { kind: "exercise", title: "Write a program: power of a heater", blocks: [
             PQ("Write a program that computes the power of a heater and displays the target output.<br>1. Use these values: voltage 230 V, current 4 A.<br>2. Compute the power with one expression: P = V × I.",
               "Power = 920 W", "# Write your program here\n", null, 'Use print("Power =", 230 * 4, "W").'),
@@ -371,16 +368,15 @@
             NEXT("<b>Storage devices: HDD and SSD</b>. Secondary storage keeps programs and files when the power is off and RAM is cleared."),
           ] },
           { kind: "exercise", title: "Complete the table: types of memory", blocks: [
-            T("Complete the table on paper. The first row is an example. " + CHECK_NEXT + "<br>1. Columns <b>Volatile</b> and <b>Can be rewritten</b>: write <b>yes</b> or <b>no</b>.<br>2. Column <b>Typical use</b>: write one typical use of the memory."),
-            TB(["Memory", "Volatile", "Can be rewritten", "Typical use"], [
+            T("Complete the table on paper. The first row is an example.<br>1. Columns <b>Volatile</b> and <b>Can be rewritten</b>: write <b>yes</b> or <b>no</b>.<br>2. Column <b>Typical use</b>: write one typical use of the memory."),
+            HIDE(TB(["Memory", "Volatile", "Can be rewritten", "Typical use"], [
               ["DRAM", "yes", "yes", "main memory"],
               ["SRAM", "", "", ""],
               ["PROM", "", "", ""],
               ["EPROM", "", "", ""],
               ["EEPROM", "", "", ""],
-            ], null, "center"),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ], null, "center")),
+          ], answer: [
             TB(["Memory", "Volatile", "Can be rewritten", "Typical use"], [
               ["DRAM", "yes", "yes", "main memory"],
               ["SRAM", "yes", "yes", "CPU cache"],
@@ -390,15 +386,14 @@
             ], null, "center"),
           ] },
           { kind: "exercise", title: "Complete the table: choose the memory", blocks: [
-            T("On paper, write the most suitable memory for each task in a PC.<br>Choose from: DRAM, SRAM, PROM, EPROM, EEPROM.<br>" + CHECK_NEXT),
-            TB(["Task", "Memory"], [
+            T("On paper, write the most suitable memory for each task in a PC.<br>Choose from: DRAM, SRAM, PROM, EPROM, EEPROM."),
+            HIDE(TB(["Task", "Memory"], [
               ["holds the programs that are running", ""],
               ["keeps copies of recently used data inside the CPU", ""],
               ["stores the BIOS, which the manufacturer updates", ""],
               ["stores a program that is written once and never changes", ""],
-            ]),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ])),
+          ], answer: [
             TB(["Task", "Memory"], [
               ["holds the programs that are running", "DRAM (main memory)"],
               ["keeps copies of recently used data inside the CPU", "SRAM (cache)"],
@@ -525,9 +520,9 @@
             NEXT("<b>Levels of a computer system</b>. The hardware of Lessons 1 to 4 forms the lowest levels of a computer system. The software levels are built on it."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Compute the access time and the transfer time of an HDD.<br>1. Use these values: seek time 7 ms, rotational latency 4 ms, file size 900 MB, transfer rate 150 MB/s.<br>2. Compute both times on paper.<br>3. Run the program.<br>4. Compare the output with your answer on paper.")],
+            [T("Compute the access time and the transfer time of an HDD.<br>1. Use these values: seek time 7 ms, rotational latency 4 ms, file size 900 MB, transfer rate 150 MB/s.<br>2. Compute both times on paper.<br>3. Write the output of the program on paper.")],
             [RUN('print(7 + 4, "ms")\nprint(900 / 150, "s")')],
-          ] },
+          ], answerCol: 0, answer: [OUT("11 ms\n6.0 s")] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("Correct the calculation, so that the program displays the target output.<br>1. The error: the program displays a wrong access time of an HDD.<br>2. Use these values: seek time 9 ms, rotational latency 4 ms.",
               "Access time = 13 ms", 'print("Access time =", 9 - 4, "ms")\n', null, "Access time = seek time + rotational latency."),
@@ -537,15 +532,14 @@
               "HDD: 40.0 s\nSATA SSD: 12.0 s\nNVMe SSD: 2.0 s", "# Write your program here\n", null, 'Transfer time = size ÷ rate, for example print("HDD:", 6000 / 150, "s").'),
           ] },
           { kind: "exercise", title: "Complete the table: HDD or SSD", blocks: [
-            T("Complete the table on paper. " + CHECK_NEXT + "<br>1. Column 2: write <b>HDD</b> or <b>SSD</b> for the application.<br>2. Column 3: write one reason for the choice."),
-            TB(["Application", "HDD or SSD", "Reason"], [
+            T("Complete the table on paper.<br>1. Column 2: write <b>HDD</b> or <b>SSD</b> for the application.<br>2. Column 3: write one reason for the choice."),
+            HIDE(TB(["Application", "HDD or SSD", "Reason"], [
               ["boot drive of a laptop", "", ""],
               ["10-year archive of CCTV video", "", ""],
               ["database server with many random reads", "", ""],
               ["data logger on a vibrating machine", "", ""],
-            ]),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ])),
+          ], answer: [
             TB(["Application", "HDD or SSD", "Reason"], [
               ["boot drive of a laptop", "SSD", "short access time: fast start-up"],
               ["10-year archive of CCTV video", "HDD", "lowest cost per GB; sequential writing"],
@@ -660,8 +654,8 @@
             N("<b>Topic 02: Basic programming with Python</b>. Programs at Level 5: output, variables, data types, arithmetic, input, and strings.", "Next topic"),
           ] },
           { kind: "exercise", title: "Complete the table: levels", blocks: [
-            T("Write the level of each component: the number and the name of the level. The first row is an example. " + CHECK_NEXT),
-            TB(["Component", "Level"], [
+            T("Write the level of each component: the number and the name of the level. The first row is an example."),
+            HIDE(TB(["Component", "Level"], [
               ["AND gate", "0: Digital logic"],
               ["microcode", ""],
               ["machine language instruction", ""],
@@ -669,9 +663,8 @@
               ["assembler", ""],
               ["Python interpreter", ""],
               ["web browser", ""],
-            ]),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ])),
+          ], answer: [
             TB(["Component", "Level"], [
               ["AND gate", "0: Digital logic"],
               ["microcode", "1: Control"],
@@ -683,16 +676,15 @@
             ]),
           ] },
           { kind: "exercise", title: "Complete the table: a program and the hardware", blocks: [
-            T("A student writes a Python program that converts 25 °C to °F. The student saves the program as <code>temp.py</code> and runs the program.<br>On paper, write the hardware that each step uses. " + CHECK_NEXT),
-            TB(["Step", "Hardware"], [
+            T("A student writes a Python program that converts 25 °C to °F. The student saves the program as <code>temp.py</code> and runs the program.<br>On paper, write the hardware that each step uses."),
+            HIDE(TB(["Step", "Hardware"], [
               ["the code is typed", ""],
               ["<code>temp.py</code> is saved permanently", ""],
               ["the program is loaded to run", ""],
               ["<code>25 * 9 / 5 + 32</code> is computed", ""],
               ["the result is displayed", ""],
-            ]),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ])),
+          ], answer: [
             TB(["Step", "Hardware"], [
               ["the code is typed", "keyboard (input device)"],
               ["<code>temp.py</code> is saved permanently", "SSD or HDD (secondary storage)"],

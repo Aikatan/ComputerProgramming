@@ -18,6 +18,9 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
+  const PAPER = "Write the output of the program on paper, line by line.";   // the task text of a paper exercise
+  const HIDE = (b) => Object.assign(b, { hideOnAnswer: true });   // the block is hidden while the answer of its slide is shown
+  const OUT = (text) => ({ type: "code", code: text, caption: "output", lang: "text" });   // the expected output, in the answer of a slide
 
   /* ---------- traces: one object drives codeTrace and traceTable ---------- */
   const T_print = {
@@ -223,13 +226,13 @@
             NEXT("<b>Variables</b>. A variable stores a value, so that the program can use the value again without writing it each time."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Determine the output of the program.<br>1. Write the output on paper, line by line.<br>2. Run the program.<br>3. Compare the output with your answer on paper.")],
+            [T(PAPER)],
             [RUN('print("Motor", "A")   # device name\nprint()\nprint("Speed:", 1500, "rpm")\nprint("10 + 5 =", 10 + 5)')],
-          ] },
+          ], answerCol: 0, answer: [OUT("Motor A\n\nSpeed: 1500 rpm\n10 + 5 = 15")] },
           { kind: "exercise", title: "Determine the output: sep and end", cols: [
-            [T("Determine the output of the program. The program uses <code>sep</code> and <code>end</code>.<br>1. Write the output on paper.<br>2. Run the program.<br>3. Compare the output with your answer on paper.")],
+            [T(PAPER + "<br>The program uses <code>sep</code> and <code>end</code>.")],
             [RUN('print("x", "y", "z", sep=",")\nprint("Start", end=" ")\nprint("Stop")\nprint(1, 2, 3, sep=" - ")')],
-          ] },
+          ], answerCol: 0, answer: [OUT("x,y,z\nStart Stop\n1 - 2 - 3")] },
           { kind: "exercise", title: "Complete the code", blocks: [
             PQ("Complete the two <code>print()</code> statements, so that the output matches the target exactly.",
               "Temperature = 25 C\nStatus: OK", 'print("Temperature =")\nprint()\n', null,
@@ -365,14 +368,16 @@
             ]),
             NEXT("<b>Data types</b>. Every value stored in a variable has a type, such as a whole number, a decimal number, or text."),
           ] },
-          { kind: "exercise", title: "Trace the code", cols: [
-            [T("Complete the trace table on paper. Write the value of every variable after each line. The first row is an example. Then check each line with <b>Step Run</b>."),
-              W("traceTable", { trace: T_abc, blank: true, given: 1 })],
-            [RUN("a = 5\nb = a + 3\na = b * 2\nprint(a, b)")],
+          { kind: "exercise", title: "Trace the code", blocks: [
+            T("Complete the trace table on paper. The first row is an example.<br>Write the value of every variable after each line."),
+            W("traceTable", { trace: T_abc, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Determine the output of the program.<br>1. Write the output on paper.<br>2. Run the program.<br>3. Explain why line 4 of the program does not change <code>distance</code>.")],
+            [T("Determine the output of the program.<br>1. Write the output on paper.<br>2. Explain why line 4 of the program does not change <code>distance</code>.")],
             [RUN('speed = 60\ntime = 2\ndistance = speed * time\nspeed = 80\nprint("Distance =", distance)')],
+          ], answerCol: 0, answer: [
+            OUT("Distance = 120"),
+            T("Line 3 stores the value 120 in <code>distance</code>, not the formula. Line 4 changes only <code>speed</code>."),
           ] },
           { kind: "exercise", title: "Correct the order of the lines", blocks: [
             PQ("Correct the order of the lines, so that the program displays the target output.<br>The error: line 1 uses <code>voltage</code> and <code>current</code> before the two variables have values.",
@@ -469,14 +474,16 @@
             NEXT("<b>How values are stored in memory</b>. The type of a value decides how many bytes it uses and how its bits are read."),
           ] },
           { kind: "exercise", title: "Determine the types", cols: [
-            [T("Determine the type of each value in the table.<br>1. Write int, float, str, or bool on paper.<br>2. Run the program to check your answers."),
-              TB(["Value", "Type"], [["<code>7</code>", ""], ["<code>7.0</code>", ""], ["<code>\"7\"</code>", ""], ["<code>False</code>", ""], ["<code>-3</code>", ""], ["<code>\"True\"</code>", ""]])],
+            [T("Determine the type of each value in the table. The program displays the six types.<br>Write int, float, str, or bool on paper."),
+              HIDE(TB(["Value", "Type"], [["<code>7</code>", ""], ["<code>7.0</code>", ""], ["<code>\"7\"</code>", ""], ["<code>False</code>", ""], ["<code>-3</code>", ""], ["<code>\"True\"</code>", ""]]))],
             [RUN('print(type(7))\nprint(type(7.0))\nprint(type("7"))\nprint(type(False))\nprint(type(-3))\nprint(type("True"))')],
+          ], answerCol: 0, answer: [
+            TB(["Value", "Type"], [["<code>7</code>", "int"], ["<code>7.0</code>", "float"], ["<code>\"7\"</code>", "str"], ["<code>False</code>", "bool"], ["<code>-3</code>", "int"], ["<code>\"True\"</code>", "str"]]),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Determine the output of the program.<br>1. Write the output on paper.<br>2. Run the program.<br>3. Compare the output with your answer on paper.")],
+            [T(PAPER)],
             [RUN('print("5" + "5")\nprint(5 + 5)\nprint(2.0 * 3)\nprint("Volt" + "age")')],
-          ] },
+          ], answerCol: 0, answer: [OUT("55\n10\n6.0\nVoltage")] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("Correct lines 1 and 2, so that the program displays the target output.<br>The error: the program must display the total length of two cables, 30 m, but the program displays 1020.",
               "Total = 30 m", 'cable_1 = "10"\ncable_2 = "20"\ntotal = cable_1 + cable_2\nprint("Total =", total, "m")\n', null,
@@ -611,8 +618,11 @@
               "65536\n4000", "# Write your program here\n", null, "Use print(256 * 256) and print(1000 * 4)."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Determine the output of the program.<br>1. Write the output of each line on paper.<br>2. Mark each line that has an approximate result.<br>3. Run the program.<br>4. Compare the output with your answer on paper.")],
+            [T("Determine the output of the program.<br>1. Write the output of each line on paper.<br>2. Mark each line that has an approximate result.")],
             [RUN("print(0.5 + 0.25)\nprint(0.1 + 0.7)\nprint(1.5 * 2)")],
+          ], answerCol: 0, answer: [
+            OUT("0.75\n0.7999999999999999\n3.0"),
+            T("Line 2 has an approximate result: 0.1 and 0.7 have no exact binary form."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "How many different bit patterns does one byte have?", choices: ["8", "16", "255", "256"], answer: 3, explain: "One byte has 8 bits, so it has 2⁸ = 256 patterns: the numbers 0 to 255." },
@@ -752,9 +762,9 @@
             NEXT("<b>Input and type conversion</b>. The values so far are written in the code. The next lesson reads them from the keyboard."),
           ] },
           { kind: "exercise", title: "Evaluate the expressions", cols: [
-            [T("Evaluate each expression in the program by hand.<br>1. Follow the order of operations. Write each result on paper.<br>2. Run the program.<br>3. Compare the output with your results on paper.")],
+            [T("Evaluate each expression in the program by hand.<br>1. Follow the order of operations.<br>2. Write each result on paper.")],
             [RUN("print(7 + 3 * 2)\nprint((7 + 3) * 2)\nprint(17 // 4)\nprint(17 % 4)\nprint(2 ** 3 + 1)\nprint(9 / 3)")],
-          ] },
+          ], answerCol: 0, answer: [OUT("13\n20\n4\n1\n9\n3.0")] },
           { kind: "exercise", title: "Complete the code: Ohm's law", blocks: [
             PQ("Complete line 3, so that the program displays the target output.<br>1. A 12 V source is connected to a 4 Ω resistor.<br>2. Line 3 uses Ohm's law: current = voltage ÷ resistance.",
               "Current = 3.0 A", 'voltage = 12\nresistance = 4\ncurrent = \nprint("Current =", current, "A")\n', null, "Write the formula with the variable names: current = voltage / resistance."),
@@ -872,13 +882,16 @@
           ] },
           { kind: "exercise", title: "Run with test values", cols: [
             [T("Test the program with the values in the table.<br>1. Compute the power of each row by hand first.<br>2. Run the program once for each row.<br>3. In each run, enter the voltage and the current of the row."),
-              TB(["Voltage (V)", "Current (A)", "Power (W)"], [["12", "1.5", ""], ["230", "0.5", ""], ["5", "0.2", ""]], null, "center")],
-            [RUN('voltage = float(input("Voltage: "))\ncurrent = float(input("Current: "))\npower = voltage * current\nprint("Power =", power, "W")')],
+              HIDE(TB(["Voltage (V)", "Current (A)", "Power (W)"], [["12", "1.5", ""], ["230", "0.5", ""], ["5", "0.2", ""]], null, "center"))],
+            // studentRun: the task of this exercise is to run the program with test values
+            [Object.assign(RUN('voltage = float(input("Voltage: "))\ncurrent = float(input("Current: "))\npower = voltage * current\nprint("Power =", power, "W")'), { studentRun: true })],
+          ], answerCol: 0, answer: [
+            TB(["Voltage (V)", "Current (A)", "Power (W)"], [["12", "1.5", "18.0"], ["230", "0.5", "115.0"], ["5", "0.2", "1.0"]], null, "center"),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Determine the output of the program. The user types 5 and then 7.<br>1. Write the output on paper.<br>2. Run the program.<br>3. Compare the output with your answer on paper.")],
+            [T(PAPER + "<br>The user types 5 and then 7.")],
             [RUN('a = input("a: ")\nb = input("b: ")\nprint(a + b)\nprint(int(a) + int(b))', "Program (test input: 5 and 7)", ["5", "7"])],
-          ] },
+          ], answerCol: 0, answer: [OUT("a: 5\nb: 7\n57\n12")] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("Correct line 1, so that the program displays the target output.<br>1. The error: the program stops with a TypeError when line 2 adds 1 to the input.<br>2. Test input: 19.",
               "Age: 19\nNext year: 20", 'age = input("Age: ")\nprint("Next year:", age + 1)\n', ["19"], "Convert the input with int()."),
@@ -1025,9 +1038,9 @@
             NEXT("<b>Errors and debugging</b>. The error messages of all statements in this chapter, and the steps to find a wrong result."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Determine the output of the program.<br>1. Write the output on paper, line by line.<br>2. Run the program.<br>3. Compare the output with your answer on paper.")],
+            [T(PAPER)],
             [RUN('word = "Voltage"\nprint(word[0])\nprint(word[-1])\nprint(word[1:4])\nprint(word[:3])\nprint(len(word))')],
-          ] },
+          ], answerCol: 0, answer: [OUT("V\ne\nolt\nVol\n7")] },
           { kind: "exercise", title: "Complete the code", blocks: [
             PQ("Complete lines 2 and 3, so that the program displays the target output.<br>1. Line 2: write a slice of <code>device_id</code> that gives the year.<br>2. Line 3: write a slice of <code>device_id</code> that gives the unit number.",
               "Year: 2026 Number: 07", 'device_id = "PUMP-2026-07"\nyear = \nnumber = \nprint("Year:", year, "Number:", number)\n', null,
