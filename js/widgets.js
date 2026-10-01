@@ -1171,6 +1171,9 @@ App.widgets.flowExec = function (cfg) {
      blocks:   [{ id, label, code }],   // stacked boxes, top to bottom
      scenarios:[{ label, steps:[{ active, note, out, badge, badgeOn, raised }] }]
    }
+   Layout: the scenario buttons and the step buttons in one row; below it the
+   blocks on the left, the note and the output on the right.
+   Keyboard (deck): the arrow keys step through every scenario in turn.
    ============================================================ */
 App.widgets.tryFlow = function (cfg) {
   let sc = 0, i = 0;
@@ -1186,25 +1189,21 @@ App.widgets.tryFlow = function (cfg) {
   });
 
   const note = h("div", { class: "tf-note" });
-  const out = h("div", { class: "step-out" });
-  const counter = h("span", { class: "mono", style: "color:var(--text-dim)" });
+  const out = h("div", { class: "step-out tf-out" });
+  const counter = h("span", { class: "tf-count" });
   const prev = h("button", { class: "w-btn" }, "‹ Prev");
   const next = h("button", { class: "w-btn on" }, "Next ›");
-  const reset = h("button", { class: "w-btn" }, "⟲");
+  const reset = h("button", { class: "w-btn", title: "First step" }, "⟲");
 
-  const scRow = h("div", { class: "w-row", style: "margin-bottom:12px" });
-  cfg.scenarios.forEach((s, idx) => {
-    const btn = h("button", { class: "w-btn" + (idx === 0 ? " on" : "") }, s.label);
-    btn.addEventListener("click", () => {
-      sc = idx; i = 0;
-      scRow.querySelectorAll(".w-btn").forEach((x) => x.classList.remove("on"));
-      btn.classList.add("on"); draw();
-    });
-    scRow.appendChild(btn);
+  const scBtns = cfg.scenarios.map((s, idx) => {
+    const btn = h("button", { class: "w-btn" }, s.label);
+    btn.addEventListener("click", () => { sc = idx; i = 0; draw(); });
+    return btn;
   });
 
   function draw() {
     const steps = cfg.scenarios[sc].steps, st = steps[i];
+    scBtns.forEach((b, idx) => b.classList.toggle("on", idx === sc));
     Object.values(boxes).forEach((o) => { o.box.classList.remove("on", "raised"); o.badge.textContent = ""; o.badge.className = "tf-badge"; });
     // Re-apply badges from every step up to now, so an error mark stays visible.
     for (let k = 0; k <= i; k++) {
@@ -1217,7 +1216,7 @@ App.widgets.tryFlow = function (cfg) {
     const cur = boxes[st.active]; if (cur) cur.box.classList.add("on");
     note.innerHTML = st.note || "";
     out.textContent = st.out != null ? st.out : "";
-    counter.textContent = " step " + (i + 1) + " / " + steps.length;
+    counter.textContent = "Step " + (i + 1) + " of " + steps.length;
     prev.disabled = i === 0; next.disabled = i === steps.length - 1;
   }
   prev.addEventListener("click", () => { if (i > 0) { i--; draw(); } });
@@ -1225,10 +1224,28 @@ App.widgets.tryFlow = function (cfg) {
   reset.addEventListener("click", () => { i = 0; draw(); });
   draw();
 
-  return widgetShell(cfg.title || "try / except / finally flow",
-    h("div", null, scRow, boxWrap, note,
-      h("div", { class: "widget-title", style: "margin-top:10px" }, "Output"), out,
-      h("div", { class: "w-row", style: "margin-top:12px" }, prev, next, reset, counter)));
+  const shell = widgetShell(cfg.title || "try / except / finally flow",
+    h("div", null,
+      h("div", { class: "w-row tf-top" }, scBtns, h("div", { class: "w-row tf-ctrl" }, prev, next, reset, counter)),
+      h("div", { class: "tf-grid" }, boxWrap,
+        h("div", { class: "tf-side" }, note, h("div", { class: "tf-label" }, "Output"), out))));
+  // used by the deck: the keyboard steps the widget before changing slide.
+  // At the last step of a scenario the next key opens the next scenario.
+  const last = (k) => cfg.scenarios[k].steps.length - 1;
+  shell.classList.add("kstep");
+  shell._step = (dir) => {
+    const j = i + dir;
+    if (j >= 0 && j <= last(sc)) i = j;
+    else if (dir > 0 && sc < cfg.scenarios.length - 1) { sc++; i = 0; }
+    else if (dir < 0 && sc > 0) { sc--; i = last(sc); }
+    else return false;
+    draw(); return true;
+  };
+  shell._goto = (where) => {
+    if (where === "end") { sc = cfg.scenarios.length - 1; i = last(sc); } else { sc = 0; i = 0; }
+    draw();
+  };
+  return shell;
 };
 
 /* ============================================================
