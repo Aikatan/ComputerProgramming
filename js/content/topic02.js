@@ -128,8 +128,9 @@
     code: ['voltage = float(input("Voltage (V): "))', 'current = float(input("Current (A): "))', "power = voltage * current", 'print("Power =", power, "W")'],
     steps: [
       { line: -1, note: "Test values: the user enters 12 and then 1.5." },
-      { line: 0, note: "The user types 12. <code>input()</code> returns <code>'12'</code>. <code>float()</code> converts it to <code>12.0</code>.", set: { voltage: "12.0" }, print: "Voltage (V): 12" },
-      { line: 1, note: "The user types 1.5. It is converted to the float <code>1.5</code>.", set: { current: "1.5" }, print: "Current (A): 1.5" },
+      { line: 0, note: "<code>input()</code> runs first and returns the str <code>'12'</code>. Nothing is stored yet.", print: "Voltage (V): 12" },
+      { line: 0, note: "Then <code>float('12')</code> gives <code>12.0</code>, which is stored in <code>voltage</code>.", set: { voltage: "12.0" } },
+      { line: 1, note: "The same two actions: <code>input()</code> returns <code>'1.5'</code>; <code>float()</code> gives <code>1.5</code>.", set: { current: "1.5" }, print: "Current (A): 1.5" },
       { line: 2, note: "<code>12.0 * 1.5</code> → <code>18.0</code>.", set: { power: "18.0" } },
       { line: 3, note: "The power is displayed. Result check: 12 × 1.5 = 18, as displayed.", print: "Power = 18.0 W" },
     ],
@@ -171,55 +172,25 @@
       {
         id: "output",
         title: "Output with print()",
-        sub: "Execution order and displaying values.",
+        sub: "Tracing execution, the separator, and the line ending.",
         slides: "02:30–31",
         keywords: "print output statement order sep end comment",
         deck: [
           { kind: "overview", title: "Output with print()", blocks: [
-            T("A Python program is a sequence of <b>statements</b>. Python executes them from top to bottom.<br>The <code>print()</code> function displays values on the screen. The displayed text is called the <b>output</b>."),
-            L(["Execution order", "print() with one value", "print() with several values", "sep and end", "Comments"], "Subtopics in this lesson", true),
+            T("Topic 00 introduced <code>print()</code>, which displays values as the <b>output</b> of a program.<br>This lesson traces the execution of a program step by step, and then adds two settings of <code>print()</code>: the separator and the line ending."),
+            L(["Recap of Topic 00", "Execution step by step", "sep and end"], "Subtopics in this lesson", true),
           ] },
-          { kind: "concept", part: "Execution order", title: "A program runs from top to bottom", blocks: [
+          { kind: "concept", part: "Recap of Topic 00", title: "print(): what Topic 00 covered", blocks: [
+            T("Topic 00, Lesson 2, introduced these rules. This chapter builds on them."),
             L([
-              "Each line of a program is one <b>statement</b>.",
-              "Python executes line 1, then line 2, then line 3, and so on.",
-              "By default, each <code>print()</code> statement displays one line of output.",
-              "The output therefore appears in the same order as the statements.",
-              "The program ends after the last statement.",
+              "Python executes the statements from top to bottom. Each <code>print()</code> displays one line.",
+              "Text is written in quotes. A number or a calculation is written without quotes.",
+              "Commas separate several values. <code>print()</code> inserts one space between them.",
+              "<code>#</code> starts a comment. Python ignores the rest of the line.",
             ]),
+            N("<code>print()</code> with no value displays an empty line.<br>A comment can follow a statement on the same line: <code>print(85)   # battery level in percent</code>", "New in this lesson"),
           ] },
-          { kind: "code", part: "Execution order", title: "First example: execution step by step", blocks: [W("codeTrace", T_print)] },
-          { kind: "concept", part: "print() with one value", title: "Text, numbers, and calculations", blocks: [
-            T("<code>print(value)</code> displays one value and then moves to a new line."),
-            TB(["Kind of value", "Written as", "print() displays"], [
-              ["Text", "in quotes: <code>\"Motor A\"</code> or <code>'Motor A'</code>", "the characters, without the quotes"],
-              ["Number", "without quotes: <code>85</code>, <code>3.3</code>", "the value"],
-              ["Calculation", "an expression: <code>12 * 2</code>", "the result: <code>24</code>"],
-            ]),
-            N("<code>print(2 + 3)</code> displays <code>5</code>.<br><code>print(\"2 + 3\")</code> displays <code>2 + 3</code>. Inside quotes, <code>2 + 3</code> is text, not a calculation.", "Rule"),
-          ] },
-          { kind: "code", part: "print() with one value", title: "Example: text compared with a calculation", blocks: [
-            EX('print("12 * 2")\nprint(12 * 2)\nprint(3.3)', "quotes decide: text or calculation", [
-              { c: 'print("12 * 2")', e: "Text in quotes. Output: <code>12 * 2</code>" },
-              { c: "print(12 * 2)", e: "A calculation. Output: <code>24</code>" },
-              { c: "print(3.3)", e: "A decimal number. Output: <code>3.3</code>" },
-            ]),
-          ] },
-          { kind: "concept", part: "print() with several values", title: "Several values in one print()", blocks: [
-            CODE("print(value1, value2, value3)", null, "syntax"),
-            L([
-              "The values are separated by <b>commas</b>.",
-              "<code>print()</code> displays the values in order and inserts <b>one space</b> between them.",
-              "This form displays a label, a value, and a unit on one line.",
-              "<code>print()</code> with no value displays an empty line.",
-            ]),
-          ] },
-          { kind: "code", part: "print() with several values", title: "Example: measurements with units", blocks: [
-            EX('print("Voltage =", 12, "V")\nprint("Current =", 2, "A")\nprint("Power =", 12 * 2, "W")', "label, value, unit", [
-              { c: 'print("Voltage =", 12, "V")', e: "Three values: text, number, text. Output: <code>Voltage = 12 V</code>" },
-              { c: 'print("Power =", 12 * 2, "W")', e: "The calculation is done first. Output: <code>Power = 24 W</code>" },
-            ]),
-          ] },
+          { kind: "code", part: "Execution step by step", title: "First example: execution step by step", blocks: [W("codeTrace", T_print)] },
           { kind: "concept", part: "sep and end", title: "The separator and the line ending", blocks: [
             T("<code>print()</code> has two optional settings. They are written after the values."),
             TB(["Setting", "Default", "Effect"], [
@@ -241,23 +212,19 @@
               { c: 'print("Next line")', e: "Line 2 ended normally, so this text starts a new line." },
             ]),
           ] },
-          { kind: "concept", part: "Comments", title: "Comments", blocks: [
-            T("A <b>comment</b> starts with <code>#</code>. Python ignores everything from <code>#</code> to the end of the line.<br>Comments explain the purpose of the code to the people who read it."),
-            CODE('# Battery status report\nprint("Battery:", 85, "%")   # level in percent', "Battery: 85 %", "a comment line and a comment after a statement"),
-          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "Python executes statements from top to bottom.",
-              "<code>print()</code> displays text (in quotes), numbers, and the results of calculations.",
-              "Commas separate values. <code>print()</code> inserts one space between them.",
-              "<code>sep</code> sets the text between values. <code>end</code> sets the text after the last value.",
-              "<code>#</code> starts a comment. Python ignores it.",
+              "<code>print()</code> displays its values in order, with one space between them, and then starts a new line.",
+              "<code>print()</code> with no value displays an empty line.",
+              "<code>sep</code> sets the text between the values. <code>end</code> sets the text after the last value.",
+              "<code>end=\"\"</code> or <code>end=\" \"</code> keeps the next output on the same line.",
+              "A comment starts with <code>#</code>. It can follow a statement on the same line.",
             ]),
             NEXT("<b>Variables</b>. A variable stores a value, so that the program can use the value again without writing it each time."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
             [T("Write the output of this program on paper, line by line.<br>Then run the program and compare.")],
-            [RUN('print("Motor", "A")\nprint("Speed:", 1500, "rpm")\nprint(10 + 5)\nprint("10 + 5")')],
+            [RUN('print("Motor", "A")   # device name\nprint()\nprint("Speed:", 1500, "rpm")\nprint("10 + 5 =", 10 + 5)')],
           ] },
           { kind: "exercise", title: "Determine the output: sep and end", cols: [
             [T("Write the output on paper. Pay attention to <code>sep</code> and <code>end</code>.<br>Then run the program and compare.")],
@@ -279,7 +246,7 @@
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: '`print("A", "B", sep="-")` displays…', choices: ["A B", "A-B", "AB", "A - B"], answer: 1, explain: "sep replaces the space between the values with a dash." },
-            { q: '`print("5 + 5")` displays…', choices: ["10", "5 + 5", "\"5 + 5\"", "Error"], answer: 1, explain: "Inside quotes, 5 + 5 is text, so it is displayed as written." },
+            { q: 'The statements `print("A", end="")` and `print("B")` display…', choices: ["A B", "AB", "A and B on two lines", "Error"], answer: 1, explain: "end=\"\" writes nothing after A, so B continues on the same line." },
           ])] },
         ],
       },
@@ -313,7 +280,7 @@
               ["Processing", "power = voltage × current"],
               ["Algorithm", "1. Store the voltage.<br>2. Store the current.<br>3. Compute the power.<br>4. Display the power."],
             ]),
-            T("The full problem-solving method is in Lesson 6."),
+            T("This table is steps 1 and 2 of the five steps of Topic 00: understand and design. Lesson 6 uses all five steps."),
           ] },
           { kind: "code", part: "Assignment", title: "First example: execution step by step", blocks: [W("codeTrace", T_power)] },
           { kind: "concept", part: "Using variables in calculations", title: "A name is replaced by its value", blocks: [
@@ -335,9 +302,16 @@
               "Assigning a new value to an existing variable <b>replaces</b> the old value.",
               "A variable holds only its <b>latest</b> value. The old value is no longer stored.",
               "Statements before the reassignment used the old value. Statements after it use the new value.",
+              "An assignment stores a <b>value</b>, not a formula. After <code>power = voltage * current</code>, a change of <code>voltage</code> does not change <code>power</code> until the assignment runs again.",
             ]),
           ] },
           { kind: "code", part: "Reassignment", title: "Example: a temperature reading changes", blocks: [W("codeTrace", T_temp)] },
+          { kind: "code", part: "Reassignment", title: "Example: a value, not a formula", blocks: [
+            EX('voltage = 12\ncurrent = 2\npower = voltage * current\nvoltage = 6\nprint("Power =", power)\npower = voltage * current\nprint("Power =", power)', "power changes only when it is assigned", [
+              { c: "voltage = 6", e: "<code>power</code> holds the value 24, not the formula: <code>Power = 24</code>" },
+              { c: "Line 6", e: "The assignment runs again: 6 * 2 → 12. <code>Power = 12</code>" },
+            ]),
+          ] },
           { kind: "concept", part: "Updating a variable", title: "Updating a variable from its own value", blocks: [
             T("A variable can appear on <b>both sides</b> of <code>=</code>: <code>battery = battery - 15</code>"),
             L([
@@ -377,13 +351,15 @@
               ["<code>max speed</code>", "<span class='t-no'>Invalid</span>", "contains a space"],
               ["<code>speed$</code>", "<span class='t-no'>Invalid</span>", "contains a symbol"],
               ["<code>for</code>", "<span class='t-no'>Invalid</span>", "a Python keyword"],
+              ["<code>print</code>", "<span class='t-yes'>Valid</span>", "a built-in name: allowed, but it hides the function"],
             ]),
+            T("After <code>print = \"abc\"</code>, <code>print(\"Hi\")</code> stops with <code>TypeError: 'str' object is not callable</code>. The same applies to <code>str</code> and <code>len</code> (Lessons 6 and 7)."),
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
               "<code>name = value</code> evaluates the right side, then stores the result under the name.",
               "A variable name in an expression is replaced by its current value.",
-              "Reassignment replaces the old value.",
+              "Reassignment replaces the old value. A variable stores a value, not a formula.",
               "<code>x = x + 1</code> updates a variable from its own value. <code>+=</code> and <code>-=</code> are short forms.",
               "Names use letters, digits, and <code>_</code>. They do not start with a digit and are case-sensitive.",
             ]),
@@ -444,6 +420,7 @@
             L([
               "<code>12</code> is an int. <code>12.0</code> is a float. <code>\"12\"</code> is a str.",
               "<code>True</code> and <code>False</code> start with a capital letter. Topic 03 uses them in decisions.",
+              "A float can be written in scientific notation: <code>4.7e3</code> is 4.7 × 10³, the float <code>4700.0</code>. Python displays a very small float in this form: <code>0.000001</code> is displayed as <code>1e-06</code>.",
             ]),
           ] },
           { kind: "concept", part: "Checking a type", title: "type() reports the type of a value", blocks: [
@@ -687,6 +664,8 @@
               ["<code>17 % 5</code>", "<code>2</code>", "17 = 3 × 5 + 2"],
               ["<code>18 // 6</code>", "<code>3</code>", "6 fits into 18 exactly three times"],
               ["<code>18 % 6</code>", "<code>0</code>", "no remainder: 18 is a multiple of 6"],
+              ["<code>18 % 2</code>", "<code>0</code>", "<code>n % 2</code> is 0 for an even number, and 1 for an odd number"],
+              ["<code>-7 // 2</code>", "<code>-4</code>", "floor division rounds <b>down</b>: −3.5 becomes −4"],
             ]),
           ] },
           { kind: "code", part: "Division: /, //, and %", title: "Example: minutes to hours and minutes", blocks: [W("codeTrace", T_time)] },
@@ -712,6 +691,17 @@
               ["1. parentheses", "<code>5 * 4 ** 2</code>"],
               ["2. <code>**</code>", "<code>5 * 16</code>"],
               ["3. <code>*</code>", "<code>80</code>"],
+            ]),
+          ] },
+          { kind: "concept", part: "Order of operations", title: "Left to right, and a float result", blocks: [
+            TB(["Expression", "Evaluation", "Result"], [
+              ["<code>7 // 2 * 2</code>", "first <code>//</code>: <code>3 * 2</code>", "<code>6</code>"],
+              ["<code>2 * 7 // 2</code>", "first <code>*</code>: <code>14 // 2</code>", "<code>7</code>"],
+              ["<code>4 + 4 ** 2 / 2</code>", "<code>4 + 16 / 2</code> → <code>4 + 8.0</code>", "<code>12.0</code>"],
+            ]),
+            L([
+              "<code>*</code> and <code>//</code> have the same priority, so the operator on the left is evaluated first. The same numbers in another order give another result.",
+              "<code>/</code> gives the float <code>8.0</code>, so the sum is also a float: <code>12.0</code>. The next subtopic gives the rule.",
             ]),
           ] },
           { kind: "code", part: "Order of operations", title: "Example: average of three sensor readings", blocks: [
@@ -742,7 +732,8 @@
               ["<code>math.sqrt(x)</code>", "the square root of x", "<code>math.sqrt(16)</code> → <code>4.0</code>"],
               ["<code>math.pi</code>", "the constant π", "<code>3.141592653589793</code>"],
             ]),
-            N("<code>math.sqrt</code> and <code>math.pi</code> need the line <code>import math</code> at the top of the program. Modules are explained in Topic 05."),
+            T("<code>round()</code> does not format the output: <code>round(2.0, 2)</code> displays <code>2.0</code>. A halfway value goes to the even neighbour: <code>round(2.5)</code> is <code>2</code>."),
+            T("<code>math.sqrt</code> and <code>math.pi</code> need <code>import math</code> at the top of the program (Topic 05)."),
           ] },
           { kind: "code", part: "round(), abs(), and the math module", title: "Example: cross-section area of a cable", blocks: [
             EX('import math\ndiameter = 2.5   # mm\nradius = diameter / 2\narea = math.pi * radius ** 2\nprint("Area =", round(area, 2), "mm2")', "area = π × r²", [
@@ -845,19 +836,19 @@
             TB(["Statement (power = 24)", "Output"], [
               ["<code>print(\"Power =\", power, \"W\")</code>", "<code>Power = 24 W</code>"],
               ["<code>print(\"Power = \" + str(power) + \" W\")</code>", "<code>Power = 24 W</code>"],
+              ["<code>print(\"Power =\" + str(power))</code>", "<code>Power =24</code>: <code>+</code> inserts no space"],
               ["<code>print(\"Power = \" + power)</code>", "error (TypeError)"],
             ]),
           ] },
           { kind: "concept", part: "Solving a problem step by step", title: "From a problem to a program", blocks: [
             L([
-              "<b>Input</b>: identify the values the program receives.",
-              "<b>Output</b>: identify the result the program must display.",
-              "<b>Processing</b>: determine the formula or the steps that turn the input into the output.",
-              "<b>Conditions and repetition</b>: decide whether a step depends on a condition or repeats (Topic 03).",
-              "<b>Algorithm</b>: write the steps in order, in plain language.",
+              "<b>Understand</b>: identify the <b>input</b>, the values the program receives, and the <b>output</b>, the result it must display.",
+              "<b>Design</b>: determine the <b>processing</b>, the formula or the steps, and write the <b>algorithm</b>: the steps in order, in plain language.",
               "<b>Code</b>: convert each step into Python.",
-              "<b>Verify</b>: run the program with test values and compare with a hand calculation.",
+              "<b>Test</b>: run the program with test values and compare the output with a hand calculation.",
+              "<b>Correct</b>: if the output differs, find the wrong step, correct it, and test again.",
             ], null, true),
+            T("These are the five steps of Topic 00. From Topic 03 on, the design also states which steps depend on a condition and which steps repeat."),
           ] },
           { kind: "problem", part: "Solving a problem step by step", title: "Problem: power from measured values", blocks: [
             T("The user enters the voltage and the current of a device. The program displays the power."),
@@ -875,7 +866,7 @@
               "<code>input(prompt)</code> displays the prompt and returns the typed text as a str.",
               "<code>int()</code> and <code>float()</code> convert text to numbers. <code>int(3.9)</code> is 3.",
               "<code>str()</code> converts a number to text, so that <code>+</code> can join it.",
-              "Solve a problem in order: input, output, processing, algorithm, code, verify.",
+              "Solve a problem with the five steps: understand, design, code, test, correct.",
             ]),
             NEXT("<b>Strings</b>. Text values have their own operations: length, joining, indexing, and slicing."),
           ] },
@@ -971,7 +962,7 @@
               ["Negative index", "-5", "-4", "-3", "-2", "-1"],
             ], "<code>code = \"TMP36\"</code>", "center"),
           ] },
-          { kind: "visual", part: "Indexing", title: "Indexing: one character", blocks: [W("stringIndex", { text: "TMP36" })] },
+          { kind: "visual", part: "Indexing", title: "Indexing: one character", blocks: [W("stringIndex", { text: "Motor A" })] },
           { kind: "code", part: "Indexing", title: "First example: execution step by step", blocks: [W("codeTrace", T_index)] },
           { kind: "concept", part: "Slicing", title: "A slice takes part of a string", blocks: [
             CODE("s[start:end]\ns[start:end:step]", null, "syntax"),
@@ -991,7 +982,7 @@
               ["<code>[0:6:2]</code>", "0, 2, 4", "<code>\"Por\"</code>"],
             ], null, "center"),
           ] },
-          { kind: "visual", part: "Slicing", title: "Slicing: part of a string", blocks: [W("stringSlice", { text: "Programming", start: 3, end: 7 })] },
+          { kind: "visual", part: "Slicing", title: "Slicing: part of a string", blocks: [W("stringSlice", { text: "Programming", end: -4 })] },
           { kind: "code", part: "Slicing", title: "Example: a value from a sensor message", blocks: [
             EX('message = "T=25.4C"\nvalue_text = message[2:6]\ntemperature = float(value_text)\nprint(temperature + 1)', "slice, convert, calculate", [
               { c: "message[2:6]", e: "Indexes 2, 3, 4, 5: <code>'25.4'</code>" },
@@ -1079,12 +1070,7 @@
               ["Runtime error", "while the program runs", "An operation cannot be performed. The program stops at that line."],
               ["Logical error", "when the output is checked", "The program runs without a message, but the result is wrong."],
             ]),
-          ] },
-          { kind: "code", part: "Three kinds of error", title: "Example: a syntax error", blocks: [
-            EX('print("Voltage =", 12)\nprint("Current =", 2', "a missing parenthesis", [
-              { c: 'print("Current =", 2', e: "The closing parenthesis is missing. Python reports a SyntaxError." },
-              { c: "Line 1", e: "Line 1 is correct, but it does not run either: the program does not start." },
-            ]),
+            T("Topic 00, Lesson 4, shows syntax errors and their messages. This lesson continues with runtime errors and logical errors."),
           ] },
           { kind: "code", part: "Three kinds of error", title: "Example: a runtime error", blocks: [
             EX('voltage = 12\ncurrent = 0\nprint("Voltage =", voltage)\nresistance = voltage / current\nprint("R =", resistance)', "division by zero", [
@@ -1096,9 +1082,9 @@
           { kind: "concept", part: "Reading an error message", title: "Reading an error message", blocks: [
             CODE('Traceback (most recent call last):\n  File "<program>", line 4, in <module>\n    resistance = voltage / current\n                 ~~~~~~~~^~~~~~~~~\nZeroDivisionError: division by zero', null, "error message of the previous example", "text"),
             L([
-              "<code>Traceback</code> starts the error message. <code>in &lt;module&gt;</code> means the main program.",
-              "Read the <b>last line</b> first. It names the error type and describes the problem.",
-              "Then read the <b>line number</b> and the source line. The marker <code>^</code> points to the part that failed.",
+              "Read the <b>last line</b> first: it names the error (Topic 00).",
+              "<code>Traceback</code> starts the error message. The line <code>File \"&lt;program&gt;\", line 4</code> gives the <b>line number</b> of the statement that failed. <code>in &lt;module&gt;</code> means the main program.",
+              "The source line follows. The marker <code>^</code> points to the part that failed: here, the division.",
               "Correct that line, or the earlier line that gave a variable its wrong value.",
             ]),
           ] },
@@ -1139,9 +1125,9 @@
             L([
               "Compute the expected result by hand.",
               "Run the program and compare its output with the expected result.",
-              "Trace the program line by line, with a trace table or with Step Run.",
+              "Trace the program line by line: with a trace table, with Step Run, or with temporary <code>print()</code> statements that display the intermediate values, such as <code>print(\"hours =\", hours)</code>.",
               "Find the first line where a variable gets a wrong value.",
-              "Correct that line.",
+              "Correct that line, and remove the temporary <code>print()</code> statements.",
               "Run the program again and compare again.",
             ], null, true),
           ] },
@@ -1195,38 +1181,37 @@
         keywords: "practice problem solving algorithm ohm battery conversion sensor",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
-            T("Each problem combines several lessons of this chapter. Solve every problem in the same order:"),
+            T("Each problem combines several lessons of this chapter. Solve every problem with the five steps:"),
             L([
-              "<b>Input</b>: the values the program reads.",
-              "<b>Output</b>: the result the program displays.",
-              "<b>Processing</b>: the formula or the steps.",
-              "<b>Algorithm</b>: the steps in order.",
+              "<b>Understand</b>: the input and the output.",
+              "<b>Design</b>: the processing, then the algorithm: the steps in order.",
               "<b>Code</b>: one Python statement for each step.",
-              "<b>Verify</b>: compare the output with a hand calculation.",
+              "<b>Test</b>: compare the output with a hand calculation.",
+              "<b>Correct</b>: if the output differs, find the wrong step, correct it, and test again.",
             ], null, true),
             T("The Check button compares the output with the target for the given test input."),
           ] },
-          { kind: "problem", part: "Problem 1", title: "Problem 1: first three characters", blocks: [
+          { kind: "problem", part: "Problem 1", title: "Problem 1: name and age", blocks: [
+            T("Read a name and an age. Display them in the form <code>Name อายุ: Age</code>."),
+            IPO([["Input", "a name (str) and an age (str is sufficient: no calculation)"], ["Output", "for example <code>Pokpong อายุ: 25</code>"], ["Processing", "<code>print(name, \"อายุ:\", age)</code>"]]),
+          ] },
+          { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
+            PQ("Use the prompts <code>Name: </code> and <code>Age: </code>. Test input: Pokpong and 25.", "Name: Pokpong\nAge: 25\nPokpong อายุ: 25", "# Write your program here\n", ["Pokpong", "25"], 'print(name, "อายุ:", age)'),
+          ] },
+          { kind: "problem", part: "Problem 2", title: "Problem 2: first three characters", blocks: [
             T("Read a text from the user. Display its first 3 characters in capital letters."),
             IPO([["Input", "a text (str)"], ["Output", "the first 3 characters in capital letters"], ["Processing", "slice <code>[:3]</code>, then <code>upper()</code>"]]),
           ] },
-          { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
+          { kind: "exercise", part: "Problem 2", title: "Problem 2: write the program", blocks: [
             PQ("Use the prompt <code>Enter text: </code>. Test input: engineering.", "Enter text: engineering\nENG", "# Write your program here\n", ["engineering"], "text[:3].upper()"),
           ] },
-          { kind: "problem", part: "Problem 2", title: "Problem 2: a calculation with rounding", blocks: [
+          { kind: "problem", part: "Problem 3", title: "Problem 3: a calculation with rounding", blocks: [
             T("Read a number. Add 2, multiply the total by 3.33, and display the result with 2 decimal places."),
             IPO([["Input", "a number (float)"], ["Output", "(n + 2) × 3.33, rounded to 2 decimal places"], ["Processing", "<code>result = (n + 2) * 3.33</code>, then <code>round(result, 2)</code>"]]),
             N("Without <code>round()</code>, the input 5 displays <code>23.310000000000002</code>, because float values are approximate (Lesson 4)."),
           ] },
-          { kind: "exercise", part: "Problem 2", title: "Problem 2: write the program", blocks: [
-            PQ("Use the prompt <code>Enter a number: </code>. Test input: 5.", "Enter a number: 5\n23.31", "# Write your program here\n", ["5"], "round((n + 2) * 3.33, 2)"),
-          ] },
-          { kind: "problem", part: "Problem 3", title: "Problem 3: name and age", blocks: [
-            T("Read a name and an age. Display them in the form <code>Name อายุ: Age</code>."),
-            IPO([["Input", "a name (str) and an age (str is sufficient: no calculation)"], ["Output", "for example <code>Pokpong อายุ: 25</code>"], ["Processing", "<code>print(name, \"อายุ:\", age)</code>"]]),
-          ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
-            PQ("Use the prompts <code>Name: </code> and <code>Age: </code>. Test input: Pokpong and 25.", "Name: Pokpong\nAge: 25\nPokpong อายุ: 25", "# Write your program here\n", ["Pokpong", "25"], 'print(name, "อายุ:", age)'),
+            PQ("Use the prompt <code>Enter a number: </code>. Test input: 5.", "Enter a number: 5\n23.31", "# Write your program here\n", ["5"], "round((n + 2) * 3.33, 2)"),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: Ohm's law", blocks: [
             T("Read the voltage of a source and the resistance of a resistor. Display the current, rounded to 2 decimal places."),
