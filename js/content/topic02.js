@@ -223,11 +223,11 @@
             NEXT("<b>Variables</b>. A variable stores a value, so that the program can use the value again without writing it each time."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of this program on paper, line by line.<br>Then run the program and compare.")],
+            [T("Determine the output of the program.<br>1. Write the output on paper, line by line.<br>2. Run the program.<br>3. Compare the output with your answer on paper.")],
             [RUN('print("Motor", "A")   # device name\nprint()\nprint("Speed:", 1500, "rpm")\nprint("10 + 5 =", 10 + 5)')],
           ] },
           { kind: "exercise", title: "Determine the output: sep and end", cols: [
-            [T("Write the output on paper. Pay attention to <code>sep</code> and <code>end</code>.<br>Then run the program and compare.")],
+            [T("Determine the output of the program. The program uses <code>sep</code> and <code>end</code>.<br>1. Write the output on paper.<br>2. Run the program.<br>3. Compare the output with your answer on paper.")],
             [RUN('print("x", "y", "z", sep=",")\nprint("Start", end=" ")\nprint("Stop")\nprint(1, 2, 3, sep=" - ")')],
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
@@ -236,13 +236,13 @@
               'Line 1 needs two more values: 25 and "C". Line 2 needs "Status:" and "OK".'),
           ] },
           { kind: "exercise", title: "Modify the code", blocks: [
-            PQ("The program displays two lines. Change line 1 with <code>end</code>, so that the output is one line.",
-              "Sensor 1: ready", 'print("Sensor 1:")\nprint("ready")\n', null, 'print("Sensor 1:", end=" ")'),
+            PQ("Change line 1 of the program, so that the program displays the target output.<br>1. The program displays two lines. The target output is one line.<br>2. Use the setting <code>end</code> in the <code>print()</code> of line 1.",
+              "Sensor 1: ready", 'print("Sensor 1:")\nprint("ready")\n', null, 'Use end=" " in line 1: print("Sensor 1:", end=" ").'),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("Write a program that displays this device label. Use commas between the values. Display the date on line 4 with <code>sep</code>. Write <code>\"09\"</code> as text in quotes: a number cannot be written with a leading 0.",
+            PQ("Write a program that displays the device label in the target output.<br>1. Output lines 1 to 3: use one <code>print()</code> for each line, with commas between the values.<br>2. Line 4 (date): use <code>sep=\"/\"</code> in <code>print()</code>.<br>3. Write the month as the text <code>\"09\"</code>.",
               "Device: Pump\nVoltage: 220 V\nCurrent: 1.5 A\n29/09/2026", "# Write your program here\n", null,
-              'print("Voltage:", 220, "V") and print(29, "09", 2026, sep="/")'),
+              "A number cannot start with 0, so 09 must be text in quotes."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: '`print("A", "B", sep="-")` displays…', choices: ["A B", "A-B", "AB", "A - B"], answer: 1, explain: "sep replaces the space between the values with a dash." },
@@ -366,30 +366,30 @@
             NEXT("<b>Data types</b>. Every value stored in a variable has a type, such as a whole number, a decimal number, or text."),
           ] },
           { kind: "exercise", title: "Trace the code", cols: [
-            [T("A trace table records the value of every variable after each line. Complete it on paper; the first row is done. Then check each line with <b>Step Run</b>."),
+            [T("Complete the trace table on paper. Write the value of every variable after each line. The first row is an example. Then check each line with <b>Step Run</b>."),
               W("traceTable", { trace: T_abc, blank: true, given: 1 })],
             [RUN("a = 5\nb = a + 3\na = b * 2\nprint(a, b)")],
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper. Then run the program.<br>Explain why <code>distance</code> does not change on line 4.")],
+            [T("Determine the output of the program.<br>1. Write the output on paper.<br>2. Run the program.<br>3. Explain why line 4 of the program does not change <code>distance</code>.")],
             [RUN('speed = 60\ntime = 2\ndistance = speed * time\nspeed = 80\nprint("Distance =", distance)')],
           ] },
           { kind: "exercise", title: "Correct the order of the lines", blocks: [
-            PQ("The program stops with an error, because line 1 uses <code>voltage</code> and <code>current</code> before they have values. Reorder the lines, so that the program works.",
+            PQ("Correct the order of the lines, so that the program displays the target output.<br>The error: line 1 uses <code>voltage</code> and <code>current</code> before the two variables have values.",
               "Power = 115.0 W", 'power = voltage * current\nvoltage = 230\ncurrent = 0.5\nprint("Power =", power, "W")\n', null,
-              "A variable must be assigned before it is used. Move line 1 below the two assignments."),
+              "A variable must be assigned before the program uses the variable, so move line 1 below the two assignments."),
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
-            PQ("A 100 W lamp is on for 5 hours. Complete line 3, so that the program computes the energy in watt-hours: energy = power × hours.",
-              "Energy = 500 Wh", 'power = 100\nhours = 5\nenergy = \nprint("Energy =", energy, "Wh")\n', null, "energy = power * hours"),
+            PQ("Complete line 3, so that the program displays the target output.<br>1. A 100 W lamp is on for 5 hours.<br>2. Line 3 computes the energy in watt-hours: energy = power × hours.",
+              "Energy = 500 Wh", 'power = 100\nhours = 5\nenergy = \nprint("Energy =", energy, "Wh")\n', null, "Write the formula with the variable names: energy = power * hours."),
           ] },
           { kind: "exercise", title: "Correct the names", blocks: [
-            PQ("The variable names in this program are invalid. Rename them with valid names, so that the program runs.",
-              "20 80", "1st_reading = 20\nmax temp = 80\nprint(1st_reading, max temp)\n", null, "For example: first_reading and max_temp."),
+            PQ("Correct the variable names, so that the program runs and displays the target output.<br>1. The two variable names in the program are invalid.<br>2. Replace each invalid name with a valid name, in every line.",
+              "20 80", "1st_reading = 20\nmax temp = 80\nprint(1st_reading, max temp)\n", null, "Valid names are, for example, first_reading and max_temp."),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("A water tank holds 100 litres. 30 litres are used, and then 20 litres are added. Store the level in <code>level</code>, update it with <code>-=</code> and <code>+=</code>, and display the result.",
-              "Level = 90 litres", "# Write your program here\n", null, 'level = 100, level -= 30, level += 20, then print("Level =", level, "litres")'),
+            PQ("Write a program that computes the water level of a tank and displays the target output.<br>1. Store the start level, 100 litres, in <code>level</code>.<br>2. 30 litres are used: subtract 30 with <code>-=</code>.<br>3. 20 litres are added: add 20 with <code>+=</code>.<br>4. Display the value of <code>level</code>.",
+              "Level = 90 litres", "# Write your program here\n", null, 'Use four statements: level = 100, level -= 30, level += 20, and print("Level =", level, "litres").'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which variable name is valid?", choices: ["3phase", "phase_3", "phase 3", "phase-3"], answer: 1, explain: "phase_3 uses letters, an underscore, and a digit, and it does not start with a digit." },
@@ -469,22 +469,22 @@
             NEXT("<b>How values are stored in memory</b>. The type of a value decides how many bytes it uses and how its bits are read."),
           ] },
           { kind: "exercise", title: "Determine the types", cols: [
-            [T("Write the type of each value on paper: int, float, str, or bool.<br>Then run the program to check."),
+            [T("Determine the type of each value in the table.<br>1. Write int, float, str, or bool on paper.<br>2. Run the program to check your answers."),
               TB(["Value", "Type"], [["<code>7</code>", ""], ["<code>7.0</code>", ""], ["<code>\"7\"</code>", ""], ["<code>False</code>", ""], ["<code>-3</code>", ""], ["<code>\"True\"</code>", ""]])],
             [RUN('print(type(7))\nprint(type(7.0))\nprint(type("7"))\nprint(type(False))\nprint(type(-3))\nprint(type("True"))')],
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper. Then run the program and compare.")],
+            [T("Determine the output of the program.<br>1. Write the output on paper.<br>2. Run the program.<br>3. Compare the output with your answer on paper.")],
             [RUN('print("5" + "5")\nprint(5 + 5)\nprint(2.0 * 3)\nprint("Volt" + "age")')],
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The program should display the total length of two cables, 30 m, but it displays 1020. Correct lines 1 and 2.",
+            PQ("Correct lines 1 and 2, so that the program displays the target output.<br>The error: the program must display the total length of two cables, 30 m, but the program displays 1020.",
               "Total = 30 m", 'cable_1 = "10"\ncable_2 = "20"\ntotal = cable_1 + cable_2\nprint("Total =", total, "m")\n', null,
               "Remove the quotes, so that the values are ints."),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("Store a device record in four variables: the name <code>\"Pump\"</code>, the rated voltage <code>220</code>, the current <code>1.5</code>, and the running state <code>True</code>. Display each value with its type.",
-              "Pump <class 'str'>\n220 <class 'int'>\n1.5 <class 'float'>\nTrue <class 'bool'>", "# Write your program here\n", null, "print(name, type(name))"),
+            PQ("Store a device record in four variables, and display the target output.<br>1. Values: name <code>\"Pump\"</code>, rated voltage <code>220</code>, current <code>1.5</code>, running state <code>True</code>.<br>2. Display each value with the type of the value.",
+              "Pump <class 'str'>\n220 <class 'int'>\n1.5 <class 'float'>\nTrue <class 'bool'>", "# Write your program here\n", null, "Use print(name, type(name)) for the first line of the output."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`type(3.0)` reports…", choices: ["int", "float", "str", "bool"], answer: 1, explain: "3.0 has a decimal point, so it is a float." },
@@ -595,23 +595,23 @@
             NEXT("<b>Arithmetic operations</b>. Python computes new values from stored numbers with arithmetic operators."),
           ] },
           { kind: "exercise", title: "Convert decimal to binary", cols: [
-            [T("Convert 25 to an 8-bit binary number with the division algorithm. Write each division on paper.<br>Then enter 25 in the converter to check.")],
+            [T("Convert the decimal number 25 to an 8-bit binary number.<br>1. Use the division algorithm. Write each division on paper.<br>2. Enter 25 in the converter.<br>3. Compare the result with your answer on paper.")],
             [W("binaryConverter", { value: 0 })],
           ] },
           { kind: "exercise", title: "Convert binary to decimal", cols: [
             [L([
-              "The byte <code>01000010</code> is stored in memory. Compute its decimal value with the place values.",
-              "Find the character with this code in the ASCII table.",
-              "Then enter the decimal value in the converter to check both answers.",
+              "The byte <code>01000010</code> is stored in memory. Compute the decimal value of the byte with the place values.",
+              "The decimal value is an ASCII code. Find the character with the code in the ASCII table.",
+              "Enter the decimal value in the converter. Compare the result with both answers.",
             ], null, true)],
             [W("binaryConverter", { value: 0 })],
           ] },
           { kind: "exercise", title: "Calculate memory size", blocks: [
-            PQ("Calculate on paper: (1) the number of bit patterns in 2 bytes (one byte has 256), and (2) the memory in bytes for 1000 C <code>int</code> values (4 bytes each). Then write a program that displays both results.",
-              "65536\n4000", "# Write your program here\n", null, "print(256 * 256) and print(1000 * 4)"),
+            PQ("Compute two results on paper. Then write a program that displays the target output.<br>1. Output line 1: the number of bit patterns in 2 bytes (one byte has 256).<br>2. Output line 2: the memory in bytes for 1000 C <code>int</code> values (4 bytes each).",
+              "65536\n4000", "# Write your program here\n", null, "Use print(256 * 256) and print(1000 * 4)."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each line on paper. Mark the lines where the result is approximate.<br>Then run the program and compare.")],
+            [T("Determine the output of the program.<br>1. Write the output of each line on paper.<br>2. Mark each line that has an approximate result.<br>3. Run the program.<br>4. Compare the output with your answer on paper.")],
             [RUN("print(0.5 + 0.25)\nprint(0.1 + 0.7)\nprint(1.5 * 2)")],
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -645,7 +645,7 @@
             ]),
           ] },
           { kind: "problem", part: "The arithmetic operators", title: "Problem: average speed", blocks: [
-            T("A vehicle travels 120 km in 90 minutes. The program must display its average speed in km/h."),
+            T("A vehicle travels 120 km in 90 minutes. The program must display the average speed of the vehicle in km/h."),
             IPO([
               ["Input (given values)", "distance = 120 km, time = 90 min"],
               ["Required output", "speed in km/h"],
@@ -752,25 +752,25 @@
             NEXT("<b>Input and type conversion</b>. The values so far are written in the code. The next lesson reads them from the keyboard."),
           ] },
           { kind: "exercise", title: "Evaluate the expressions", cols: [
-            [T("Evaluate each expression by hand, following the order of operations.<br>Then run the program and compare.")],
+            [T("Evaluate each expression in the program by hand.<br>1. Follow the order of operations. Write each result on paper.<br>2. Run the program.<br>3. Compare the output with your results on paper.")],
             [RUN("print(7 + 3 * 2)\nprint((7 + 3) * 2)\nprint(17 // 4)\nprint(17 % 4)\nprint(2 ** 3 + 1)\nprint(9 / 3)")],
           ] },
           { kind: "exercise", title: "Complete the code: Ohm's law", blocks: [
-            PQ("A 12 V source is connected to a 4 Ω resistor. Complete line 3 with Ohm's law: current = voltage ÷ resistance.",
-              "Current = 3.0 A", 'voltage = 12\nresistance = 4\ncurrent = \nprint("Current =", current, "A")\n', null, "current = voltage / resistance"),
+            PQ("Complete line 3, so that the program displays the target output.<br>1. A 12 V source is connected to a 4 Ω resistor.<br>2. Line 3 uses Ohm's law: current = voltage ÷ resistance.",
+              "Current = 3.0 A", 'voltage = 12\nresistance = 4\ncurrent = \nprint("Current =", current, "A")\n', null, "Write the formula with the variable names: current = voltage / resistance."),
           ] },
           { kind: "exercise", title: "Write a program: seconds to minutes", blocks: [
-            PQ("A process takes 200 seconds. Store 200 in <code>seconds</code> and display the time in minutes and seconds with <code>//</code> and <code>%</code>.",
-              "3 min 20 s", "# Write your program here\n", null, 'minutes = seconds // 60 and rest = seconds % 60, then print(minutes, "min", rest, "s")'),
+            PQ("Write a program that converts 200 seconds to minutes and seconds.<br>1. Store 200 in <code>seconds</code>.<br>2. Compute the minutes with <code>//</code>.<br>3. Compute the seconds that remain with <code>%</code>.<br>4. Display the two results as in the target output.",
+              "3 min 20 s", "# Write your program here\n", null, 'Use minutes = seconds // 60 and rest = seconds % 60, then print(minutes, "min", rest, "s").'),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The perimeter of a 5 cm × 3 cm plate is 16 cm, but the program displays 13. Correct line 3.",
+            PQ("Correct line 3, so that the program displays the target output.<br>The error: the perimeter of a 5 cm × 3 cm plate is 16 cm, but the program displays 13.",
               "Perimeter = 16", 'length = 5\nwidth = 3\nperimeter = 2 * length + width\nprint("Perimeter =", perimeter)\n', null,
-              "Multiplication is evaluated before addition. Add parentheses: 2 * (length + width)."),
+              "Python evaluates multiplication before addition, so add parentheses: 2 * (length + width)."),
           ] },
           { kind: "exercise", title: "Write a program: power in a resistor", blocks: [
-            PQ("A current of 0.5 A flows through a 100 Ω resistor. Compute the power P = I² × R with <code>**</code> and display it.",
-              "P = 25.0 W", "current = 0.5\nresistance = 100\n# compute and display the power\n", null, 'power = current ** 2 * resistance, then print("P =", power, "W")'),
+            PQ("Complete the program, so that the program displays the target output.<br>1. A current of 0.5 A flows through a 100 Ω resistor.<br>2. Compute the power P = I² × R. Use <code>**</code> for I².<br>3. Display the power.",
+              "P = 25.0 W", "current = 0.5\nresistance = 100\n# compute and display the power\n", null, 'Use power = current ** 2 * resistance, then print("P =", power, "W").'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`13 // 4 + 13 % 4` equals…", choices: ["3", "3.25", "4", "4.25"], answer: 2, explain: "13 // 4 is 3 and 13 % 4 is 1, so 3 + 1 = 4." },
@@ -871,31 +871,31 @@
             NEXT("<b>Strings</b>. Text values have their own operations: length, joining, indexing, and slicing."),
           ] },
           { kind: "exercise", title: "Run with test values", cols: [
-            [T("Compute each power by hand first. Then run the program once for each row and enter the test values."),
+            [T("Test the program with the values in the table.<br>1. Compute the power of each row by hand first.<br>2. Run the program once for each row.<br>3. In each run, enter the voltage and the current of the row."),
               TB(["Voltage (V)", "Current (A)", "Power (W)"], [["12", "1.5", ""], ["230", "0.5", ""], ["5", "0.2", ""]], null, "center")],
             [RUN('voltage = float(input("Voltage: "))\ncurrent = float(input("Current: "))\npower = voltage * current\nprint("Power =", power, "W")')],
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("The user types 5 and then 7. Write the output on paper.<br>Then run the program and compare.")],
+            [T("Determine the output of the program. The user types 5 and then 7.<br>1. Write the output on paper.<br>2. Run the program.<br>3. Compare the output with your answer on paper.")],
             [RUN('a = input("a: ")\nb = input("b: ")\nprint(a + b)\nprint(int(a) + int(b))', "Program (test input: 5 and 7)", ["5", "7"])],
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The program stops with a TypeError when it adds 1 to the input. Correct line 1. Test input: 19.",
+            PQ("Correct line 1, so that the program displays the target output.<br>1. The error: the program stops with a TypeError when line 2 adds 1 to the input.<br>2. Test input: 19.",
               "Age: 19\nNext year: 20", 'age = input("Age: ")\nprint("Next year:", age + 1)\n', ["19"], "Convert the input with int()."),
           ] },
           { kind: "exercise", title: "Write a program: temperature", blocks: [
-            PQ("Read a temperature in °C and display it in °F. Formula: F = C × 9 / 5 + 32. Use the prompt <code>Temperature (C): </code>. Test input: 25.",
-              "Temperature (C): 25\nTemperature (F) = 77.0", "# Write your program here\n", ["25"], 'c = float(input("Temperature (C): "))'),
+            PQ("Write a program that converts a temperature from °C to °F and displays the target output.<br>1. Read the temperature in °C. Use the prompt <code>Temperature (C): </code>.<br>2. Compute F = C × 9 / 5 + 32.<br>3. Test input: 25.",
+              "Temperature (C): 25\nTemperature (F) = 77.0", "# Write your program here\n", ["25"], 'Read and convert the input in one statement: c = float(input("Temperature (C): ")).'),
           ] },
           { kind: "exercise", title: "Design and write: resistance", blocks: [
-            PQ("First write the input, output, processing, and algorithm as comments. Then write the program: it reads the voltage and the current and displays the resistance R = V ÷ I. Test input: 12 and 0.5.",
+            PQ("Design a program, and then write the program.<br>1. First complete the four comments.<br>2. Read the voltage and the current.<br>3. Display the resistance R = V ÷ I, as in the target output.<br>4. Test input: 12 and 0.5.",
               "Voltage (V): 12\nCurrent (A): 0.5\nR = 24.0 ohm",
-              "# Input:\n# Output:\n# Processing:\n# Algorithm:\n\n", ["12", "0.5"], 'resistance = voltage / current, then print("R =", resistance, "ohm")'),
+              "# Input:\n# Output:\n# Processing:\n# Algorithm:\n\n", ["12", "0.5"], 'Use resistance = voltage / current, then print("R =", resistance, "ohm").'),
           ] },
           { kind: "exercise", title: "Write a program: battery runtime", blocks: [
-            PQ("A battery has a capacity in mAh. A device draws a current in mA. Runtime in hours = capacity ÷ current. Read both values as ints with the prompts in the target, and display the runtime. Test input: 2000 and 500.",
+            PQ("Write a program that displays the runtime of a battery in hours.<br>1. Read the capacity (mAh) and the current (mA). Use the prompts in the target output.<br>2. Convert both values with <code>int()</code>.<br>3. Compute the runtime: capacity ÷ current.<br>4. Test input: 2000 and 500.",
               "Capacity (mAh): 2000\nCurrent (mA): 500\nRuntime = 4.0 h", "# Write your program here\n", ["2000", "500"],
-              'capacity = int(input("Capacity (mAh): "))'),
+              'Read and convert the input in one statement: capacity = int(input("Capacity (mAh): ")).'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`input()` returns a value of type…", choices: ["int", "float", "str", "bool"], answer: 2, explain: "input() always returns a str. Convert it to calculate." },
@@ -1025,25 +1025,25 @@
             NEXT("<b>Errors and debugging</b>. The error messages of all statements in this chapter, and the steps to find a wrong result."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper, line by line.<br>Then run the program and compare.")],
+            [T("Determine the output of the program.<br>1. Write the output on paper, line by line.<br>2. Run the program.<br>3. Compare the output with your answer on paper.")],
             [RUN('word = "Voltage"\nprint(word[0])\nprint(word[-1])\nprint(word[1:4])\nprint(word[:3])\nprint(len(word))')],
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
-            PQ("A device ID has the form <code>PUMP-2026-07</code>. Complete lines 2 and 3 with slices to extract the year and the unit number.",
+            PQ("Complete lines 2 and 3, so that the program displays the target output.<br>1. Line 2: write a slice of <code>device_id</code> that gives the year.<br>2. Line 3: write a slice of <code>device_id</code> that gives the unit number.",
               "Year: 2026 Number: 07", 'device_id = "PUMP-2026-07"\nyear = \nnumber = \nprint("Year:", year, "Number:", number)\n', null,
               "Count the indexes: P is index 0, and the year starts at index 5."),
           ] },
           { kind: "exercise", title: "Write a program: word report", blocks: [
-            PQ("Read a word with the prompt <code>Word: </code>. Display the word in capital letters and its length on one line. Test input: voltage.",
-              "Word: voltage\nVOLTAGE 7", "# Write your program here\n", ["voltage"], "print(word.upper(), len(word))"),
+            PQ("Write a program that reads a word and displays the target output.<br>1. Use the prompt <code>Word: </code>.<br>2. Display on one line: the word in capital letters, then the length of the word.<br>3. Test input: voltage.",
+              "Word: voltage\nVOLTAGE 7", "# Write your program here\n", ["voltage"], "Use print(word.upper(), len(word))."),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The program should change the first letter to a capital letter, but it stops with a TypeError. Correct line 2 by building a new string.",
-              "Sensor", 's = "sensor"\ns[0] = "S"\nprint(s)\n', null, 's = "S" + s[1:]'),
+            PQ("Correct line 2, so that the program displays the target output.<br>1. The error: line 2 must change the first letter to a capital letter, but the program stops with a TypeError.<br>2. In line 2, build a new string and store the new string in <code>s</code>.",
+              "Sensor", 's = "sensor"\ns[0] = "S"\nprint(s)\n', null, 'A string cannot be changed, so use s = "S" + s[1:].'),
           ] },
           { kind: "exercise", title: "Write a program: initials", blocks: [
-            PQ("Read a first name and a last name with the prompts in the target. Display the initials with a dot after each letter. Test input: Somchai and Jaidee.",
-              "First name: Somchai\nLast name: Jaidee\nS.J.", "# Write your program here\n", ["Somchai", "Jaidee"], 'first[0] + "." + last[0] + "."'),
+            PQ("Write a program that reads two names and displays the initials (the first letters).<br>1. Use the prompts in the target output.<br>2. Display a dot after each letter.<br>3. Test input: Somchai and Jaidee.",
+              "First name: Somchai\nLast name: Jaidee\nS.J.", "# Write your program here\n", ["Somchai", "Jaidee"], 'Join the first letters and the dots with +: first[0] + "." + last[0] + ".".'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: '`"Python"[-1]` is…', choices: ["P", "n", "o", "Error"], answer: 1, explain: "Index -1 is the last character: n." },
@@ -1149,20 +1149,20 @@
             NEXT("<b>Chapter practice</b>. Complete engineering problems that combine all lessons of this chapter."),
           ] },
           { kind: "exercise", title: "Correct the syntax error", blocks: [
-            PQ("The program does not start. Correct the syntax error.", "Current = 2 A", 'print("Current =" 2, "A")\n', null, "A comma is missing between the values."),
+            PQ("Correct the syntax error, so that the program displays the target output.<br>The error: the program does not start.", "Current = 2 A", 'print("Current =" 2, "A")\n', null, "A comma is missing between the values."),
           ] },
           { kind: "exercise", title: "Correct the NameError", blocks: [
-            PQ("The program stops with a NameError. Correct line 2.", "Speed: 1500", 'motor_speed = 1500\nprint("Speed:", motor_sped)\n', null, "Compare the spelling of the two names."),
+            PQ("Correct line 2, so that the program displays the target output.<br>The error: the program stops with a NameError.", "Speed: 1500", 'motor_speed = 1500\nprint("Speed:", motor_sped)\n', null, "Compare the spelling of the two names."),
           ] },
           { kind: "exercise", title: "Correct the TypeError", blocks: [
-            PQ("The program stops with a TypeError. Correct line 2, so that it uses <code>+</code> with <code>str()</code>.", "Battery 85 %", 'level = 85\nprint("Battery " + level + " %")\n', null, '"Battery " + str(level) + " %"'),
+            PQ("Correct line 2, so that the program displays the target output.<br>1. The error: the program stops with a TypeError.<br>2. Keep the operator <code>+</code> in line 2, and use <code>str()</code>.", "Battery 85 %", 'level = 85\nprint("Battery " + level + " %")\n', null, 'Use "Battery " + str(level) + " %" in print().'),
           ] },
           { kind: "exercise", title: "Correct the ValueError", blocks: [
-            PQ("The user enters a length with a decimal point, and the program stops with a ValueError. Correct line 1. Test input: 2.5.",
+            PQ("Correct line 1, so that the program displays the target output.<br>1. The error: the user enters a length with a decimal point, and the program stops with a ValueError.<br>2. Test input: 2.5.",
               "Length (m): 2.5\nDouble: 5.0", 'length = int(input("Length (m): "))\nprint("Double:", length * 2)\n', ["2.5"], "Use float() instead of int()."),
           ] },
           { kind: "exercise", title: "Correct the logical error", blocks: [
-            PQ("100 °C is 212 °F, but the program displays a wrong value. The formula is F = C × 9 / 5 + 32. Correct line 2.",
+            PQ("Correct line 2, so that the program displays the target output.<br>1. The error: 100 °C is 212 °F, but the program displays a wrong value.<br>2. The formula is F = C × 9 / 5 + 32.",
               "F = 212.0", 'c = 100\nf = c * (9 / 5 + 32)\nprint("F =", f)\n', null, "Remove the parentheses: c * 9 / 5 + 32."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -1192,36 +1192,36 @@
             T("The Check button compares the output with the target for the given test input."),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: name and age", blocks: [
-            T("Read a name and an age. Display them in the form <code>Name อายุ: Age</code>."),
+            T("Read a name and an age. Display the name and the age in the form <code>Name อายุ: Age</code>."),
             IPO([["Input", "a name (str) and an age (str is sufficient: no calculation)"], ["Output", "for example <code>Pokpong อายุ: 25</code>"], ["Processing", "<code>print(name, \"อายุ:\", age)</code>"]]),
           ] },
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
-            PQ("Use the prompts <code>Name: </code> and <code>Age: </code>. Test input: Pokpong and 25.", "Name: Pokpong\nAge: 25\nPokpong อายุ: 25", "# Write your program here\n", ["Pokpong", "25"], 'print(name, "อายุ:", age)'),
+            PQ("Write the program for Problem 1 that displays the target output.<br>1. Use the prompts <code>Name: </code> and <code>Age: </code>.<br>2. Test input: Pokpong and 25.", "Name: Pokpong\nAge: 25\nPokpong อายุ: 25", "# Write your program here\n", ["Pokpong", "25"], 'Use print(name, "อายุ:", age) for the last line of the output.'),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: first three characters", blocks: [
-            T("Read a text from the user. Display its first 3 characters in capital letters."),
+            T("Read a text from the user. Display the first 3 characters of the text in capital letters."),
             IPO([["Input", "a text (str)"], ["Output", "the first 3 characters in capital letters"], ["Processing", "slice <code>[:3]</code>, then <code>upper()</code>"]]),
           ] },
           { kind: "exercise", part: "Problem 2", title: "Problem 2: write the program", blocks: [
-            PQ("Use the prompt <code>Enter text: </code>. Test input: engineering.", "Enter text: engineering\nENG", "# Write your program here\n", ["engineering"], "text[:3].upper()"),
+            PQ("Write the program for Problem 2 that displays the target output.<br>1. Use the prompt <code>Enter text: </code>.<br>2. Test input: engineering.", "Enter text: engineering\nENG", "# Write your program here\n", ["engineering"], "Use text[:3].upper() for the first 3 characters in capital letters."),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: a calculation with rounding", blocks: [
-            T("Read a number. Add 2, multiply the total by 3.33, and display the result with 2 decimal places."),
+            T("Read a number and display a computed result.<br>1. Add 2 to the number. Multiply the sum by 3.33.<br>2. Display the result with 2 decimal places."),
             IPO([["Input", "a number (float)"], ["Output", "(n + 2) × 3.33, rounded to 2 decimal places"], ["Processing", "<code>result = (n + 2) * 3.33</code>, then <code>round(result, 2)</code>"]]),
             N("Without <code>round()</code>, the input 5 displays <code>23.310000000000002</code>, because float values are approximate (Lesson 4)."),
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
-            PQ("Use the prompt <code>Enter a number: </code>. Test input: 5.", "Enter a number: 5\n23.31", "# Write your program here\n", ["5"], "round((n + 2) * 3.33, 2)"),
+            PQ("Write the program for Problem 3 that displays the target output.<br>1. Use the prompt <code>Enter a number: </code>.<br>2. Test input: 5.", "Enter a number: 5\n23.31", "# Write your program here\n", ["5"], "Use round((n + 2) * 3.33, 2) for the result."),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: Ohm's law", blocks: [
             T("Read the voltage of a source and the resistance of a resistor. Display the current, rounded to 2 decimal places."),
             IPO([["Input", "voltage (V) and resistance (Ω), both float"], ["Output", "current in A, 2 decimal places"], ["Processing", "current = voltage ÷ resistance"]]),
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", blocks: [
-            PQ("Use the prompts in the target. Test input: 9 and 4.7.", "Voltage (V): 9\nResistance (ohm): 4.7\nCurrent = 1.91 A", "# Write your program here\n", ["9", "4.7"], 'print("Current =", round(voltage / resistance, 2), "A")'),
+            PQ("Write the program for Problem 4 that displays the target output.<br>1. Use the prompts in the target output.<br>2. Test input: 9 and 4.7.", "Voltage (V): 9\nResistance (ohm): 4.7\nCurrent = 1.91 A", "# Write your program here\n", ["9", "4.7"], 'Use print("Current =", round(voltage / resistance, 2), "A") for the last line of the output.'),
           ] },
           { kind: "problem", part: "Problem 5", title: "Problem 5: time conversion", blocks: [
-            T("Read a time in seconds. Display it in hours, minutes, and seconds."),
+            T("Read a time in seconds. Display the time in hours, minutes, and seconds."),
             IPO([
               ["Input", "seconds (int)"],
               ["Output", "hours, minutes, and seconds"],
@@ -1229,7 +1229,7 @@
             ]),
           ] },
           { kind: "exercise", part: "Problem 5", title: "Problem 5: write the program", blocks: [
-            PQ("Use the prompt <code>Seconds: </code>. Test input: 3725. Check by hand: 1 × 3600 + 2 × 60 + 5 = 3725.", "Seconds: 3725\n1 h 2 min 5 s", "# Write your program here\n", ["3725"], 'print(hours, "h", minutes, "min", rest, "s")'),
+            PQ("Write the program for Problem 5 that displays the target output.<br>1. Use the prompt <code>Seconds: </code>.<br>2. Test input: 3725.<br>3. Check by hand: 1 × 3600 + 2 × 60 + 5 = 3725.", "Seconds: 3725\n1 h 2 min 5 s", "# Write your program here\n", ["3725"], 'Use print(hours, "h", minutes, "min", rest, "s") for the last line of the output.'),
           ] },
           { kind: "problem", part: "Problem 6", title: "Problem 6: battery runtime", blocks: [
             T("Read the capacity of a battery (mAh) and the current of a device (mA). Display the runtime in hours and minutes."),
@@ -1240,7 +1240,7 @@
             ]),
           ] },
           { kind: "exercise", part: "Problem 6", title: "Problem 6: write the program", blocks: [
-            PQ("Use the prompts in the target. Test input: 3000 and 450. Check by hand: 3000 × 60 ÷ 450 = 400 minutes = 6 h 40 min.", "Capacity (mAh): 3000\nCurrent (mA): 450\nRuntime: 6 h 40 min", "# Write your program here\n", ["3000", "450"], 'print("Runtime:", hours, "h", minutes, "min")'),
+            PQ("Write the program for Problem 6 that displays the target output.<br>1. Use the prompts in the target output.<br>2. Test input: 3000 and 450.<br>3. Check by hand: 3000 × 60 ÷ 450 = 400 minutes = 6 h 40 min.", "Capacity (mAh): 3000\nCurrent (mA): 450\nRuntime: 6 h 40 min", "# Write your program here\n", ["3000", "450"], 'Use print("Runtime:", hours, "h", minutes, "min") for the last line of the output.'),
           ] },
           { kind: "problem", part: "Problem 7", title: "Problem 7: a sensor message", blocks: [
             T("A voltage sensor sends a message such as <code>V=12.5</code>. The device current is 2 A. Read the message, and display the voltage and the power."),
@@ -1251,7 +1251,7 @@
             ]),
           ] },
           { kind: "exercise", part: "Problem 7", title: "Problem 7: write the program", blocks: [
-            PQ("Use the prompt <code>Message: </code>. Test input: V=12.5.", "Message: V=12.5\nVoltage = 12.5 V\nPower = 25.0 W", "# Write your program here\n", ["V=12.5"], "voltage = float(message[2:])"),
+            PQ("Write the program for Problem 7 that displays the target output.<br>1. Use the prompt <code>Message: </code>.<br>2. Test input: V=12.5.", "Message: V=12.5\nVoltage = 12.5 V\nPower = 25.0 W", "# Write your program here\n", ["V=12.5"], "Use voltage = float(message[2:]) to get the voltage from the message."),
           ] },
           { kind: "summary", title: "Chapter summary: lessons 1 to 4", blocks: [
             TB(["Lesson", "Key rule"], [

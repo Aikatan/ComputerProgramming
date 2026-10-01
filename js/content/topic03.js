@@ -437,28 +437,28 @@
             NEXT("<b>Logical operators</b>. <code>and</code>, <code>or</code>, and <code>not</code> combine several conditions into one."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each line on paper.<br>Then run the program and compare.")],
+            [T("Find the output of the program on paper.<br>1. Write the output of lines 3 to 6.<br>2. Run the program.<br>3. Compare the output of the program with your answer.")],
             [RUN("a = 7\nb = 10\nprint(a > b)\nprint(a != b)\nprint(a + 3 == b)\nprint(5 <= a <= 7)")],
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. The first row is done. The next exercise checks it."),
+            T("Complete the trace table on paper.<br>1. The first row is complete. Write the other rows.<br>2. Check your trace table with the next exercise."),
             W("traceTable", { trace: T_exCmp, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
-            [T("Run the program with <b>Step Run</b>. Compare the variables after each line with your table.")],
+            [T("Check your trace table with the program.<br>1. Run the program with <b>Step Run</b>.<br>2. After each line, compare the variables with your trace table.")],
             [RUN("x = 4\ny = x * 2\nbig = y > 5\nsame = x == y\nprint(big, same)")],
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
-            PQ("A battery level is stored in <code>level</code>. Complete line 2, so that <code>is_low</code> is True when the level is below 20.",
-              "True", "level = 15\nis_low = \nprint(is_low)\n", null, "is_low = level < 20"),
+            PQ("Complete line 2 of the program, so that the program displays the target output.<br>1. Line 2 must store True in <code>is_low</code> when <code>level</code> is below 20.",
+              "True", "level = 15\nis_low = \nprint(is_low)\n", null, "Use the comparison level < 20 in line 2."),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The program should display whether <code>x</code> equals 5, but it stops with a SyntaxError. Correct line 2.",
+            PQ("Correct the SyntaxError in line 2, so that the program displays the target output.<br>1. Line 2 must store True in <code>is_five</code> when <code>x</code> is equal to 5.",
               "True", "x = 5\nis_five = (x = 5)\nprint(is_five)\n", null, "A comparison uses ==."),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("A measured voltage is 229.5 V. Check with a chained comparison whether it is within 220 to 240 V (both included), and display the result.",
-              "In range: True", "# Write your program here\n", null, 'print("In range:", 220 <= v <= 240)'),
+            PQ("Write a program that displays the target output.<br>1. Use this value: voltage 229.5.<br>2. Use a chained comparison: the voltage is from 220 to 240, both included.<br>3. Display the text <code>In range:</code> and the result of the comparison.",
+              "In range: True", "# Write your program here\n", null, 'Use print("In range:", 220 <= v <= 240), where v is the voltage.'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`5 != 5` is…", choices: ["True", "False", "5", "Error"], answer: 1, explain: "5 is equal to 5, so 'not equal' is False." },
@@ -550,28 +550,28 @@
             NEXT("<b>if statements</b>. A condition decides whether a block of statements runs."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write True or False for each line on paper.<br>Then run the program and compare.")],
+            [T("Find the output of the program on paper.<br>1. Write True or False for each of lines 3 to 6.<br>2. Run the program.<br>3. Compare the output of the program with your answer.")],
             [RUN("a = 5\nb = 12\nprint(a > 3 and b > 10)\nprint(a > 8 or b > 20)\nprint(not a == 5)\nprint(a < 10 and not b < 10)")],
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. The first row is done. The next exercise checks it."),
+            T("Complete the trace table on paper.<br>1. The first row is complete. Write the other rows.<br>2. Check your trace table with the next exercise."),
             W("traceTable", { trace: T_exLogic, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
-            [T("Run the program with <b>Step Run</b>. Compare the variables after each line with your table.")],
+            [T("Check your trace table with the program.<br>1. Run the program with <b>Step Run</b>.<br>2. After each line, compare the variables with your trace table.")],
             [RUN("x = 6\np = x > 5\nq = x % 2 == 1\nr = p and not q\nprint(p, q, r)")],
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
-            PQ("A motor can start when the voltage is from 220 to 240 V and the temperature is below 60 °C. Complete line 3.",
-              "Start: True", 'voltage = 230\ntemp = 45\nok = \nprint("Start:", ok)\n', null, "ok = 220 <= voltage <= 240 and temp < 60"),
+            PQ("Complete line 3 of the program, so that the program displays the target output.<br>1. Line 3 must store True in <code>ok</code> when both conditions are True.<br>2. Condition 1: <code>voltage</code> is from 220 to 240.<br>3. Condition 2: <code>temp</code> is below 60.",
+              "Start: True", 'voltage = 230\ntemp = 45\nok = \nprint("Start:", ok)\n', null, "Join the two conditions with and: 220 <= voltage <= 240 and temp < 60."),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("An alarm should sound when the pressure is below 2 bar or above 8 bar. The program uses the wrong operator, so the alarm never sounds. Correct line 2.",
-              "Alarm: True", 'pressure = 9\nalarm = pressure < 2 and pressure > 8\nprint("Alarm:", alarm)\n', null, "A value cannot be below 2 and above 8 at the same time. Use or."),
+            PQ("Correct the operator in line 2, so that the program displays the target output.<br>1. Line 2 must store True in <code>alarm</code> when <code>pressure</code> is below 2 or above 8.",
+              "Alarm: True", 'pressure = 9\nalarm = pressure < 2 and pressure > 8\nprint("Alarm:", alarm)\n', null, "Use or, because a value cannot be below 2 and above 8 at the same time."),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("A sensor reading is valid when it is not negative and not above 100. Store the reading 105 and display whether it is valid.",
-              "Valid: False", "# Write your program here\n", null, "valid = reading >= 0 and reading <= 100"),
+            PQ("Write a program that displays the target output.<br>1. Store the reading 105 in a variable.<br>2. A reading is valid when it is not negative and not above 100.<br>3. Display the text <code>Valid:</code> and the result of the check.",
+              "Valid: False", "# Write your program here\n", null, "Use and to join two comparisons: reading >= 0 and reading <= 100."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`True and False` is…", choices: ["True", "False", "Error", "None"], answer: 1, explain: "and needs both sides to be True." },
@@ -601,7 +601,7 @@
             ]),
           ] },
           { kind: "problem", part: "if", title: "Problem: over-temperature warning", blocks: [
-            T("A temperature sensor sends two readings: 75 °C and then 60 °C. For each reading, the program displays a warning when the temperature is above 70 °C, and it always displays the reading."),
+            T("A temperature sensor sends two readings: 75 °C and then 60 °C. For each reading:<br>1. The program displays a warning when the temperature is above 70 °C.<br>2. The program always displays the reading."),
             IPO([
               ["Input", "temperature = 75, then temperature = 60"],
               ["Output", "for each reading: a warning (only above 70 °C), then the reading"],
@@ -719,28 +719,28 @@
             NEXT("<b>while loops</b>. A condition can also decide how many times a block repeats."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper. Evaluate each condition step by step.<br>Then run the program and compare.")],
+            [T("Find the output of the program on paper.<br>1. Compute the result of each condition: True or False.<br>2. Write the output.<br>3. Run the program.<br>4. Compare the output of the program with your answer.")],
             [RUN('x = 8\ny = 3\nif x % y == 2 and x // y == 2:\n    print("P")\nelif x % y == 2 or x // y == 3:\n    print("Q")\nelse:\n    print("R")')],
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. The first row is done. The next exercise checks it."),
+            T("Complete the trace table on paper.<br>1. The first row is complete. Write the other rows.<br>2. Check your trace table with the next exercise."),
             W("traceTable", { trace: T_exElif, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
-            [T("Run the program with <b>Step Run</b>. Compare the variables after each line with your table.")],
+            [T("Check your trace table with the program.<br>1. Run the program with <b>Step Run</b>.<br>2. After each line, compare the variables with your trace table.")],
             [RUN('v = 11.5\nif v < 11:\n    state = "LOW"\nelif v > 13:\n    state = "HIGH"\nelse:\n    state = "OK"\nprint(state)')],
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("A temperature of 95 °C should display Overheat, but the program displays Warm. Correct the order of the conditions.",
+            PQ("Correct the program, so that the program displays the target output.<br>1. Change the order of the two conditions.<br>2. For the temperature 95, the output must be Overheat, not Warm.",
               "Overheat", 't = 95\nif t > 50:\n    print("Warm")\nelif t > 90:\n    print("Overheat")\n', null, "Check the higher threshold first."),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("Read a voltage (float) with the prompt <code>Voltage: </code>. Display Undervoltage below 210, Overvoltage above 250, otherwise Normal. Test input: 255.",
-              "Voltage: 255\nOvervoltage", "# Write your program here\n", ["255"], "if v < 210: ... elif v > 250: ... else: ..."),
+            PQ("Write a program that displays the state of a voltage, as in the target output.<br>1. Read the voltage as a float with the prompt <code>Voltage: </code>.<br>2. Below 210: display Undervoltage.<br>3. Above 250: display Overvoltage.<br>4. Otherwise: display Normal.<br>Test input: 255.",
+              "Voltage: 255\nOvervoltage", "# Write your program here\n", ["255"], "Use if for below 210, elif for above 250, and else for Normal."),
           ] },
           { kind: "exercise", title: "Design and write: even or odd", blocks: [
-            PQ("First write the input, output, and algorithm as comments. Then read an integer and display whether it is even or odd, as in the target. Test input: 17.",
-              "Number: 17\n17 is odd", "# Input:\n# Output:\n# Algorithm:\n\n", ["17"], 'if n % 2 == 0: print(n, "is even")'),
+            PQ("Write a program that displays even or odd.<br>1. Complete the three comments first.<br>2. Read an integer with the prompt <code>Number: </code>.<br>3. Display the integer and the text <code>is even</code> or <code>is odd</code>.<br>Test input: 17.",
+              "Number: 17\n17 is odd", "# Input:\n# Output:\n# Algorithm:\n\n", ["17"], 'Use if n % 2 == 0 with print(n, "is even"), and else with print(n, "is odd").'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "In an if / elif / else statement, how many blocks run?", choices: ["All of them", "Exactly one", "At most two", "None"], answer: 1, explain: "The first True condition runs its block, or else runs. Exactly one block runs." },
@@ -853,29 +853,29 @@
             NEXT("<b>for loops</b>. When the values to go through are known, such as the numbers 1 to 10, a for loop is shorter and cannot forget the update."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper, line by line.<br>Then run the program and compare.")],
+            [T("Find the output of the program on paper.<br>1. Write each line of the output.<br>2. Run the program.<br>3. Compare the output of the program with your answer.")],
             [RUN('x = 1\nwhile x < 20:\n    print(x)\n    x = x * 3\nprint("End:", x)')],
           ] },
           { kind: "exercise", title: "Trace the iterations", cols: [
-            [T("Complete the table on paper: one row for each iteration.<br>Then use <b>Step Run</b> to check."),
+            [T("Complete the table on paper.<br>1. Write one row for each iteration of the loop.<br>2. Run the program with <b>Step Run</b>.<br>3. Compare the variables with your table."),
               TB(["Iteration", "n before", "total after", "n after"], [["1", "3", "", ""], ["2", "", "", ""], ["3", "", "", ""]], null, "center")],
             [RUN("n = 3\ntotal = 0\nwhile n > 0:\n    total = total + n\n    n = n - 1\nprint(total)")],
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
-            PQ("Complete the condition and the update, so that the program displays 10, 20, 30, 40, and 50.",
-              "10\n20\n30\n40\n50", "x = 10\nwhile x <= :\n    print(x)\n    x = \n", null, "while x <= 50: ... x = x + 10"),
+            PQ("Complete lines 2 and 4, so that the program displays the target output.<br>1. Line 2: complete the condition of the loop.<br>2. Line 4: complete the update of <code>x</code>.",
+              "10\n20\n30\n40\n50", "x = 10\nwhile x <= :\n    print(x)\n    x = \n", null, "The condition is x <= 50, and the update is x = x + 10."),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The program should count down from 5 to 1, but it displays nothing. Correct the condition in line 2.",
+            PQ("Correct the condition in line 2, so that the program displays the target output.<br>1. The program must display the numbers from 5 down to 1.",
               "5\n4\n3\n2\n1", "count = 5\nwhile count < 3:\n    print(count)\n    count = count - 1\n", null, "The loop must run while count is greater than 0."),
           ] },
           { kind: "exercise", title: "Write a program: charging", blocks: [
-            PQ("A battery is at 40 %. While the level is below 100, add 15 and display the new level.",
-              "55\n70\n85\n100", "level = 40\n# Write the loop here\n", null, "while level < 100: level = level + 15, then print(level)"),
+            PQ("Write a <code>while</code> loop, so that the program displays the target output.<br>1. The loop runs while <code>level</code> is below 100.<br>2. Each iteration adds 15 to <code>level</code>.<br>3. Each iteration then displays <code>level</code>.",
+              "55\n70\n85\n100", "level = 40\n# Write the loop here\n", null, "Use while level < 100, with level = level + 15 and then print(level) in the loop."),
           ] },
           { kind: "exercise", title: "Design and write: countdown", blocks: [
-            PQ("First write the algorithm as comments. Then read a number of seconds, count down to 1, and display Go. Test input: 3.",
-              "Seconds: 3\n3\n2\n1\nGo", "# Algorithm:\n\n", ["3"], 's = int(input("Seconds: "))'),
+            PQ("Write a countdown program. Test input: 3.<br>1. Write the algorithm as comments first.<br>2. Read the seconds with the prompt <code>Seconds: </code>.<br>3. Display each number down to 1, then Go.",
+              "Seconds: 3\n3\n2\n1\nGo", "# Algorithm:\n\n", ["3"], 'Read the seconds with s = int(input("Seconds: ")).'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`x` starts at 0 and increases by 1. How many times does the block of `while x < 3:` run?", choices: ["2", "3", "4", "It never ends"], answer: 1, explain: "The block runs for x = 0, 1, 2. At x = 3 the condition is False." },
@@ -967,25 +967,25 @@
             NEXT("<b>Nested loops</b>. A loop can contain another loop, for example to go through rows and columns."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper, line by line.<br>Then run the program and compare.")],
+            [T("Find the output of the program on paper.<br>1. Write each line of the output.<br>2. Run the program.<br>3. Compare the output of the program with your answer.")],
             [RUN('for i in range(2, 11, 4):\n    print(i)\nfor c in "OK":\n    print(c + c)')],
           ] },
           { kind: "exercise", title: "Determine the values of range()", cols: [
-            [T("Write the values that each loop displays, and the number of iterations.<br>Then run the program and compare."),
+            [T("Complete the table on paper. Each row is one loop of the program.<br>1. Values: write the values that the loop displays.<br>2. Iterations: write the number of iterations.<br>3. Run the program.<br>4. Compare the output of the program with your table."),
               TB(["Call", "Values", "Iterations"], [["<code>range(4)</code>", "", ""], ["<code>range(3, 8)</code>", "", ""], ["<code>range(10, 0, -3)</code>", "", ""]], null, "center")],
             [RUN('for i in range(4):\n    print(i, end=" ")\nprint()\nfor i in range(3, 8):\n    print(i, end=" ")\nprint()\nfor i in range(10, 0, -3):\n    print(i, end=" ")')],
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The program should display the numbers 1 to 5, but it displays only 1 to 4. Correct line 1.",
-              "1\n2\n3\n4\n5", "for i in range(1, 5):\n    print(i)\n", null, "The stop value is excluded."),
+            PQ("Correct line 1, so that the program displays the target output.<br>1. The program must display the numbers 1 to 5.",
+              "1\n2\n3\n4\n5", "for i in range(1, 5):\n    print(i)\n", null, "The stop value of range() is excluded, so range(1, 5) ends at 4."),
           ] },
           { kind: "exercise", title: "Write a program: multiplication table", blocks: [
-            PQ("Display the 7 multiplication table from 7 × 1 to 7 × 5, in the form shown in the target.",
-              "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35", "# Write your program here\n", null, 'for i in range(1, 6): print(7, "x", i, "=", 7 * i)'),
+            PQ("Write a program that displays the 7 multiplication table.<br>1. Use a <code>for</code> loop for the numbers 1 to 5.<br>2. Each line must match the target output.",
+              "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35", "# Write your program here\n", null, 'Use for i in range(1, 6) with print(7, "x", i, "=", 7 * i).'),
           ] },
           { kind: "exercise", title: "Write a program: counting multiples", blocks: [
-            PQ("Count how many numbers from 1 to 50 are divisible by 7, and display the count.",
-              "7", "# Write your program here\n", null, "count = 0, then for i in range(1, 51): if i % 7 == 0: count = count + 1"),
+            PQ("Write a program that counts the numbers from 1 to 50 that are divisible by 7.<br>1. Use a <code>for</code> loop to check each number from 1 to 50.<br>2. Display only the count, as in the target output.",
+              "7", "# Write your program here\n", null, "Start with count = 0, and add 1 to count when i % 7 == 0 is True."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`for i in range(5, 0, -2):` runs how many times?", choices: ["2", "3", "4", "5"], answer: 1, explain: "The values are 5, 3, and 1." },
@@ -1050,20 +1050,20 @@
             NEXT("<b>Loop control</b>. <code>break</code>, <code>continue</code>, <code>pass</code>, and <code>else</code> change the normal flow of a loop."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program and compare.")],
+            [T("Find the output of the program on paper.<br>1. Write the complete output.<br>2. Run the program.<br>3. Compare the output of the program with your answer.")],
             [RUN('for i in range(3):\n    for j in range(2):\n        print("*", end="")\n    print()')],
           ] },
           { kind: "exercise", title: "Count the iterations", cols: [
-            [T("Calculate on paper how many times line 4 runs, and the value that is displayed.<br>Then run the program and compare.")],
+            [T("Count the iterations of the program on paper.<br>1. Compute the number of times that line 4 runs.<br>2. Write the value that the program displays.<br>3. Run the program.<br>4. Compare the output of the program with your answer.")],
             [RUN("count = 0\nfor i in range(1, 5):\n    for j in range(1, 4):\n        count = count + 1\nprint(count)")],
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The times of hour 9 are missing. Add the missing line.",
-              "8 : 0\n8 : 30\n9 : 0\n9 : 30", 'hour = 8\nminute = 0\nwhile hour <= 9:\n    while minute <= 59:\n        print(hour, ":", minute)\n        minute += 30\n    hour += 1\n', null, "Reset minute to 0 before the inner loop starts again."),
+            PQ("Add one missing line, so that the program displays the target output.<br>1. The program must also display the times of hour 9.",
+              "8 : 0\n8 : 30\n9 : 0\n9 : 30", 'hour = 8\nminute = 0\nwhile hour <= 9:\n    while minute <= 59:\n        print(hour, ":", minute)\n        minute += 30\n    hour += 1\n', null, "Store 0 in minute before the inner loop starts again."),
           ] },
           { kind: "exercise", title: "Write a program: a triangle", blocks: [
-            PQ("Display a triangle of 4 rows. Row 1 has one star, row 2 has two stars, and so on. Use an inner loop that depends on the row number.",
-              "*\n**\n***\n****", "# Write your program here\n", null, 'for i in range(1, 5): for j in range(1, i + 1): print("*", end="") ... print()'),
+            PQ("Write a program that displays the triangle in the target output.<br>1. Use an outer loop for the rows 1 to 4.<br>2. Use an inner loop for the stars of a row.<br>3. The number of stars is the row number.",
+              "*\n**\n***\n****", "# Write your program here\n", null, 'Use for j in range(1, i + 1) with print("*", end="") for row i, and print() after the inner loop.'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "The outer loop runs 4 times and the inner loop runs 3 times. How many times does the inner block run?", choices: ["3", "4", "7", "12"], answer: 3, explain: "4 × 3 = 12." },
@@ -1158,24 +1158,24 @@
             NEXT("<b>Chapter practice</b>. Complete problems that combine decisions and loops."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper and count the values that are displayed.<br>Then run the program and compare.")],
+            [T("Find the output of the program on paper.<br>1. Write the output.<br>2. Count the values in the output.<br>3. Run the program.<br>4. Compare the output of the program with your answer.")],
             [RUN('for i in range(1, 4):\n    for j in range(1, 4):\n        if i == j:\n            continue\n        print(i * j, end=" ")')],
           ] },
           { kind: "exercise", title: "Determine the output: break and else", cols: [
-            [T("Write the output on paper. Decide whether the else block runs.<br>Then run the program and compare.")],
+            [T("Find the output of the program on paper.<br>1. Decide whether the <code>else</code> block runs.<br>2. Write the output.<br>3. Run the program.<br>4. Compare the output of the program with your answer.")],
             [RUN('for c in "SENSOR":\n    if c == "N":\n        print("Found N")\n        break\n    print(c)\nelse:\n    print("No N")')],
           ] },
           { kind: "exercise", title: "Write a program: the first multiple", blocks: [
-            PQ("Go through the numbers from 51 to 99. Stop at the first number that is divisible by 7, and display it.",
-              "56", "# Write your program here\n", null, "for n in range(51, 100): if n % 7 == 0: print(n) and break"),
+            PQ("Write a program that displays the target output.<br>1. Use a <code>for</code> loop to check each number from 51 to 99.<br>2. Display the first number that is divisible by 7.<br>3. Then end the loop with <code>break</code>.",
+              "56", "# Write your program here\n", null, "Use for n in range(51, 100), and when n % 7 == 0 is True, use print(n) and then break."),
           ] },
           { kind: "exercise", title: "Write a program: skip invalid readings", blocks: [
-            PQ("Read 4 sensor readings (int) with the prompt <code>Reading: </code>. Skip negative readings with continue, and display the sum of the valid readings. Test input: 5, -2, 10, 3.",
-              "Reading: 5\nReading: -2\nReading: 10\nReading: 3\nSum = 18", "total = 0\n# Write the loop here\n", ["5", "-2", "10", "3"], "if r < 0: continue"),
+            PQ("Write the loop. Test input: 5, -2, 10, 3.<br>1. Read 4 readings (int) with the prompt <code>Reading: </code>.<br>2. Skip a negative reading with <code>continue</code>.<br>3. Display the sum as in the target output.",
+              "Reading: 5\nReading: -2\nReading: 10\nReading: 3\nSum = 18", "total = 0\n# Write the loop here\n", ["5", "-2", "10", "3"], "Use if r < 0 with continue, before the reading r is added to total."),
           ] },
           { kind: "exercise", title: "Write a program: prime check", blocks: [
-            PQ("Read an integer n with the prompt <code>n: </code>. Display Prime or Not prime, using a for loop with else. A number below 2 is not prime. Test input: 13.",
-              "n: 13\nPrime", "# Write your program here\n", ["13"], "if n < 2: print(\"Not prime\") / else: for i in range(2, n): if n % i == 0: ... break / else: print(\"Prime\")"),
+            PQ("Write a program that displays Prime or Not prime for an integer.<br>1. Read the integer <code>n</code> with the prompt <code>n: </code>.<br>2. For <code>n</code> below 2, display Not prime.<br>3. Otherwise, use a <code>for</code> loop with <code>else</code>.<br>Test input: 13.",
+              "n: 13\nPrime", "# Write your program here\n", ["13"], "In for i in range(2, n), display Not prime and use break when n % i == 0; display Prime in the else of the for loop."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "What does `continue` do?", choices: ["Ends the loop", "Skips to the next iteration", "Does nothing", "Restarts the program"], answer: 1, explain: "continue ends only the current iteration." },
@@ -1203,65 +1203,65 @@
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: grade from a score", blocks: [
-            T("Read a score from 0 to 100 and display the grade: A from 80, B from 70, C from 60, D from 50, otherwise F."),
+            T("Read a score from 0 to 100, and display the grade of the score.<br>Grades: A for 80 or more, B for 70 or more, C for 60 or more, D for 50 or more, otherwise F."),
             IPO([["Input", "score (int)"], ["Output", "the grade"], ["Condition", "if / elif / else, from the highest threshold down"]]),
           ] },
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
-            PQ("Use the prompt <code>Score: </code> and display the grade as in the target. Test input: 73.", "Score: 73\nGrade: B", "# Write your program here\n", ["73"], 'elif score >= 70: grade = "B"'),
+            PQ("Write the program for Problem 1.<br>1. Read the score with the prompt <code>Score: </code>.<br>2. Display the text <code>Grade:</code> and the grade.<br>Test input: 73.", "Score: 73\nGrade: B", "# Write your program here\n", ["73"], "Use if, elif, and else from the highest grade down, for example elif score >= 70 for grade B."),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: password", blocks: [
-            T("Ask for a password until it is \"1234\". After each wrong password, display รหัสผิด กรุณาลองใหม่. After the correct password, display เข้าสู่ระบบสำเร็จ."),
+            T("Read a password. Repeat until the password is \"1234\".<br>1. After each wrong password, display รหัสผิด กรุณาลองใหม่.<br>2. After the correct password, display เข้าสู่ระบบสำเร็จ."),
             IPO([["Input", "passwords (str), repeated"], ["Output", "a message after each password"], ["Repetition", "while the password is not \"1234\""]]),
           ] },
           { kind: "exercise", part: "Problem 2", title: "Problem 2: write the program", blocks: [
-            PQ("Use the prompt <code>Password: </code>. Test input: 1111, abcd, 1234.",
-              "Password: 1111\nรหัสผิด กรุณาลองใหม่\nPassword: abcd\nรหัสผิด กรุณาลองใหม่\nPassword: 1234\nเข้าสู่ระบบสำเร็จ", "# Write your program here\n", ["1111", "abcd", "1234"], 'while pw != "1234":'),
+            PQ("Write the program for Problem 2.<br>1. Use the prompt <code>Password: </code>.<br>2. The output must match the target output.<br>Test input: 1111, abcd, 1234.",
+              "Password: 1111\nรหัสผิด กรุณาลองใหม่\nPassword: abcd\nรหัสผิด กรุณาลองใหม่\nPassword: 1234\nเข้าสู่ระบบสำเร็จ", "# Write your program here\n", ["1111", "abcd", "1234"], 'Use while pw != "1234" to repeat the message and the input.'),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: sum of five numbers", blocks: [
             T("Read 5 integers and display their sum."),
             IPO([["Input", "5 integers"], ["Output", "the sum"], ["Repetition", "for 5 times: read a number and add it to the total"]]),
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
-            PQ("Use the prompt <code>Number: </code>. Test input: 4, 8, 15, 16, 23.",
-              "Number: 4\nNumber: 8\nNumber: 15\nNumber: 16\nNumber: 23\nSum = 66", "# Write your program here\n", ["4", "8", "15", "16", "23"], "total = 0, then for k in range(5): total = total + int(input(\"Number: \"))"),
+            PQ("Write the program for Problem 3.<br>1. Use the prompt <code>Number: </code>.<br>2. Display <code>Sum =</code> and the sum.<br>Test input: 4, 8, 15, 16, 23.",
+              "Number: 4\nNumber: 8\nNumber: 15\nNumber: 16\nNumber: 23\nSum = 66", "# Write your program here\n", ["4", "8", "15", "16", "23"], "Start with total = 0, and add int(input(\"Number: \")) to total in a for loop with range(5)."),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: Go for multiples of 3", blocks: [
-            T("Display the numbers 1 to 15 on one line, separated by spaces. Display Go instead of every multiple of 3."),
+            T("Display the numbers 1 to 15 on one line.<br>1. Separate the values with one space.<br>2. Replace every multiple of 3 with the text Go."),
             IPO([["Output", "1 2 Go 4 5 Go ..."], ["Repetition", "for i in range(1, 16)"], ["Condition", "i % 3 == 0 → Go, otherwise i"]]),
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", blocks: [
-            PQ("Use <code>end=\" \"</code> to keep all values on one line.", "1 2 Go 4 5 Go 7 8 Go 10 11 Go 13 14 Go", "# Write your program here\n", null, 'if i % 3 == 0: print("Go", end=" ") else: print(i, end=" ")'),
+            PQ("Write the program for Problem 4.<br>1. Use <code>end=\" \"</code> in each <code>print()</code>, so that all values are on one line.<br>2. The output must match the target output.", "1 2 Go 4 5 Go 7 8 Go 10 11 Go 13 14 Go", "# Write your program here\n", null, 'Use if i % 3 == 0 with print("Go", end=" "), and else with print(i, end=" ").'),
           ] },
           { kind: "problem", part: "Problem 5", title: "Problem 5: temperature alarm", blocks: [
-            T("Read a motor temperature. Display Shutdown above 90 °C, Warning above 70 °C, otherwise Normal."),
+            T("Read a motor temperature, and display the state of the motor.<br>1. Above 90 °C: display Shutdown.<br>2. Above 70 °C, up to 90 °C: display Warning.<br>3. Otherwise: display Normal."),
             IPO([["Input", "temperature (float)"], ["Output", "Shutdown, Warning, or Normal"], ["Condition", "if t &gt; 90 / elif t &gt; 70 / else"]]),
           ] },
           { kind: "exercise", part: "Problem 5", title: "Problem 5: write the program", blocks: [
-            PQ("Use the prompt <code>Temperature: </code>. Test input: 75.", "Temperature: 75\nWarning", "# Write your program here\n", ["75"], "Check the higher threshold first."),
+            PQ("Write the program for Problem 5.<br>1. Read the temperature with the prompt <code>Temperature: </code>.<br>2. The output must match the target output.<br>Test input: 75.", "Temperature: 75\nWarning", "# Write your program here\n", ["75"], "Check the higher threshold first."),
           ] },
           { kind: "problem", part: "Problem 6", title: "Problem 6: charging steps", blocks: [
-            T("Read the start level of a battery. Each charging step adds 12 %. Count the steps until the level reaches at least 100 %."),
+            T("Read the start level of a battery, and display the number of charging steps.<br>1. Each charging step adds 12 % to the level.<br>2. Count the steps until the level is 100 % or more."),
             IPO([["Input", "start level (int)"], ["Output", "the number of steps"], ["Repetition", "while level &lt; 100: add 12, count the step"]]),
           ] },
           { kind: "exercise", part: "Problem 6", title: "Problem 6: write the program", blocks: [
-            PQ("Use the prompt <code>Start level: </code>. Test input: 40. Check by hand: 40 → 52 → 64 → 76 → 88 → 100 is 5 steps.",
-              "Start level: 40\nSteps: 5", "# Write your program here\n", ["40"], "steps = 0; while level < 100: level = level + 12; steps = steps + 1"),
+            PQ("Write the program for Problem 6.<br>1. Read the start level with the prompt <code>Start level: </code>.<br>2. Display <code>Steps:</code> and the number of steps.<br>Test input: 40. Hand calculation: 40 → 52 → 64 → 76 → 88 → 100 is 5 steps.",
+              "Start level: 40\nSteps: 5", "# Write your program here\n", ["40"], "Start with steps = 0, and in while level < 100, add 12 to level and 1 to steps."),
           ] },
           { kind: "problem", part: "Problem 7", title: "Problem 7: average of sensor readings", blocks: [
-            T("Read the number of readings, then each reading. Display the average, rounded to 2 decimal places."),
+            T("Display the average of several sensor readings.<br>1. Read the number of readings.<br>2. Read each reading.<br>3. Display the average, rounded to 2 decimal places."),
             IPO([["Input", "count (int), then the readings (float)"], ["Output", "the average"], ["Processing", "total of the readings ÷ count, then <code>round(…, 2)</code>"]]),
           ] },
           { kind: "exercise", part: "Problem 7", title: "Problem 7: write the program", blocks: [
-            PQ("Use the prompts <code>Count: </code> and <code>Reading: </code>. Test input: 3, 20.5, 22, 21.5.",
-              "Count: 3\nReading: 20.5\nReading: 22\nReading: 21.5\nAverage = 21.33", "# Write your program here\n", ["3", "20.5", "22", "21.5"], 'print("Average =", round(total / count, 2))'),
+            PQ("Write the program for Problem 7.<br>1. Use the prompts <code>Count: </code> and <code>Reading: </code>.<br>2. The output must match the target output.<br>Test input: 3, 20.5, 22, 21.5.",
+              "Count: 3\nReading: 20.5\nReading: 22\nReading: 21.5\nAverage = 21.33", "# Write your program here\n", ["3", "20.5", "22", "21.5"], 'Display the average with print("Average =", round(total / count, 2)).'),
           ] },
           { kind: "problem", part: "Problem 8", title: "Problem 8: the first reading above a limit", blocks: [
-            T("Read up to 5 readings. At the first reading above 50, display its number and stop. If no reading is above 50, display All readings normal."),
+            T("Read at most 5 readings, and find the first reading above 50.<br>1. At the first reading above 50, display the position of that reading (1 to 5).<br>2. Then stop: read no more readings.<br>3. If no reading is above 50, display All readings normal."),
             IPO([["Input", "up to 5 readings (int)"], ["Output", "Alarm at reading k, or All readings normal"], ["Repetition", "for k in range(1, 6), with break and else"]]),
           ] },
           { kind: "exercise", part: "Problem 8", title: "Problem 8: write the program", blocks: [
-            PQ("Use the prompt <code>Reading: </code>. Test input: 30, 45, 55.",
-              "Reading: 30\nReading: 45\nReading: 55\nAlarm at reading 3", "# Write your program here\n", ["30", "45", "55"], 'if r > 50: print("Alarm at reading", k) and break; else: print("All readings normal")'),
+            PQ("Write the program for Problem 8.<br>1. Read each reading with the prompt <code>Reading: </code>.<br>2. The output must match the target output.<br>Test input: 30, 45, 55.",
+              "Reading: 30\nReading: 45\nReading: 55\nAlarm at reading 3", "# Write your program here\n", ["30", "45", "55"], 'When r > 50, use print("Alarm at reading", k) and break; use the else of the for loop for "All readings normal".'),
           ] },
           { kind: "summary", title: "Chapter summary: decisions", blocks: [
             TB(["Lesson", "Key rule"], [

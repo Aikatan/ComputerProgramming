@@ -375,23 +375,23 @@
             NEXT("<b>Decisions in flowcharts</b>. A diamond with two exits is the flowchart form of if and else."),
           ] },
           { kind: "exercise", title: "Name the symbols", blocks: [
-            T("Write the name of each symbol, and the Python statement that it can become, on paper. Check with the symbol tables of this lesson."),
+            T("Complete the table on paper.<br>1. Column Name: write the name of the symbol.<br>2. Column Python: write a Python statement that the symbol can become.<br>3. Check your answers with the symbol tables of this lesson."),
             TB(["Symbol", "Name", "Python"], [[icon("io"), "", ""], [icon("decision"), "", ""], [icon("process"), "", ""], [icon("terminator"), "", ""]]),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
             [CHART(F_ex1)],
-            [T("Trace the flowchart on paper and write its output. Then run the matching Python program and compare."), RUN("a = 5\nb = a * 3\na = b - 4\nprint(a, b)")],
+            [T("Find the output of the flowchart on paper.<br>1. Trace the flowchart from START to END.<br>2. Write the output.<br>3. Run the Python program of the flowchart.<br>4. Compare the output of the program with your answer."), RUN("a = 5\nb = a * 3\na = b - 4\nprint(a, b)")],
           ] },
           { kind: "problem", title: "Problem: the area of a circle", blocks: [
-            T("The flowchart computes the area of a circle from its radius r, with π ≈ 3.14. The next exercise converts it into Python."),
+            T("The flowchart computes the area of a circle from the radius r, with π ≈ 3.14. The next exercise converts the flowchart into Python."),
             CHART(F_circle),
           ] },
           { kind: "exercise", title: "Write the program for the flowchart", blocks: [
-            PQ("Write the Python program for the flowchart on the previous slide. Use the prompt <code>Radius: </code> and read r as a float. Test input: 2.",
-              "Radius: 2\n12.56", "# Write your program here\n", ["2"], 'r = float(input("Radius: "))'),
+            PQ("Write the Python program for the flowchart on the previous slide.<br>1. Read <code>r</code> as a float with the prompt <code>Radius: </code>.<br>2. The output must match the target output.<br>Test input: 2.",
+              "Radius: 2\n12.56", "# Write your program here\n", ["2"], 'Read the radius with r = float(input("Radius: ")).'),
           ] },
           { kind: "exercise", title: "Draw a flowchart", blocks: [
-            T("Draw the flowchart of this program on paper. Then compare it with the model answer on the next slide."),
+            T("Draw the flowchart of this program on paper.<br>Then compare your flowchart with the model answer on the next slide."),
             CODE("c = float(input())\nf = c * 9 / 5 + 32\nprint(f)", null, "program"),
           ] },
           { kind: "visual", title: "Model answer", blocks: [CHART(F_temp)] },
@@ -484,24 +484,24 @@
             CHART(F_hot),
           ] },
           { kind: "exercise", title: "Check your answers", cols: [
-            [T("This program follows the flowchart. Run it three times, and enter 35, 25, and 12.")],
+            [T("The program follows the flowchart of the previous slide.<br>1. Run the program three times.<br>2. Enter 35 the first time, 25 the second time, and 12 the third time.<br>3. Compare each output with your answer.")],
             [RUN('t = int(input("t: "))\nif t > 30:\n    print("HOT")\nelif t > 20:\n    print("WARM")\nelse:\n    print("COLD")')],
           ] },
           { kind: "exercise", title: "Draw a flowchart", blocks: [
-            T("Draw the flowchart of this program on paper. Then compare it with the model answer on the next slide."),
+            T("Draw the flowchart of this program on paper.<br>Then compare your flowchart with the model answer on the next slide."),
             CODE('n = int(input())\nif n > 0:\n    print("positive")\nelse:\n    print("not positive")', null, "program"),
           ] },
           { kind: "visual", title: "Model answer", blocks: [CHART(F_pos)] },
           { kind: "problem", title: "Problem: battery warning", blocks: [
-            T("The flowchart checks a battery level. The next exercise converts it into Python."),
+            T("The flowchart checks a battery level. The next exercise converts the flowchart into Python."),
             CHART(F_batt),
           ] },
           { kind: "exercise", title: "Write the program for the flowchart", blocks: [
-            PQ("Write the Python program for the flowchart on the previous slide. Use the prompt <code>Level: </code>. Test input: 15.",
-              "Level: 15\nCharge now", "# Write your program here\n", ["15"], 'if level < 20: print("Charge now") else: print("OK")'),
+            PQ("Write the Python program for the flowchart on the previous slide.<br>1. Read <code>level</code> with the prompt <code>Level: </code>.<br>2. The output must match the target output.<br>Test input: 15.",
+              "Level: 15\nCharge now", "# Write your program here\n", ["15"], 'Use if level < 20 with print("Charge now"), and else with print("OK").'),
           ] },
           { kind: "exercise", title: "Correct the unreachable condition", blocks: [
-            PQ("For x = 70 the program should display high, but the high branch is unreachable. Correct the order of the conditions. Test input: 70.",
+            PQ("Correct the program, so that the program displays the target output.<br>1. Change the order of the conditions.<br>2. For the test input 70, the output must be high.",
               "x: 70\nhigh", 'x = int(input("x: "))\nif x > 10:\n    print("medium")\nelif x > 50:\n    print("high")\nelse:\n    print("low")\n', ["70"], "Check x > 50 first."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -605,15 +605,15 @@
           ] },
           { kind: "exercise", title: "Trace the flowchart", cols: [
             [CHART(F_exLoop)],
-            [T("Trace the flowchart on paper. Write one row for each step between START and END: 9 rows."),
+            [T("Trace the flowchart on paper. Write one row for each step between START and END. The table has 9 rows."),
               W("traceTable", { flow: F_exLoop, blank: true, given: 1, rows: [0, 5] })],
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
-            [T("This program follows the flowchart. Run it with <b>Step Run</b> and compare with your table.")],
+            [T("The program follows the flowchart of the previous slide.<br>1. Run the program with <b>Step Run</b>.<br>2. After each line, compare the variables with your trace table.")],
             [RUN("total = 0\nk = 1\nwhile k <= 2:\n    total = total + k\n    k = k + 1\nprint(total)")],
           ] },
           { kind: "exercise", title: "Draw a flowchart", blocks: [
-            T("Draw the flowchart of this program on paper. Then compare it with the model answer on the next slide."),
+            T("Draw the flowchart of this program on paper.<br>Then compare your flowchart with the model answer on the next slide."),
             CODE("a = 2\nb = 11\nwhile a < b:\n    if a % 2 == 0:\n        a = a + 3\n    else:\n        b = b - 2\n        a = a + 1\n    print(a, b)", null, "program"),
           ] },
           { kind: "visual", title: "Model answer", blocks: [CHART(F_exam)] },
@@ -621,16 +621,16 @@
             RUN("a = 2\nb = 11\nwhile a < b:\n    if a % 2 == 0:\n        a = a + 3\n    else:\n        b = b - 2\n        a = a + 1\n    print(a, b)", "Trace the model flowchart on paper first. Then run this program."),
           ] },
           { kind: "problem", title: "Problem: the sum 1 to n", blocks: [
-            T("The flowchart adds the numbers from 1 to n. The next exercise converts it into Python."),
+            T("The flowchart adds the numbers from 1 to n. The next exercise converts the flowchart into Python."),
             CHART(F_sum),
           ] },
           { kind: "exercise", title: "Write the program for the flowchart", blocks: [
-            PQ("Write the Python program for the flowchart on the previous slide, with a while loop. Use the prompt <code>n: </code>. Test input: 5.",
-              "n: 5\n15", "# Write your program here\n", ["5"], "while i <= n: total = total + i; i = i + 1"),
+            PQ("Write the Python program for the flowchart on the previous slide.<br>1. Use a <code>while</code> loop.<br>2. Read <code>n</code> with the prompt <code>n: </code>.<br>3. The output must match the target output.<br>Test input: 5.",
+              "n: 5\n15", "# Write your program here\n", ["5"], "Use while i <= n, with total = total + i and i = i + 1 in the loop."),
           ] },
           { kind: "exercise", title: "Modify the loop", blocks: [
-            PQ("The program displays 1 to 10. Change the update, so that it displays 1, 4, 7, and 10.",
-              "1\n4\n7\n10", "x = 1\nwhile x <= 10:\n    print(x)\n    x = x + 1\n", null, "x = x + 3"),
+            PQ("Change the update in line 4, so that the program displays the target output.<br>1. The program must display 1, 4, 7, and 10 (not 1 to 10).",
+              "1\n4\n7\n10", "x = 1\nwhile x <= 10:\n    print(x)\n    x = x + 1\n", null, "Add 3 to x in each iteration: x = x + 3."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "In a flowchart, a loop is shown by…", choices: ["a second START", "an arrow back to a decision", "a connector", "a document symbol"], answer: 1, explain: "The arrow back makes the steps repeat." },
@@ -741,7 +741,7 @@
             ], null, true),
           ] },
           { kind: "problem", part: "From problem to pseudocode to Python", title: "Problem: a prime number", blocks: [
-            T("Read an integer n. Display Prime if n is at least 2 and has no divisor from 2 to n − 1, otherwise Not Prime."),
+            T("Read an integer n, and display Prime or Not Prime.<br>1. Display Prime when n is 2 or more and n has no divisor from 2 to n − 1.<br>2. Otherwise, display Not Prime."),
             IPO([["Input", "n (int)"], ["Output", "Prime or Not Prime"], ["Decision", "n &lt; 2: Not Prime (0 and 1 are not prime)"], ["Processing", "test every i from 2 to n − 1: is n % i == 0?"], ["Repetition", "FOR i FROM 2 TO n − 1"]]),
           ] },
           { kind: "code", part: "From problem to pseudocode to Python", title: "The pseudocode", cols: [
@@ -766,11 +766,11 @@
             PSEUDO("INPUT voltage\nINPUT current\nSET power TO voltage * current\nIF power > 100 THEN\n    DISPLAY \"Overload\"\nELSE\n    DISPLAY power\nEND IF"),
           ] },
           { kind: "exercise", title: "Write the program for the pseudocode", blocks: [
-            PQ("Write the Python program for the pseudocode on the previous slide. Use the prompts <code>Voltage: </code> and <code>Current: </code> and read floats. Test input: 12 and 10.",
-              "Voltage: 12\nCurrent: 10\nOverload", "# Write your program here\n", ["12", "10"], "if power > 100:"),
+            PQ("Write the Python program for the pseudocode on the previous slide.<br>1. Read the voltage as a float with the prompt <code>Voltage: </code>.<br>2. Read the current as a float with the prompt <code>Current: </code>.<br>Test input: voltage 12, current 10.",
+              "Voltage: 12\nCurrent: 10\nOverload", "# Write your program here\n", ["12", "10"], "Use if power > 100 to display Overload, and else to display the power."),
           ] },
           { kind: "exercise", title: "Write pseudocode", blocks: [
-            T("Write the pseudocode for this program on paper. Then compare it with the model answer on the next slide."),
+            T("Write the pseudocode for this program on paper.<br>Then compare your pseudocode with the model answer on the next slide."),
             CODE("total = 0\nfor i in range(1, 6):\n    if i % 2 == 1:\n        total = total + i\nprint(total)", null, "program"),
           ] },
           { kind: "visual", title: "Model answer", blocks: [
@@ -788,8 +788,8 @@
             T("The steps on each exit are indented under their keyword.")],
           ] },
           { kind: "exercise", title: "Design and write: sum of even numbers", blocks: [
-            PQ("First write the pseudocode as comments. Then write the program: read n and display the sum of the even numbers from 1 to n. Use the prompt <code>n: </code>. Test input: 10.",
-              "n: 10\n30", "# Pseudocode:\n\n", ["10"], "for i in range(1, n + 1): if i % 2 == 0: total = total + i"),
+            PQ("Write a program that displays the sum of the even numbers from 1 to n.<br>1. First write the pseudocode as comments.<br>2. Read <code>n</code> with the prompt <code>n: </code>.<br>3. Display only the sum, as in the target output.<br>Test input: 10.",
+              "n: 10\n30", "# Pseudocode:\n\n", ["10"], "Use for i in range(1, n + 1), and add i to total when i % 2 == 0 is True."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Pseudocode is bound to the syntax of one programming language.", choices: ["True", "False"], answer: 1, explain: "Pseudocode is language-independent plain language." },
@@ -821,42 +821,42 @@
             IPO([["Input", "length, width (float)"], ["Output", "the area"], ["Processing", "area = length * width"]]),
           ] },
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
-            PQ("Use the prompts <code>Length: </code> and <code>Width: </code>. Test input: 4 and 2.5.", "Length: 4\nWidth: 2.5\nArea = 10.0", "# Write your program here\n", ["4", "2.5"], 'print("Area =", length * width)'),
+            PQ("Write the program for Problem 1.<br>1. Read the length with the prompt <code>Length: </code>.<br>2. Read the width with the prompt <code>Width: </code>.<br>3. Display <code>Area =</code> and the area.<br>Test input: length 4, width 2.5.", "Length: 4\nWidth: 2.5\nArea = 10.0", "# Write your program here\n", ["4", "2.5"], 'Display the area with print("Area =", length * width).'),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: even or odd", blocks: [
             T("Read an integer, and display even or odd."),
             IPO([["Input", "an integer"], ["Output", "even or odd"], ["Decision", "number % 2 == 0"]]),
           ] },
           { kind: "exercise", part: "Problem 2", title: "Problem 2: write the program", blocks: [
-            PQ("Use the prompt <code>Number: </code>. Test input: 7.", "Number: 7\nodd", "# Write your program here\n", ["7"], 'if number % 2 == 0: print("even") else: print("odd")'),
+            PQ("Write the program for Problem 2.<br>1. Read the integer with the prompt <code>Number: </code>.<br>2. The output must match the target output.<br>Test input: 7.", "Number: 7\nodd", "# Write your program here\n", ["7"], 'Use if number % 2 == 0 with print("even"), and else with print("odd").'),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: average of three subjects", blocks: [
-            T("Read the scores of subjects A, B, and C. Display the average, rounded to 2 decimal places, and ผ่าน if the average is at least 50, otherwise ไม่ผ่าน."),
+            T("Read the scores of subjects A, B, and C, and display the result.<br>1. Display the average of the three scores, rounded to 2 decimal places.<br>2. Display ผ่าน when the average is 50 or more.<br>3. Otherwise, display ไม่ผ่าน."),
             IPO([["Input", "three scores (float)"], ["Output", "the average, then ผ่าน or ไม่ผ่าน"], ["Processing", "(A + B + C) ÷ 3"], ["Decision", "average &gt;= 50"]]),
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
-            PQ("Use the prompts <code>A: </code>, <code>B: </code>, <code>C: </code>. Test input: 45, 60, 52.", "A: 45\nB: 60\nC: 52\nAverage = 52.33\nผ่าน", "# Write your program here\n", ["45", "60", "52"], 'print("Average =", round(average, 2))'),
+            PQ("Write the program for Problem 3.<br>1. Use these prompts: <code>A: </code>, <code>B: </code>, <code>C: </code>.<br>2. The output must match the target output.<br>Test input: 45, 60, 52.", "A: 45\nB: 60\nC: 52\nAverage = 52.33\nผ่าน", "# Write your program here\n", ["45", "60", "52"], 'Display the average with print("Average =", round(average, 2)).'),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: sum from 1 to N", blocks: [
             T("Read N, and display the sum 1 + 2 + … + N."),
             IPO([["Input", "N (int)"], ["Output", "the sum"], ["Repetition", "FOR i FROM 1 TO N: add i to the total"]]),
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", blocks: [
-            PQ("Use the prompt <code>N: </code>. Test input: 10.", "N: 10\nSum = 55", "# Write your program here\n", ["10"], "for i in range(1, n + 1):"),
+            PQ("Write the program for Problem 4.<br>1. Read N with the prompt <code>N: </code>.<br>2. Display <code>Sum =</code> and the sum.<br>Test input: 10.", "N: 10\nSum = 55", "# Write your program here\n", ["10"], "Use for i in range(1, n + 1), and add i to the total in the loop."),
           ] },
           { kind: "problem", part: "Problem 5", title: "Problem 5: the largest of five numbers", blocks: [
-            T("Read 5 integers, and display the largest one. Keep the largest value so far in a variable."),
+            T("Read 5 integers, and display the largest integer.<br>Store the largest integer that the program has read in a variable."),
             IPO([["Input", "5 integers"], ["Output", "the largest"], ["Processing", "the first number is the largest so far; each next number that is larger replaces it"], ["Repetition", "for the remaining 4 numbers"]]),
           ] },
           { kind: "exercise", part: "Problem 5", title: "Problem 5: write the program", blocks: [
-            PQ("Use the prompt <code>Number: </code>. Test input: 7, 3, 12, 9, 5.", "Number: 7\nNumber: 3\nNumber: 12\nNumber: 9\nNumber: 5\nMax = 12", "# Write your program here\n", ["7", "3", "12", "9", "5"], "largest = first number; for k in range(4): if x > largest: largest = x"),
+            PQ("Write the program for Problem 5.<br>1. Use the prompt <code>Number: </code>.<br>2. Display <code>Max =</code> and the largest integer.<br>Test input: 7, 3, 12, 9, 5.", "Number: 7\nNumber: 3\nNumber: 12\nNumber: 9\nNumber: 5\nMax = 12", "# Write your program here\n", ["7", "3", "12", "9", "5"], "Store the first number in largest; then for each of the other 4 numbers x, store x in largest when x > largest."),
           ] },
           { kind: "problem", part: "Problem 6", title: "Problem 6: factorial", blocks: [
-            T("Read a positive integer n, and display n! = 1 × 2 × … × n. The lecture version of this problem calls a predefined process factorial(n). Functions are taught in Topic 05, so this program uses a loop."),
+            T("Read a positive integer n, and display n! = 1 × 2 × … × n.<br>1. Compute n! with a loop.<br>2. Do not use a function: functions are taught in Topic 05.<br>The lecture version of this problem calls a predefined process factorial(n)."),
             IPO([["Input", "n (int)"], ["Output", "n!"], ["Repetition", "result = result * i for i from 1 to n, starting with result = 1"]]),
           ] },
           { kind: "exercise", part: "Problem 6", title: "Problem 6: write the program", blocks: [
-            PQ("Use the prompt <code>n: </code> and display the result as in the target. Test input: 5.", "n: 5\n5! = 120", "# Write your program here\n", ["5"], 'print(str(n) + "! =", result)'),
+            PQ("Write the program for Problem 6.<br>1. Read n with the prompt <code>n: </code>.<br>2. Display the result in this form: <code>5! = 120</code>.<br>Test input: 5.", "n: 5\n5! = 120", "# Write your program here\n", ["5"], 'Display the result with print(str(n) + "! =", result).'),
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [
             TB(["Lesson", "Key rule"], [

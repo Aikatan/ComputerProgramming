@@ -18,7 +18,7 @@
   const W = (name, config) => ({ type: "widget", name, config });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
-  const PAPER = T("Write the output of this program on paper, line by line.<br>Then run the program and compare.");
+  const PAPER = T("Determine the output of the program.<br>1. Write the output on paper, line by line.<br>2. Run the program.<br>3. Compare the output with your answer on paper.");
   const STARTER = "# Write your program here\n";
 
   App.registerTopic({
@@ -322,7 +322,7 @@
             NEXT("<b>Course tools</b>. A Python program needs an editor to write it and an interpreter to run it. The next lesson installs both."),
           ] },
           { kind: "exercise", title: "Complete the table: compiler or interpreter", blocks: [
-            T("Write <b>compiler</b> or <b>interpreter</b> for each statement on paper. The next exercise checks it."),
+            T("On paper, write <b>compiler</b> or <b>interpreter</b> for each statement in the table.<br>The next exercise shows the completed table."),
             TB(["Statement", "Compiler or interpreter?"], [
               ["Translates the whole program before it runs", ""],
               ["Translates and executes one statement at a time", ""],
@@ -345,15 +345,15 @@
             [RUN('print("Program start")\nprint(4 * 25)\nprint("Program end")')],
           ] },
           { kind: "exercise", title: "Determine the output: a program that stops", cols: [
-            [T("Write on paper the lines that are displayed before the program stops. Explain why line 3 is not executed.<br>Then run the program and compare.")],
+            [T("Determine the output of the program.<br>1. On paper, write the lines that the program displays before the program stops.<br>2. Explain why Python does not execute line 3 of the program.<br>3. Run the program.<br>4. Compare the output with your answer on paper.")],
             [RUN('print("Motor ON")\nprint(100 / 0)\nprint("Motor OFF")')],
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The program does not run: the interpreter reports a syntax error. Correct it.",
+            PQ("Correct the program, so that the program displays the target output.<br>The error: the interpreter reports a syntax error, and the program does not run.",
               "Hello, World!", 'print("Hello, World!)\n', null, "Text starts and ends with a quote."),
           ] },
           { kind: "exercise", title: "Test and correct a program", blocks: [
-            PQ("The program should display the length 2.5 km in metres. It runs without an error message. Test it with a hand calculation (1 km = 1000 m), then correct it.",
+            PQ("Test and correct the program. The program must display the length 2.5 km in metres.<br>1. Compute the length by hand: 1 km = 1000 m.<br>2. Run the program. Compare the output with your result.<br>3. Correct the program to display the target output.",
               "Length (m):\n2500.0", 'print("Length (m):")\nprint(2.5 / 1000)\n', null, "2.5 km is 2.5 × 1000 m."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -437,7 +437,7 @@
             NEXT("<b>Creating and running a program</b>. With the tools installed, the next lesson creates a project folder and a file, and runs the first program."),
           ] },
           { kind: "exercise", title: "Complete the table: tools", blocks: [
-            T("Write the tool used for each task on paper. The next exercise checks it."),
+            T("On paper, write the tool for each task in the table.<br>The next exercise shows the completed table."),
             TB(["Task", "Tool"], [
               ["Write and edit a <code>.py</code> file", ""],
               ["Execute a Python program", ""],
@@ -459,7 +459,7 @@
             T("Complete these steps on your own computer before the next class."),
             L([
               "Install Visual Studio Code.",
-              "Install Python 3.10 or later with the PATH option, or Miniconda 3.",
+              "Install Python 3.10 or later, or Miniconda 3. In the Python installer, select the option that adds Python to PATH.",
               "Install the Python and Jupyter extensions in VS Code.",
               "Open a terminal in VS Code (<b>Terminal → New Terminal</b>) and run <code>python --version</code> (<code>python3 --version</code> on macOS).",
               "Result check: the terminal displays <code>Python 3.10</code> or a later version, followed by a third number, for example <code>Python 3.12.8</code>.",
@@ -588,7 +588,7 @@
             NEXT("<b>Chapter practice</b>. Short programs that display text and results, written and run with the tools of this chapter."),
           ] },
           { kind: "exercise", title: "Complete the table: .py or .ipynb", blocks: [
-            T("Write <code>.py</code> or <code>.ipynb</code> for each description on paper. The next exercise checks it."),
+            T("On paper, write <code>.py</code> or <code>.ipynb</code> for each description in the table.<br>The next exercise shows the completed table."),
             TB(["Description", ".py or .ipynb?"], [
               ["The whole file runs from top to bottom", ""],
               ["The output appears below each cell", ""],
@@ -607,7 +607,7 @@
             ]),
           ] },
           { kind: "exercise", title: "Put the steps in order", blocks: [
-            T("The steps to run a first program in VS Code are in the wrong order. Write the letters in the correct order on paper. The next exercise checks it."),
+            T("On paper, write the letters of the steps in the correct order.<br>The table lists the steps to run a first program in VS Code, in the wrong order.<br>The next exercise shows the correct order."),
             TB(["Letter", "Step"], [
               ["A", "Run the file with the ▶ button."],
               ["B", "Create the file <code>lab00.py</code>."],
@@ -627,12 +627,12 @@
             ], null, true),
           ] },
           { kind: "exercise", title: "Correct the errors", blocks: [
-            PQ("The program has two mistakes. Run it, read the last line of each error message, and correct one mistake at a time.",
+            PQ("Correct the two mistakes, so that the program displays the target output.<br>1. Run the program.<br>2. Read the last line of the error message.<br>3. Correct one mistake only.<br>4. Repeat steps 1 to 3 for the second mistake.",
               "Lab 00\nPython is ready.", 'Print("Lab 00")\n print("Python is ready.")\n', null, "Python is case-sensitive, and a statement starts at the beginning of the line."),
           ] },
           { kind: "exercise", title: "Write and run a program", blocks: [
-            PQ("Write <code>lab00.py</code>, which displays the three lines of the target output. Run it in VS Code and in a Google Colab cell; then check it here.",
-              "Lab 00\nComputer Programming\nMy first program runs.", STARTER, null, 'Use one print() for each line: print("Lab 00")'),
+            PQ("Write the program <code>lab00.py</code> that displays the three lines of the target output.<br>1. Run the program in VS Code.<br>2. Run the program in a Google Colab cell.<br>3. Write the program in the box <b>Your code</b> and select <b>Check</b>.",
+              "Lab 00\nComputer Programming\nMy first program runs.", STARTER, null, 'Use one print() for each line of the output, for example print("Lab 00").'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "A Jupyter notebook cell is used to…", choices: ["run the whole program only once", "run a small piece of code on its own", "store images only", "select the interpreter"], answer: 1, explain: "Each cell runs on its own, and its output appears below it." },
@@ -660,7 +660,7 @@
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: a welcome message", blocks: [
-            T("Display the course code and the course name on the first line, and a greeting on the second line."),
+            T("Display two lines of text.<br>1. Line 1 of the output: the course code and the course name.<br>2. Line 2 of the output: a greeting."),
             IPO([
               ["Given values", "the course code 010711301 and the name Computer Programming"],
               ["Required output", "two lines of text"],
@@ -668,8 +668,8 @@
             ]),
           ] },
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
-            PQ("Write the program. Write it in VS Code or Google Colab as well.",
-              "010711301 Computer Programming\nHello, ComPro!", STARTER, null, 'print("010711301 Computer Programming")'),
+            PQ("Write the program for Problem 1 that displays the target output.<br>Also write the same program in VS Code or in Google Colab.",
+              "010711301 Computer Programming\nHello, ComPro!", STARTER, null, 'Use one print() for each line of the output, for example print("010711301 Computer Programming").'),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: a total score", blocks: [
             T("A student has these scores: attendance 7, assignments 22, project 8, midterm 12, final 18. Display the total score, and then the grade."),
@@ -681,8 +681,8 @@
             N("A program can choose the grade itself with a decision, <code>if</code> (Topic 03).", "Note"),
           ] },
           { kind: "exercise", part: "Problem 2", title: "Problem 2: write the program", blocks: [
-            PQ("Write the program. The first <code>print()</code> statement displays two values: the label and the calculated total. The second displays the grade that you found by hand. Check by hand: the total is 67, in the range 60–69.",
-              "Total score: 67\nGrade: C+", STARTER, null, 'print("Total score:", 7 + 22 + 8 + 12 + 18)'),
+            PQ("Write the program for Problem 2 that displays the target output.<br>1. The first <code>print()</code> displays the label and the total. Write the total as a calculation.<br>2. The second <code>print()</code> displays the grade that you found by hand.<br>3. Check by hand: the total is 67, in the range 60–69.",
+              "Total score: 67\nGrade: C+", STARTER, null, 'The first statement is print("Total score:", 7 + 22 + 8 + 12 + 18).'),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: an attendance score", blocks: [
             T("A student was late 2 times and absent 2 times. Display the attendance score."),
@@ -693,11 +693,11 @@
             ]),
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
-            PQ("Write the program. Check by hand: 10 − 2 − 3 = 5.",
-              "Attendance score:\n5", STARTER, null, "print(10 - 2 - 3)"),
+            PQ("Write the program for Problem 3 that displays the target output.<br>Check by hand: 10 − 2 − 3 = 5.",
+              "Attendance score:\n5", STARTER, null, "Use print(10 - 2 - 3) for line 2 of the output."),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: a late assignment", blocks: [
-            T("An assignment earns 9 of 10 points, but it is submitted 2 days late. Display the score that it receives."),
+            T("An assignment earns 9 of 10 points, but the assignment is submitted 2 days late. Display the score that the assignment receives."),
             T("This problem gives no table. Before writing the program, do steps 1 and 2 of the five steps on paper:"),
             L([
               "<b>Understand</b>: write the given values and the required output.",
@@ -705,8 +705,8 @@
             ], null, true),
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", blocks: [
-            PQ("Write the program from your notes on paper. Test it: compare the output with your hand calculation.",
-              "Assignment score:\n4.5", STARTER, null, "print(9 / 2)"),
+            PQ("Write the program for Problem 4 that displays the target output.<br>1. Use your notes on paper.<br>2. Test the program: compare the output with your hand calculation.",
+              "Assignment score:\n4.5", STARTER, null, "Use print(9 / 2) for line 2 of the output."),
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [
             TB(["Lesson", "Key point"], [

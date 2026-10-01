@@ -206,16 +206,16 @@
             NEXT("<b>Parameters and return values</b>. A function can receive values and send a result back."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper. Count how many times each line runs.<br>Then run the program and compare.")],
+            [T("Write the output of the program on paper.<br>1. Count how many times each line of the program runs.<br>2. Then run the program.<br>3. Compare the output with your answer.")],
             [RUN('def beep():\n    print("beep")\n\nprint("start")\nbeep()\nbeep()\nprint("end")')],
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The program stops with a NameError, because the function is called before it is defined. Reorder the lines.",
-              "Hello", 'greet()\n\ndef greet():\n    print("Hello")\n', null, "Move the call below the definition."),
+            PQ("The program stops with a NameError.<br>Change the order of the lines, so that the program displays the target output.",
+              "Hello", 'greet()\n\ndef greet():\n    print("Hello")\n', null, "The function is called before it is defined: move the call below the definition."),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("Define a function <code>header()</code> that displays the two lines of the target. Call it once.",
-              "Sensor report\n=============", "# Write your program here\n", null, 'def header(): print("Sensor report") and print("=" * 13)'),
+            PQ("Write a program that displays the target output.<br>1. Define a function <code>header()</code> that displays the two lines of the target output.<br>2. Call the function <code>header()</code> one time.",
+              "Sensor report\n=============", "# Write your program here\n", null, 'The body of header() has two statements: print("Sensor report") and print("=" * 13).'),
           ] },
           { kind: "exercise", title: "Modify the code", blocks: [
             PQ("Call the function three times, so that the output has three lines.",
@@ -313,7 +313,7 @@
             NEXT("<b>Arguments</b>. Arguments can be given by position or by name, and parameters can have default values."),
           ] },
           { kind: "exercise", title: "Trace the code", cols: [
-            [T("Write the value of each variable after every line on paper.<br>Then use <b>Step Run</b> to check.")],
+            [T("Trace the program on paper.<br>1. Write the value of each variable after each line runs.<br>2. Then run the program with <b>Step Run</b>.<br>3. Compare the values with your answer.")],
             [RUN("def area(w, h):\n    a = w * h\n    return a\n\nx = area(3, 4)\ny = area(x, 2)\nprint(x, y)")],
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
@@ -321,16 +321,16 @@
               "3.0", "def current(v, r):\n    return \n\nprint(current(12, 4))\n", null, "return v / r"),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The program should display Energy = 500 Wh, but it displays None. Correct the function.",
+            PQ("The program displays <code>None</code>, not the energy.<br>Correct the function <code>energy()</code>, so that the program displays the target output.",
               "Energy = 500 Wh", 'def energy(p, hours):\n    print(p * hours)\n\ne = energy(100, 5)\nprint("Energy =", e, "Wh")\n', null, "Use return instead of print."),
           ] },
           { kind: "exercise", title: "Write a function", blocks: [
-            PQ("Define <code>rect(w, h)</code> that returns the area and the perimeter of a rectangle. Display both for w = 5 and h = 3.",
-              "15 16", "# Write your program here\n", null, "return w * h, 2 * (w + h); then a, p = rect(5, 3)"),
+            PQ("Write a program that displays the area and the perimeter of a rectangle.<br>1. Define a function <code>rect(w, h)</code> that returns the area and the perimeter.<br>2. Use these values: w = 5, h = 3.<br>3. Display the two results on one line.",
+              "15 16", "# Write your program here\n", null, "Return both values with return w * h, 2 * (w + h), and store them with a, p = rect(5, 3)."),
           ] },
           { kind: "exercise", title: "Design and write", blocks: [
-            PQ("First write the input, output, and processing as comments. Then define <code>average(a, b, c)</code> that returns the average, and display it rounded to 2 decimal places for 20, 22, and 26.",
-              "22.67", "# Input:\n# Output:\n# Processing:\n\n", null, "return (a + b + c) / 3, then print(round(average(20, 22, 26), 2))"),
+            PQ("Write a program that displays the average of three numbers.<br>1. First complete the three comments.<br>2. Define a function <code>average(a, b, c)</code> that returns the average.<br>3. Use these values: 20, 22, 26.<br>4. Display the result, rounded to 2 decimal places.",
+              "22.67", "# Input:\n# Output:\n# Processing:\n\n", null, "The function returns (a + b + c) / 3, and the main program displays round(average(20, 22, 26), 2)."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "In `def power(v, i):`, v and i are…", choices: ["arguments", "parameters", "return values", "global variables"], answer: 1, explain: "The names in the definition are parameters." },
@@ -418,20 +418,20 @@
             NEXT("<b>Variable scope</b>. Which variables a function can see and change."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each call on paper.<br>Then run the program and compare.")],
+            [T("Write the output of each call of <code>show()</code> on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
             [RUN('def show(a, b=5, c="V"):\n    print(a + b, c)\n\nshow(1)\nshow(1, 2)\nshow(1, c="A")\nshow(b=10, a=0)')],
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The definition causes a SyntaxError: a parameter with a default value comes before one without. Correct line 1.",
-              "Fan 110 V", 'def motor(voltage=220, name):\n    print(name, voltage, "V")\n\nmotor("Fan", 110)\n', null, "def motor(name, voltage=220):"),
+            PQ("Line 1 of the program causes a SyntaxError.<br>Correct line 1, so that the program displays the target output.",
+              "Fan 110 V", 'def motor(voltage=220, name):\n    print(name, voltage, "V")\n\nmotor("Fan", 110)\n', null, "A parameter with a default value must come after the parameters without one: def motor(name, voltage=220):"),
           ] },
           { kind: "exercise", title: "Write a function with a default value", blocks: [
-            PQ("Define <code>power(v, i, efficiency=1.0)</code> that returns v × i × efficiency. Display power(12, 2) and power(12, 2, efficiency=0.75).",
+            PQ("Write a program that displays the target output.<br>1. Define a function <code>power(v, i, efficiency=1.0)</code> that returns v × i × efficiency.<br>2. Display <code>power(12, 2)</code> and <code>power(12, 2, efficiency=0.75)</code> on one line.",
               "24.0 18.0", "# Write your program here\n", null, "return v * i * efficiency"),
           ] },
           { kind: "exercise", title: "Write a function with *args", blocks: [
-            PQ("Define <code>average(*values)</code> that returns the average of its arguments. Use a for loop to add the values and to count them. Display average(3, 17, 9, 12).",
-              "10.25", "# Write your program here\n", null, "total = total + v and count = count + 1 in the loop; return total / count"),
+            PQ("Write a program that displays the target output.<br>1. Define a function <code>average(*values)</code> that returns the average of its arguments.<br>2. In the function, use a <code>for</code> loop to add the values and to count the values.<br>3. Display <code>average(3, 17, 9, 12)</code>.",
+              "10.25", "# Write your program here\n", null, "In the loop, write total = total + v and count = count + 1; after the loop, return total / count."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`def calc(a, b=2, c=3): return a + b * c`. What is `calc(1, 3)`?", choices: ["7", "10", "12", "Error"], answer: 1, explain: "3 goes to b (the second position): 1 + 3 * 3 = 10." },
@@ -527,20 +527,20 @@
             NEXT("<b>Nested calls and recursion</b>. A function can call another function, or itself."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper. Decide for each name whether it is local or global.<br>Then run the program and compare.")],
+            [T("Write the output of the program on paper.<br>1. Decide for each <code>n</code> in the program: local variable or global variable.<br>2. Then run the program.<br>3. Compare the output with your answer.")],
             [RUN('n = 3\n\ndef test():\n    n = 7\n    print("inside:", n)\n\ntest()\nprint("outside:", n)')],
           ] },
           { kind: "exercise", title: "Determine the output: global", cols: [
-            [T("Write the output on paper.<br>Then run the program and compare.")],
+            [T("Write the output of the program on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
             [RUN("count = 0\ndef add_one():\n    global count\n    count = count + 1\nadd_one()\nadd_one()\nprint(count)")],
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The last line causes a NameError, because total is local. Change the function to return total, and store the result in the main program.",
-              "Total = 30", 'def add(a, b):\n    total = a + b\n\nadd(10, 20)\nprint("Total =", total)\n', null, "return total, then total = add(10, 20)"),
+            PQ("Line 5 of the program causes a NameError.<br>Correct the program, so that it displays the target output.<br>1. In the function <code>add()</code>, add a statement that returns <code>total</code>.<br>2. In line 4 of the program, store the returned value in the variable <code>total</code>.",
+              "Total = 30", 'def add(a, b):\n    total = a + b\n\nadd(10, 20)\nprint("Total =", total)\n', null, "The variable total is local to add(): write return total in the function, and total = add(10, 20) in line 4."),
           ] },
           { kind: "exercise", title: "Rewrite without global", blocks: [
-            PQ("Rewrite the program without <code>global</code>: the function receives the level and returns the new level.",
-              "70", "level = 40\ndef charge():\n    global level\n    level = level + 30\ncharge()\nprint(level)\n", null, "def charge(level): return level + 30, then level = charge(level)"),
+            PQ("Change the program, so that it displays the target output without <code>global</code>.<br>1. The function <code>charge()</code> receives the level as a parameter.<br>2. The function returns the new level.<br>3. The main program stores the returned value in <code>level</code>.",
+              "70", "level = 40\ndef charge():\n    global level\n    level = level + 30\ncharge()\nprint(level)\n", null, "Define charge(level) with return level + 30, and call the function with level = charge(level)."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`value = 1`, then `def show(): value = 2; print(value, end=\" \")`, then `show()` and `print(value)`. The output is…", choices: ["1 1", "1 2", "2 1", "2 2"], answer: 2, explain: "show displays its local value 2. The global value is still 1." },
@@ -619,21 +619,21 @@
             NEXT("<b>Modules</b>. Functions can be stored in a file and used in other programs."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program and compare.")],
+            [T("Write the output of the program on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
             [RUN("def square(x):\n    return x * x\n\ndef sum_squares(a, b):\n    return square(a) + square(b)\n\nprint(sum_squares(3, 4))")],
           ] },
           { kind: "exercise", title: "Trace the recursion", cols: [
-            [T("Complete the table on paper: each call, what it waits for, and what it returns. Then run the program to check the result."),
+            [T("Complete the table on paper.<br>1. <b>Waits for</b>: write the call that each call waits for.<br>2. <b>Returns</b>: write the value that each call returns.<br>3. Then run the program to check the value that <code>power2(3)</code> returns."),
               TB(["Call", "Waits for", "Returns"], [["power2(3)", "", ""], ["power2(2)", "", ""], ["power2(1)", "", ""], ["power2(0)", "", ""]], null, "center")],
             [RUN("def power2(n):\n    if n == 0:\n        return 1\n    return 2 * power2(n - 1)\n\nprint(power2(3))")],
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The recursion never reaches its base case and stops with a RecursionError. Correct the recursive call.",
-              "15", "def sum_to(n):\n    if n == 1:\n        return 1\n    return n + sum_to(n + 1)\n\nprint(sum_to(5))\n", null, "The call must move toward n == 1: sum_to(n - 1)."),
+            PQ("The program stops with a RecursionError.<br>Correct the recursive call in line 4, so that the program displays the target output.",
+              "15", "def sum_to(n):\n    if n == 1:\n        return 1\n    return n + sum_to(n + 1)\n\nprint(sum_to(5))\n", null, "The recursion never reaches the base case n == 1: the call must be sum_to(n - 1)."),
           ] },
           { kind: "exercise", title: "Write a recursive function", blocks: [
-            PQ("Define a recursive <code>countdown(n)</code> that displays n, n − 1, …, 1 and then Go. Call countdown(3).",
-              "3\n2\n1\nGo", "# Write your program here\n", null, 'if n == 0: print("Go") else: print(n) and countdown(n - 1)'),
+            PQ("Define a recursive function <code>countdown(n)</code>.<br>1. The function displays n, n − 1, …, 1, and then <code>Go</code>.<br>2. Call <code>countdown(3)</code>.",
+              "3\n2\n1\nGo", "# Write your program here\n", null, 'When n == 0, display "Go"; in the else branch, display n and then call countdown(n - 1).'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "What stops a recursive function?", choices: ["The global keyword", "The base case", "A second function", "print"], answer: 1, explain: "The base case returns without calling the function again." },
@@ -716,15 +716,15 @@
             NEXT("<b>Chapter practice</b>. Complete problems solved with functions."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program and compare.")],
+            [T("Write the output of the program on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
             [RUN("import math\nfrom math import floor\n\nprint(math.ceil(4.2))\nprint(floor(4.8))\nprint(math.pow(3, 2))")],
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The program stops with a NameError: after <code>from math import sqrt</code>, the name math is not defined. Correct line 3.",
-              "4.0", "from math import sqrt\n\nprint(math.sqrt(16))\n", null, "Call sqrt(16) directly."),
+            PQ("The program stops with a NameError in line 3.<br>Correct line 3, so that the program displays the target output.",
+              "4.0", "from math import sqrt\n\nprint(math.sqrt(16))\n", null, "After from math import sqrt, the name math is not defined: call sqrt(16) without math."),
           ] },
           { kind: "exercise", title: "Write a program with math", blocks: [
-            PQ("Define <code>hypotenuse(a, b)</code> that returns √(a² + b²) with <code>math.sqrt</code>. Display hypotenuse(3, 4).",
+            PQ("Write a program that displays the target output.<br>1. Define a function <code>hypotenuse(a, b)</code> that returns √(a² + b²).<br>2. Use <code>math.sqrt()</code> in the function.<br>3. Display <code>hypotenuse(3, 4)</code>.",
               "5.0", "import math\n\n# Write the function here\n", null, "return math.sqrt(a ** 2 + b ** 2)"),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -757,7 +757,7 @@
             IPO([["Parameters", "hours, minutes, seconds"], ["Return value", "the total in seconds"], ["Processing", "hours × 3600 + minutes × 60 + seconds"]]),
           ] },
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the function", blocks: [
-            PQ("Write the function and display <code>time_to_seconds(1, 2, 5)</code>.", "3725", "# Write your program here\n", null, "return hours * 3600 + minutes * 60 + seconds"),
+            PQ("Write the program of Problem 1.<br>1. Define the function <code>time_to_seconds(hours, minutes, seconds)</code>.<br>2. Display <code>time_to_seconds(1, 2, 5)</code>.", "3725", "# Write your program here\n", null, "return hours * 3600 + minutes * 60 + seconds"),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: square root of a random number", blocks: [
             T("Define <code>generate_random_sqrt(n)</code> that picks a random integer from 1 to n and returns its square root."),
@@ -765,24 +765,24 @@
             N("<code>random.seed(1)</code> makes the random numbers repeat, so that the output can be checked."),
           ] },
           { kind: "exercise", part: "Problem 2", title: "Problem 2: write the function", blocks: [
-            PQ("Write the function. After <code>random.seed(1)</code>, display <code>round(generate_random_sqrt(100), 3)</code>.", "4.243", "import math\nimport random\n\nrandom.seed(1)\n# Write the function and the call here\n", null, "return math.sqrt(random.randint(1, n))"),
+            PQ("Write the program of Problem 2.<br>1. Write your code below line 4, <code>random.seed(1)</code>.<br>2. Define the function <code>generate_random_sqrt(n)</code>.<br>3. Display <code>round(generate_random_sqrt(100), 3)</code>.", "4.243", "import math\nimport random\n\nrandom.seed(1)\n# Write the function and the call here\n", null, "return math.sqrt(random.randint(1, n))"),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: a prime test", blocks: [
             T("Define <code>is_prime(n)</code> that returns True if n is a prime number, otherwise False."),
             IPO([["Parameter", "n (int, greater than 1)"], ["Return value", "True or False"], ["Processing", "return False at the first divisor from 2 to n − 1; return True after the loop"]]),
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the function", blocks: [
-            PQ("Write the function and display <code>is_prime(13), is_prime(15)</code> on one line.", "True False", "# Write your program here\n", null, "for i in range(2, n): if n % i == 0: return False; return True"),
+            PQ("Write the program of Problem 3.<br>1. Define the function <code>is_prime(n)</code>.<br>2. Display <code>is_prime(13)</code> and <code>is_prime(15)</code> on one line.", "True False", "# Write your program here\n", null, "In a loop for i in range(2, n), return False when n % i == 0; after the loop, return True."),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: temperature conversion with a default", blocks: [
-            T("Define <code>convert(t, unit=\"F\")</code> that converts a temperature t in °C: to °F when unit is \"F\" (F = C × 9 / 5 + 32), to kelvin when unit is \"K\" (K = C + 273.15)."),
+            T("Define <code>convert(t, unit=\"F\")</code> that converts a temperature t in °C.<br>1. When unit is \"F\", the function returns °F: F = C × 9 / 5 + 32.<br>2. When unit is \"K\", the function returns kelvin: K = C + 273.15."),
             IPO([["Parameters", "t, and unit with the default \"F\""], ["Return value", "the converted temperature"], ["Decision", "unit == \"F\" or unit == \"K\""]]),
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the function", blocks: [
-            PQ("Write the function and display <code>convert(25), convert(25, unit=\"K\")</code> on one line.", "77.0 298.15", "# Write your program here\n", null, 'if unit == "F": return t * 9 / 5 + 32 else: return t + 273.15'),
+            PQ("Write the program of Problem 4.<br>1. Define the function <code>convert(t, unit=\"F\")</code>.<br>2. Display <code>convert(25)</code> and <code>convert(25, unit=\"K\")</code> on one line.", "77.0 298.15", "# Write your program here\n", null, 'When unit == "F", return t * 9 / 5 + 32; in the else branch, return t + 273.15.'),
           ] },
           { kind: "problem", part: "Problem 5", title: "Problem 5: battery run time from input", blocks: [
-            T("The main program reads the capacity of a battery (mAh) and the load current (mA), calls a function, and displays the run time in hours."),
+            T("Compute the run time of a battery with a function. The main program has three steps:<br>1. Read the capacity of the battery (mAh) and the load current (mA).<br>2. Call the function.<br>3. Display the run time in hours."),
             IPO([
               ["Input", "capacity and current (float), read with input() in the main program"],
               ["Function", "<code>run_time(capacity, current)</code> returns capacity ÷ current"],
@@ -791,17 +791,17 @@
             ]),
           ] },
           { kind: "exercise", part: "Problem 5", title: "Problem 5: write the program", blocks: [
-            PQ("Write the function. Then complete the main program: call the function and display the result as in the target. Test input: 2000 and 250.",
+            PQ("Write the program of Problem 5.<br>1. Line 1 of the program: define <code>run_time(capacity, current)</code>.<br>2. Line 5 of the program: call the function.<br>3. Then display the 3rd line of the target output.<br>Test input: 2000 and 250.",
               "Capacity (mAh): 2000\nCurrent (mA): 250\nRun time = 8.0 h",
               '# Write the function here\n\ncapacity = float(input("Capacity (mAh): "))\ncurrent = float(input("Current (mA): "))\n# Call the function and display the result\n',
-              ["2000", "250"], 'hours = run_time(capacity, current), then print("Run time =", hours, "h")'),
+              ["2000", "250"], 'Store the result with hours = run_time(capacity, current), then write print("Run time =", hours, "h").'),
           ] },
           { kind: "problem", part: "Problem 6", title: "Problem 6: recursive sum of digits", blocks: [
             T("Define a recursive <code>digit_sum(n)</code> that returns the sum of the digits of a positive integer n."),
             IPO([["Parameter", "n"], ["Return value", "the sum of the digits"], ["Base case", "n &lt; 10: return n"], ["Recursive case", "the last digit (n % 10) + digit_sum(n // 10)"]]),
           ] },
           { kind: "exercise", part: "Problem 6", title: "Problem 6: write the function", blocks: [
-            PQ("Write the function and display <code>digit_sum(2026)</code>.", "10", "# Write your program here\n", null, "if n < 10: return n; return n % 10 + digit_sum(n // 10)"),
+            PQ("Write the program of Problem 6.<br>1. Define the recursive function <code>digit_sum(n)</code>.<br>2. Display <code>digit_sum(2026)</code>.", "10", "# Write your program here\n", null, "When n < 10, return n; in the other case, return n % 10 + digit_sum(n // 10)."),
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [
             TB(["Lesson", "Key rule"], [

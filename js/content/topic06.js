@@ -243,23 +243,23 @@
             NEXT("<b>Lists</b>. A list stores several values of any type in one variable."),
           ] },
           { kind: "exercise", title: "Determine the output: slicing", cols: [
-            [T("Write the output of each line on paper.<br>Then run the program and compare.")],
+            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
             [RUN('s = "Programming"\nprint(s[::-1])\nprint(s[-4:])\nprint(s[2:100])\nprint(s[::3])')],
           ] },
           { kind: "exercise", title: "Determine the output: methods", cols: [
-            [T("Write the output of each line on paper.<br>Then run the program and compare.")],
+            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
             [RUN('s = "  a-b-c  "\nprint(s.strip())\nprint(s.find("b"))\nprint(s.find("z"))\nprint(s.count("-"))')],
           ] },
           { kind: "exercise", title: "Write a program: find a character", blocks: [
-            PQ("Read an e-mail address with the prompt <code>E-mail: </code>. Display the index of \"@\", or not found when there is no \"@\". Test input: user.name@kmutnb.ac.th.",
-              "E-mail: user.name@kmutnb.ac.th\n9", "# Write your program here\n", ["user.name@kmutnb.ac.th"], "pos = email.find(\"@\"); if pos == -1: ..."),
+            PQ("Write a program that reads an e-mail address and displays the index of \"@\".<br>1. Use the prompt <code>E-mail: </code>.<br>2. When the address has no \"@\", display <code>not found</code>.<br>Test input: user.name@kmutnb.ac.th.",
+              "E-mail: user.name@kmutnb.ac.th\n9", "# Write your program here\n", ["user.name@kmutnb.ac.th"], "Store email.find(\"@\") in pos: find() returns -1 when the address has no \"@\"."),
           ] },
           { kind: "exercise", title: "Write a program: count digits", blocks: [
-            PQ("Count the digits in the string \"A1B22C\" with a loop and <code>isdigit()</code>, and display the count.",
+            PQ("Write a program that counts the digits in the string <code>\"A1B22C\"</code>.<br>1. Use a loop over the characters of <code>code</code>.<br>2. Use <code>isdigit()</code> to check each character.<br>3. Display the count.",
               "3", 'code = "A1B22C"\n# Write the loop here\n', null, "if ch.isdigit(): count = count + 1"),
           ] },
           { kind: "exercise", title: "Write a program: clean a message", blocks: [
-            PQ("Remove the outer spaces of <code>\"  motor ok  \"</code>, change it to capital letters, and display it.",
+            PQ("Write a program that displays the target output from the string <code>msg</code>.<br>1. Remove the spaces at the start and at the end of <code>msg</code>.<br>2. Change the letters to capital letters.<br>3. Display the result.",
               "MOTOR OK", 'msg = "  motor ok  "\n', null, "print(msg.strip().upper())"),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -367,7 +367,7 @@
             NEXT("<b>List methods</b>. Methods add, remove, and reorder the elements of a list."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each line on paper.<br>Then run the program and compare.")],
+            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
             [RUN("nums = [10, 20, 30, 40, 50]\nprint(nums[1])\nprint(nums[-2])\nprint(nums[1:3])\nprint(nums[::2])")],
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
@@ -375,12 +375,12 @@
               "21.5", "readings = [20, 22, 21, 23]\naverage = \nprint(average)\n", null, "average = sum(readings) / len(readings)"),
           ] },
           { kind: "exercise", title: "Write a program: count values", blocks: [
-            PQ("Count the readings above 25 in the list, and display the count.",
+            PQ("Write a program that counts the readings above 25 in the list <code>readings</code>.<br>1. Use a loop over the elements of the list.<br>2. Display the count.",
               "3", "readings = [24, 26, 25, 30, 28, 22]\n# Write the loop here\n", null, "if r > 25: count = count + 1"),
           ] },
           { kind: "exercise", title: "Write a program: the largest without max()", blocks: [
-            PQ("Find the largest reading with a loop, without <code>max()</code>, and display it.",
-              "31", "readings = [24, 31, 25, 30]\n# Write the loop here\n", null, "largest = readings[0]; for r in readings: if r > largest: largest = r"),
+            PQ("Write a program that finds the largest reading in the list <code>readings</code>.<br>1. Use a loop over the elements of the list.<br>2. Do not use <code>max()</code>.<br>3. Display the largest reading.",
+              "31", "readings = [24, 31, 25, 30]\n# Write the loop here\n", null, "Start with largest = readings[0]; in the loop, write if r > largest: largest = r."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`nums = [10, 20, 30]`. What is `nums[-1]`?", choices: ["10", "20", "30", "an error"], answer: 2, explain: "Index -1 is the last element." },
@@ -506,19 +506,19 @@
             NEXT("<b>Tuples</b>. A tuple stores ordered values like a list, but it cannot be changed."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each line on paper.<br>Then run the program and compare.")],
+            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
             [RUN("a = [5, 7]\na.append(9)\na.insert(0, 1)\nprint(a)\nx = a.pop()\nprint(x, a)\na.remove(7)\nprint(a)")],
           ] },
           { kind: "exercise", title: "Write a program: a filtered list", blocks: [
-            PQ("Build a new list that contains only the readings above 25, with <code>append()</code>, and display it.",
+            PQ("Complete the program, so that it displays a list of the readings above 25.<br>1. Line 3 of the program: write a loop over the list <code>readings</code>.<br>2. In the loop, use <code>append()</code> to add each reading above 25 to the list <code>high</code>.",
               "[26, 30, 28]", "readings = [24, 26, 25, 30, 28, 22]\nhigh = []\n# Write the loop here\nprint(high)\n", null, "if r > 25: high.append(r)"),
           ] },
           { kind: "exercise", title: "Write a program: the top three", blocks: [
-            PQ("Sort the scores in decreasing order and display the three highest as a list.",
-              "[95, 91, 88]", "scores = [72, 95, 88, 64, 91]\n", null, "scores.sort(reverse=True), then print(scores[:3])"),
+            PQ("Write a program that displays the three highest scores as a list.<br>1. Sort the list <code>scores</code> in decreasing order.<br>2. Display the first three elements of the sorted list as a list.",
+              "[95, 91, 88]", "scores = [72, 95, 88, 64, 91]\n", null, "Write scores.sort(reverse=True), then display the slice scores[:3]."),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The program should display the sorted list, but it displays None. Correct line 2.",
+            PQ("The program displays <code>None</code>, not the sorted list.<br>Correct line 2, so that the program displays the target output.",
               "[1, 2, 3]", "data = [3, 1, 2]\ndata = data.sort()\nprint(data)\n", null, "sort() changes the list and returns None: write data.sort()."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -611,7 +611,7 @@
             NEXT("<b>Dictionaries</b>. Values stored under names (keys) instead of positions."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each line on paper.<br>Then run the program and compare.")],
+            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
             [RUN("point = (4, 7, 2)\nprint(point[1], point[-1])\nprint(point[:2])\nprint(len(point), 7 in point)\nx, y, z = point\nprint(x + y + z)\nsingle = (9,)\nprint(single, len(single))")],
           ] },
           { kind: "exercise", title: "Complete the code: swap two values", blocks: [
@@ -619,12 +619,12 @@
               "fan pump", 'first = "pump"\nsecond = "fan"\nfirst, second = \nprint(first, second)\n', null, "first, second = second, first"),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The program stops with a TypeError, because a tuple cannot be changed. Correct line 2, so that limits becomes a new tuple with the upper limit 120.",
-              "(0, 120)", "limits = (0, 100)\nlimits[1] = 120\nprint(limits)\n", null, "limits = (limits[0], 120)"),
+            PQ("The program stops with a TypeError in line 2.<br>Correct line 2, so that the program displays the target output.<br>1. Assign a new tuple to <code>limits</code>.<br>2. The upper limit in the new tuple is 120.",
+              "(0, 120)", "limits = (0, 100)\nlimits[1] = 120\nprint(limits)\n", null, "A tuple cannot be changed, so create a new tuple: limits = (limits[0], 120)."),
           ] },
           { kind: "exercise", title: "Write a program: a list of tuples", blocks: [
-            PQ("Each tuple holds a resistor name and its resistance in ohms. Display each resistor above 1000 ohms, then the total resistance of all the resistors.",
-              "R2 4700\nR3 10000\nTotal: 14920", 'resistors = [("R1", 220), ("R2", 4700), ("R3", 10000)]\n# Write your program here\n', null, "for name, ohms in resistors: if ohms > 1000: print(name, ohms); add ohms to a total"),
+            PQ("Each tuple holds a resistor name and its resistance in ohms.<br>1. Display the name and the resistance of each resistor above 1000 ohms.<br>2. Then display <code>Total:</code> and the total resistance of all the resistors.",
+              "R2 4700\nR3 10000\nTotal: 14920", 'resistors = [("R1", 220), ("R2", 4700), ("R3", 10000)]\n# Write your program here\n', null, "Use for name, ohms in resistors: in the loop, display the pair when ohms > 1000, and add ohms to a total."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`t = (5)`. What is the type of t?", choices: ["tuple", "int", "list", "str"], answer: 1, explain: "Without a comma, (5) is the integer 5. A tuple with one element is written (5,)." },
@@ -782,19 +782,19 @@
             NEXT("<b>Sets</b>. A set stores unique values without order, like the keys of a dictionary without their values."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each line on paper.<br>Then run the program and compare.")],
+            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
             [RUN('d = {"a": 1, "b": 2}\nprint(d.get("a", 0))\nprint(d.get("c", 0))\nprint(d.get("c"))\nd["c"] = 5\nprint(len(d), d.pop("a"))')],
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("The program stops with a KeyError, because the key \"current\" does not exist. Correct line 2 with get(), so that a missing current is 0.",
-              "0", 'device = {"name": "Pump", "voltage": 220}\nprint(device["current"])\n', null, 'print(device.get("current", 0))'),
+            PQ("The program stops with a KeyError in line 2.<br>Correct line 2, so that the program displays the target output.<br>1. Use <code>get()</code> to read the value of the key <code>\"current\"</code>.<br>2. When the key does not exist, the value is 0.",
+              "0", 'device = {"name": "Pump", "voltage": 220}\nprint(device["current"])\n', null, 'The key "current" does not exist, so use get() with the default 0: print(device.get("current", 0))'),
           ] },
           { kind: "exercise", title: "Write a program: a lookup with a default", blocks: [
-            PQ("Read a device name with the prompt <code>Device: </code>, and display its voltage from the dictionary, or 0 when the device is unknown. Test input: lamp.",
+            PQ("Write a program that displays the voltage of a device from the dictionary <code>voltages</code>.<br>1. Read the device name with the prompt <code>Device: </code>.<br>2. When the name is not a key of the dictionary, display 0.<br>Test input: lamp.",
               "Device: lamp\n0", 'voltages = {"pump": 220, "fan": 110}\n', ["lamp"], "print(voltages.get(name, 0))"),
           ] },
           { kind: "exercise", title: "Write a program: count characters", blocks: [
-            PQ("Count how often each character appears in \"banana\" with a dictionary, and display the dictionary.",
+            PQ("Complete the program, so that it displays the count of each character in <code>\"banana\"</code>.<br>1. Line 3 of the program: write a loop over the characters of <code>word</code>.<br>2. In the loop, store the count of each character in the dictionary <code>counts</code>.",
               "{'b': 1, 'a': 3, 'n': 2}", 'word = "banana"\ncounts = {}\n# Write the loop here\nprint(counts)\n', null, "counts[ch] = counts.get(ch, 0) + 1"),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -879,7 +879,7 @@
             NEXT("<b>Chapter practice</b>. Complete problems that combine the data structures of this chapter."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each line on paper.<br>Then run the program and compare.")],
+            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
             [RUN("s = {4, 2, 4, 1, 2}\nprint(len(s))\ns.add(3)\ns.add(4)\nprint(s)\ns.discard(9)\nprint(2 in s, 9 not in s)\nt = {1, 5}\nprint(s & t, s - t)")],
           ] },
           { kind: "exercise", title: "Complete the code: common values", blocks: [
@@ -887,8 +887,8 @@
               "{3, 4}", "week1 = [1, 3, 4, 3]\nweek2 = [3, 6, 4]\ncommon = \nprint(common)\n", null, "common = set(week1) & set(week2)"),
           ] },
           { kind: "exercise", title: "Write a program: different words", blocks: [
-            PQ("Read a sentence with the prompt <code>Sentence: </code>. Display the number of words and the number of different words. Test input: on off on on fault off.",
-              "Sentence: on off on on fault off\n6 words\n3 different words", "# Write your program here\n", ["on off on on fault off"], "words = sentence.split(); then len(words) and len(set(words))"),
+            PQ("Write a program that reads a sentence and counts the words.<br>1. Use the prompt <code>Sentence: </code>.<br>2. Display the number of words.<br>3. Display the number of different words.<br>Test input: on off on on fault off.",
+              "Sentence: on off on on fault off\n6 words\n3 different words", "# Write your program here\n", ["on off on on fault off"], "Write words = sentence.split(); the two numbers are len(words) and len(set(words))."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`s = {1, 2, 2, 3, 3, 3}`. What is `len(s)`?", choices: ["6", "3", "1", "an error"], answer: 1, explain: "A set stores each value once: {1, 2, 3}." },
@@ -920,28 +920,28 @@
             IPO([["Input", "a sentence (str)"], ["Output", "the number of words"], ["Processing", "<code>len(sentence.split())</code>"]]),
           ] },
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
-            PQ("Use the prompt <code>Sentence: </code>. Test input: the motor runs at full speed.", "Sentence: the motor runs at full speed\n6", "# Write your program here\n", ["the motor runs at full speed"], "print(len(sentence.split()))"),
+            PQ("Write the program of Problem 1.<br>1. Read the sentence with the prompt <code>Sentence: </code>.<br>2. Display the number of words.<br>Test input: the motor runs at full speed.", "Sentence: the motor runs at full speed\n6", "# Write your program here\n", ["the motor runs at full speed"], "print(len(sentence.split()))"),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: sum of the even numbers", blocks: [
-            T("Sum the even numbers of a list."),
+            T("Compute the sum of the even numbers of a list."),
             IPO([["Input", "a list of integers"], ["Output", "the sum of its even elements"], ["Processing", "for each element: if it is even, add it"]]),
           ] },
           { kind: "exercise", part: "Problem 2", title: "Problem 2: write the program", blocks: [
-            PQ("Use the list in the starter.", "30", "numbers = [3, 8, 5, 12, 7, 10]\n# Write your program here\n", null, "if n % 2 == 0: total = total + n"),
+            PQ("Write the program of Problem 2.<br>1. Use the list <code>numbers</code> in line 1 of the program.<br>2. Display the sum of the even numbers.", "30", "numbers = [3, 8, 5, 12, 7, 10]\n# Write your program here\n", null, "if n % 2 == 0: total = total + n"),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: the longest word", blocks: [
-            T("Read a sentence and display its longest word. If two words have the same length, keep the first."),
+            T("Read a sentence and display the longest word of the sentence.<br>When two words have the same length, display the word that comes first."),
             IPO([["Input", "a sentence"], ["Output", "the longest word"], ["Processing", "split, then keep the word with the largest len()"]]),
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
-            PQ("Use the prompt <code>Sentence: </code>. Test input: check the pressure sensor today.", "Sentence: check the pressure sensor today\npressure", "# Write your program here\n", ["check the pressure sensor today"], "if len(w) > len(longest): longest = w"),
+            PQ("Write the program of Problem 3.<br>1. Read the sentence with the prompt <code>Sentence: </code>.<br>2. Display the longest word.<br>Test input: check the pressure sensor today.", "Sentence: check the pressure sensor today\npressure", "# Write your program here\n", ["check the pressure sensor today"], "if len(w) > len(longest): longest = w"),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: readings from the keyboard", blocks: [
-            T("Read 4 readings into a list. Display the list, the average rounded to 2 decimal places, and the largest reading."),
+            T("Read 4 readings and store the readings in a list. Then display three lines:<br>1. the list<br>2. the average, rounded to 2 decimal places<br>3. the largest reading"),
             IPO([["Input", "4 readings (float)"], ["Output", "the list, the average, the maximum"], ["Processing", "append each reading; sum / len; max"]]),
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", blocks: [
-            PQ("Use the prompt <code>Reading: </code>. Test input: 20.5, 22, 21.5, 23.",
+            PQ("Write the program of Problem 4.<br>Use the prompt <code>Reading: </code>.<br>Test input: 20.5, 22, 21.5, 23.",
               "Reading: 20.5\nReading: 22\nReading: 21.5\nReading: 23\n[20.5, 22.0, 21.5, 23.0]\n21.75\n23.0", "readings = []\n# Write your program here\n", ["20.5", "22", "21.5", "23"], "readings.append(float(input(\"Reading: \")))"),
           ] },
           { kind: "problem", part: "Problem 5", title: "Problem 5: word frequency", blocks: [
@@ -949,14 +949,14 @@
             IPO([["Input", "a sentence"], ["Output", "one line per word: word count"], ["Processing", "a dictionary: counts[w] = counts.get(w, 0) + 1, then loop over items()"]]),
           ] },
           { kind: "exercise", part: "Problem 5", title: "Problem 5: write the program", blocks: [
-            PQ("Use the sentence in the starter.", "on 2\noff 1\nfault 1", 'sentence = "on off on fault"\n# Write your program here\n', null, "for w, c in counts.items(): print(w, c)"),
+            PQ("Write the program of Problem 5.<br>1. Use the string <code>sentence</code> in line 1 of the program.<br>2. Display one line for each word: the word and the count.", "on 2\noff 1\nfault 1", 'sentence = "on off on fault"\n# Write your program here\n', null, "for w, c in counts.items(): print(w, c)"),
           ] },
           { kind: "problem", part: "Problem 6", title: "Problem 6: settings from text", blocks: [
-            T("A device sends its settings as text: \"mode=auto;speed=3\". Store them in a dictionary and display the value of speed."),
+            T("A device sends its settings as the text <code>\"mode=auto;speed=3\"</code>.<br>1. Store the settings in a dictionary.<br>2. Display the value of <code>speed</code>."),
             IPO([["Input", "a settings string"], ["Output", "the value of speed"], ["Processing", "split at \";\", then split each part at \"=\"; store key and value. The values are strings: <code>settings[\"speed\"]</code> is <code>'3'</code>, not the integer 3"]]),
           ] },
           { kind: "exercise", part: "Problem 6", title: "Problem 6: write the program", blocks: [
-            PQ("Use the string in the starter.", "3", 'text = "mode=auto;speed=3"\nsettings = {}\n# Write your program here\n', null, 'for part in text.split(";"): key, value = part.split("="); settings[key] = value'),
+            PQ("Write the program of Problem 6.<br>1. Use the string <code>text</code> in line 1 of the program.<br>2. Store each setting in the dictionary <code>settings</code>.<br>3. Display the value of the key <code>\"speed\"</code>.", "3", 'text = "mode=auto;speed=3"\nsettings = {}\n# Write your program here\n', null, 'For each part of text.split(";"), write key, value = part.split("=") and settings[key] = value.'),
           ] },
           { kind: "summary", title: "Errors in this chapter", blocks: [
             TB(["Error", "Statement", "Message and cause"], [

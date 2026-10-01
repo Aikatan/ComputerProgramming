@@ -33,8 +33,9 @@
   const TRACE = (trace) => W("codeTrace", trace);
   const MAIN = (body) => "#include <stdio.h>\nint main(void) {\n" + body + "\n    return 0;\n}";
   const MAIN_U8 = (body) => "#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n" + body + "\n    return 0;\n}";
-  const STEP_RUN = T("Run the program with <b>Step Run</b>. Compare the variables after each line with your table.");
-  const PAPER = T("Write the output on paper. Then run the program and compare.");
+  const STEP_RUN = T("Check your trace table.<br>1. Run the program with <b>Step Run</b>.<br>2. After each line, compare the values of the variables with your table.");
+  const PAPER = T("Write the output of the program on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.");   // in a half column
+  const PAPER_LINE = T("Write the output on paper. Then run the program and compare the output with your answer.");   // one line, above a full-width program
   const STARTER = MAIN("    // write your program here");
 
   /* ---------- traces ---------- */
@@ -542,16 +543,16 @@ int main(void) {
             [RUN('#include <stdio.h>\nint main(void) {\n    printf("A");\n    printf("B\\n");\n    printf("C\\tD\\n");\n    return 0;\n}')],
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The program has two errors. Correct them.",
+            PQ("Correct the two errors in the program, so that the program displays the target output.",
               "Sensor ready", '#include <stdio.h>\nint main(void) {\n    Printf("Sensor ready\\n")\n    return 0;\n}', null, "C is case-sensitive, and every statement ends with ;."),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("Display the three lines of the target output. Use one printf for each line.",
-              "Device: Pump\nVoltage: 220 V\nStatus: ON", STARTER, null, 'printf("Device: Pump\\n");'),
+            PQ("Write a program that displays the three lines of the target output.<br>Use one <code>printf</code> for each line of the output.",
+              "Device: Pump\nVoltage: 220 V\nStatus: ON", STARTER, null, 'The first statement is printf("Device: Pump\\n");'),
           ] },
           { kind: "exercise", title: "Modify a program", blocks: [
-            PQ("Modify the program: display the two columns separated by a tab, <code>\\t</code>, instead of a space.",
-              "Item\tQty\nFuse\t4", '#include <stdio.h>\nint main(void) {\n    printf("Item Qty\\n");\n    printf("Fuse 4\\n");\n    return 0;\n}', null, 'printf("Item\\tQty\\n");'),
+            PQ("Change the program, so that it displays the target output.<br>In each <code>printf</code>, replace the space in the string with a tab: <code>\\t</code>.",
+              "Item\tQty\nFuse\t4", '#include <stdio.h>\nint main(void) {\n    printf("Item Qty\\n");\n    printf("Fuse 4\\n");\n    return 0;\n}', null, 'The first statement becomes printf("Item\\tQty\\n");'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Where does a C program start running?", choices: ["at the first line", "in main", "at #include", "at return 0"], answer: 1, explain: "Every C program starts in the function main." },
@@ -714,7 +715,7 @@ int main(void) {
             NEXT("<b>Input and formatted output</b>. Reading values with scanf and controlling the output format."),
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("The statements inside main. Complete the trace table on paper. The first row is done. The next exercise checks it."),
+            T("Complete the trace table on paper. The first row is already complete.<br>The table shows the statements inside <code>main</code>. Check your table on the next slide."),
             W("traceTable", { trace: T_exSwap, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
@@ -722,7 +723,7 @@ int main(void) {
             [RUN(MAIN("    " + T_exSwap.code.join("\n    ")))],
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            PAPER,
+            PAPER_LINE,
             RUN(`#include <stdio.h>
 int main(void) {
     int n = 7;
@@ -733,16 +734,16 @@ int main(void) {
 }`),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The program should display <code>Area = 12.50</code>. Correct the two errors.",
-              "Area = 12.50", '#include <stdio.h>\nint main(void) {\n    double w = 2.5\n    double h = 5.0;\n    printf("Area = %d\\n", w * h);\n    return 0;\n}', null, "A ; is missing, and a double needs %.2f, not %d."),
+            PQ("Correct the two errors in the program, so that the program displays the target output.",
+              "Area = 12.50", '#include <stdio.h>\nint main(void) {\n    double w = 2.5\n    double h = 5.0;\n    printf("Area = %d\\n", w * h);\n    return 0;\n}', null, "One statement has no ; at the end, and printf needs %.2f for a double, not %d."),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("A battery pack has 4 cells (an int) of 3.7 V each (a double). Display the total voltage with 1 decimal place.",
-              "Total: 14.8 V", STARTER, null, 'printf("Total: %.1f V\\n", cells * cell_v);'),
+            PQ("Write a program that displays the total voltage of a battery pack, as in the target output.<br>1. Store the number of cells, 4, in an <code>int</code> variable.<br>2. Store the voltage of one cell, 3.7, in a <code>double</code> variable.<br>3. Use <code>%.1f</code> in <code>printf</code> for the total voltage.",
+              "Total: 14.8 V", STARTER, null, 'Multiply the two variables in printf: printf("Total: %.1f V\\n", cells * cell_v);'),
           ] },
           { kind: "exercise", title: "Write a program: characters", blocks: [
-            PQ("Store the character 'M' in a char variable. Display the character, its ASCII code, and the next character.",
-              "M 77 N", STARTER, null, "Use %c and %d. The next character is the variable + 1."),
+            PQ("Write a program that displays the target output.<br>1. Store the character <code>'M'</code> in a <code>char</code> variable.<br>2. Display the character, the ASCII code of the character, and the next character.",
+              "M 77 N", STARTER, null, "Use %c for a character and %d for the ASCII code; the next character is the variable + 1."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which specifier displays a double with 2 decimal places?", choices: ["%d", "%2d", "%.2f", "%c"], answer: 2, explain: "%.2f shows 2 digits after the decimal point." },
@@ -847,7 +848,7 @@ int main(void) {
             ], ["5", "m"]),
           ] },
           { kind: "problem", part: "A complete input program", title: "Problem: battery runtime", blocks: [
-            T("A battery has a capacity in mAh. A device draws a current in mA. Compute the runtime in hours and in minutes, in two aligned lines."),
+            T("A battery has a capacity in mAh. A device uses a current in mA. Compute the runtime in hours and in minutes. Display the two results on two lines, with the numbers aligned right."),
             IPO([
               ["Input", "capacity 2000 mAh and current 300 mA, typed by the user"],
               ["Output", "Hours: 6.67 and Minutes: 400, with the numbers aligned right"],
@@ -880,20 +881,20 @@ int main(void) {
             NEXT("<b>Operators and expressions</b>. Arithmetic, integer division, casting, and conditions."),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            T("The user types <code>7 2.46</code>. Write the output on paper. Then run the program and compare."),
+            T("The user types <code>7 2.46</code>. Write the output on paper. Then run the program and compare the output with your answer."),
             RUN('#include <stdio.h>\nint main(void) {\n    int a;\n    double b;\n    scanf("%d %lf", &a, &b);\n    printf("[%4d][%-6.1f]\\n", a, b);\n    return 0;\n}', "Program", ["7 2.46"]),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The program should read a price and display it with 2 decimals. Correct the two errors in the scanf line.",
-              "Price: 4.5\n4.50", '#include <stdio.h>\nint main(void) {\n    double price;\n    printf("Price: ");\n    scanf("%d", price);\n    printf("%.2f\\n", price);\n    return 0;\n}', ["4.5"], "A double needs %lf, and scanf needs the address &price."),
+            PQ("Correct the two errors in line 5 of the program: the <code>scanf</code> statement.<br>The program must read a price and display the price with 2 decimal places, as in the target output.",
+              "Price: 4.5\n4.50", '#include <stdio.h>\nint main(void) {\n    double price;\n    printf("Price: ");\n    scanf("%d", price);\n    printf("%.2f\\n", price);\n    return 0;\n}', ["4.5"], "In scanf, a double needs %lf, and the variable needs & before its name: &price."),
           ] },
           { kind: "exercise", title: "Write a program: temperature", blocks: [
-            PQ("Read a temperature in °C (a double). Display it in °F with 1 decimal place: F = C × 1.8 + 32.",
-              "Temperature (C): 25\n77.0 F", '#include <stdio.h>\nint main(void) {\n    double c;\n    printf("Temperature (C): ");\n    // read c and display the result\n    return 0;\n}', ["25"], 'scanf("%lf", &c); then printf("%.1f F\\n", c * 1.8 + 32);'),
+            PQ("Complete the program, so that it displays the target output.<br>1. Read the temperature in °C into <code>c</code> with <code>scanf</code>.<br>2. Compute the temperature in °F: F = C × 1.8 + 32.<br>3. Use <code>%.1f</code> in <code>printf</code> for the result.",
+              "Temperature (C): 25\n77.0 F", '#include <stdio.h>\nint main(void) {\n    double c;\n    printf("Temperature (C): ");\n    // read c and display the result\n    return 0;\n}', ["25"], 'Use scanf("%lf", &c); and then printf("%.1f F\\n", c * 1.8 + 32);'),
           ] },
           { kind: "exercise", title: "Write a program: a total", blocks: [
-            PQ("Read a quantity (int) and a unit price (double). Display the total with 2 decimals, aligned right in 10 characters.",
-              "Qty, price: 3 2.5\nTotal:      7.50", '#include <stdio.h>\nint main(void) {\n    int qty;\n    double price;\n    printf("Qty, price: ");\n    // read and display\n    return 0;\n}', ["3 2.5"], 'printf("Total:%10.2f\\n", qty * price);'),
+            PQ("Complete the program, so that it displays the target output.<br>1. Read the quantity into <code>qty</code> and the unit price into <code>price</code>.<br>2. Compute the total: quantity × unit price.<br>3. Display the total with 2 decimal places, aligned right in 10 characters.",
+              "Qty, price: 3 2.5\nTotal:      7.50", '#include <stdio.h>\nint main(void) {\n    int qty;\n    double price;\n    printf("Qty, price: ");\n    // read and display\n    return 0;\n}', ["3 2.5"], 'Use %10.2f in printf: printf("Total:%10.2f\\n", qty * price);'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which scanf reads a double into x?", choices: ['`scanf("%d", &x);`', '`scanf("%lf", &x);`', '`scanf("%lf", x);`', '`scanf("%f", x);`'], answer: 1, explain: "A double needs %lf, and scanf needs the address &x." },
@@ -1071,7 +1072,7 @@ int main(void) {
             NEXT("<b>Decisions</b>. if, else, else if, and switch."),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            PAPER,
+            PAPER_LINE,
             RUN(`#include <stdio.h>
 int main(void) {
     int x = 17 % 5;
@@ -1083,7 +1084,7 @@ int main(void) {
 }`),
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("The statements inside main. Complete the trace table on paper. The first row is done. The next exercise checks it."),
+            T("Complete the trace table on paper. The first row is already complete.<br>The table shows the statements inside <code>main</code>. Check your table on the next slide."),
             W("traceTable", { trace: T_exOps, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
@@ -1091,16 +1092,16 @@ int main(void) {
             [RUN(MAIN("    " + T_exOps.code.join("\n    ")))],
           ] },
           { kind: "exercise", title: "Write a program: four operations", blocks: [
-            PQ("Read two integers. Display their sum, difference, and product, and the quotient as a double with 2 decimals.",
-              "a, b: 7 2\n9 5 14 3.50", '#include <stdio.h>\nint main(void) {\n    int a, b;\n    printf("a, b: ");\n    scanf("%d %d", &a, &b);\n    // display the four results\n    return 0;\n}', ["7 2"], "Cast before dividing: (double) a / b."),
+            PQ("Complete the program, so that it displays four results on one line, as in the target output.<br>1. Display the sum, the difference, and the product of <code>a</code> and <code>b</code>.<br>2. Display <code>a</code> divided by <code>b</code> as a <code>double</code>: use <code>%.2f</code> in <code>printf</code>.",
+              "a, b: 7 2\n9 5 14 3.50", '#include <stdio.h>\nint main(void) {\n    int a, b;\n    printf("a, b: ");\n    scanf("%d %d", &a, &b);\n    // display the four results\n    return 0;\n}', ["7 2"], "Cast a to double before the division: (double) a / b."),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The average of 7 and 8 should be <code>7.50</code>. Correct the expression.",
-              "7.50", '#include <stdio.h>\nint main(void) {\n    int a = 7, b = 8;\n    double avg = (a + b) / 2;\n    printf("%.2f\\n", avg);\n    return 0;\n}', null, "(a + b) / 2 is int / int. Divide by 2.0, or cast first."),
+            PQ("Correct the expression that computes the average (line 4 of the program), so that the program displays the target output.",
+              "7.50", '#include <stdio.h>\nint main(void) {\n    int a = 7, b = 8;\n    double avg = (a + b) / 2;\n    printf("%.2f\\n", avg);\n    return 0;\n}', null, "(a + b) / 2 is int / int, so the decimal part is lost: divide by 2.0, or cast first."),
           ] },
           { kind: "exercise", title: "Write a program: minutes and seconds", blocks: [
-            PQ("Read a time in seconds and display it as minutes and seconds.",
-              "Seconds: 200\n3 min 20 s", '#include <stdio.h>\nint main(void) {\n    int t;\n    printf("Seconds: ");\n    scanf("%d", &t);\n    // display minutes and seconds\n    return 0;\n}', ["200"], "Use t / 60 and t % 60."),
+            PQ("Complete the program, so that it displays the time as minutes and seconds, as in the target output.<br>The program already reads the time in seconds into <code>t</code>.",
+              "Seconds: 200\n3 min 20 s", '#include <stdio.h>\nint main(void) {\n    int t;\n    printf("Seconds: ");\n    scanf("%d", &t);\n    // display minutes and seconds\n    return 0;\n}', ["200"], "Use t / 60 for the minutes and t % 60 for the seconds."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "In C, `7 / 2` is…", choices: ["3.5", "3", "4", "3.0"], answer: 1, explain: "int / int gives an int; the decimal part is cut off." },
@@ -1257,7 +1258,7 @@ int main(void) {
             NEXT("<b>Loops</b>. while, do-while, and for."),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            PAPER,
+            PAPER_LINE,
             RUN(`#include <stdio.h>
 int main(void) {
     int a = 4, b = 9;
@@ -1268,7 +1269,7 @@ int main(void) {
 }`),
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("The statements inside main. Complete the trace table on paper. The first row is done. The next exercise checks it."),
+            T("Complete the trace table on paper. The first row is already complete.<br>The table shows the statements inside <code>main</code>. Check your table on the next slide."),
             W("traceTable", { trace: T_exSw, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
@@ -1276,16 +1277,16 @@ int main(void) {
             [RUN(MAIN("    " + T_exSw.code.join("\n    ")))],
           ] },
           { kind: "exercise", title: "Write a program: grade", blocks: [
-            PQ("Read a score. Display A (80 or more), B (70), C (60), D (50), or F. For a score outside 0–100, display <code>Invalid score</code>.",
-              "Score: 73\nB", '#include <stdio.h>\nint main(void) {\n    int score;\n    printf("Score: ");\n    scanf("%d", &score);\n    // display the grade\n    return 0;\n}', ["73"], "Check the invalid range first: if (score < 0 || score > 100)."),
+            PQ("Complete the program, so that it displays the target output.<br>1. Display <code>Invalid score</code> for a score below 0 or above 100.<br>2. Display the grade: <code>A</code> for 80 to 100, <code>B</code> for 70 to 79, <code>C</code> for 60 to 69, <code>D</code> for 50 to 59, <code>F</code> for 0 to 49.",
+              "Score: 73\nB", '#include <stdio.h>\nint main(void) {\n    int score;\n    printf("Score: ");\n    scanf("%d", &score);\n    // display the grade\n    return 0;\n}', ["73"], "Use if and else if, and check the invalid range first: if (score < 0 || score > 100)."),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The program should display OK only when level is 50, and then the level. Correct the error.",
-              "Level 30", '#include <stdio.h>\nint main(void) {\n    int level = 30;\n    if (level = 50) {\n        printf("OK\\n");\n    }\n    printf("Level %d\\n", level);\n    return 0;\n}', null, "= assigns; == compares."),
+            PQ("Correct the error in the program, so that the program displays the target output.<br>1. The program displays <code>OK</code> only when <code>level</code> is equal to 50.<br>2. The program always displays the level.",
+              "Level 30", '#include <stdio.h>\nint main(void) {\n    int level = 30;\n    if (level = 50) {\n        printf("OK\\n");\n    }\n    printf("Level %d\\n", level);\n    return 0;\n}', null, "= stores a value in a variable; == compares two values."),
           ] },
           { kind: "exercise", title: "Write a program: switch", blocks: [
-            PQ("Read a command character: f displays Forward, b Backward, s Stop; any other character displays Unknown. Use switch.",
-              "Command: b\nBackward", '#include <stdio.h>\nint main(void) {\n    char cmd;\n    printf("Command: ");\n    scanf(" %c", &cmd);\n    // use switch here\n    return 0;\n}', ["b"], "case 'b': printf(\"Backward\\n\"); break;"),
+            PQ("Complete the program, so that it displays the target output.<br>1. Use a <code>switch</code> statement on <code>cmd</code>.<br>2. Display <code>Forward</code> for <code>f</code>, <code>Backward</code> for <code>b</code>, and <code>Stop</code> for <code>s</code>.<br>3. Display <code>Unknown</code> for any other character.",
+              "Command: b\nBackward", '#include <stdio.h>\nint main(void) {\n    char cmd;\n    printf("Command: ");\n    scanf(" %c", &cmd);\n    // use switch here\n    return 0;\n}', ["b"], "One case of the switch: case 'b': printf(\"Backward\\n\"); break;"),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Without braces, `if (x > 0)` controls…", choices: ["all the indented lines", "only the next statement", "nothing", "the rest of main"], answer: 1, explain: "Only braces group statements." },
@@ -1452,7 +1453,7 @@ int main(void) {
 }`)],
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("The statements inside main. Complete the trace table on paper. The first row is done. The next exercise checks it."),
+            T("Complete the trace table on paper. The first row is already complete.<br>The table shows the statements inside <code>main</code>. Check your table on the next slide."),
             W("traceTable", { trace: T_exWhile, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
@@ -1473,16 +1474,16 @@ int main(void) {
 }`)],
           ] },
           { kind: "exercise", title: "Write a program: 1 to N", blocks: [
-            PQ("Read N. Display the numbers 1 to N on one line, and then their sum.",
-              "N: 5\n1 2 3 4 5\nSum = 15", '#include <stdio.h>\nint main(void) {\n    int n, sum = 0;\n    printf("N: ");\n    scanf("%d", &n);\n    // use a for loop\n    return 0;\n}', ["5"], "printf(\"%d \", i) inside the loop; after the loop, printf(\"\\n\")."),
+            PQ("Complete the program, so that it displays the target output.<br>1. Use a <code>for</code> loop.<br>2. Display the numbers 1 to <code>n</code> on one line.<br>3. Then display the sum of the numbers on the next line.",
+              "N: 5\n1 2 3 4 5\nSum = 15", '#include <stdio.h>\nint main(void) {\n    int n, sum = 0;\n    printf("N: ");\n    scanf("%d", &n);\n    // use a for loop\n    return 0;\n}', ["5"], "Use printf(\"%d \", i) inside the loop, and printf(\"\\n\") after the loop."),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The program should display 1 to 5, but it displays one number too many. Correct it.",
-              "1 2 3 4 5", '#include <stdio.h>\nint main(void) {\n    for (int i = 1; i <= 6; i++) {\n        printf("%d ", i);\n    }\n    printf("\\n");\n    return 0;\n}', null, "The condition decides the last number."),
+            PQ("Correct the program, so that it displays the numbers 1 to 5, as in the target output.<br>The program now displays one number more: 1 to 6.",
+              "1 2 3 4 5", '#include <stdio.h>\nint main(void) {\n    for (int i = 1; i <= 6; i++) {\n        printf("%d ", i);\n    }\n    printf("\\n");\n    return 0;\n}', null, "The condition of the for statement decides the last number."),
           ] },
           { kind: "exercise", title: "Write a program: valid input", blocks: [
-            PQ("Ask for a percentage until the user types a value from 0 to 100. Then display it.",
-              "Percent: 120\nPercent: 45\nValue: 45", '#include <stdio.h>\nint main(void) {\n    int p;\n    // use a do-while loop\n    return 0;\n}', ["120", "45"], "do { printf(\"Percent: \"); scanf(...); } while (p < 0 || p > 100);"),
+            PQ("Complete the program, so that it displays the target output.<br>1. Use a <code>do-while</code> loop that displays <code>Percent: </code> and reads <code>p</code>.<br>2. The loop ends when <code>p</code> is from 0 to 100.<br>3. After the loop, display <code>p</code>.",
+              "Percent: 120\nPercent: 45\nValue: 45", '#include <stdio.h>\nint main(void) {\n    int p;\n    // use a do-while loop\n    return 0;\n}', ["120", "45"], "The loop is do { printf(\"Percent: \"); scanf(...); } while (p < 0 || p > 100);"),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which loop always runs its block at least once?", choices: ["while", "for", "do-while", "none"], answer: 2, explain: "do-while checks its condition after the block." },
@@ -1653,7 +1654,7 @@ int main(void) {
             NEXT("<b>Arrays</b>. Many values of one type under one name."),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            PAPER,
+            PAPER_LINE,
             RUN(`#include <stdio.h>
 int f(int x) {
     return 2 * x + 1;
@@ -1665,7 +1666,7 @@ int main(void) {
 }`),
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. The first row is done. The next exercise checks it."),
+            T("Complete the trace table of the program on paper. The first row is already complete.<br>Check your table on the next slide."),
             W("traceTable", { trace: T_exFunc, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
@@ -1673,16 +1674,16 @@ int main(void) {
             [RUN("#include <stdio.h>\n" + T_exFunc.code.join("\n"))],
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
-            PQ("Complete the function c_to_f, which returns the temperature in °F: F = C × 9 / 5 + 32.",
-              "77.0\n212.0", '#include <stdio.h>\ndouble c_to_f(double c) {\n    \n}\nint main(void) {\n    printf("%.1f\\n", c_to_f(25));\n    printf("%.1f\\n", c_to_f(100));\n    return 0;\n}', null, "return c * 9 / 5 + 32;"),
+            PQ("Complete the function <code>c_to_f</code>, so that the program displays the target output.<br>The function returns the temperature in °F: F = C × 9 / 5 + 32. C is the parameter <code>c</code>.",
+              "77.0\n212.0", '#include <stdio.h>\ndouble c_to_f(double c) {\n    \n}\nint main(void) {\n    printf("%.1f\\n", c_to_f(25));\n    printf("%.1f\\n", c_to_f(100));\n    return 0;\n}', null, "The function needs one statement: return c * 9 / 5 + 32;"),
           ] },
           { kind: "exercise", title: "Write a program: maximum of two", blocks: [
-            PQ("Write the function <code>int max2(int a, int b)</code>, which returns the larger value. Display max2(7, 12) and max2(-3, -8) on one line, separated by a space.",
-              "12 -3", STARTER, null, "if (a > b) { return a; } return b;"),
+            PQ("Write a program that displays the target output.<br>1. Write the function <code>int max2(int a, int b)</code>, which returns the larger value.<br>2. Display <code>max2(7, 12)</code> and <code>max2(-3, -8)</code> on one line, separated by a space.",
+              "12 -3", STARTER, null, "Write max2 above main, with these statements: if (a > b) { return a; } return b;"),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The function is called before the compiler knows it. Add a prototype.",
-              "25", '#include <stdio.h>\nint main(void) {\n    printf("%d\\n", area(5));\n    return 0;\n}\nint area(int side) {\n    return side * side;\n}', null, "int area(int side); above main."),
+            PQ("Add a prototype of the function <code>area</code> to the program, so that the program displays the target output.",
+              "25", '#include <stdio.h>\nint main(void) {\n    printf("%d\\n", area(5));\n    return 0;\n}\nint area(int side) {\n    return side * side;\n}', null, "main calls area before the compiler knows area: write int area(int side); above main."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "A function that returns no value has the return type…", choices: ["int", "void", "null", "none"], answer: 1, explain: "void means no value." },
@@ -1761,7 +1762,7 @@ int main(void) {
             ], ["3.3", "5.0", "12.0"]),
           ] },
           { kind: "problem", part: "Sum, maximum, and search", title: "Problem: statistics of readings", blocks: [
-            T("Readings are stored in an array. Find the maximum and the sum; the average follows from the sum."),
+            T("Readings are stored in an array. Find the maximum and the sum of the readings. Then compute the average from the sum."),
             IPO([
               ["Input", "the array {4, 9, 2}"],
               ["Output", "max 9, sum 15 (average 5.00)"],
@@ -1867,20 +1868,20 @@ int main(void) {
 }`)],
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
-            PQ("Complete line 6, so that min holds the smallest element.",
-              "Min = 2", '#include <stdio.h>\nint main(void) {\n    int d[5] = {4, 9, 2, 7, 5};\n    int min = d[0];\n    for (int i = 1; i < 5; i++) {\n        \n    }\n    printf("Min = %d\\n", min);\n    return 0;\n}', null, "if (d[i] < min) { min = d[i]; }"),
+            PQ("Complete line 6 of the program, so that the program displays the target output.<br>After the loop, <code>min</code> must store the smallest element of the array <code>d</code>.",
+              "Min = 2", '#include <stdio.h>\nint main(void) {\n    int d[5] = {4, 9, 2, 7, 5};\n    int min = d[0];\n    for (int i = 1; i < 5; i++) {\n        \n    }\n    printf("Min = %d\\n", min);\n    return 0;\n}', null, "Compare each element with min: if (d[i] < min) { min = d[i]; }"),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The loop reads beyond the end of the array. Correct it, so that the program displays the sum of the 4 elements.",
-              "20", '#include <stdio.h>\nint main(void) {\n    int v[4] = {2, 4, 6, 8};\n    int sum = 0;\n    for (int i = 0; i <= 4; i++) {\n        sum += v[i];\n    }\n    printf("%d\\n", sum);\n    return 0;\n}', null, "The last index is 3."),
+            PQ("Correct the <code>for</code> statement, so that the program displays the sum of the 4 elements, as in the target output.<br>The loop now reads one element after the end of the array.",
+              "20", '#include <stdio.h>\nint main(void) {\n    int v[4] = {2, 4, 6, 8};\n    int sum = 0;\n    for (int i = 0; i <= 4; i++) {\n        sum += v[i];\n    }\n    printf("%d\\n", sum);\n    return 0;\n}', null, "The array has 4 elements, so the last index is 3."),
           ] },
           { kind: "exercise", title: "Write a program: maximum and average", blocks: [
-            PQ("Read 5 integers into an array. Display the maximum and the average with 2 decimals.",
-              "4\n9\n2\n7\n5\nMax = 9\nAverage = 5.40", '#include <stdio.h>\nint main(void) {\n    int nums[5];\n    // read, then find the maximum and the average\n    return 0;\n}', ["4", "9", "2", "7", "5"], "scanf(\"%d\", &nums[i]) in a loop; then one loop for sum and max."),
+            PQ("Complete the program, so that it displays the target output.<br>1. Read 5 integers into the array <code>nums</code>.<br>2. Display the maximum and the average.",
+              "4\n9\n2\n7\n5\nMax = 9\nAverage = 5.40", '#include <stdio.h>\nint main(void) {\n    int nums[5];\n    // read, then find the maximum and the average\n    return 0;\n}', ["4", "9", "2", "7", "5"], "Read with scanf(\"%d\", &nums[i]) in a loop; use one loop for the sum and the maximum; display the average with %.2f in printf."),
           ] },
           { kind: "exercise", title: "Write a program: count", blocks: [
-            PQ("Count the readings above 25.0 in the array, and display the count.",
-              "3", '#include <stdio.h>\nint main(void) {\n    double t[6] = {24.5, 26.0, 25.0, 27.5, 23.0, 30.1};\n    // count the readings above 25.0\n    return 0;\n}', null, "count++ when t[i] > 25.0."),
+            PQ("Complete the program, so that it displays the target output.<br>1. Count the elements of the array <code>t</code> that are greater than 25.0.<br>2. Display the count.",
+              "3", '#include <stdio.h>\nint main(void) {\n    double t[6] = {24.5, 26.0, 25.0, 27.5, 23.0, 30.1};\n    // count the readings above 25.0\n    return 0;\n}', null, "In a loop over the 6 elements, use count++ when t[i] > 25.0."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`int a[5];` The last element is…", choices: ["a[5]", "a[4]", "a[6]", "a[0]"], answer: 1, explain: "The indexes are 0 to 4." },
@@ -2086,7 +2087,7 @@ int main(void) {
             NEXT("<b>Structures</b>. Several values of different types under one name."),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            PAPER,
+            PAPER_LINE,
             T("<code>(int)</code> turns the size from strlen into an int, for %d. This is a cast (Lesson 4)."),
             RUN(`#include <stdio.h>
 #include <string.h>
@@ -2098,20 +2099,20 @@ int main(void) {
 }`),
           ] },
           { kind: "exercise", title: "Write a program: greeting", blocks: [
-            PQ("Read a user name (one word) and greet the user.",
-              "Name: Mali\nHello, Mali!", '#include <stdio.h>\nint main(void) {\n    char name[20];\n    printf("Name: ");\n    // read the name and greet\n    return 0;\n}', ["Mali"], 'scanf("%s", name); printf("Hello, %s!\\n", name);'),
+            PQ("Complete the program, so that it displays the target output.<br>1. Read a name of one word into the array <code>name</code>.<br>2. Display <code>Hello, </code>, then the name, then <code>!</code>.",
+              "Name: Mali\nHello, Mali!", '#include <stdio.h>\nint main(void) {\n    char name[20];\n    printf("Name: ");\n    // read the name and greet\n    return 0;\n}', ["Mali"], 'Use %s in scanf and in printf: scanf("%s", name); printf("Hello, %s!\\n", name);'),
           ] },
           { kind: "exercise", title: "Write a program: count the digits", blocks: [
-            PQ("Count the digits in the text \"Room 12B, floor 3\" and display the count.",
-              "3", '#include <stdio.h>\n#include <ctype.h>\nint main(void) {\n    char s[] = "Room 12B, floor 3";\n    // count the digits\n    return 0;\n}', null, "if (isdigit(s[i])) { count++; }"),
+            PQ("Complete the program, so that it displays the target output.<br>1. Count the characters of the string <code>s</code> that are digits.<br>2. Display the count.",
+              "3", '#include <stdio.h>\n#include <ctype.h>\nint main(void) {\n    char s[] = "Room 12B, floor 3";\n    // count the digits\n    return 0;\n}', null, "In a loop that ends at '\\0', test each character: if (isdigit(s[i])) { count++; }"),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The comparison never succeeds, even when the user types open. Correct it.",
-              "open\nDoor opening", '#include <stdio.h>\n#include <string.h>\nint main(void) {\n    char cmd[10];\n    scanf("%s", cmd);\n    if (cmd == "open") {\n        printf("Door opening\\n");\n    }\n    return 0;\n}', ["open"], "Compare texts with strcmp(cmd, \"open\") == 0."),
+            PQ("Correct the condition of the <code>if</code> statement, so that the program displays the target output.<br>The condition is now false when the user types <code>open</code>.",
+              "open\nDoor opening", '#include <stdio.h>\n#include <string.h>\nint main(void) {\n    char cmd[10];\n    scanf("%s", cmd);\n    if (cmd == "open") {\n        printf("Door opening\\n");\n    }\n    return 0;\n}', ["open"], "== compares addresses; compare two strings with strcmp(cmd, \"open\") == 0."),
           ] },
           { kind: "exercise", title: "Write a program: upper case", blocks: [
-            PQ("Change every letter of the text \"pump on\" to upper case, and display it.",
-              "PUMP ON", '#include <stdio.h>\n#include <ctype.h>\nint main(void) {\n    char s[] = "pump on";\n    // change the letters, then display s\n    return 0;\n}', null, "s[i] = toupper(s[i]); in a loop up to '\\0'."),
+            PQ("Complete the program, so that it displays the target output.<br>1. Change every letter of the string <code>s</code> to upper case.<br>2. Display the string <code>s</code>.",
+              "PUMP ON", '#include <stdio.h>\n#include <ctype.h>\nint main(void) {\n    char s[] = "pump on";\n    // change the letters, then display s\n    return 0;\n}', null, "Use s[i] = toupper(s[i]); in a loop that ends at '\\0'."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "How many chars does `char s[] = \"Ann\";` use?", choices: ["3", "4", "5", "1"], answer: 1, explain: "3 letters and the null character '\\0'." },
@@ -2262,7 +2263,7 @@ int main(void) {
             NEXT("<b>Pointers</b>. Addresses and variables that store them."),
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("struct point has the members x and y. The statements inside main: complete the trace table on paper. The first row is done."),
+            T("Complete the trace table on paper. The first row is already complete.<br>The table shows the statements inside <code>main</code>. <code>struct point</code> has the members <code>x</code> and <code>y</code>."),
             W("traceTable", { trace: T_exStruct, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
@@ -2270,7 +2271,7 @@ int main(void) {
             [RUN("#include <stdio.h>\nstruct point { int x; int y; };\nint main(void) {\n    " + T_exStruct.code.join("\n    ") + "\n    return 0;\n}")],
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            PAPER,
+            PAPER_LINE,
             RUN(`#include <stdio.h>
 struct part { int qty; int price; };
 int main(void) {
@@ -2282,16 +2283,16 @@ int main(void) {
 }`),
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
-            PQ("Complete the function make_sensor, which returns a struct sensor with the given id and value.",
-              "4 18.5", '#include <stdio.h>\nstruct sensor { int id; double value; };\nstruct sensor make_sensor(int id, double value) {\n    \n}\nint main(void) {\n    struct sensor s = make_sensor(4, 18.5);\n    printf("%d %.1f\\n", s.id, s.value);\n    return 0;\n}', null, "struct sensor s = {id, value}; return s;"),
+            PQ("Complete the function <code>make_sensor</code>, so that the program displays the target output.<br>The function returns a <code>struct sensor</code>. The members of the struct receive the values of the parameters <code>id</code> and <code>value</code>.",
+              "4 18.5", '#include <stdio.h>\nstruct sensor { int id; double value; };\nstruct sensor make_sensor(int id, double value) {\n    \n}\nint main(void) {\n    struct sensor s = make_sensor(4, 18.5);\n    printf("%d %.1f\\n", s.id, s.value);\n    return 0;\n}', null, "Create a struct variable and return the variable: struct sensor s = {id, value}; return s;"),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("s.value should become 25.0, but it stays 20.0. Correct the program: heat returns the changed struct.",
+            PQ("Correct the program, so that <code>s.value</code> becomes 25.0, as in the target output.<br>Use this method: the function <code>heat</code> returns the changed struct.",
               "25.0", '#include <stdio.h>\nstruct sensor { int id; double value; };\nvoid heat(struct sensor s, double d) { s.value = s.value + d; }\nint main(void) {\n    struct sensor s = {1, 20.0};\n    heat(s, 5.0);\n    printf("%.1f\\n", s.value);\n    return 0;\n}', null, "The return type becomes struct sensor; heat ends with return s; and main writes s = heat(s, 5.0);"),
           ] },
           { kind: "exercise", title: "Write a program: the best student", blocks: [
-            PQ("Read the names and scores of 3 students, one student per line, into an array of structs. Display the student with the highest score, and the average score with 2 decimals.",
-              "Dao 64\nEk 88\nFah 79\nTop: Ek (88)\nAverage: 77.00", '#include <stdio.h>\nstruct student { char name[20]; int score; };\nint main(void) {\n    struct student s[3];\n    // read, find the best, compute the average\n    return 0;\n}', ["Dao 64", "Ek 88", "Fah 79"], "scanf(\"%s %d\", s[i].name, &s[i].score); keep the index of the best score, and the sum."),
+            PQ("Complete the program, so that it displays the target output.<br>1. Read 3 students into the array <code>s</code>.<br>2. Display the student with the highest score, and the average score.",
+              "Dao 64\nEk 88\nFah 79\nTop: Ek (88)\nAverage: 77.00", '#include <stdio.h>\nstruct student { char name[20]; int score; };\nint main(void) {\n    struct student s[3];\n    // read, find the best, compute the average\n    return 0;\n}', ["Dao 64", "Ek 88", "Fah 79"], "Read each line with scanf(\"%s %d\", s[i].name, &s[i].score); store the index of the highest score and the sum of the scores; display the average with %.2f in printf."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "What does `struct sensor { int id; double value; };` create?", choices: ["a type, and no variable", "a variable named sensor", "two variables", "an array of two values"], answer: 0, explain: "A definition describes a type; `struct sensor s;` then creates a variable." },
@@ -2452,20 +2453,20 @@ int main(void) {
 }`)],
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
-            PQ("Complete the function to_percent, which multiplies the variable that its parameter points to by 100.",
-              "45.0", '#include <stdio.h>\nvoid to_percent(double *x) {\n    \n}\nint main(void) {\n    double load = 0.45;\n    to_percent(&load);\n    printf("%.1f\\n", load);\n    return 0;\n}', null, "*x = *x * 100;"),
+            PQ("Complete the function <code>to_percent</code>, so that the program displays the target output.<br>The function multiplies by 100 the variable that the parameter <code>x</code> points to.",
+              "45.0", '#include <stdio.h>\nvoid to_percent(double *x) {\n    \n}\nint main(void) {\n    double load = 0.45;\n    to_percent(&load);\n    printf("%.1f\\n", load);\n    return 0;\n}', null, "*x is the variable that x points to: *x = *x * 100;"),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("add_bonus should add 10 to the caller's variable, but s stays 50. Correct the function.",
+            PQ("Correct the function <code>add_bonus</code>, so that the program displays the target output.<br>The function must add 10 to the variable <code>s</code> of <code>main</code>. Now <code>s</code> stays 50.",
               "60", '#include <stdio.h>\nvoid add_bonus(int *score) {\n    score = score + 10;\n}\nint main(void) {\n    int s = 50;\n    add_bonus(&s);\n    printf("%d\\n", s);\n    return 0;\n}', null, "score is the address; *score is the variable."),
           ] },
           { kind: "exercise", title: "Write a program: two results", blocks: [
-            PQ("Write <code>void min_max(int v[], int n, int *lo, int *hi)</code>, which stores the smallest and the largest element. Test it with {4, 9, 2, 7, 5}, and display lo and hi separated by a space: <code>2 9</code>.",
-              "2 9", STARTER, null, "*lo = v[0]; *hi = v[0]; then compare each element."),
+            PQ("Write a program with this function:<br><code>void min_max(int v[], int n, int *lo, int *hi)</code><br>1. The function stores the smallest element in <code>*lo</code> and the largest element in <code>*hi</code>.<br>2. Call the function with the array {4, 9, 2, 7, 5}.<br>3. Display the two results as in the target output: <code>2 9</code>.",
+              "2 9", STARTER, null, "Start with *lo = v[0]; *hi = v[0]; then compare each element with *lo and *hi."),
           ] },
           { kind: "exercise", title: "Write a program: a pointer parameter", blocks: [
-            PQ("Write <code>void scale(struct rect *r, double k)</code>, which multiplies w and h of the caller's rectangle by k. Test it with {2.0, 3.0} and k = 1.5, and display w and h with 1 decimal.",
-              "3.0 4.5", '#include <stdio.h>\nstruct rect { double w; double h; };\n// write scale here\nint main(void) {\n    struct rect a = {2.0, 3.0};\n    // call scale, then display a.w and a.h\n    return 0;\n}', null, "r->w = r->w * k; r->h = r->h * k; call it with scale(&a, 1.5);"),
+            PQ("Complete the program, so that it displays the target output.<br>1. Write <code>void scale(struct rect *r, double k)</code>: the function multiplies <code>w</code> and <code>h</code> of the struct that <code>r</code> points to by <code>k</code>.<br>2. Call <code>scale</code> for <code>a</code> with k = 1.5.<br>3. Display <code>a.w</code> and <code>a.h</code>: use <code>%.1f</code> in <code>printf</code>.",
+              "3.0 4.5", '#include <stdio.h>\nstruct rect { double w; double h; };\n// write scale here\nint main(void) {\n    struct rect a = {2.0, 3.0};\n    // call scale, then display a.w and a.h\n    return 0;\n}', null, "In scale: r->w = r->w * k; r->h = r->h * k; In main: scale(&a, 1.5);"),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "After `int x = 5; int *p = &x; *p = 8;`, x is…", choices: ["5", "8", "the address of x", "unknown"], answer: 1, explain: "*p is x, so x becomes 8." },
@@ -2633,24 +2634,24 @@ int main(void) {
 }`)],
           ] },
           { kind: "exercise", title: "Complete the table", blocks: [
-            T("Write the missing values on paper. The next exercise checks them."),
+            T("Write the missing values of the table on paper. Each row shows one number in binary, in hexadecimal, and in decimal.<br>Check your table on the next slide."),
             TB(["Binary", "Hexadecimal", "Decimal"], [["0011 0111", "", ""], ["", "0xA4", ""], ["", "", "200"], ["1111 1111", "", ""]], null, "center"),
           ] },
           { kind: "exercise", title: "Check your table", blocks: [
             TB(["Binary", "Hexadecimal", "Decimal"], [["0011 0111", "0x37", "55"], ["1010 0100", "0xA4", "164"], ["1100 1000", "0xC8", "200"], ["1111 1111", "0xFF", "255"]], null, "center"),
-            T("Check with printf: <code>printf(\"%d %X\", 0b00110111, 55);</code>"),
+            T("Compare this table with your table. To check a row with a program, use <code>printf</code>: <code>printf(\"%d %X\", 0b00110111, 55);</code>"),
           ] },
           { kind: "exercise", title: "Write a program: hexadecimal", blocks: [
-            PQ("Read a number from 0 to 255 and display it as two hexadecimal digits with 0x.",
-              "Value: 200\n0xC8", '#include <stdio.h>\nint main(void) {\n    int v;\n    printf("Value: ");\n    scanf("%d", &v);\n    // display v in hexadecimal\n    return 0;\n}', ["200"], 'printf("0x%02X\\n", v);'),
+            PQ("Complete the program, so that it displays the number <code>v</code> (0 to 255) in hexadecimal, as in the target output.<br>1. Display <code>0x</code> first.<br>2. Then display <code>v</code> as two hexadecimal digits, with upper-case letters.",
+              "Value: 200\n0xC8", '#include <stdio.h>\nint main(void) {\n    int v;\n    printf("Value: ");\n    scanf("%d", &v);\n    // display v in hexadecimal\n    return 0;\n}', ["200"], 'Use %02X in printf: printf("0x%02X\\n", v);'),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("A timer should wait 10 minutes, but the program displays 8. Correct the error.",
-              "10", '#include <stdio.h>\nint main(void) {\n    int minutes = 010;\n    printf("%d\\n", minutes);\n    return 0;\n}', null, "A leading 0 makes an octal number."),
+            PQ("Correct the error in the program, so that the program displays the target output.<br>The timer must wait 10 minutes. The program now displays 8.",
+              "10", '#include <stdio.h>\nint main(void) {\n    int minutes = 010;\n    printf("%d\\n", minutes);\n    return 0;\n}', null, "A number that starts with 0 is an octal number: 010 is 8."),
           ] },
           { kind: "exercise", title: "Write a program: wrap-around", blocks: [
-            PQ("A uint8_t counter starts at 250. Add 1 to it ten times, and display the value after each step, on one line.",
-              "251 252 253 254 255 0 1 2 3 4", '#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n    uint8_t counter = 250;\n    // add 1 ten times\n    return 0;\n}', null, "for (int i = 0; i < 10; i++) { counter++; printf(\"%d \", counter); }"),
+            PQ("Complete the program, so that it displays the target output.<br>1. Add 1 to <code>counter</code> ten times.<br>2. After each addition, display the value of <code>counter</code>.<br>3. Display the ten values on one line.",
+              "251 252 253 254 255 0 1 2 3 4", '#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n    uint8_t counter = 250;\n    // add 1 ten times\n    return 0;\n}', null, "Use this loop: for (int i = 0; i < 10; i++) { counter++; printf(\"%d \", counter); }"),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`0x2A` in decimal is…", choices: ["20", "42", "210", "2A"], answer: 1, explain: "2 × 16 + 10 = 42." },
@@ -2829,7 +2830,7 @@ int main(void) {
 }`)],
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("The statements inside main. Complete the trace table on paper, in hexadecimal. The first row is done."),
+            T("Complete the trace table on paper. Write each value in hexadecimal. The first row is already complete.<br>The table shows the statements inside <code>main</code>."),
             W("traceTable", { trace: T_exBits, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
@@ -2848,16 +2849,16 @@ int main(void) {
 }`)],
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
-            PQ("The LED is on bit 5 of port. Complete line 6, so that the LED is switched off and the other bits stay unchanged.",
-              "0x87", '#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n    uint8_t port = 0xA7;\n    // switch off bit 5\n    \n    printf("0x%02X\\n", port);\n    return 0;\n}', null, "port &= ~(1 << 5);"),
+            PQ("Complete line 6 of the program, so that the program displays the target output.<br>1. Switch off the LED that is connected to bit 5 of <code>port</code>.<br>2. Keep the other bits of <code>port</code> unchanged.",
+              "0x87", '#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n    uint8_t port = 0xA7;\n    // switch off bit 5\n    \n    printf("0x%02X\\n", port);\n    return 0;\n}', null, "Clear bit 5 with & and an inverted mask: port &= ~(1 << 5);"),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The program should display <code>on</code> only when bit 2 of status is 1. Correct the condition.",
-              "off", '#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n    uint8_t status = 0x18;\n    if (status && (1 << 2)) { printf("on\\n"); }\n    else { printf("off\\n"); }\n    return 0;\n}', null, "&& is logical; a bit is tested with &."),
+            PQ("Correct the condition of the <code>if</code> statement, so that the program displays the target output.<br>The program must display <code>on</code> only when bit 2 of <code>status</code> is 1.",
+              "off", '#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n    uint8_t status = 0x18;\n    if (status && (1 << 2)) { printf("on\\n"); }\n    else { printf("off\\n"); }\n    return 0;\n}', null, "&& is the logical AND; test one bit with the bitwise AND, &."),
           ] },
           { kind: "exercise", title: "Write a program: count the 1 bits", blocks: [
-            PQ("Count the bits that are 1 in the byte 0xB7, and display the count.",
-              "6", '#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n    uint8_t r = 0xB7;\n    // count the 1 bits\n    return 0;\n}', null, "Test bit 0 with r & 1, then shift r >> 1; repeat 8 times."),
+            PQ("Complete the program, so that it displays the target output.<br>1. Count the bits of <code>r</code> (the byte 0xB7) that are 1.<br>2. Display the count.",
+              "6", '#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n    uint8_t r = 0xB7;\n    // count the 1 bits\n    return 0;\n}', null, "Repeat 8 times: test bit 0 with r & 1, then shift with r = r >> 1."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which statement sets bit 3 of reg and keeps the other bits?", choices: ["`reg = 1 << 3;`", "`reg |= (1 << 3);`", "`reg &= (1 << 3);`", "`reg ^= 3;`"], answer: 1, explain: "OR with the mask sets bit 3; the other bits are ORed with 0." },
@@ -3049,16 +3050,16 @@ int main(void) {
 }`)],
           ] },
           { kind: "exercise", title: "Write a program: segments", blocks: [
-            PQ("Use the table to display the letters of the segments that are on for the digit 3, in the order a to g.",
-              "abcdg", '#include <stdio.h>\n#include <stdint.h>\nconst uint8_t SEG[4] = {0x3F, 0x06, 0x5B, 0x4F};\nint main(void) {\n    uint8_t code = SEG[3];\n    // for each bit 0..6 that is 1, display \'a\' + bit\n    return 0;\n}', null, "for (int s = 0; s < 7; s++) { if (code & (1 << s)) { printf(\"%c\", 'a' + s); } }"),
+            PQ("Complete the program, so that it displays the segments that are on for the digit 3, as in the target output.<br>1. Test the bits 0 to 6 of <code>code</code>, in this order.<br>2. When a bit is 1, display the letter of the segment: <code>'a' + bit</code>.",
+              "abcdg", '#include <stdio.h>\n#include <stdint.h>\nconst uint8_t SEG[4] = {0x3F, 0x06, 0x5B, 0x4F};\nint main(void) {\n    uint8_t code = SEG[3];\n    // for each bit 0..6 that is 1, display \'a\' + bit\n    return 0;\n}', null, "Use this loop: for (int s = 0; s < 7; s++) { if (code & (1 << s)) { printf(\"%c\", 'a' + s); } }"),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("DOUBLE(3 + 1) should be 8, but the program displays 5. Correct the macro.",
-              "8", '#include <stdio.h>\n#define DOUBLE(x) x * 2\nint main(void) {\n    printf("%d\\n", DOUBLE(3 + 1));\n    return 0;\n}', null, "3 + 1 * 2 is 5: put parentheses around x and around the whole macro."),
+            PQ("Correct the macro <code>DOUBLE</code>, so that the program displays the target output.<br><code>DOUBLE(3 + 1)</code> must be 8. The program now displays 5.",
+              "8", '#include <stdio.h>\n#define DOUBLE(x) x * 2\nint main(void) {\n    printf("%d\\n", DOUBLE(3 + 1));\n    return 0;\n}', null, "The macro gives 3 + 1 * 2, which is 5: write parentheses around x and around the whole expression."),
           ] },
           { kind: "exercise", title: "Write a program: a static counter", blocks: [
-            PQ("Write <code>int next_id(void)</code>, which returns 1, 2, 3, … on successive calls, with a static variable. Call it three times and display the results on one line.",
-              "1 2 3", STARTER, null, "static int id = 0; id++; return id;"),
+            PQ("Write a program that displays the target output.<br>1. Write <code>int next_id(void)</code> with a <code>static</code> variable.<br>2. Each call returns the next number: 1, then 2, then 3.<br>3. Call the function three times and display the results on one line.",
+              "1 2 3", STARTER, null, "The function has three statements: static int id = 0; id++; return id;"),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Why is a hardware register declared `volatile`?", choices: ["to make it faster", "its value can change outside the program", "to make it constant", "to store it in flash"], answer: 1, explain: "The compiler must read it from memory every time." },
@@ -3086,63 +3087,63 @@ int main(void) {
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: an electricity bill", blocks: [
-            T("The first 100 units cost 3.00 per unit; every further unit costs 4.50. Read the units used and display the bill."),
+            T("The first 100 units of electricity cost 3.00 for each unit. Each unit above 100 costs 4.50. Read the number of units and display the bill."),
             IPO([["Input", "units (int), for example 150"], ["Output", "Bill: 525.00"], ["Processing", "100 × 3.00 + (150 − 100) × 4.50"]]),
           ] },
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
-            PQ("Write the program. Use if / else for the two cases.",
-              "Units: 150\nBill: 525.00", '#include <stdio.h>\nint main(void) {\n    int units;\n    printf("Units: ");\n    scanf("%d", &units);\n    // compute and display the bill\n    return 0;\n}', ["150"], "if (units <= 100) { bill = units * 3.0; } else { bill = 300.0 + (units - 100) * 4.5; }"),
+            PQ("Complete the program of Problem 1, so that it displays the target output.<br>Use <code>if</code> / <code>else</code> for the two cases: 100 units or fewer, and more than 100 units.",
+              "Units: 150\nBill: 525.00", '#include <stdio.h>\nint main(void) {\n    int units;\n    printf("Units: ");\n    scanf("%d", &units);\n    // compute and display the bill\n    return 0;\n}', ["150"], "The two cases: if (units <= 100) { bill = units * 3.0; } else { bill = 300.0 + (units - 100) * 4.5; }"),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: a menu", blocks: [
-            T("Repeat: read an operator (+, -, *, /) and two numbers, and display the result. The operator q ends the program."),
+            T("The program repeats these steps: read an operator (+, -, *, /) and two numbers, then display the result. The program ends when the operator is q."),
             IPO([["Input", "+ 2 3, then / 7 2, then q"], ["Output", "5.00, then 3.50"], ["Processing", "a do-while loop with a switch inside"]]),
           ] },
           { kind: "exercise", part: "Problem 2", title: "Problem 2: write the program", blocks: [
-            PQ("Write the program. Read the operator with <code>scanf(\" %c\", &amp;op)</code>, and the two numbers only when op is not q.",
+            PQ("Complete the program of Problem 2, so that it displays the target output.<br>1. Read <code>op</code> with <code>scanf(\" %c\", &amp;op)</code>.<br>2. Read the two numbers only when <code>op</code> is not <code>'q'</code>.",
               "+ 2 3\n5.00\n/ 7 2\n3.50\nq", '#include <stdio.h>\nint main(void) {\n    char op;\n    double a, b;\n    // do { ... } while (op != \'q\');\n    return 0;\n}', ["+ 2 3", "/ 7 2", "q"], "Inside the loop: scanf(\" %c\", &op); if (op != 'q') { scanf(\"%lf %lf\", &a, &b); switch (op) { ... } }"),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: prime numbers", blocks: [
-            T("A number greater than 1 is prime when no number from 2 to n − 1 divides it. Display the primes up to 30."),
+            T("A number n greater than 1 is a prime number when no number from 2 to n − 1 divides n. Display the prime numbers from 2 to 30."),
             IPO([["Input", "none (the limit 30)"], ["Output", "2 3 5 7 11 13 17 19 23 29"], ["Processing", "a function is_prime(n), called for 2 to 30"]]),
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
-            PQ("Write <code>int is_prime(int n)</code>, which returns 1 or 0. Then display the primes up to 30 on one line.",
+            PQ("Write the program of Problem 3, so that it displays the target output.<br>1. Write <code>int is_prime(int n)</code>: the function returns 1 when <code>n</code> is a prime number, and 0 when <code>n</code> is not.<br>2. Display the prime numbers from 2 to 30 on one line.",
               "2 3 5 7 11 13 17 19 23 29", STARTER, null, "In is_prime: for (int d = 2; d < n; d++) { if (n % d == 0) { return 0; } } return 1;"),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: temperature statistics", blocks: [
-            T("Read 6 temperatures into an array. Display the average with 1 decimal, and the number of readings above the average."),
+            T("Read 6 temperatures into an array. Display the average with 1 decimal place. Then display the number of temperatures that are greater than the average."),
             IPO([["Input", "21.0 23.5 22.0 26.5 24.0 21.0"], ["Output", "Average: 23.0, above: 3"], ["Processing", "one loop for the sum; a second loop to count"]]),
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", blocks: [
-            PQ("Write the program. The six values are typed on one line.",
-              "21.0 23.5 22.0 26.5 24.0 21.0\nAverage: 23.0, above: 3", '#include <stdio.h>\n#define N 6\nint main(void) {\n    double t[N];\n    // read, average, count\n    return 0;\n}', ["21.0 23.5 22.0 26.5 24.0 21.0"], "The average must be known before counting: two loops."),
+            PQ("Complete the program of Problem 4, so that it displays the target output.<br>The user types the six values on one line.",
+              "21.0 23.5 22.0 26.5 24.0 21.0\nAverage: 23.0, above: 3", '#include <stdio.h>\n#define N 6\nint main(void) {\n    double t[N];\n    // read, average, count\n    return 0;\n}', ["21.0 23.5 22.0 26.5 24.0 21.0"], "Use two loops: the first loop computes the sum, and the second loop counts the values above the average."),
           ] },
           { kind: "problem", part: "Problem 5", title: "Problem 5: analysing a text", blocks: [
-            T("Read a line of text. Count its upper-case letters, digits, and spaces."),
+            T("Read a line of text. Count the upper-case letters, the digits, and the spaces in the line."),
             IPO([["Input", "Motor 3 at 1500 RPM"], ["Output", "upper 4, digits 5, spaces 4"], ["Processing", "fgets, then a loop over the characters with ctype.h"]]),
           ] },
           { kind: "exercise", part: "Problem 5", title: "Problem 5: write the program", blocks: [
-            PQ("Write the program. Stop the loop at '\\n' or '\\0', so that the Enter is not counted.",
-              "Motor 3 at 1500 RPM\nupper 4, digits 5, spaces 4", '#include <stdio.h>\n#include <ctype.h>\nint main(void) {\n    char s[100];\n    fgets(s, 100, stdin);\n    // count and display\n    return 0;\n}', ["Motor 3 at 1500 RPM"], "isupper(s[i]), isdigit(s[i]), s[i] == ' '"),
+            PQ("Complete the program of Problem 5, so that it displays the target output.<br>End the loop over the characters at <code>'\\n'</code> or <code>'\\0'</code>.",
+              "Motor 3 at 1500 RPM\nupper 4, digits 5, spaces 4", '#include <stdio.h>\n#include <ctype.h>\nint main(void) {\n    char s[100];\n    fgets(s, 100, stdin);\n    // count and display\n    return 0;\n}', ["Motor 3 at 1500 RPM"], "fgets also stores the Enter key as '\\n'; test each character with isupper(s[i]), isdigit(s[i]), and s[i] == ' '."),
           ] },
           { kind: "problem", part: "Problem 6", title: "Problem 6: a stock of parts", blocks: [
-            T("A workshop keeps its parts in an array of structs: name, quantity, and price. Every part whose quantity is below 5 receives 10 more pieces. Display these parts with the new quantity, and then the total value of the stock."),
+            T("A workshop stores its parts in an array of structs. Each part has a name, a quantity, and a price.<br>1. Every part whose quantity is below 5 receives 10 more pieces.<br>2. Display these parts with the new quantity.<br>3. Then display the total value of all the parts."),
             IPO([["Input", "the array in the program (4 parts)"], ["Output", "Restocked: fuse 13, Restocked: relay 12, Total: 2042.50 (after restocking)"], ["Processing", "restock(p, n) changes the caller's part through a pointer; a loop with if; the sum of qty × price"]]),
           ] },
           { kind: "exercise", part: "Problem 6", title: "Problem 6: write the program", blocks: [
-            PQ("Write restock, which adds n to the qty of the part that p points to. In main, restock every part whose qty is below 5 with 10 pieces and display it; then display the new total value.",
+            PQ("Complete the program of Problem 6, so that it displays the target output.<br>1. <code>restock</code> adds <code>n</code> to the <code>qty</code> of the part that <code>p</code> points to.<br>2. For each part with <code>qty</code> below 5: call <code>restock</code> with 10, then display the part.<br>3. Display the new total value.",
               "Restocked: fuse 13\nRestocked: relay 12\nTotal: 2042.50", '#include <stdio.h>\nstruct part { char name[12]; int qty; double price; };\nvoid restock(struct part *p, int n) {\n    // add n to the qty of the part that p points to\n}\nint main(void) {\n    struct part stock[4] = {{"fuse", 3, 12.5}, {"cable", 40, 8.0},\n                            {"relay", 2, 95.0}, {"switch", 12, 35.0}};\n    return 0;\n}', null, "In restock: p->qty = p->qty + n; In main: restock(&stock[i], 10); then add stock[i].qty * stock[i].price to the total."),
           ] },
           { kind: "problem", part: "Problem 7", title: "Problem 7: statistics through pointers", blocks: [
-            T("Write a function that computes the sum and the maximum of an array, and returns both through pointer parameters."),
+            T("Write a function that computes the sum and the maximum of an array. The function returns the two results through two pointer parameters."),
             IPO([["Input", "the array {12, 7, 30, 18}"], ["Output", "sum 67, max 30"], ["Processing", "void stats(int v[], int n, int *sum, int *max)"]]),
           ] },
           { kind: "exercise", part: "Problem 7", title: "Problem 7: write the program", blocks: [
-            PQ("Write stats and a main that calls it and displays both results.",
+            PQ("Write the program of Problem 7, so that it displays the target output.<br>1. Write the function <code>stats</code>.<br>2. In <code>main</code>, call <code>stats</code> with the array {12, 7, 30, 18}.<br>3. Display the sum and the maximum.",
               "sum 67, max 30", STARTER, null, "In main: int s, m; stats(v, 4, &s, &m); printf(\"sum %d, max %d\\n\", s, m);"),
           ] },
           { kind: "problem", part: "Problem 8", title: "Problem 8: an LED bar", blocks: [
-            T("A bar of 8 LEDs is connected to one port. The program switches on 5 LEDs, from bit 0 upward, and displays the port value in binary."),
+            T("A bar of 8 LEDs is connected to one port. The program switches on 5 LEDs: bits 0 to 4. Then the program displays the value of the port in binary."),
             IPO([["Input", "the level 5 (in the program)"], ["Output", "the 8 bits of the port, from bit 7 to bit 0"], ["Processing", "the mask (1 &lt;&lt; 5) - 1, then (port &gt;&gt; n) &amp; 1 for n = 7 down to 0"]]),
           ] },
           { kind: "exercise", part: "Problem 8", title: "Problem 8: determine the output", cols: [
@@ -3159,11 +3160,11 @@ int main(void) {
 }`)],
           ] },
           { kind: "problem", part: "Problem 9", title: "Problem 9: a status register", blocks: [
-            T("A device reports a status byte. Bit 0 means READY, bit 3 ERROR, and bit 5 BUSY. The program tests each bit with &amp; and displays the name of each flag that is set."),
+            T("A device reports a status byte. Bit 0 means READY, bit 3 means ERROR, and bit 5 means BUSY. The program tests each of these bits with &amp; and displays the name of each flag that is set."),
             IPO([["Input", "the status byte 0x21 (in the program)"], ["Output", "the name of each flag that is set, one per line"], ["Processing", "status &amp; (1 &lt;&lt; n) is not 0 only when bit n is 1"]]),
           ] },
           { kind: "exercise", part: "Problem 9", title: "Problem 9: determine the output", blocks: [
-            PAPER,
+            PAPER_LINE,
             RUN(`#include <stdio.h>
 int main(void) {
     unsigned int status = 0x21;

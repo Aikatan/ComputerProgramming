@@ -16,7 +16,7 @@
   const W = (name, config) => ({ type: "widget", name, config });
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
-  const CHECK_NEXT = "Complete the table on paper. The next exercise checks it.";
+  const CHECK_NEXT = "The next exercise shows the completed table.";
 
   /* ---------- trace: three assembly instructions through the instruction cycle ----------
      The code lines are assembly, not Python. Addresses are the line numbers 1 to 3.
@@ -141,7 +141,7 @@
             NEXT("<b>The CPU and the instruction cycle</b>. The processing unit executes the instructions of every program, one instruction after another."),
           ] },
           { kind: "exercise", title: "Classify hardware and software", blocks: [
-            T("For each item, write <b>hardware</b> or <b>software</b>, and its group: input, processing, storage, or output device; or system or application software. The first row is done. The next exercise checks the table."),
+            T("Complete the table on paper. The first row is an example. " + CHECK_NEXT + "<br>1. Column 2: write <b>hardware</b> or <b>software</b>.<br>2. Column 3, hardware: write input, processing, storage, or output device.<br>3. Column 3, software: write system or application software."),
             TB(["Item", "Hardware or software", "Group"], [
               ["Keyboard", "hardware", "input device"],
               ["Projector", "", ""],
@@ -163,7 +163,7 @@
           ] },
           { kind: "exercise", title: "Complete the table: a smart thermostat", blocks: [
             T("A smart thermostat measures the room temperature with a sensor, and it reads the set temperature from two buttons. A processor compares the two values. The thermostat keeps a log of the readings, shows the temperature on a small screen, and switches the heater on or off."),
-            T("Write the hardware that performs each function. " + CHECK_NEXT),
+            T("On paper, write the hardware that performs each function.<br>" + CHECK_NEXT),
             TB(["Function", "Hardware in the thermostat"], [["Input", ""], ["Processing", ""], ["Storage", ""], ["Output", ""]]),
           ] },
           { kind: "exercise", title: "Check your table", blocks: [
@@ -175,8 +175,8 @@
             ]),
           ] },
           { kind: "exercise", title: "Write a program: processing and output", blocks: [
-            PQ("The thermostat converts 25 °C to °F with the formula F = C × 9 / 5 + 32. Write one <code>print()</code> statement that computes the value (processing) and displays it as in the target (output).",
-              "Temperature = 77.0 F", "# Write your program here\n", null, 'print("Temperature =", 25 * 9 / 5 + 32, "F")'),
+            PQ("Write a program that converts 25 °C to °F and displays the target output.<br>1. Use one <code>print()</code> statement.<br>2. Processing: compute the value with F = C × 9 / 5 + 32.<br>3. Output: display the value as in the target output.",
+              "Temperature = 77.0 F", "# Write your program here\n", null, 'Use print("Temperature =", 25 * 9 / 5 + 32, "F").'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which list contains the four functions of a computer?", choices: ["Input, output, and processing", "Input, processing, storage, and output", "Input, output, control unit, and register", "Input, output, control unit, and ALU"], answer: 1, explain: "A computer receives input, processes it, stores data, and delivers output." },
@@ -243,7 +243,7 @@
             NEXT("<b>Memory: RAM and ROM</b>. The CPU fetches every instruction and every value from memory."),
           ] },
           { kind: "exercise", title: "Complete the table: parts of the CPU", blocks: [
-            T("Write the CPU part that performs each task: ALU, control unit, or register. The first row is done. The next exercise checks the table."),
+            T("On paper, write the CPU part that performs each task: ALU, control unit, or register.<br>The first row is an example. " + CHECK_NEXT),
             TB(["Task", "CPU part"], [
               ["computes 17 − 5", "ALU"],
               ["holds the value 42 for the next instruction", ""],
@@ -262,8 +262,8 @@
             ]),
           ] },
           { kind: "exercise", title: "Complete the table: the instruction cycle", blocks: [
-            T("Register R1 holds 50 and register R2 holds 8. The CPU executes <code>SUB R1, R2</code>: it subtracts R2 from R1 and stores the result in R1."),
-            T("Write the part that works in each stage and what happens. " + CHECK_NEXT),
+            T("Register R1 holds 50 and register R2 holds 8. The CPU executes <code>SUB R1, R2</code>: the instruction subtracts R2 from R1 and stores the result in R1."),
+            T("Complete the table on paper. " + CHECK_NEXT + "<br>1. Column <b>Part</b>: write the part that works in the stage.<br>2. Column <b>What happens</b>: write what happens in the stage."),
             TB(["Stage", "Part", "What happens"], [["Fetch", "", ""], ["Decode", "", ""], ["Execute", "", ""], ["Store", "", ""]]),
           ] },
           { kind: "exercise", title: "Check your table", blocks: [
@@ -275,12 +275,12 @@
             ]),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Each line is one operation of the ALU. Write the output of the program on paper.<br>Then run the program and compare.")],
+            [T("Determine the output of the program. Each line is one operation of the ALU.<br>1. Write the output on paper.<br>2. Run the program.<br>3. Compare the output with your answer on paper.")],
             [RUN("print(17 + 5)\nprint(17 - 5)\nprint(17 * 5)\nprint(17 > 5)\nprint(5 > 17)")],
           ] },
           { kind: "exercise", title: "Write a program: power of a heater", blocks: [
-            PQ("A heater works at 230 V and draws 4 A. Its power is P = V × I. Write a program that computes the power with one expression and displays it as in the target.",
-              "Power = 920 W", "# Write your program here\n", null, 'print("Power =", 230 * 4, "W")'),
+            PQ("Write a program that computes the power of a heater and displays the target output.<br>1. Use these values: voltage 230 V, current 4 A.<br>2. Compute the power with one expression: P = V × I.",
+              "Power = 920 W", "# Write your program here\n", null, 'Use print("Power =", 230 * 4, "W").'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which CPU part performs additions and comparisons?", choices: ["Control unit", "ALU", "Register", "Cache"], answer: 1, explain: "The Arithmetic Logic Unit (ALU) performs arithmetic and logic operations." },
@@ -371,7 +371,7 @@
             NEXT("<b>Storage devices: HDD and SSD</b>. Secondary storage keeps programs and files when the power is off and RAM is cleared."),
           ] },
           { kind: "exercise", title: "Complete the table: types of memory", blocks: [
-            T("Write <b>yes</b> or <b>no</b> in the first two columns, and a typical use in the third. The first row is done. The next exercise checks the table."),
+            T("Complete the table on paper. The first row is an example. " + CHECK_NEXT + "<br>1. Columns <b>Volatile</b> and <b>Can be rewritten</b>: write <b>yes</b> or <b>no</b>.<br>2. Column <b>Typical use</b>: write one typical use of the memory."),
             TB(["Memory", "Volatile", "Can be rewritten", "Typical use"], [
               ["DRAM", "yes", "yes", "main memory"],
               ["SRAM", "", "", ""],
@@ -390,7 +390,7 @@
             ], null, "center"),
           ] },
           { kind: "exercise", title: "Complete the table: choose the memory", blocks: [
-            T("Write the most suitable memory for each task in a PC: DRAM, SRAM, PROM, EPROM, or EEPROM. " + CHECK_NEXT),
+            T("On paper, write the most suitable memory for each task in a PC.<br>Choose from: DRAM, SRAM, PROM, EPROM, EEPROM.<br>" + CHECK_NEXT),
             TB(["Task", "Memory"], [
               ["holds the programs that are running", ""],
               ["keeps copies of recently used data inside the CPU", ""],
@@ -407,8 +407,8 @@
             ]),
           ] },
           { kind: "exercise", title: "Write a program: RAM and cache", blocks: [
-            PQ("A PC has 16 GB of RAM (DRAM). Its CPU has 16 MB of cache (SRAM). 1 GB is 1024 MB. Write a program that computes how many times larger the RAM is than the cache.",
-              "RAM / cache = 1024.0", "# Write your program here\n", null, 'print("RAM / cache =", 16 * 1024 / 16). SRAM is expensive, so a cache is much smaller than RAM.'),
+            PQ("Write a program that computes RAM size ÷ cache size and displays the target output.<br>1. Use these values: RAM 16 GB (DRAM), cache 16 MB (SRAM).<br>2. Use the same unit for both sizes: 1 GB is 1024 MB.",
+              "RAM / cache = 1024.0", "# Write your program here\n", null, 'Use print("RAM / cache =", 16 * 1024 / 16). SRAM is expensive, so a cache is much smaller than RAM.'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which memory loses its data as soon as the computer is switched off?", choices: ["Hard disk", "RAM", "ROM", "Flash memory"], answer: 1, explain: "RAM is volatile: its data is erased when the power is off." },
@@ -525,19 +525,19 @@
             NEXT("<b>Levels of a computer system</b>. The hardware of Lessons 1 to 4 forms the lowest levels of a computer system. The software levels are built on it."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("An HDD has a seek time of 7 ms and a rotational latency of 4 ms. It reads a 900 MB file at 150 MB/s.<br>Calculate the access time and the transfer time on paper. Then run the program and compare.")],
+            [T("Compute the access time and the transfer time of an HDD.<br>1. Use these values: seek time 7 ms, rotational latency 4 ms, file size 900 MB, transfer rate 150 MB/s.<br>2. Compute both times on paper.<br>3. Run the program.<br>4. Compare the output with your answer on paper.")],
             [RUN('print(7 + 4, "ms")\nprint(900 / 150, "s")')],
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
-            PQ("An HDD has a seek time of 9 ms and a rotational latency of 4 ms. The program displays a wrong access time. Correct the calculation.",
+            PQ("Correct the calculation, so that the program displays the target output.<br>1. The error: the program displays a wrong access time of an HDD.<br>2. Use these values: seek time 9 ms, rotational latency 4 ms.",
               "Access time = 13 ms", 'print("Access time =", 9 - 4, "ms")\n', null, "Access time = seek time + rotational latency."),
           ] },
           { kind: "exercise", title: "Write a program: copy time", blocks: [
-            PQ("A 6000 MB video file is copied to three drives. Display the copy time on an HDD (150 MB/s), a SATA SSD (500 MB/s), and an NVMe SSD (3000 MB/s).",
-              "HDD: 40.0 s\nSATA SSD: 12.0 s\nNVMe SSD: 2.0 s", "# Write your program here\n", null, 'Transfer time = size ÷ rate: print("HDD:", 6000 / 150, "s")'),
+            PQ("Write a program that displays the copy time of a 6000 MB video file on three drives.<br>1. Use these transfer rates: HDD 150 MB/s, SATA SSD 500 MB/s, NVMe SSD 3000 MB/s.<br>2. Display one line for each drive, as in the target output.",
+              "HDD: 40.0 s\nSATA SSD: 12.0 s\nNVMe SSD: 2.0 s", "# Write your program here\n", null, 'Transfer time = size ÷ rate, for example print("HDD:", 6000 / 150, "s").'),
           ] },
           { kind: "exercise", title: "Complete the table: HDD or SSD", blocks: [
-            T("Choose an HDD or an SSD for each application, and give one reason. " + CHECK_NEXT),
+            T("Complete the table on paper. " + CHECK_NEXT + "<br>1. Column 2: write <b>HDD</b> or <b>SSD</b> for the application.<br>2. Column 3: write one reason for the choice."),
             TB(["Application", "HDD or SSD", "Reason"], [
               ["boot drive of a laptop", "", ""],
               ["10-year archive of CCTV video", "", ""],
@@ -660,7 +660,7 @@
             N("<b>Topic 02: Basic programming with Python</b>. Programs at Level 5: output, variables, data types, arithmetic, input, and strings.", "Next topic"),
           ] },
           { kind: "exercise", title: "Complete the table: levels", blocks: [
-            T("Write the level of each component: its number and name. The first row is done. The next exercise checks the table."),
+            T("Write the level of each component: the number and the name of the level. The first row is an example. " + CHECK_NEXT),
             TB(["Component", "Level"], [
               ["AND gate", "0: Digital logic"],
               ["microcode", ""],
@@ -683,7 +683,7 @@
             ]),
           ] },
           { kind: "exercise", title: "Complete the table: a program and the hardware", blocks: [
-            T("A student writes a Python program that converts 25 °C to °F, saves it as <code>temp.py</code>, and runs it. Write the hardware used in each step. " + CHECK_NEXT),
+            T("A student writes a Python program that converts 25 °C to °F. The student saves the program as <code>temp.py</code> and runs the program.<br>On paper, write the hardware that each step uses. " + CHECK_NEXT),
             TB(["Step", "Hardware"], [
               ["the code is typed", ""],
               ["<code>temp.py</code> is saved permanently", ""],

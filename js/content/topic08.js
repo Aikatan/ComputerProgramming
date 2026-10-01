@@ -152,16 +152,16 @@
             NEXT("<b>File modes, errors, and folders</b>. Appending, creating, missing files, and the os module."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program and compare.")],
+            [T("Write the output on paper.<br>Then run the program, and compare its output with your answer.")],
             [RUN('with open("t.txt", "w") as f:\n    f.write("one\\ntwo\\nthree\\n")\nwith open("t.txt") as f:\n    print(f.read(5))\n    print(f.readline())\n    print(len(f.readlines()))')],
           ] },
           { kind: "exercise", title: "Write a program: save and count", blocks: [
-            PQ("Write the three words pump, fan, heater into \"names.txt\", one per line. Then read the file and display the number of lines.",
-              "3", "# Write your program here\n", null, "len(f.readlines())"),
+            PQ("Write a program that writes three words into a file and counts the lines.<br>1. Write pump, fan, and heater into \"names.txt\", one word on each line.<br>2. Read the file, and display the number of lines.",
+              "3", "# Write your program here\n", null, "Use len(f.readlines()) for the number of lines."),
           ] },
           { kind: "exercise", title: "Write a program: the maximum reading", blocks: [
-            PQ("The starter writes readings to a file. Read the file line by line and display the largest value.",
-              "25.4", 'with open("v.txt", "w") as f:\n    f.write("21.5\\n25.4\\n22.0\\n")\n# Read the file here\n', null, "for line in f: value = float(line) ..."),
+            PQ("Complete the program. Lines 1 and 2 already write three readings into \"v.txt\".<br>1. Read the file line by line.<br>2. Display the largest reading.",
+              "25.4", 'with open("v.txt", "w") as f:\n    f.write("21.5\\n25.4\\n22.0\\n")\n# Read the file here\n', null, "Use for line in f: and convert each line with float(line)."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "What does `with` do for a file?", choices: ["opens it twice", "closes it automatically", "deletes it", "reads it"], answer: 1, explain: "The file is closed at the end of the with block." },
@@ -242,16 +242,16 @@
             NEXT("<b>CSV files</b>. Tables stored as text, one row per line."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program and compare.")],
+            [T("Write the output on paper.<br>Then run the program, and compare its output with your answer.")],
             [RUN('with open("m.txt", "w") as f:\n    f.write("A\\n")\nwith open("m.txt", "a") as f:\n    f.write("B\\n")\nwith open("m.txt", "w") as f:\n    f.write("C\\n")\nwith open("m.txt") as f:\n    print(f.read())')],
           ] },
           { kind: "exercise", title: "Write a program: a log file", blocks: [
-            PQ("Create \"events.txt\" with the line boot. Then append the lines ready and stop with mode \"a\". Display the file content.",
-              "boot\nready\nstop", "# Write your program here\n", null, 'open("events.txt", "a")'),
+            PQ("Write a program that creates a file, adds two lines, and displays the file.<br>1. Create \"events.txt\" with the line <code>boot</code>.<br>2. Use mode \"a\" to add the line <code>ready</code> and the line <code>stop</code>.<br>3. Display the content of the file.",
+              "boot\nready\nstop", "# Write your program here\n", null, 'Use open("events.txt", "a") to add lines at the end of the file.'),
           ] },
           { kind: "exercise", title: "Write a program: a missing file", blocks: [
-            PQ("Try to read \"config.txt\", which does not exist. Display \"using defaults\" when it is missing.",
-              "using defaults", "# Write your program here\n", null, "except FileNotFoundError:"),
+            PQ("Write a program that tries to read the file \"config.txt\". The file does not exist.<br>1. Open the file inside a try block.<br>2. For a FileNotFoundError, display \"using defaults\".",
+              "using defaults", "# Write your program here\n", null, "A missing file raises a FileNotFoundError. Use except FileNotFoundError: for the message."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "A file holds the line A. It is opened with mode `\"a\"`, and B is written. The file now holds…", choices: ["only A", "only B", "A, then B", "an error"], answer: 2, explain: "Append mode keeps the old content and writes at the end." },
@@ -344,12 +344,12 @@
             NEXT("<b>JSON files</b>. Dictionaries and lists stored as text."),
           ] },
           { kind: "exercise", title: "Write a program: rows above a limit", blocks: [
-            PQ("The starter writes a CSV file. Display the names of the rows whose price is above 100, one per line.",
-              "motor\nsensor", 'import csv\nwith open("items.csv", "w", newline="") as f:\n    csv.writer(f).writerows([["name", "price"], ["cable", 40], ["motor", 250], ["sensor", 120]])\n# Read the file here\n', null, 'for row in csv.DictReader(f): if float(row["price"]) > 100: ...'),
+            PQ("Complete the program. Lines 2 and 3 already write the file \"items.csv\".<br>1. Read the rows of the file.<br>2. Display the name of each row with a price above 100, one name on each line.",
+              "motor\nsensor", 'import csv\nwith open("items.csv", "w", newline="") as f:\n    csv.writer(f).writerows([["name", "price"], ["cable", 40], ["motor", 250], ["sensor", 120]])\n# Read the file here\n', null, 'Use for row in csv.DictReader(f): and compare float(row["price"]) with 100.'),
           ] },
           { kind: "exercise", title: "Write a program: write a CSV file", blocks: [
-            PQ("Write the header hour,temp and the rows 8,24 and 12,31 to \"t.csv\" with csv.writer. Then display the file text.",
-              "hour,temp\n8,24\n12,31", "import csv\n# Write your program here\n", null, 'open("t.csv", "w", newline="")'),
+            PQ("Write a program that writes a CSV file with <code>csv.writer</code> and displays the text of the file.<br>1. The file name is \"t.csv\".<br>2. The header is <code>hour,temp</code>.<br>3. The rows are <code>8,24</code> and <code>12,31</code>.",
+              "hour,temp\n8,24\n12,31", "import csv\n# Write your program here\n", null, 'Open the file with open("t.csv", "w", newline="").'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which module reads and writes CSV files?", choices: ["json", "csv", "os", "math"], answer: 1, explain: "The csv module handles comma-separated values." },
@@ -425,12 +425,12 @@
             NEXT("<b>NumPy arrays</b>. Fast calculations on many numbers at once."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program and compare.")],
+            [T("Write the output on paper.<br>Then run the program, and compare its output with your answer.")],
             [RUN('import json\ntext = \'{"id": 7, "tags": ["a", "b"]}\'\nd = json.loads(text)\nprint(d["id"] * 2)\nprint(d["tags"][1])\nprint(len(d))')],
           ] },
           { kind: "exercise", title: "Write a program: update a JSON file", blocks: [
-            PQ("The starter saves settings. Load them, change \"speed\" to 5, save them again, then load and display the new speed.",
-              "5", 'import json\nwith open("cfg.json", "w") as f:\n    json.dump({"mode": "auto", "speed": 3}, f)\n# Write your program here\n', null, 'cfg = json.load(f); cfg["speed"] = 5; json.dump(cfg, f)'),
+            PQ("Complete the program. Lines 2 and 3 already save settings in \"cfg.json\".<br>1. Load the settings from the file.<br>2. Change \"speed\" to 5.<br>3. Save the settings in the file again.<br>4. Load the settings again, and display the speed.",
+              "5", 'import json\nwith open("cfg.json", "w") as f:\n    json.dump({"mode": "auto", "speed": 3}, f)\n# Write your program here\n', null, 'Use cfg = json.load(f) to load, cfg["speed"] = 5 to change, and json.dump(cfg, f) to save.'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which function converts a JSON string into a dictionary?", choices: ["json.dump", "json.dumps", "json.load", "json.loads"], answer: 3, explain: "loads = load from a string." },
@@ -539,12 +539,12 @@
             NEXT("<b>pandas DataFrames</b>. Tables with named columns."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program and compare.")],
+            [T("Write the output on paper.<br>Then run the program, and compare its output with your answer.")],
             [RUN("import numpy as np\na = np.array([2, 4, 6, 8])\nprint(a / 2)\nprint(a[1:3])\nprint(a.shape)\nprint(np.mean(a))")],
           ] },
           { kind: "exercise", title: "Write a program: power of each device", blocks: [
-            PQ("Compute the power of each device with arrays: voltages 12, 24, 230 and currents 2, 0.5, 0.1. Display the array of powers and their total.",
-              "[24. 12. 23.]\n59.0", "import numpy as np\n# Write your program here\n", null, "p = v * i; print(p); print(np.sum(p))"),
+            PQ("Write a program that computes the power of three devices with NumPy arrays.<br>1. Use these values: voltages 12, 24, 230 and currents 2, 0.5, 0.1.<br>2. Display the array of the powers.<br>3. Display the total of the powers.",
+              "[24. 12. 23.]\n59.0", "import numpy as np\n# Write your program here\n", null, "Multiply the two arrays: p = v * i. Use np.sum(p) for the total."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`np.array([[1, 2], [3, 4], [5, 6]]).shape` is…", choices: ["(2, 3)", "(3, 2)", "6", "(6,)"], answer: 1, explain: "3 rows and 2 columns." },
@@ -644,12 +644,12 @@
             NEXT("<b>pandas: filtering, sorting, and changing data</b>."),
           ] },
           { kind: "exercise", title: "Write a program: average score", blocks: [
-            PQ("Create a DataFrame of students with the columns name and score: Ann 78, Ben 85, Cat 92. Display the average score.",
-              "85.0", "import pandas as pd\n# Write your program here\n", null, 'print(df["score"].mean())'),
+            PQ("Write a program that creates a DataFrame of students and displays the average score.<br>1. The columns are <code>name</code> and <code>score</code>.<br>2. Use these values: Ann 78, Ben 85, Cat 92.",
+              "85.0", "import pandas as pd\n# Write your program here\n", null, 'Use df["score"].mean() for the average.'),
           ] },
           { kind: "exercise", title: "Write a program: the number of rows and the maximum", blocks: [
-            PQ("The starter writes a CSV file. Read it with pandas and display the number of rows and the largest temp.",
-              "4\n31", 'import pandas as pd\nwith open("log.csv", "w") as f:\n    f.write("hour,temp\\n0,22\\n6,24\\n12,31\\n18,26\\n")\n# Write your program here\n', null, 'print(df.shape[0]); print(df["temp"].max())'),
+            PQ("Complete the program. Lines 2 and 3 already write the file \"log.csv\".<br>1. Read the file with <code>pd.read_csv()</code>.<br>2. Display the number of rows.<br>3. Display the largest value of the column <code>temp</code>.",
+              "4\n31", 'import pandas as pd\nwith open("log.csv", "w") as f:\n    f.write("hour,temp\\n0,22\\n6,24\\n12,31\\n18,26\\n")\n# Write your program here\n', null, 'Use df.shape[0] for the number of rows, and df["temp"].max() for the largest value.'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "What is a DataFrame?", choices: ["a single number", "a table with named columns and a row index", "a file mode", "a NumPy function"], answer: 1, explain: "A DataFrame is the pandas table." },
@@ -749,12 +749,12 @@
             NEXT("<b>Chapter practice</b>. Complete data processing problems."),
           ] },
           { kind: "exercise", title: "Write a program: filter by price", blocks: [
-            PQ("The starter writes a CSV file. Read it with pandas, keep the rows with price above 100, and display their names as a list.",
-              "['motor', 'sensor']", 'import pandas as pd\nwith open("items.csv", "w") as f:\n    f.write("name,price\\ncable,40\\nmotor,250\\nsensor,120\\n")\n# Write your program here\n', null, 'print(df[df["price"] > 100]["name"].tolist())'),
+            PQ("Complete the program. Lines 2 and 3 already write the file \"items.csv\".<br>1. Read the file with <code>pd.read_csv()</code>.<br>2. Keep the rows with a price above 100.<br>3. Display the names of these rows as a list.",
+              "['motor', 'sensor']", 'import pandas as pd\nwith open("items.csv", "w") as f:\n    f.write("name,price\\ncable,40\\nmotor,250\\nsensor,120\\n")\n# Write your program here\n', null, 'Use df[df["price"] > 100] for the rows, and ["name"].tolist() for the list of names.'),
           ] },
           { kind: "exercise", title: "Write a program: sort", blocks: [
-            PQ("Sort the table by temp, highest first, and display the hours in that order as a list.",
-              "[12, 18, 6, 0]", 'import pandas as pd\ndf = pd.DataFrame({"hour": [0, 6, 12, 18], "temp": [22, 24, 31, 26]})\n', null, 'df.sort_values("temp", ascending=False)["hour"].tolist()'),
+            PQ("Complete the program: sort the table and display one column.<br>1. Sort the table by the column <code>temp</code>, from the highest value to the lowest.<br>2. Display the column <code>hour</code> of the sorted table as a list.",
+              "[12, 18, 6, 0]", 'import pandas as pd\ndf = pd.DataFrame({"hour": [0, 6, 12, 18], "temp": [22, 24, 31, 26]})\n', null, 'Use df.sort_values("temp", ascending=False), then ["hour"].tolist().'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which code keeps only the rows with Age above 28?", choices: ["df[\"Age\"] > 28", "df[df[\"Age\"] > 28]", "df.Age(28)", "df.filter(28)"], answer: 1, explain: "The condition inside df[...] selects the rows." },
@@ -782,14 +782,14 @@
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: a 3 × 3 array", blocks: [
-            T("Create a 3 × 3 array with the values 1 to 9, row by row. Display the sum of each row and the largest value."),
+            T("Create a 3 × 3 array with the values 1 to 9, row by row. Display the sum of each row. Then display the largest value of the array."),
             IPO([["Data", "np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])"], ["Output", "the row sums, then the maximum"], ["Processing", "np.sum(m, axis=1), np.max(m)"]]),
           ] },
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
-            PQ("Write the program.", "[ 6 15 24]\n9", "import numpy as np\n# Write your program here\n", null, "print(np.sum(m, axis=1)); print(np.max(m))"),
+            PQ("Write the program of Problem 1. The output must match the target output.", "[ 6 15 24]\n9", "import numpy as np\n# Write your program here\n", null, "Use np.sum(m, axis=1) for the row sums, and np.max(m) for the largest value."),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: readings from a text file", blocks: [
-            T("A data logger writes one temperature per line into a text file. A line can be damaged. Write the maximum, the minimum, and the average of the valid readings into a summary file."),
+            T("A data logger writes one temperature on each line of a text file. A line can contain text that is not a number. Write the maximum, the minimum, and the average of the valid readings into a summary file."),
             IPO([
               ["Input", "the file temps.txt: one reading per line"],
               ["Output", "the file summary.txt with three lines: max, min, avg (1 decimal place). Display the file."],
@@ -799,21 +799,21 @@
             ]),
           ] },
           { kind: "exercise", part: "Problem 2", title: "Problem 2: write the program", blocks: [
-            PQ("The starter writes the file; one line is not a number. Write summary.txt with the three lines of the target, then read it and display it. Use try for both exceptions.", "max 27.0\nmin 22.0\navg 24.5", 'with open("temps.txt", "w") as f:\n    f.write("22.0\\n24.5\\nerror\\n27.0\\n")\n# Write your program here\n', null, 'try: values.append(float(line)) / except ValueError: continue. Then f.write("max " + str(max(values)) + "\\n")'),
+            PQ("Write the program of Problem 2.<br>1. Write \"summary.txt\" with the three lines of the target output.<br>2. Read \"summary.txt\", and display its text.<br>3. Use try for the ValueError and for the FileNotFoundError.", "max 27.0\nmin 22.0\navg 24.5", 'with open("temps.txt", "w") as f:\n    f.write("22.0\\n24.5\\nerror\\n27.0\\n")\n# Write your program here\n', null, 'Lines 1 and 2 write temps.txt, and the line "error" is not a number. Use try: values.append(float(line)) and except ValueError: continue. Then use f.write("max " + str(max(values)) + "\\n").'),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: mean salary per department", blocks: [
-            T("Create a DataFrame of employees (name, dept, salary) and display the mean salary of each department."),
+            T("Create a DataFrame of employees with the columns name, dept, and salary. Display the mean salary of each department."),
             IPO([["Data", "Ann IT 50000, Ben HR 40000, Cid IT 60000, Dee HR 44000"], ["Output", "one line per department"], ["Processing", "groupby(\"dept\")[\"salary\"].mean()"]]),
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
-            PQ("Write the program. Display each department and its mean on one line, as in the target.", "HR 42000.0\nIT 55000.0", "import pandas as pd\n# Write your program here\n", null, "for dept, value in avg.items(): print(dept, value)"),
+            PQ("Write the program of Problem 3.<br>Display each department and its mean salary on one line, as in the target output.", "HR 42000.0\nIT 55000.0", "import pandas as pd\n# Write your program here\n", null, "Use for dept, value in avg.items(): and print(dept, value)."),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: a JSON sensor message", blocks: [
             T("A sensor sends <code>{\"id\": \"T7\", \"values\": [21.5, 22.5, 23.5]}</code> as a JSON string. Display the id and the average of the values."),
             IPO([["Input", "a JSON string"], ["Output", "the id and the average"], ["Processing", "json.loads, then sum / len of the list"]]),
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", blocks: [
-            PQ("Use the string in the starter.", "T7 22.5", 'import json\ntext = \'{"id": "T7", "values": [21.5, 22.5, 23.5]}\'\n# Write your program here\n', null, 'data = json.loads(text); print(data["id"], sum(v) / len(v))'),
+            PQ("Write the program of Problem 4.<br>1. Use the string <code>text</code> in line 2 of the program.<br>2. Display the id and the average on one line, as in the target output.", "T7 22.5", 'import json\ntext = \'{"id": "T7", "values": [21.5, 22.5, 23.5]}\'\n# Write your program here\n', null, 'Use data = json.loads(text). Then use print(data["id"], sum(v) / len(v)) for the list v = data["values"].'),
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [
             TB(["Lesson", "Key rule"], [

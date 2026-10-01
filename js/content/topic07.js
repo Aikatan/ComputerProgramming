@@ -196,12 +196,12 @@
             NEXT("<b>Other chart types</b>. Bar charts, scatter plots, and histograms."),
           ] },
           { kind: "exercise", title: "Write a program: a labelled plot", blocks: [
-            T("Plot the battery level over time: minutes 0, 10, 20, 30 and levels 100, 82, 65, 47. Add the axis labels \"Time (min)\" and \"Battery (%)\" and a title."),
-            T("Expected chart: one blue line through 4 points, falling from 100 at 0 min to 47 at 30 min, with both axis labels and the title above the chart."),
+            T("Write a program that draws a line plot of the battery level over time.<br>1. Use these values: minutes 0, 10, 20, 30 and battery levels 100, 82, 65, 47.<br>2. Add the x-axis label \"Time (min)\" and the y-axis label \"Battery (%)\".<br>3. Add a title."),
+            T("Expected chart: one blue line through 4 points. The line falls from 100 at 0 min to 47 at 30 min."),
             RUN("import matplotlib.pyplot as plt\n\n# Write your program here\n"),
           ] },
           { kind: "exercise", title: "Modify the plot", cols: [
-            [T("Change the plot: green color, dotted line, and a square marker at each point.<br>Expected chart: one green dotted line with a square at each of the 4 points.")],
+            [T("Change line 5 of the program: <code>plt.plot(x, y)</code>.<br>1. Change the color of the line to green.<br>2. Change the line style to dotted.<br>3. Add a square marker at each point.<br>Expected chart: one green dotted line with a square at each of the 4 points.")],
             [RUN('import matplotlib.pyplot as plt\n\nx = [1, 2, 3, 4]\ny = [3, 5, 4, 6]\nplt.plot(x, y)\nplt.show()')],
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -300,11 +300,11 @@
             ]),
           ] },
           { kind: "exercise", title: "Write a program: a bar chart", cols: [
-            [T("Draw a bar chart of the monthly production: Jan 120, Feb 135, Mar 128 units, with a y-axis label and a title.<br>Expected chart: three bars with heights 120, 135, 128.")],
+            [T("Write a program that draws a bar chart of the monthly production.<br>1. Use these values: Jan 120, Feb 135, Mar 128 units.<br>2. Add a y-axis label.<br>3. Add a title.<br>Expected chart: three bars with heights 120, 135, 128.")],
             [RUN("import matplotlib.pyplot as plt\n\n# Write your program here\n")],
           ] },
           { kind: "exercise", title: "Write a program: a histogram", cols: [
-            [T("Draw a histogram with 3 bins of these test scores: 55, 62, 68, 70, 71, 75, 78, 80, 85, 92.<br>Expected chart: three bars with heights 2, 5, 3.")],
+            [T("Complete the program, so that it draws a histogram of the test scores in the list <code>scores</code>.<br>Use 3 bins.<br>Expected chart: three bars with heights 2, 5, 3.")],
             [RUN("import matplotlib.pyplot as plt\n\nscores = [55, 62, 68, 70, 71,\n          75, 78, 80, 85, 92]\n# Write the histogram here\n")],
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
@@ -394,20 +394,20 @@
             NEXT("<b>raise and assert</b>. Errors inside functions, and errors that a program creates on purpose."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program and compare.")],
+            [T("Write the output on paper.<br>Then run the program, and compare its output with your answer.")],
             [RUN('values = [4, 8]\ntry:\n    print(values[1])\n    print(values[5])\n    print("end of try")\nexcept IndexError:\n    print("bad index")')],
           ] },
           { kind: "exercise", title: "Determine the output: else", cols: [
-            [T("Write the output on paper. Decide which blocks run.<br>Then run the program and compare.")],
+            [T("Determine the output of the program.<br>1. Decide which blocks of the try statement run.<br>2. Write the output on paper.<br>3. Run the program, and compare its output with your answer.")],
             [RUN('try:\n    x = int("25")\nexcept ValueError:\n    print("error")\nelse:\n    print("ok", x)\nfinally:\n    print("end")')],
           ] },
           { kind: "exercise", title: "Write a program: safe division", blocks: [
-            PQ("Read two integers with the prompts <code>a: </code> and <code>b: </code>, and display a / b. Display \"Not a number\" for a ValueError and \"Cannot divide by zero\" for a ZeroDivisionError. Test input: 7 and 0.",
-              "a: 7\nb: 0\nCannot divide by zero", "# Write your program here\n", ["7", "0"], "Two except blocks, one for each error type."),
+            PQ("Write a program that reads two integers and displays a / b.<br>1. Use the prompts <code>a: </code> and <code>b: </code>.<br>2. For a ValueError, display \"Not a number\".<br>3. For a ZeroDivisionError, display \"Cannot divide by zero\".<br>Test input: 7 and 0.",
+              "a: 7\nb: 0\nCannot divide by zero", "# Write your program here\n", ["7", "0"], "Use one try statement with two except blocks, one for each error type."),
           ] },
           { kind: "exercise", title: "Correct the error type", blocks: [
-            PQ("The program should display \"missing\" for a missing key, but it stops with a KeyError, because it catches the wrong type. Correct the except line.",
-              "missing", 'd = {"a": 1}\ntry:\n    print(d["b"])\nexcept IndexError:\n    print("missing")\n', null, "A missing dictionary key raises a KeyError."),
+            PQ("The program stops with a KeyError. Correct line 4 (the <code>except</code> line), so that the program displays the target output.",
+              "missing", 'd = {"a": 1}\ntry:\n    print(d["b"])\nexcept IndexError:\n    print("missing")\n', null, "The except line names the wrong error type. A missing dictionary key raises a KeyError."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "When does the else block of a try statement run?", choices: ["always", "when an error occurs", "when no error occurs", "never"], answer: 2, explain: "else runs only if the try block completed without an error." },
@@ -470,15 +470,16 @@
             NEXT("<b>Chapter practice</b>. Complete problems with charts and error handling."),
           ] },
           { kind: "exercise", title: "Determine the output on paper, then run", blocks: [
+            T("Write the output on paper. Then run the program, and compare its output with your answer."),
             RUN('def check_age(age):\n    if age < 0:\n        raise ValueError("age cannot be negative")\n    return age\ntry:\n    print(check_age(20))\n    print(check_age(-1))\nexcept ValueError as e:\n    print("Error:", e)'),
           ] },
           { kind: "exercise", title: "Write a function with raise", blocks: [
-            PQ("Define <code>set_speed(rpm)</code> that raises ValueError(\"speed too high\") when rpm is above 3000, and otherwise returns rpm. Call set_speed(3500) in try, and display the error message after \"Error:\".",
-              "Error: speed too high", "# Write your program here\n", null, 'except ValueError as e: print("Error:", e)'),
+            PQ("Write the function <code>set_speed(rpm)</code>. Then call the function.<br>1. The function raises <code>ValueError(\"speed too high\")</code> when rpm is above 3000.<br>2. Otherwise, the function returns rpm.<br>3. Call <code>set_speed(3500)</code> inside try.<br>4. In except, display \"Error:\" and the error message.",
+              "Error: speed too high", "# Write your program here\n", null, 'Use except ValueError as e: and then print("Error:", e).'),
           ] },
           { kind: "exercise", title: "Write an assert", blocks: [
-            PQ("Insert an assert as the first statement in the body of area(): a length that is not positive raises an AssertionError with the message \"length must be positive\".",
-              "length must be positive", 'def area(length):\n    return length * length\ntry:\n    area(-3)\nexcept AssertionError as e:\n    print(e)', null, 'assert length > 0, "length must be positive"'),
+            PQ("Add an assert statement as the first statement of the function <code>area()</code>.<br>1. The assert checks that length is positive.<br>2. The message is <code>\"length must be positive\"</code>.",
+              "length must be positive", 'def area(length):\n    return length * length\ntry:\n    area(-3)\nexcept AssertionError as e:\n    print(e)', null, 'Use this statement: assert length > 0, "length must be positive"'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`assert x > 0` with x = -1 raises…", choices: ["ValueError", "AssertionError", "TypeError", "nothing"], answer: 1, explain: "A false assert condition raises an AssertionError." },
@@ -506,7 +507,7 @@
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: validate a battery level", blocks: [
-            T("Read a battery level in percent and display it. A level below 0 or above 100 is a number for Python, but it is not a possible level: the program raises an error for it."),
+            T("Read a battery level in percent and display the level. A level below 0 or above 100 is a valid number in Python, but it is not a possible battery level. For such a level, the program raises an error."),
             IPO([
               ["Input", "a battery level (float), valid from 0 to 100"],
               ["Output", "the level, or \"Error:\" and the message of the error"],
@@ -515,19 +516,19 @@
             ]),
           ] },
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
-            PQ("Use the prompt <code>Battery (%): </code>. Display a valid level as <code>Level: 80.0 %</code>. For an error, display \"Error:\" and its message. Test input: 150.",
-              "Battery (%): 150\nError: level must be 0 to 100", "# Write your program here\n", ["150"], "In check_level: if level < 0 or level > 100: raise ValueError(\"level must be 0 to 100\"). In try: level = check_level(float(input(\"Battery (%): \"))). Then: except ValueError as e: print(\"Error:\", e)"),
+            PQ("Write the program of Problem 1.<br>1. Use the prompt <code>Battery (%): </code>.<br>2. Display a valid level in this form: <code>Level: 80.0 %</code>.<br>3. For an error, display \"Error:\" and the message of the error.<br>Test input: 150.",
+              "Battery (%): 150\nError: level must be 0 to 100", "# Write your program here\n", ["150"], "In check_level, raise ValueError(\"level must be 0 to 100\") when level < 0 or level > 100. In try, use level = check_level(float(input(\"Battery (%): \"))). Then use except ValueError as e: and print(\"Error:\", e)."),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: read until valid", blocks: [
-            T("Ask for a temperature until the user enters a valid number, then display it."),
+            T("Read a temperature until the user enters a valid number. Then display the temperature."),
             IPO([["Input", "text, repeated"], ["Output", "\"Try again\" after each invalid entry, then the value"], ["Processing", "a while loop with try inside; break after a valid conversion"]]),
           ] },
           { kind: "exercise", part: "Problem 2", title: "Problem 2: write the program", blocks: [
-            PQ("Use the prompt <code>Temperature: </code>. Test input: warm, 2x, 25.5.",
-              "Temperature: warm\nTry again\nTemperature: 2x\nTry again\nTemperature: 25.5\n25.5", "# Write your program here\n", ["warm", "2x", "25.5"], "while True: try: t = float(input(...)); break  except ValueError: print(\"Try again\")"),
+            PQ("Write the program of Problem 2. The output must match the target output.<br>Use the prompt <code>Temperature: </code>.<br>Test input: warm, 2x, 25.5.",
+              "Temperature: warm\nTry again\nTemperature: 2x\nTry again\nTemperature: 25.5\n25.5", "# Write your program here\n", ["warm", "2x", "25.5"], "Use while True: with a try statement inside. In try, use t = float(input(...)) and then break. In except ValueError:, display \"Try again\"."),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: safe list access", blocks: [
-            T("A list holds the readings of 4 sensors, numbered 1 to 4: sensor n is <code>readings[n - 1]</code>. Read a sensor number and display its reading, or \"No such sensor\" for an invalid number."),
+            T("A list holds the readings of 4 sensors. The sensors have the numbers 1 to 4: sensor n is <code>readings[n - 1]</code>.<br>Read a sensor number and display the reading of that sensor. For an invalid number, display \"No such sensor\"."),
             IPO([
               ["Input", "a sensor number (int), valid from 1 to 4"],
               ["Output", "the reading, or \"No such sensor\""],
@@ -536,8 +537,8 @@
             ]),
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
-            PQ("Use the prompt <code>Sensor: </code>. Test input: 7.",
-              "Sensor: 7\nNo such sensor", "readings = [21.5, 22.0, 23.1, 20.8]\n# Write your program here\n", ["7"], "if number < 1: raise IndexError(\"no such sensor\"); print(readings[number - 1]); except (IndexError, ValueError): print(\"No such sensor\")"),
+            PQ("Write the program of Problem 3. The output must match the target output.<br>Use the prompt <code>Sensor: </code>.<br>Test input: 7.",
+              "Sensor: 7\nNo such sensor", "readings = [21.5, 22.0, 23.1, 20.8]\n# Write your program here\n", ["7"], "In try: when number < 1, raise IndexError(\"no such sensor\"); otherwise display readings[number - 1]. Use except (IndexError, ValueError): for the message."),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: plot measured data", blocks: [
             T("A motor test gives the current at four speeds. Show how the current changes with the speed."),
@@ -548,7 +549,7 @@
             ]),
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", cols: [
-            [T("Write the program.<br>Expected chart: one line through 4 points with a circle at each point, rising from 1.2 A at 500 rpm to 3.7 A at 2000 rpm.")],
+            [T("Write the program of Problem 4.<br>Expected chart: one line through 4 points, with a circle at each point. The line rises from 1.2 A at 500 rpm to 3.7 A at 2000 rpm.")],
             [RUN("import matplotlib.pyplot as plt\n\n# Write your program here\n")],
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [

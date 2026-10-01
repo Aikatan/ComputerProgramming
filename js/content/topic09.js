@@ -264,7 +264,7 @@
             NEXT("<b>Growth rates and Big-O</b>. How the number of steps grows with n, and how to describe it."),
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. The first row is done. The next exercise checks it."),
+            T("Complete the trace table on paper. The first row is done. The next exercise checks your table."),
             W("traceTable", { trace: T_exMin, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
@@ -272,20 +272,20 @@
             [RUN(T_exMin.code.join("\n"))],
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The program displays 0 instead of the lowest reading. Correct the error.",
+            PQ("The program displays <code>Lowest: 0</code>, but the lowest reading is 18. Correct the error, so that the program displays the target output.",
               "Lowest: 18", 'readings = [24, 18, 20]\nlowest = 0\nfor r in readings:\n    if r < lowest:\n        lowest = r\nprint("Lowest:", lowest)', null, "No reading is below 0. Start with a value from the list."),
           ] },
           { kind: "exercise", title: "Modify a program", blocks: [
-            PQ("Modify the program so that it also displays the index of the highest reading.",
-              "27 3", "readings = [21, 25, 19, 27]\nhighest = readings[0]\nfor r in readings[1:]:\n    if r > highest:\n        highest = r\nprint(highest)", null, "Loop over the indexes with for i in range(1, len(readings)). Store i whenever highest changes."),
+            PQ("Change the program, so that it also displays the index of the highest reading.<br>The highest reading and its index are on one line, as in the target output.",
+              "27 3", "readings = [21, 25, 19, 27]\nhighest = readings[0]\nfor r in readings[1:]:\n    if r > highest:\n        highest = r\nprint(highest)", null, "Loop over the indexes with for i in range(1, len(readings)). Store i each time highest changes."),
           ] },
           { kind: "exercise", title: "Write a program: test a function", blocks: [
-            PQ("Write the function <code>lowest(values)</code>, which returns the lowest value. Test it with [24, 18, 20], [7], and [-5, -2, -8] in one print.",
+            PQ("Write the function <code>lowest(values)</code> and test the function.<br>1. The function returns the lowest value of the list.<br>2. Call the function with [24, 18, 20], [7], and [-5, -2, -8].<br>3. Display the three results with one <code>print()</code>.",
               "18 7 -8", "# Write your program here\n", null, "Start with low = values[0]. Then compare each other value with low."),
           ] },
           { kind: "exercise", title: "Design an algorithm: the range", blocks: [
-            PQ("The range of the readings is the highest minus the lowest. Find it with one loop. Write the algorithm as comments first, then the program.",
-              "8", "# Input:\n# Output:\n# Processing:\n# Algorithm:\n\nreadings = [21, 25, 19, 27]\n", null, "Keep highest and lowest, both starting at readings[0]. Update both in the same loop."),
+            PQ("Write a program that displays the range of the readings: the highest reading minus the lowest reading.<br>1. First, complete the comments in lines 1 to 4.<br>2. Then write the program.<br>3. Use only one loop.",
+              "8", "# Input:\n# Output:\n# Processing:\n# Algorithm:\n\nreadings = [21, 25, 19, 27]\n", null, "Store highest and lowest, both starting at readings[0]. Update both in the same loop."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "An algorithm must stop after a limited number of steps. This property is called…", choices: ["definite", "finite", "effective", "correct"], answer: 1, explain: "Finite: the algorithm ends after a finite number of steps." },
@@ -416,20 +416,20 @@
             NEXT("<b>Searching</b>. Linear search, O(n), and binary search, O(log n)."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program and compare.")],
+            [T("Write the output on paper.<br>Then run the program, and compare its output with your answer.")],
             [RUN("count = 0\nfor i in range(4):\n    for j in range(3):\n        count = count + 1\nprint(count)")],
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
-            PQ("Replace line 4 with the statement that halves n, so that the program counts how many times 64 can be halved before it reaches 1.",
-              "Halvings: 6", 'n = 64\nhalvings = 0\nwhile n > 1:\n    n = 1  # replace this line\n    halvings = halvings + 1\nprint("Halvings:", halvings)', null, "n = n // 2"),
+            PQ("Replace line 4 of the program with the statement that halves n.<br>The program then displays how many times 64 is halved until n is 1.",
+              "Halvings: 6", 'n = 64\nhalvings = 0\nwhile n > 1:\n    n = 1  # replace this line\n    halvings = halvings + 1\nprint("Halvings:", halvings)', null, "Use integer division: n = n // 2."),
           ] },
           { kind: "exercise", title: "Modify a program", blocks: [
-            PQ("Change the inner loop to <code>range(i)</code>, so that it counts only the pairs with j &lt; i.",
+            PQ("Change the inner loop (line 4 of the program): use <code>range(i)</code>.<br>The program then counts only the pairs with j &lt; i.",
               "Steps: 10", 'n = 5\ncount = 0\nfor i in range(n):\n    for j in range(n):\n        count = count + 1\nprint("Steps:", count)', null, "The count is 0 + 1 + 2 + 3 + 4. This is n(n − 1) / 2, still O(n²)."),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("Write the function <code>count_halvings(n)</code>, which returns the number of halvings from n down to 1. Display it for 16, 1024, and 1000000 in one print.",
-              "4 10 19", "# Write your program here\n", null, "Use the while loop from this lesson inside the function, and return the counter."),
+            PQ("Write the function <code>count_halvings(n)</code> and call the function.<br>1. The function returns the number of halvings from n down to 1.<br>2. Call the function with 16, 1024, and 1000000.<br>3. Display the three results with one <code>print()</code>.",
+              "4 10 19", "# Write your program here\n", null, "Use a while loop inside the function: halve n with n = n // 2 and count the halvings. Return the counter."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "`O(4n + 7)` simplifies to…", choices: ["O(4n)", "O(n)", "O(7)", "O(n²)"], answer: 1, explain: "The constant factor 4 and the term 7 are dropped." },
@@ -567,11 +567,11 @@
             NEXT("<b>Sorting</b>. Bubble sort, O(n²), and Python's built-in sort, O(n log n)."),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            T("Write the output on paper. Then run the program and compare."),
+            T("Write the output on paper. Then run the program, and compare its output with your answer."),
             RUN("def linear_search(data, target):\n    for i in range(len(data)):\n        if data[i] == target:\n            return i\n    return -1\ncodes = [4, 9, 4, 7]\nprint(linear_search(codes, 4))\nprint(linear_search(codes, 7))"),
           ] },
           { kind: "exercise", title: "Complete the iteration table", blocks: [
-            T("Binary search for 72 in [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]. Complete the table on paper. The next exercise checks it."),
+            T("The binary search function searches the list [2, 5, 8, 12, 16, 23, 38, 56, 72, 91] for 72.<br>Complete rows 2 and 3 of the table on paper. The next exercise checks your table."),
             TB(["Iteration", "low", "high", "mid", "data[mid]", "Decision"], [
               ["1", "0", "9", "4", "16", "16 &lt; 72: low = 5"],
               ["2", "", "", "", "", ""],
@@ -588,20 +588,20 @@
             T("Binary search needs 3 comparisons; linear search needs 9."),
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
-            PQ("Replace line 6 with the six lines of the comparison from part 2, so that the function finds 72.",
+            PQ("Replace line 6 of the program with the six lines that compare <code>data[mid]</code> with <code>target</code>.<br>The function then finds 72 at index 8.",
               "8", BINARY, null, "if data[mid] == target: return mid. elif data[mid] < target: low = mid + 1. else: high = mid - 1."),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The function has two errors. The first stops the program with a TypeError. After it is corrected, the search for 91 still gives -1. Correct both errors.",
-              "5\n9", BINARY_ERR, null, "Line 5: an index must be an int, so use //. Line 4: when low equals high, one element is left to compare."),
+            PQ("Correct the two errors in the function.<br>1. The first error stops the program with a TypeError.<br>2. With the second error, the search for 91 displays -1, not 9.",
+              "5\n9", BINARY_ERR, null, "In line 5, an index must be an int, so use //. In line 4, one element is left to compare when low equals high."),
           ] },
           { kind: "exercise", title: "Modify a program", blocks: [
-            PQ("Modify linear_search so that it returns a list of all the positions of the target.",
+            PQ("Change <code>linear_search</code>, so that the function returns a list of all the positions of the target.",
               "[0, 2]", "def linear_search(data, target):\n    for i in range(len(data)):\n        if data[i] == target:\n            return i\n    return -1\nprint(linear_search([4, 9, 4, 7], 4))", null, "Start with positions = []. Append i for each match, and return positions after the loop."),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("Search the list names for \"fan\" with linear search. Display its position, or \"not found\".",
-              "Position: 1", 'names = ["pump", "fan", "valve"]\n# Write your program here\n', null, "for i in range(len(names)): compare names[i] with \"fan\", then break."),
+            PQ("Write a program that searches the list <code>names</code> for \"fan\" with linear search.<br>1. When \"fan\" is in the list, display its position, as in the target output.<br>2. Otherwise, display \"not found\".",
+              "Position: 1", 'names = ["pump", "fan", "valve"]\n# Write your program here\n', null, "Use for i in range(len(names)): and compare names[i] with \"fan\". After a match, use break."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Binary search requires the list to be…", choices: ["short", "sorted", "free of duplicates", "made of integers"], answer: 1, explain: "Discarding half of the list is correct only when the elements are in order." },
@@ -727,7 +727,7 @@
             NEXT("<b>Choosing a data structure</b>. Lists and dictionaries, and the cost of their operations."),
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. The first row is done. The next exercise checks it."),
+            T("Complete the trace table on paper. The first row is done. The next exercise checks your table."),
             W("traceTable", { trace: T_exPass, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
@@ -735,20 +735,20 @@
             [RUN(T_exPass.code.join("\n"))],
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            T("The program displays the list after each pass. Write the three lines on paper. Then run the program and compare."),
+            T("The program displays the list after each pass. Write the three lines of the output on paper. Then run the program, and compare its output with your answer."),
             RUN("a = [4, 3, 2, 1]\nn = len(a)\nfor i in range(n - 1):\n    for j in range(n - 1 - i):\n        if a[j] > a[j + 1]:\n            a[j], a[j + 1] = a[j + 1], a[j]\n    print(a)"),
           ] },
           { kind: "exercise", title: "Modify a program", blocks: [
-            PQ("Modify the program so that it sorts the list in descending order.",
+            PQ("Change the program, so that it sorts the list in descending order.",
               "[5, 4, 2, 1]", BUBBLE, null, "Swap when a[j] < a[j + 1]."),
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("The program stops with an IndexError. Correct the error.",
+            PQ("The program stops with an IndexError. Correct the error, so that the program displays the target output.",
               "[1, 2, 4, 5]", BUBBLE.replace("range(n - 1 - i)", "range(n - i)"), null, "The last pair is a[n - 2] and a[n - 1], so j must stop at n - 2."),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("Display the three highest readings, from the highest down. Use sorted() and a slice.",
-              "[31, 28, 25]", "readings = [25, 19, 31, 22, 28]\n# Write your program here\n", null, "sorted(readings, reverse=True) sorts in descending order. Then take [:3]."),
+            PQ("Write a program that displays the three highest readings as a list.<br>1. The order is from the highest reading to the lowest.<br>2. Use <code>sorted()</code> and a slice.",
+              "[31, 28, 25]", "readings = [25, 19, 31, 22, 28]\n# Write your program here\n", null, "sorted(readings, reverse=True) sorts in descending order. The slice [:3] takes the first three elements."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "How many comparisons does bubble sort make for 5 elements?", choices: ["5", "10", "20", "25"], answer: 1, explain: "4 + 3 + 2 + 1 = 10 = 5 × 4 / 2." },
@@ -841,20 +841,20 @@
             NEXT("<b>Writing efficient Python</b>. Measuring time, avoiding repeated work, and lookup tables."),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            T("Write the output on paper. Then run the program and compare."),
+            T("Write the output on paper. Then run the program, and compare its output with your answer."),
             RUN('codes = {"E1": "overheat", "E2": "low battery"}\nprint("E2" in codes)\nprint("E3" in codes)\nprint("overheat" in codes)\nprint(codes["E1"])'),
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
-            PQ("Complete line 5, so that the loop builds the dictionary volts from the two lists.",
-              "110", 'names = ["pump", "fan", "heater"]\nvalues = [220, 110, 230]\nvolts = {}\nfor i in range(len(names)):\n    \nprint(volts["fan"])', null, "volts[names[i]] = values[i]"),
+            PQ("Complete line 5 of the program. The loop must build the dictionary <code>volts</code> from the lists <code>names</code> and <code>values</code>.",
+              "110", 'names = ["pump", "fan", "heater"]\nvalues = [220, 110, 230]\nvolts = {}\nfor i in range(len(names)):\n    \nprint(volts["fan"])', null, "Store each value under its name: volts[names[i]] = values[i]."),
           ] },
           { kind: "exercise", title: "Modify a program", blocks: [
-            PQ("seen is a list, so each check is O(n). Change it to a set. The output stays the same.",
-              "Repeated: 21\nRepeated: 25", 'readings = [21, 25, 21, 30, 25]\nseen = []\nfor r in readings:\n    if r in seen:\n        print("Repeated:", r)\n    seen.append(r)', null, "seen = set() and seen.add(r)"),
+            PQ("Change the program, so that <code>seen</code> is a set, not a list.<br>The output must stay the same as the target output.",
+              "Repeated: 21\nRepeated: 25", 'readings = [21, 25, 21, 30, 25]\nseen = []\nfor r in readings:\n    if r in seen:\n        print("Repeated:", r)\n    seen.append(r)', null, "A check in a list is O(n), and a check in a set is O(1). Use seen = set() and seen.add(r)."),
           ] },
           { kind: "exercise", title: "Write a program", blocks: [
-            PQ("Count how often each error code occurs. Display each code and its count.",
-              "E1 2\nE2 1\nE3 1", 'codes = ["E1", "E2", "E1", "E3"]\n# Write your program here\n', null, "counts[c] = counts.get(c, 0) + 1"),
+            PQ("Write a program that counts how many times each error code is in the list <code>codes</code>.<br>Display each code and its count on one line, as in the target output.",
+              "E1 2\nE2 1\nE3 1", 'codes = ["E1", "E2", "E1", "E3"]\n# Write your program here\n', null, "Use a dictionary: counts[c] = counts.get(c, 0) + 1."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which operation is O(n) for a list a?", choices: ["`a[5]`", "`a.append(x)`", "`x in a`", "`len(a)`"], answer: 2, explain: "`x in a` is a linear search through the list." },
@@ -959,24 +959,24 @@
             NEXT("<b>Developing a larger program</b>. The programs so far are short. A longer program is built from functions that are written and tested one at a time."),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            T("Write the output on paper. Then run the program and compare."),
+            T("Write the output on paper. Then run the program, and compare its output with your answer."),
             RUN('memo = {}\ndef square(n):\n    if n not in memo:\n        print("computing", n)\n        memo[n] = n * n\n    return memo[n]\nprint(square(4))\nprint(square(4))'),
           ] },
           { kind: "exercise", title: "Modify a program: repeated work", blocks: [
-            PQ("The program computes max(readings) in every iteration. Modify it so that max() runs only once. The output stays the same.",
-              "0.8\n1.0\n0.6", "readings = [4, 5, 3]\nfor r in readings:\n    print(r / max(readings))", null, "peak = max(readings), before the loop"),
+            PQ("The program computes <code>max(readings)</code> in every iteration. Change the program, so that <code>max()</code> runs only once.<br>The output must stay the same as the target output.",
+              "0.8\n1.0\n0.6", "readings = [4, 5, 3]\nfor r in readings:\n    print(r / max(readings))", null, "Store the result before the loop: peak = max(readings)."),
           ] },
           { kind: "exercise", title: "Modify a program: NumPy", cols: [
-            [T("Run the program. Then replace lines 5–8, which compute the average with a loop, with <code>average = arr.mean()</code> and run it again.<br>Compare the two times. The times differ on each run.")],
+            [T("Compare the time of a loop with the time of NumPy.<br>1. Run the program.<br>2. Replace lines 5 to 8 (the loop that computes the average) with <code>average = arr.mean()</code>.<br>3. Run the program again, and compare the two times.<br>The times differ on each run.")],
             [RUN("import time\nimport numpy as np\narr = np.array(list(range(1000000)))\nstart = time.perf_counter()\ntotal = 0\nfor i in range(1000000):\n    total = total + i\naverage = total / 1000000\nelapsed = time.perf_counter() - start\nprint(average, round(elapsed, 4))")],
           ] },
           { kind: "exercise", title: "Write a program: join()", blocks: [
-            PQ("Build the text <code>21.5, 22.0, 23.1</code> from the list with join(), and display it.",
-              "21.5, 22.0, 23.1", 'readings = ["21.5", "22.0", "23.1"]\n# Write your program here\n', null, 'The separator is ", ".'),
+            PQ("Use <code>join()</code> to build the text <code>21.5, 22.0, 23.1</code> from the list <code>readings</code>. Then display the text.",
+              "21.5, 22.0, 23.1", 'readings = ["21.5", "22.0", "23.1"]\n# Write your program here\n', null, 'The separator is ", " (a comma and a space).'),
           ] },
           { kind: "exercise", title: "Write a program: a lookup table", blocks: [
-            PQ("A 100 Ω resistor at v volts dissipates v × v / 100 watts. Build the list power with the values for v = 0 to 12, computed once. Then display the power for each voltage in queries.",
-              "0.25\n1.44\n0.25", "queries = [5, 12, 5]\n# Write your program here\n", null, "power = []. For v in range(13): power.append(v * v / 100). Then display power[q] for each q in queries."),
+            PQ("The power of a 100 Ω resistor at v volts is v × v / 100 watts.<br>1. Compute the power for v = 0 to 12 once. Store the values in the list <code>power</code>.<br>2. Display the power for each voltage in <code>queries</code>.",
+              "0.25\n1.44\n0.25", "queries = [5, 12, 5]\n# Write your program here\n", null, "Start with power = []. In a loop for v in range(13), use power.append(v * v / 100). Then display power[q] for each q in queries."),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which line belongs before the loop?", choices: ["`print(r)`", "`limit = max(readings) * 0.9`", "`total = total + r`", "`if r > limit:`"], answer: 1, explain: "Its value does not change during the loop, so it is computed once." },
@@ -1075,12 +1075,12 @@
             NEXT("<b>Chapter practice</b>. Complete problems on searching, sorting, and efficiency, solved with the five steps."),
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
-            PQ("The body of statistics() is missing. Complete it. The function returns a dictionary with the keys readings, minimum, maximum, and average (rounded to 2 decimals).",
+            PQ("Complete the function <code>statistics()</code>.<br>1. The function returns a dictionary with the keys readings, minimum, maximum, and average.<br>2. Round the average to 2 decimals.",
               "Sensor log report\nreadings: 3\nminimum: 18.5\nmaximum: 23.5\naverage: 20.67", PROGRAM_GAP, null, 'Use len(), min(), max(), and sum(). Store each result under its key, for example stats["minimum"] = min(readings).'),
           ] },
           { kind: "exercise", title: "Modify existing code", blocks: [
-            PQ("Add the function <code>count_above(readings, limit)</code>. It returns the number of readings above limit. In the main program, display its result for 30 after the report: <code>Above 30: 3</code>.",
-              "Sensor log report\nreadings: 5\nminimum: 27.4\nmaximum: 33.0\naverage: 30.2\nAbove 30: 3", PROGRAM_MODIFY, null, 'Count with a loop: if r > limit, add 1. After report(stats): print("Above 30:", count_above(readings, 30)).'),
+            PQ("Add the function <code>count_above(readings, limit)</code>.<br>1. The function returns the number of readings above limit.<br>2. After the report, display the result for 30.",
+              "Sensor log report\nreadings: 5\nminimum: 27.4\nmaximum: 33.0\naverage: 30.2\nAbove 30: 3", PROGRAM_MODIFY, null, 'Count with a loop: when r > limit, add 1. After report(stats), use print("Above 30:", count_above(readings, 30)).'),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "A traceback has two frames: first `line 12, in <module>`, then `line 3, in is_valid`. The error occurred…", choices: ["at line 12, in the main program", "at line 3, inside is_valid", "at both lines", "before line 3"], answer: 1, explain: "The last frame is the place of the error. The frame above it is the call that led there." },
@@ -1115,36 +1115,36 @@
               "9", "# Write the function binary_steps here\n\nevens = list(range(0, 1000, 2))\nprint(binary_steps(evens, 998))\n", null, "Add steps = steps + 1 at the start of each iteration of the while loop. Return steps when the target is found."),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: selection sort", blocks: [
-            T("<b>Selection sort</b> sorts in another way: for each position i, it finds the smallest element from i to the end, and swaps it into position i."),
+            T("<b>Selection sort</b> is another sorting algorithm. For each position i, selection sort finds the smallest element from position i to the end of the list. Then selection sort swaps this element with the element at position i."),
             IPO([["Input", "the list [4, 1, 5, 2]"], ["Output", "[1, 2, 4, 5]"], ["Processing", "n − 1 times: find the index of the smallest remaining element, then swap"]]),
           ] },
           { kind: "exercise", part: "Problem 2", title: "Problem 2: design and write the program", blocks: [
-            PQ("Write the algorithm as comments first, then the program. Selection sort is also O(n²).",
-              "[1, 2, 4, 5]", "# Input:\n# Output:\n# Processing:\n# Algorithm:\n\na = [4, 1, 5, 2]\n", null, "for i in range(n - 1): smallest = i. Then for j in range(i + 1, n): if a[j] < a[smallest]: smallest = j. Then swap a[i] and a[smallest]."),
+            PQ("Write the selection sort program of Problem 2. The output must match the target output.<br>1. First, complete the comments in lines 1 to 4.<br>2. Then write the program.<br>Selection sort is also O(n²).",
+              "[1, 2, 4, 5]", "# Input:\n# Output:\n# Processing:\n# Algorithm:\n\na = [4, 1, 5, 2]\n", null, "Use for i in range(n - 1): and start with smallest = i. In an inner loop for j in range(i + 1, n):, set smallest = j when a[j] < a[smallest]. Then swap a[i] and a[smallest]."),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: the first repeated reading", blocks: [
             T("A logger records readings. Display the first reading that appears for the second time."),
             IPO([["Input", "[22, 25, 23, 25, 22]"], ["Output", "25"], ["Processing", "a set of the readings seen so far; stop at the first repeat"]]),
           ] },
           { kind: "exercise", part: "Problem 3", title: "Problem 3: write the program", blocks: [
-            PQ("Write the program. Use a set, so that the program is O(n).",
-              "25", "readings = [22, 25, 23, 25, 22]\n# Write your program here\n", null, "seen = set(). If r in seen: display r and break. Otherwise: seen.add(r)."),
+            PQ("Write the program of Problem 3.<br>Use a set, so that the program is O(n).",
+              "25", "readings = [22, 25, 23, 25, 22]\n# Write your program here\n", null, "Start with seen = set(). When r is in seen, display r and use break. Otherwise, use seen.add(r)."),
           ] },
           { kind: "problem", part: "Problem 4", title: "Problem 4: the median", blocks: [
-            T("The <b>median</b> of an odd number of readings is the middle value after sorting."),
+            T("The <b>median</b> of an odd number of readings is the middle value after sorting. Display the median of the readings."),
             IPO([["Input", "[25, 19, 31, 22, 28]"], ["Output", "Median: 25"], ["Processing", "sorted(), then the element at index len // 2: O(n log n)"]]),
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", blocks: [
-            PQ("Write the program.",
+            PQ("Write the program of Problem 4. The output must match the target output.",
               "Median: 25", "readings = [25, 19, 31, 22, 28]\n# Write your program here\n", null, "ordered = sorted(readings). The middle index is len(ordered) // 2."),
           ] },
           { kind: "problem", part: "Problem 5", title: "Problem 5: a lookup table", blocks: [
-            T("Each sensor ID has a location. Display the location of each queried ID, or \"unknown\"."),
+            T("Each sensor ID has a location. For each ID in the queries, display the location of the ID. For an ID that is not in the list, display \"unknown\"."),
             IPO([["Input", "IDs T1, T2, P1; places hall, lab, roof; queries P1, T9, T1"], ["Output", "roof, unknown, hall (one per line)"], ["Processing", "build a dictionary once; then one O(1) lookup per query"]]),
           ] },
           { kind: "exercise", part: "Problem 5", title: "Problem 5: write the program", blocks: [
-            PQ("Write the program.",
-              "roof\nunknown\nhall", 'ids = ["T1", "T2", "P1"]\nplaces = ["hall", "lab", "roof"]\nqueries = ["P1", "T9", "T1"]\n# Write your program here\n', null, "where = {}. For i in range(len(ids)): where[ids[i]] = places[i]. Then check each query with in."),
+            PQ("Write the program of Problem 5. The output must match the target output.",
+              "roof\nunknown\nhall", 'ids = ["T1", "T2", "P1"]\nplaces = ["hall", "lab", "roof"]\nqueries = ["P1", "T9", "T1"]\n# Write your program here\n', null, "Build a dictionary first: where[ids[i]] = places[i] for each index i. Then check each query with in."),
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [
             TB(["Lesson", "Key rule"], [
