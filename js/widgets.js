@@ -1497,6 +1497,11 @@ App.widgets.bigOViz = function (cfg) {
    and *p follows the arrow to read or write x.
    config: { title, code:[lines], target:{addr,name}, pointer:{addr,name},
              steps:[{ line, xval, pval, arrow, deref:'read'|'write', note }] }
+   Array mode (a pointer over the elements of an array): give cells instead of target.
+   config: { cells:[{name, addr, val}], pointer:{addr,name},
+             steps:[{ line, pval, at, hit, deref, cells:[values], note }] }
+     at:  index of the cell p points to (the marker "▲ p" under it)
+     hit: index of the cell the statement reads or writes (*(p + 1) hits at + 1 while p stays)
    ============================================================ */
 App.widgets.ptrViz = function (cfg) {
   const code = cfg.code || [], T = cfg.target, P = cfg.pointer;
@@ -1511,11 +1516,23 @@ App.widgets.ptrViz = function (cfg) {
       const pcell = h("div", { class: "pv-cell pv-ptr" + (s.deref ? " deref" : "") },
         h("div", { class: "pv-name" }, P.name), h("div", { class: "pv-addr" }, P.addr),
         h("div", { class: "pv-val" }, s.pval != null ? s.pval : "?"));
-      const xcell = h("div", { class: "pv-cell" + (s.deref ? " hit" : "") },
-        h("div", { class: "pv-name" }, T.name), h("div", { class: "pv-addr" }, T.addr),
-        h("div", { class: "pv-val" + (s.deref === "write" ? " flash" : "") }, String(s.xval)));
-      const arrow = h("div", { class: "pv-arrow" + (s.arrow ? " on" : "") + (s.deref ? " deref" : "") }, s.arrow ? "─▶" : "");
-      const diagram = h("div", { class: "pv-diagram" }, pcell, arrow, xcell);
+      let diagram;
+      if (cfg.cells) {
+        const vals = s.cells || cfg.cells.map((c) => c.val);
+        const row = h("div", { class: "pv-row" });
+        cfg.cells.forEach((c, k) => row.appendChild(h("div", { class: "pv-col" },
+          h("div", { class: "pv-cell" + (s.hit === k ? " hit" : "") },
+            h("div", { class: "pv-name" }, c.name), h("div", { class: "pv-addr" }, c.addr),
+            h("div", { class: "pv-val" + (s.hit === k && s.deref === "write" ? " flash" : "") }, String(vals[k]))),
+          h("div", { class: "pv-mark" }, s.at === k ? "▲ " + P.name : " "))));
+        diagram = h("div", { class: "pv-diagram pv-array" }, pcell, row);
+      } else {
+        const xcell = h("div", { class: "pv-cell" + (s.deref ? " hit" : "") },
+          h("div", { class: "pv-name" }, T.name), h("div", { class: "pv-addr" }, T.addr),
+          h("div", { class: "pv-val" + (s.deref === "write" ? " flash" : "") }, String(s.xval)));
+        const arrow = h("div", { class: "pv-arrow" + (s.arrow ? " on" : "") + (s.deref ? " deref" : "") }, s.arrow ? "─▶" : "");
+        diagram = h("div", { class: "pv-diagram" }, pcell, arrow, xcell);
+      }
       return h("div", { class: "fileflow" },
         h("div", { class: "steprun-grid" },
           h("div", null, h("div", { class: "widget-title" }, "Code"), codeBox),

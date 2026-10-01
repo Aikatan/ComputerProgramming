@@ -1173,3 +1173,11 @@ body.slide-mode .deck-stage { min-height: calc(100vh - 56px - 8px - 64px); }
 .vsm-mark { display: inline-flex; align-items: center; justify-content: center; min-width: 1.4em; height: 1.4em; border-radius: 50%;
   background: var(--warn); color: #111; font-weight: 700; font-family: system-ui, sans-serif; margin-left: 6px; }
 .slide .vsm, .slide .vsm * { font-size: 24px; }
+
+/* ptrViz, array mode: a row of cells with the marker of the pointer under one of them */
+.pv-array { flex-wrap: nowrap; align-items: flex-start; gap: 14px; }
+.pv-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.pv-col { text-align: center; }
+.pv-mark { font-family: ui-monospace, monospace; color: var(--warn); font-weight: 700; margin-top: 4px; }
+.slide .pv-mark { font-size: 24px; }
+.slide .pv-array .pv-cell { min-width: 112px; padding: 6px 8px; }
