@@ -517,7 +517,12 @@ function fcLayout(cfg) {
   Object.values(nodes).forEach((n) => { n.x += shift; n.cx += shift; });
   const laneX = (side, k) => side === "left" ? minX + shift - (k + 1) * FC.lane : maxX + shift + (k + 1) * FC.lane;
   const width = Math.ceil(maxX + shift + lanesR * FC.lane + labelRoom);
-  const height = Math.ceil(y - lastGap + FC.margin);
+  let height = Math.ceil(y - lastGap + FC.margin);
+  // a lane arrow that leaves a shape from its bottom port turns 14px below the shape: keep it inside the drawing
+  (cfg.edges || []).forEach((e) => {
+    const a = nodes[e.from];
+    if (a && nodes[e.to] && e.lane && (e.port || "bottom") === "bottom") height = Math.max(height, Math.ceil(a.y + a.h + 14 + FC.margin));
+  });
   return { nodes, laneX, width, height };
 }
 function fcShape(svgNS, n) {
