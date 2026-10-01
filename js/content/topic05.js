@@ -670,12 +670,13 @@
         keywords: "practice function time to seconds profile random sqrt prime recursion",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
-            T("Solve every problem with a function. For each function, decide first:"),
+            T("Solve every problem with a function, in the five steps:"),
             L([
-              "the <b>parameters</b>: the values the function needs",
-              "the <b>return value</b>: the result it gives back",
-              "the <b>processing</b>: the steps inside it",
-              "then write the function, call it with the test values, and check the output",
+              "<b>Understand</b>: the <b>parameters</b>, the values the function needs, and the <b>return value</b>, the result it gives back.",
+              "<b>Design</b>: the processing, the steps inside the function.",
+              "<b>Code</b>: write the function and the call.",
+              "<b>Test</b>: call the function with the test values and check the output.",
+              "<b>Correct</b>: if the output differs, find the wrong step, correct it, and test again.",
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: time to seconds", blocks: [

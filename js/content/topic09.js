@@ -1011,12 +1011,13 @@
         keywords: "practice binary search iterations selection sort repeated median lookup dictionary big o",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
-            T("Solve each problem in these steps:"),
+            T("Solve every problem with the five steps:"),
             L([
-              "Identify the input and the output.",
-              "Write the algorithm as steps.",
-              "Write the program, and test it, including edge cases.",
-              "Count the steps and state the Big-O.",
+              "<b>Understand</b>: the input and the output.",
+              "<b>Design</b>: write the algorithm as steps, and state its Big-O.",
+              "<b>Code</b>: write the program.",
+              "<b>Test</b>: run it, including the edge cases.",
+              "<b>Correct</b>: if the output differs, find the wrong step, correct it, and test again.",
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: iterations of binary search", blocks: [

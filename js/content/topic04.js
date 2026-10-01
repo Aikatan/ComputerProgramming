@@ -659,10 +659,11 @@
           ] },
           { kind: "concept", part: "From problem to pseudocode to Python", title: "From a problem to a program", blocks: [
             L([
-              "Analyse the problem: input, output, and processing.",
-              "Write the pseudocode with the structures that the processing needs.",
-              "Check the pseudocode by tracing it with test values.",
-              "Convert each line into Python, then run the program with the same test values.",
+              "<b>Understand</b>: the input, the output, and the processing.",
+              "<b>Design</b>: write the pseudocode with the structures that the processing needs, and trace it with test values.",
+              "<b>Code</b>: convert each line into Python.",
+              "<b>Test</b>: run the program with the same test values.",
+              "<b>Correct</b>: if the output differs, find the wrong step, correct it, and test again.",
             ], null, true),
           ] },
           { kind: "problem", part: "From problem to pseudocode to Python", title: "Problem: a prime number", blocks: [
@@ -720,12 +721,13 @@
         keywords: "practice rectangle even odd average sum maximum factorial design",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
-            T("Solve every problem in the same order:"),
+            T("Solve every problem with the five steps:"),
             L([
-              "Identify the input, the output, and the processing.",
-              "Draw the flowchart, or write the pseudocode, on paper.",
-              "Trace the design with the test input.",
-              "Write the Python program and check it against the target output.",
+              "<b>Understand</b>: the input, the output, and the processing.",
+              "<b>Design</b>: draw the flowchart, or write the pseudocode, on paper, and trace it with the test input.",
+              "<b>Code</b>: write the Python program.",
+              "<b>Test</b>: compare the output with the target output.",
+              "<b>Correct</b>: if the output differs, find the wrong step, correct it, and test again.",
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: area of a rectangle", blocks: [

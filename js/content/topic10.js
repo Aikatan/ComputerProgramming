@@ -2907,12 +2907,13 @@ int main(void) {
         keywords: "practice c program electricity bill statistics menu switch prime function string count pointer struct stock",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
-            T("Solve each problem in these steps:"),
+            T("Solve every problem with the five steps:"),
             L([
-              "Identify the input and the output.",
-              "Write the algorithm as steps.",
-              "Write the program, and test it with values whose result is known.",
-              "Use Step Run when the output is not what you expect.",
+              "<b>Understand</b>: the input and the output.",
+              "<b>Design</b>: write the algorithm as steps.",
+              "<b>Code</b>: write the program.",
+              "<b>Test</b>: run it with values whose result is known.",
+              "<b>Correct</b>: if the output differs, find the wrong step with Step Run, correct it, and test again.",
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: an electricity bill", blocks: [

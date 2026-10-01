@@ -706,12 +706,13 @@
         keywords: "practice numpy array row sum dataframe average csv filter groupby file",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
-            T("For each problem, choose the tool that fits the data:"),
+            T("Solve every problem with the five steps:"),
             L([
-              "a text file for simple lines of values",
-              "CSV or JSON for tables and settings",
-              "NumPy for calculations on arrays of numbers",
-              "pandas for tables with named columns",
+              "<b>Understand</b>: the data and the required output.",
+              "<b>Design</b>: choose the tool: a text file for lines of values, CSV or JSON for tables and settings, NumPy for calculations on arrays, pandas for tables with named columns.",
+              "<b>Code</b>: write the program.",
+              "<b>Test</b>: compare the output with a hand calculation on the small data.",
+              "<b>Correct</b>: if the output differs, find the wrong step, correct it, and test again.",
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: a 3 × 3 array", blocks: [

@@ -86,14 +86,19 @@ The chapter ends with a **practice lesson**:
 ### Teaching approach
 - Teach the programming principle, not only the syntax. Students must understand **why** the code works.
 - When appropriate, follow: **Problem → Logic → Algorithm → Code → Execution → Result**.
-- Engineering problem-solving is taught in full in t02 Lesson 6 and applied from then on:
-  1. identify the input
-  2. identify the required output
-  3. determine the processing
-  4. determine conditions or repetitions
-  5. write the algorithm
-  6. convert it to Python
-  7. verify with a hand calculation
+- **One procedure for the whole course: the five steps.** t00 Lesson 2 introduces them, t02 Lesson 6 applies them to problems with input, and every practice overview uses the same five names:
+  1. **Understand**: the input and the required output
+  2. **Design**: the processing and the algorithm (from t03: which steps depend on a condition, and which steps repeat)
+  3. **Code**: convert each step into Python
+  4. **Test**: compare the output with a hand calculation
+  5. **Correct**: find the wrong step, correct it, and test again
+- A Problem slide carries the detail of steps 1 and 2 in its table: Input / Output / Processing / Conditions or repetitions / Algorithm. Chapter-specific choices (a data structure, an exception, a tool, the Big-O) are part of step 1 or 2; they are never an extra step.
+
+### Audience
+- The readers are adult undergraduates. They do not need everything fed to them, but the content must be complete.
+- For each idea: state the rule, show one traced or annotated example, then one harder example.
+- Add a missing concept as compactly as possible: a table row or one line first; a new slide only when it needs one.
+- Do not add extra easy examples, repeated reminders, "what changes if" tasks, or model answers. Drill exercises belong to the separate drill section.
 
 ### Python level
 - **Use basic statements:** variables, arithmetic, comparisons, `if`/`elif`/`else`, `for`, `while`, `input()`, `print()`.
@@ -240,6 +245,7 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 - **`line`:** counts from 0.
 - **`set`:** lists only the changes, as Python literals (`"12"`, `"12.0"`, `"'ohm'"`, `"True"`). Use `{v:"10", t:"float"}` to force a type.
 - **`print`:** includes echoed input lines.
+- **`end`:** the text written after the step's `print`; the default is a line break. With `end: " "` the next `print` continues the same output line, as `print(..., end=" ")` does. In a C trace, a `printf` without `\n` uses `end: ""`.
 - **`unset`:** a list of variables that disappear. Use it when a function returns, so that its locals are removed. Name locals `"v (power)"`, meaning v inside power.
 - **`traceTable` options:** `blank:true`, `given:n`, `rows:[a,b]`.
 - **Keyboard:** on slides, → / Space step a `codeTrace`, a traced `flowchart`, or any stepper widget (`searchViz`, `bubbleViz`, `boxTrain`, `fileFlow`, …) before the deck moves on.
@@ -256,7 +262,8 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
   - `fileFlow`, `csvFlow`, `jsonFlow`, `arrayOp`, `dfFilter` (t08)
   - `searchViz`, `bubbleViz` (t09). `bigOViz` is no longer used: it animates numbers, not execution. Growth is shown with tables and a Matplotlib plot.
   - `ptrViz` (t10). `pyToC` is no longer used (it hid all but one comparison at a time), nor are `buildPipeline`, `heapViz`, and `arrViz`: t10 shows the build steps and the array addresses as tables.
-  - `cpuCycle`, `cycleFlow`, `powerToggle`, `seekViz`, `levelDrop` (t01)
+  - `cpuCycle`, `cycleFlow`, `powerToggle`, `seekViz` (`seek`, `latency` in ms), `levelDrop` (t01)
+  - `vscodeMap` (t00): a static sketch of the VS Code window with numbered parts
 - **Values shown as balls** use the shared colours: int blue, float teal, str amber, bool purple, None grey (`bt-int` … `bt-none`).
 - **New widgets:** follow the same visual language. A new stepping widget also needs a static equivalent.
 

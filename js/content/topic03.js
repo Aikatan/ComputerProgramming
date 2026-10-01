@@ -1036,12 +1036,13 @@
         keywords: "practice grade password sum go alarm battery average threshold",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
-            T("Each problem combines several lessons of this chapter. Solve every problem in the same order:"),
+            T("Each problem combines several lessons of this chapter. Solve every problem with the five steps:"),
             L([
-              "<b>Input</b> and <b>output</b>: the values the program reads and displays.",
-              "<b>Processing</b>: the formula or the steps.",
-              "<b>Conditions and repetition</b>: which steps depend on a condition, and which steps repeat.",
-              "<b>Algorithm</b>, then <b>code</b>, then <b>verify</b> with the test input.",
+              "<b>Understand</b>: the input and the output.",
+              "<b>Design</b>: the processing; which steps depend on a condition, and which steps repeat; then the algorithm.",
+              "<b>Code</b>: one Python statement for each step.",
+              "<b>Test</b>: run the program with the test input.",
+              "<b>Correct</b>: if the output differs, find the wrong step, correct it, and test again.",
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: grade from a score", blocks: [

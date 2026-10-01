@@ -439,11 +439,13 @@
         keywords: "practice division error handling chart plot validation",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
-            T("For each problem, decide which errors can occur and which chart shows the data best."),
+            T("Solve every problem with the five steps:"),
             L([
-              "List the inputs that can be invalid, and the exception each one raises.",
-              "Handle each exception with its own except block.",
-              "For a chart, label both axes with units.",
+              "<b>Understand</b>: the input and the output; list the inputs that can be invalid, and the exception each one raises.",
+              "<b>Design</b>: one except block for each exception. For a chart: the chart type, and labels with units for both axes.",
+              "<b>Code</b>: write the program.",
+              "<b>Test</b>: run it with valid and with invalid input.",
+              "<b>Correct</b>: if the output differs, find the wrong step, correct it, and test again.",
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: safe division", blocks: [

@@ -888,11 +888,13 @@
         keywords: "practice count words even sum longest word frequency readings",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
-            T("For each problem, decide first:"),
+            T("Solve every problem with the five steps:"),
             L([
-              "the <b>data structure</b>: a string, a list, a tuple, a dictionary, or a set",
-              "the <b>operation</b>: index, slice, method, or a loop over the elements",
-              "then write the program and check the output with the test data",
+              "<b>Understand</b>: the input and the output.",
+              "<b>Design</b>: choose the <b>data structure</b> (a string, a list, a tuple, a dictionary, or a set) and the <b>operation</b> (index, slice, method, or a loop over the elements).",
+              "<b>Code</b>: write the program.",
+              "<b>Test</b>: check the output with the test data.",
+              "<b>Correct</b>: if the output differs, find the wrong step, correct it, and test again.",
             ], null, true),
           ] },
           { kind: "problem", part: "Problem 1", title: "Problem 1: count the words", blocks: [
