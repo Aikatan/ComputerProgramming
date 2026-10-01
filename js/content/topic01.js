@@ -18,6 +18,24 @@
   const NEXT = (html) => N(html, "Next lesson");
   const CHECK_NEXT = "Complete the table on paper. The next exercise checks it.";
 
+  /* ---------- trace: three assembly instructions through the instruction cycle ----------
+     The code lines are assembly, not Python. Addresses are the line numbers 1 to 3.
+     IR is shown as plain text (type "obj"), not as a Python string. */
+  const IR = (text) => ({ v: text, t: "obj" });
+  const T_cycle = {
+    code: ["LOAD R1, 12", "LOAD R2, 30", "ADD R1, R2"],
+    steps: [
+      { line: -1, note: "The program is in memory at addresses 1 to 3. The PC holds address 1.", set: { PC: "1" } },
+      { line: 0, note: "Fetch: the IR receives the instruction at address 1. The PC increases by 1.", set: { IR: IR("LOAD R1, 12"), PC: "2" } },
+      { line: 0, note: "Decode: load the value 12 into R1. Execute and store: R1 holds 12.", set: { R1: "12" } },
+      { line: 1, note: "Fetch: the IR receives the instruction at address 2. The PC increases by 1.", set: { IR: IR("LOAD R2, 30"), PC: "3" } },
+      { line: 1, note: "Decode: load the value 30 into R2. Execute and store: R2 holds 30.", set: { R2: "30" } },
+      { line: 2, note: "Fetch: the IR receives the instruction at address 3. The PC increases by 1.", set: { IR: IR("ADD R1, R2"), PC: "4" } },
+      { line: 2, note: "Decode: add R2 to R1. Execute: the ALU adds 12 + 30. Store: R1 holds 42.", set: { R1: "42" } },
+      { line: -1, note: "No instruction is left. R1 holds 42. Result check: 12 + 30 = 42." },
+    ],
+  };
+
   App.registerTopic({
     id: "t01",
     title: "Computer Operation and Architecture",
@@ -31,11 +49,11 @@
         title: "Computer, hardware, and software",
         sub: "The four functions of a computer, the processing cycle, hardware, and software.",
         slides: "01:4–13",
-        keywords: "computer definition input processing storage output information processing cycle hardware software input device output device system software application software operating system",
+        keywords: "computer definition input processing storage output data information processing cycle hardware stored program bus address software input device output device system software application software operating system",
         deck: [
           { kind: "overview", title: "Computer, hardware, and software", blocks: [
             T("A <b>computer</b> is an electronic device that processes and stores information. It performs calculations, changes data, and executes instructions to complete a task.<br>A computer system has two parts: <b>hardware</b> and <b>software</b>."),
-            L(["The four functions of a computer", "Hardware", "Input and output devices", "Software", "Computers in modern society", "A program uses the four functions"], "Subtopics in this lesson", true),
+            L(["The four functions of a computer", "Hardware", "The stored program", "Input and output devices", "Software", "A program uses the four functions"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "The four functions", title: "The four functions of a computer", blocks: [
             TB(["Function", "Meaning"], [
@@ -44,6 +62,7 @@
               ["<b>Storage</b>", "saving data and instructions for immediate or future use"],
               ["<b>Output</b>", "delivering the processed information through output devices"],
             ]),
+            T("<b>Data</b> is a raw value, such as 25 from a sensor. <b>Information</b> is a processed result with a meaning, such as 77 °F."),
             T("The four functions usually occur in this order. Together they form the <b>information processing cycle</b>:<br>input → processing → storage → output."),
           ] },
           { kind: "visual", part: "The four functions", title: "The cycle for one temperature reading", blocks: [
@@ -62,6 +81,20 @@
               ["Memory and storage devices", "store data and programs, temporarily or permanently", "memory: RAM (Lesson 3); storage: SSD, HDD (Lesson 4)"],
               ["Output devices", "present the results of the processing", "monitor, printer"],
             ]),
+          ] },
+          { kind: "concept", part: "The stored program", title: "The stored program", blocks: [
+            L([
+              "The instructions of a program and its data are both stored in memory (RAM) as binary numbers: sequences of 0 and 1.",
+              "Each location in memory has a number: its <b>address</b>.",
+              "The CPU fetches the instructions from memory, one after another, and executes them.",
+            ]),
+            W("diagram", { layout: "row", boxes: [
+              { title: "CPU", body: "executes the instructions" },
+              { title: "Bus", body: "carries instructions and data between the parts" },
+              { title: "RAM", body: "holds the running program and its data" },
+              { title: "Storage", body: "keeps the program file when the power is off" },
+              { title: "I/O devices", body: "input and output: keyboard, monitor" },
+            ] }),
           ] },
           { kind: "concept", part: "Input and output devices", title: "Input and output devices", cols: [
             [T("An <b>input device</b> enters data into a computer system."),
@@ -88,16 +121,6 @@
             ]),
             T("A Python program is application software. It runs on the operating system, and the operating system controls the hardware."),
           ] },
-          { kind: "concept", part: "Computers in modern society", title: "Computers in modern society", blocks: [
-            TB(["Area", "Examples of use"], [
-              ["Communication", "email, social media, video conferencing"],
-              ["Education", "e-learning platforms, research"],
-              ["Healthcare", "patient records, diagnostic tools"],
-              ["Finance", "online banking, financial modelling"],
-              ["Entertainment", "streaming services, games"],
-            ]),
-            T("Every one of these uses the same four functions: input, processing, storage, and output."),
-          ] },
           { kind: "code", part: "A program uses the four functions", title: "Example: one program and the four functions", blocks: [
             RUN('print("Power =", 12 * 2, "W")', "Program: the power of a 12 V, 2 A device"),
             TB(["Function", "In this program"], [
@@ -109,11 +132,11 @@
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "A computer performs four functions: input, processing, storage, and output.",
-              "The information processing cycle usually runs in this order: input → processing → storage → output.",
-              "Hardware is the tangible part: input devices, the processing unit, memory and storage devices, and output devices.",
-              "Software is the intangible part. System software manages the hardware. Application software performs tasks for the user.",
-              "A Python program is application software. It uses processing, storage, and output; with <code>input()</code> (Topic 02), it also uses input.",
+              "A computer performs four functions: input → processing → storage → output.",
+              "Hardware is the tangible part: input, processing, memory and storage, and output devices.",
+              "A program and its data are both stored in memory; the CPU fetches the instructions one after another.",
+              "Software is the intangible part: system software manages the hardware; application software performs tasks for the user.",
+              "A Python program is application software.",
             ]),
             NEXT("<b>The CPU and the instruction cycle</b>. The processing unit executes the instructions of every program, one instruction after another."),
           ] },
@@ -168,7 +191,7 @@
         title: "The CPU and the instruction cycle",
         sub: "The ALU, the control unit, the registers, and fetch, decode, execute, store.",
         slides: "01:11",
-        keywords: "cpu central processing unit alu arithmetic logic unit control unit cu register fetch decode execute store instruction cycle",
+        keywords: "cpu central processing unit alu arithmetic logic unit control unit cu register program counter pc instruction register ir clock speed ghz mhz fetch decode execute store instruction cycle",
         deck: [
           { kind: "overview", title: "The CPU and the instruction cycle", blocks: [
             T("The <b>central processing unit</b> (CPU) is the component that performs most of the processing in a computer. It executes the instructions of a program, one instruction after another."),
@@ -176,29 +199,24 @@
           ] },
           { kind: "concept", part: "The parts of the CPU", title: "ALU, control unit, and registers", blocks: [
             TB(["Part", "Function"], [
-              ["<b>ALU</b> (Arithmetic Logic Unit)", "performs arithmetic operations (+, −, ×, ÷) and logic operations, such as a comparison of two numbers"],
-              ["<b>Control unit</b> (CU)", "directs the operations of the processor: it fetches and decodes the instructions and controls the other parts"],
+              ["<b>ALU</b> (Arithmetic Logic Unit)", "performs arithmetic (+, −, ×, ÷) and logic operations, such as a comparison"],
+              ["<b>Control unit</b> (CU)", "fetches and decodes the instructions and controls the other parts"],
               ["<b>Registers</b>", "small storage locations inside the CPU; they hold the current instruction and the values in use"],
+              ["<b>Program counter</b> (PC)", "a register that holds the address of the next instruction"],
+              ["<b>Instruction register</b> (IR)", "a register that holds the instruction being executed"],
             ]),
             T("Registers are the fastest storage in a computer. Lesson 4 compares them with the other kinds of storage."),
           ] },
           { kind: "concept", part: "The instruction cycle", title: "Fetch, decode, execute, store", blocks: [
             L([
-              "<b>Fetch</b>: the control unit retrieves the next instruction from memory.",
+              "<b>Fetch</b>: the control unit copies the instruction at the address in the PC from memory to the IR. Then the PC increases by 1.",
               "<b>Decode</b>: the control unit interprets the instruction: the operation and the values it needs.",
               "<b>Execute</b>: the ALU or another part carries out the instruction.",
               "<b>Store</b>: the result is written back to a register or to memory, if needed.",
             ], "The instruction cycle", true),
-            T("The CPU repeats this cycle for every instruction of a program."),
+            T("The CPU repeats this cycle for every instruction of a program.<br>The <b>clock speed</b> sets how fast the cycle runs: 3 GHz is 3 thousand million clock cycles per second. A 16 MHz microcontroller is much slower."),
           ] },
-          { kind: "visual", part: "The instruction cycle", title: "One instruction through the cycle", blocks: [
-            W("cycleFlow", { title: "The instruction ADD R1, R2", stages: [
-              { name: "Fetch", data: "ADD R1, R2", note: "The control unit fetches the instruction <code>ADD R1, R2</code> from memory. Register R1 holds 12. Register R2 holds 30." },
-              { name: "Decode", data: "add R1, R2", note: "The control unit decodes it: the operation is addition, and the values are in R1 and R2." },
-              { name: "Execute", data: "12 + 30 = 42", note: "The ALU executes the addition: 12 + 30 = 42." },
-              { name: "Store", data: "R1 = 42", note: "The result, 42, is written back to register R1. Then the next instruction is fetched." },
-            ] }),
-          ] },
+          { kind: "code", part: "The instruction cycle", title: "Three instructions through the cycle", blocks: [W("codeTrace", T_cycle)] },
           { kind: "concept", part: "The CPU executes a program", title: "Every calculation runs in the ALU", blocks: [
             L([
               "One Python statement is translated into many machine instructions (Lesson 5).",
@@ -219,7 +237,7 @@
               "The CPU has three main parts: the ALU, the control unit, and the registers.",
               "The ALU performs arithmetic and logic operations.",
               "The control unit fetches and decodes the instructions and directs the other parts.",
-              "Registers are small, very fast storage locations inside the CPU.",
+              "Registers are small, very fast storage locations inside the CPU. The PC holds the address of the next instruction. The IR holds the current instruction.",
               "The instruction cycle: fetch → decode → execute → store, repeated for every instruction.",
             ]),
             NEXT("<b>Memory: RAM and ROM</b>. The CPU fetches every instruction and every value from memory."),
@@ -238,7 +256,7 @@
             TB(["Task", "CPU part"], [
               ["computes 17 − 5", "ALU"],
               ["holds the value 42 for the next instruction", "register"],
-              ["decides which instruction runs next", "control unit"],
+              ["decides which instruction runs next", "control unit (it uses the address in the PC)"],
               ["checks whether 35 °C is greater than 30 °C", "ALU (a logic operation)"],
               ["interprets (decodes) an instruction", "control unit"],
             ]),
@@ -250,7 +268,7 @@
           ] },
           { kind: "exercise", title: "Check your table", blocks: [
             TB(["Stage", "Part", "What happens"], [
-              ["Fetch", "control unit", "retrieves <code>SUB R1, R2</code> from memory"],
+              ["Fetch", "control unit", "copies <code>SUB R1, R2</code> from memory to the IR; the PC increases by 1"],
               ["Decode", "control unit", "finds the operation (subtraction) and the values (R1 and R2)"],
               ["Execute", "ALU", "computes 50 − 8 = 42"],
               ["Store", "register R1", "R1 now holds 42"],
@@ -277,7 +295,7 @@
         title: "Memory: RAM and ROM",
         sub: "Classes of storage, volatile and non-volatile memory, and the types of RAM and ROM.",
         slides: "01:14–26",
-        keywords: "memory primary secondary tertiary bit byte kb mb gb tb units ram random access rom volatile non-volatile dram sram refresh flip-flop cache prom eprom eeprom bios firmware",
+        keywords: "memory primary secondary tertiary bit byte kb mb gb tb units ram random access rom volatile non-volatile dram sram refresh flip-flop cache prom eprom eeprom flash bios firmware",
         deck: [
           { kind: "overview", title: "Memory: RAM and ROM", blocks: [
             T("<b>Memory</b> stores data and instructions, temporarily or permanently. The CPU exchanges data with memory for every instruction, so a computer cannot operate without memory."),
@@ -287,8 +305,9 @@
             TB(["Class", "Properties", "Examples"], [
               ["Primary memory (main memory)", "fast; directly accessible by the CPU", "RAM, ROM"],
               ["Secondary storage", "non-volatile; keeps data for a long time", "HDD, SSD (Lesson 4)"],
-              ["Tertiary storage", "very large volumes of data; often removable", "optical discs, magnetic tapes"],
             ]),
+            T("<b>Tertiary storage</b>, such as optical discs and magnetic tapes, keeps very large archives. It is often removable."),
+            T("The RAM size and the storage size of a device are different quantities: a phone can have 8 GB of RAM (primary memory) and 256 GB of storage (secondary storage)."),
             T("This lesson explains primary memory: RAM and ROM."),
           ] },
           { kind: "concept", part: "Classes of storage", title: "Units of memory and storage size", blocks: [
@@ -340,14 +359,14 @@
               ["EPROM (erasable PROM)", "erased with ultraviolet (UV) light; reprogrammable many times", "older microcontrollers"],
               ["EEPROM (electrically erasable PROM)", "erased and reprogrammed with electrical signals, also in parts", "modern BIOS chips, embedded systems"],
             ]),
-            T("Firmware in EEPROM can be updated without removing the chip."),
+            T("Firmware in EEPROM can be updated without removing the chip.<br><b>Flash memory</b> is EEPROM that is erased in blocks. SSDs, USB drives, and memory cards use it."),
           ] },
           { kind: "summary", title: "Summary", blocks: [
             TB(["Feature", "RAM", "ROM"], [
               ["Power off", "volatile: the data is lost", "non-volatile: the data is kept"],
               ["Access", "read and write, high speed", "read-only (mostly)"],
               ["Holds", "the running programs and their data", "firmware and start-up instructions"],
-              ["Types", "DRAM (main memory), SRAM (cache)", "PROM, EPROM, EEPROM"],
+              ["Types", "DRAM (main memory), SRAM (cache)", "PROM, EPROM, EEPROM (flash memory is a kind of EEPROM)"],
             ]),
             NEXT("<b>Storage devices: HDD and SSD</b>. Secondary storage keeps programs and files when the power is off and RAM is cleared."),
           ] },
@@ -404,11 +423,11 @@
         title: "Storage devices: HDD and SSD",
         sub: "How hard disk drives and solid state drives store and read data, how they compare, and the memory hierarchy.",
         slides: "01:27–36",
-        keywords: "storage secondary hdd hard disk ssd solid state nand flash platter spindle head seek rotational latency access time transfer rate iops usb sd card memory hierarchy",
+        keywords: "storage secondary hdd hard disk ssd solid state nand flash platter spindle head seek rotational latency rpm access time transfer rate wear usb sd card memory hierarchy",
         deck: [
           { kind: "overview", title: "Storage devices: HDD and SSD", blocks: [
             T("<b>Storage devices</b> keep the operating system, programs, data logs, media, and backups when the power is off. The two main technologies are the hard disk drive (HDD) and the solid state drive (SSD)."),
-            L(["Storage devices and their uses", "The hard disk drive (HDD)", "The solid state drive (SSD)", "Access time", "HDD compared with SSD", "Access and transfer time", "The memory hierarchy"], "Subtopics in this lesson", true),
+            L(["Storage devices and their uses", "The hard disk drive (HDD)", "Access and transfer time", "The solid state drive (SSD)", "HDD compared with SSD", "The memory hierarchy"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Storage devices and their uses", title: "HDD, SSD, and flash memory devices", blocks: [
             TB(["Device", "How it stores data", "Typical use"], [
@@ -435,71 +454,43 @@
               "<b>Read/write</b>: the head reads or sets the magnetic polarity of each bit.",
               "<b>Transfer</b>: the data passes through the buffer (cache) and the interface to the computer.",
             ], null, true),
-            T("Access time = seek time + rotational latency: about 5–15 ms.<br>A higher RPM, a larger cache, and more platters and heads improve the performance."),
+            T("One revolution takes 60000 ÷ RPM ms (1 minute = 60000 ms). On average, the sector is half a revolution away from the head:<br>average rotational latency = 60000 ÷ RPM ÷ 2 ms. At 7200 RPM: about 4.17 ms. A higher RPM gives a shorter latency."),
           ] },
-          { kind: "concept", part: "The solid state drive (SSD)", title: "NAND flash memory", blocks: [
-            T("An SSD stores each bit as an electric charge in a <b>NAND flash</b> memory cell. The cell is a floating-gate transistor that traps the charge. One cell stores 1 to 4 bits."),
-            TB(["Cell type", "Bits per cell"], [
-              ["SLC (single-level cell)", "1"],
-              ["MLC (multi-level cell)", "2"],
-              ["TLC (triple-level cell)", "3"],
-              ["QLC (quad-level cell)", "4"],
-            ], null, "center"),
-            T("Data is written in <b>pages</b> (about 4 KB) and erased in <b>blocks</b> (about 128–256 pages)."),
+          { kind: "concept", part: "Access and transfer time", title: "Two calculations", blocks: [
+            TB(["Quantity", "Formula", "Unit"], [
+              ["HDD access time", "seek time + rotational latency", "ms"],
+              ["Transfer time", "file size ÷ transfer rate", "MB ÷ (MB/s) = s"],
+            ]),
+            T("The access time of an HDD is about 5–15 ms.<br>Topic 00, Lesson 2 explains <code>+</code>, <code>/</code> (its result has a decimal point), and <code>print()</code> with several values."),
           ] },
-          { kind: "concept", part: "The solid state drive (SSD)", title: "The SSD controller", blocks: [
-            T("A controller chip manages the flash memory of the SSD."),
-            L([
-              "<b>Wear levelling</b>: spreads the write and erase cycles evenly over the blocks.",
-              "<b>Garbage collection</b>: frees the blocks that contain old data.",
-              "<b>Bad block mapping</b>: stops using the blocks that have failed.",
-              "<b>Error correction (ECC)</b>: detects and corrects wrong bits.",
-              "<b>Cache</b>: DRAM, or a part of the computer's RAM (HMB), for fast access.",
+          { kind: "code", part: "Access and transfer time", title: "Example: access time and copy time", blocks: [
+            EX('print("HDD access:", 6 + 4, "ms")\nprint("SSD access:", 0.1, "ms")\nprint("Copy on HDD:", 1000 / 125, "s")\nprint("Copy on SSD:", 1000 / 500, "s")', "seek + latency; size ÷ rate", [
+              { c: "6 + 4", e: "Seek 6 ms + latency 4 ms = 10 ms: 100 times the SSD access time." },
+              { c: "1000 / 125", e: "A 1000 MB file at 125 MB/s (HDD) takes <code>8.0</code> s." },
+              { c: "1000 / 500", e: "At 500 MB/s (SATA SSD) it takes <code>2.0</code> s." },
             ]),
           ] },
-          { kind: "concept", part: "The solid state drive (SSD)", title: "How an SSD reads data", blocks: [
+          { kind: "visual", part: "Access and transfer time", title: "Reading one block: HDD and SSD", blocks: [
+            W("seekViz", { title: "", seek: 8, latency: 4 }),
+          ] },
+          { kind: "concept", part: "The solid state drive (SSD)", title: "How an SSD stores and reads data", blocks: [
             L([
-              "The computer (the host) sends a read or write command.",
-              "The controller translates the logical address into a physical location in the flash.",
-              "The data is accessed directly in the NAND flash through a page buffer.",
-              "Error correction (ECC) checks and corrects the bits.",
-              "The data passes through the interface buffer to the host.",
-            ], null, true),
-            T("There are no moving parts: no seek and no rotational latency. Access time: about 0.05–0.1 ms."),
+              "An SSD stores each bit as an electric charge in a <b>NAND flash</b> memory cell. Flash memory is non-volatile (Lesson 3).",
+              "A <b>controller</b> chip finds the cells of the requested data and reads them electronically.",
+              "There are no moving parts: no seek and no rotational latency. Access time: about 0.05–0.1 ms.",
+              "The cells <b>wear out</b>: each cell allows a limited number of write and erase cycles. The controller spreads the writes evenly over the cells.",
+            ]),
           ] },
-          { kind: "concept", part: "The solid state drive (SSD)", title: "SSD performance and limitations", cols: [
-            [L([
-              "the number of parallel channels and flash chips (dies)",
-              "SLC caching and DRAM or HMB buffers",
-              "the firmware, for example how it queues and groups commands",
-            ], "The speed depends on")],
-            [L([
-              "<b>Write amplification</b>: the SSD writes more data than the host sends.",
-              "<b>Garbage collection</b> and other background work can cause short delays.",
-              "<b>Wear</b>: each block allows a limited number of program/erase (P/E) cycles.",
-            ], "Limitations")],
-          ] },
-          { kind: "visual", part: "Access time", title: "Reading one block: HDD and SSD", blocks: [
-            W("seekViz", { title: "", seek: 6, latency: 4 }),
-          ] },
-          { kind: "concept", part: "HDD compared with SSD", title: "Operation and speed", blocks: [
+          { kind: "concept", part: "HDD compared with SSD", title: "HDD compared with SSD", blocks: [
             TB(["Parameter", "HDD", "SSD"], [
-              ["Principle", "electromechanical (magnetic)", "electronic (charge in flash cells)"],
-              ["Access", "a moving head over spinning platters", "cells addressed by the controller"],
+              ["Principle", "electromechanical: magnetic platters", "electronic: flash cells, no moving parts"],
               ["Access time", "5–15 ms", "under 0.1 ms"],
               ["Transfer rate", "80–200 MB/s (SATA)", "500 MB/s (SATA) to over 7000 MB/s (NVMe)"],
-              ["IOPS", "about 100–300", "over 100,000"],
-            ]),
-            T("IOPS: input/output operations per second, for small reads and writes at random locations.<br>SATA and NVMe are interfaces that connect a drive to the computer. NVMe is the faster one."),
-          ] },
-          { kind: "concept", part: "HDD compared with SSD", title: "Durability, power, and cost", blocks: [
-            TB(["Parameter", "HDD", "SSD"], [
-              ["Endurance", "mechanical wear (bearings, head crash)", "flash cell wear (limited P/E cycles)"],
-              ["Shock resistance", "50–70 G", "1500 G"],
-              ["Power (active, idle)", "5–10 W, 1–2 W", "2–4 W, under 1 W"],
-              ["Noise", "audible (spindle and seek)", "silent"],
+              ["Wear", "mechanical: bearings, head crash", "flash cells: limited write and erase cycles"],
+              ["Shock and noise", "sensitive to shock; audible", "shock-resistant; silent"],
               ["Cost per GB", "lower", "higher"],
             ]),
+            T("SATA and NVMe are interfaces that connect a drive to the computer. NVMe is the faster one."),
           ] },
           { kind: "concept", part: "HDD compared with SSD", title: "When to use an HDD or an SSD", cols: [
             [L([
@@ -513,20 +504,6 @@
               "boot drives and performance-critical tasks: the OS, gaming, real-time analytics",
             ], "Use an SSD for")],
           ] },
-          { kind: "concept", part: "Access and transfer time", title: "Two calculations", blocks: [
-            TB(["Quantity", "Formula", "Unit"], [
-              ["HDD access time", "seek time + rotational latency", "ms"],
-              ["Transfer time", "file size ÷ transfer rate", "MB ÷ (MB/s) = s"],
-            ]),
-            T("Topic 00, Lesson 2 explains <code>+</code>, <code>/</code> (its result has a decimal point), and <code>print()</code> with several values."),
-          ] },
-          { kind: "code", part: "Access and transfer time", title: "Example: access time and copy time", blocks: [
-            EX('print("HDD access:", 6 + 4, "ms")\nprint("SSD access:", 0.1, "ms")\nprint("Copy on HDD:", 1000 / 125, "s")\nprint("Copy on SSD:", 1000 / 500, "s")', "seek + latency; size ÷ rate", [
-              { c: "6 + 4", e: "Seek 6 ms + latency 4 ms = 10 ms: 100 times the SSD access time." },
-              { c: "1000 / 125", e: "A 1000 MB file at 125 MB/s (HDD) takes <code>8.0</code> s." },
-              { c: "1000 / 500", e: "At 500 MB/s (SATA SSD) it takes <code>2.0</code> s." },
-            ]),
-          ] },
           { kind: "concept", part: "The memory hierarchy", title: "The memory hierarchy", blocks: [
             TB(["Level (fastest first)", "Location", "Typical capacity"], [
               ["Registers", "inside the CPU", "bytes"],
@@ -539,10 +516,10 @@
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "An HDD stores bits magnetically on rotating platters. Access time = seek + rotational latency: 5–15 ms.",
-              "An SSD stores bits as charge in NAND flash cells. It has no moving parts: under 0.1 ms.",
+              "An HDD stores bits magnetically on rotating platters. Access time = seek time + rotational latency: 5–15 ms.",
+              "Average rotational latency = 60000 ÷ RPM ÷ 2 ms. Transfer time = file size ÷ transfer rate.",
+              "An SSD stores bits as charge in NAND flash cells. It has no moving parts (under 0.1 ms), but its cells wear out.",
               "An SSD is faster, silent, and shock-resistant. An HDD costs less per GB.",
-              "Transfer time = file size ÷ transfer rate.",
               "The memory hierarchy, fastest first: registers → cache → RAM → SSD → HDD.",
             ]),
             NEXT("<b>Levels of a computer system</b>. The hardware of Lessons 1 to 4 forms the lowest levels of a computer system. The software levels are built on it."),
@@ -572,13 +549,13 @@
             TB(["Application", "HDD or SSD", "Reason"], [
               ["boot drive of a laptop", "SSD", "short access time: fast start-up"],
               ["10-year archive of CCTV video", "HDD", "lowest cost per GB; sequential writing"],
-              ["database server with many random reads", "SSD", "over 100,000 IOPS"],
-              ["data logger on a vibrating machine", "SSD", "no moving parts; 1500 G shock resistance"],
+              ["database server with many random reads", "SSD", "no seek time: each read takes under 0.1 ms"],
+              ["data logger on a vibrating machine", "SSD", "no moving parts: shock-resistant"],
             ]),
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which order is from the fastest to the slowest access?", choices: ["Register → Cache → RAM → Hard disk", "Cache → Register → RAM → Hard disk", "RAM → Register → Cache → Hard disk", "Register → RAM → Cache → Hard disk"], answer: 0, explain: "Registers are fastest, then the cache, then RAM. The hard disk is the slowest." },
-            { q: "How does an SSD store data?", choices: ["As magnetic polarity on platters", "As electric charge in flash memory cells", "As marks read by a laser", "As sound waves"], answer: 1, explain: "An SSD uses NAND flash: each cell traps an electric charge." },
+            { q: "How does an SSD store data?", choices: ["As magnetic polarity on platters", "As electric charge in flash memory cells", "As marks read by a laser", "As sound waves"], answer: 1, explain: "An SSD uses NAND flash: each cell stores a bit as an electric charge." },
           ])] },
         ],
       },
@@ -663,7 +640,7 @@
             ] }),
           ] },
           { kind: "concept", part: "Programs and hardware", title: "A program uses the hardware", blocks: [
-            T("A <b>program</b> is a set of instructions written in a programming language. The CPU executes it to perform a task. While it runs, the program uses the hardware:"),
+            T("While a program runs, it uses the hardware:"),
             TB(["Hardware", "Use by the program"], [
               ["CPU", "executes the instructions"],
               ["RAM", "holds the instructions and the values while the program runs"],
@@ -703,21 +680,6 @@
               ["assembler", "4: Assembly language"],
               ["Python interpreter", "5: High-level language"],
               ["web browser", "6: User (an application program)"],
-            ]),
-          ] },
-          { kind: "exercise", title: "Complete the table: translators", blocks: [
-            T("Write the translator for each program, and when the translation takes place. " + CHECK_NEXT),
-            TB(["Program", "Translator", "When"], [
-              ["<code>ADD R1, R2</code> (assembly language)", "", ""],
-              ["a C++ program", "", ""],
-              ["a Python program", "", ""],
-            ]),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
-            TB(["Program", "Translator", "When"], [
-              ["<code>ADD R1, R2</code> (assembly language)", "assembler", "before the program runs"],
-              ["a C++ program", "compiler", "before the program runs"],
-              ["a Python program", "interpreter", "while the program runs, one statement at a time"],
             ]),
           ] },
           { kind: "exercise", title: "Complete the table: a program and the hardware", blocks: [
