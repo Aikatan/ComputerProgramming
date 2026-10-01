@@ -39,13 +39,38 @@ Then open <http://localhost:8000> in a modern browser.
 ### Deploying
 Any static host works (GitHub Pages, Netlify, etc.) — just upload the folder. No build step.
 
+## Instructor mode
+
+Students see only the task of an exercise. The lecturer signs in, and the answer controls appear on the same slide:
+
+- **Show answer** on a slide that has an answer (for example the completed table)
+- **Run** and **Step Run** on the program of an exercise slide
+- **Previous row / Next row / All / Reset** for a blank trace table (the arrow keys also reveal the rows)
+
+**Sign in:** click **Instructor** in the top bar, enter the username and the password, and click **Sign in**. The button then reads **Instructor: on**. Click it again to sign out. The mode also ends when the browser tab is closed.
+
+**Default login:** username `admin`, password `password`.
+
+**Change the login:**
+
+```bash
+python tools/set-instructor-login.py
+```
+
+The script asks for the username, and twice for the password (the password is not displayed). It writes a new salt and the SHA-256 hash of the login to `js/instructor.js`, and raises the `?v=` number of that file in `index.html`. Commit and publish both files to use the new login on the public site.
+
+Instructor mode only hides the answers. They stay in the page source, and the hash is public, so a short password can be found by trial. Do not reuse a password of another account, and do not put exam answers on the site.
+
+For authors: the content fields (`answer`, `hideOnAnswer`, `studentRun`, `showCode`) are described in `CHAPTER-IMPROVEMENT-PROMPT.md`, section 6. In the browser console, `App.setInstructor(true)` switches the mode on without the dialog.
+
 ## Project layout
 
 ```
 index.html              page shell + script/CDN loading
 css/styles.css          all styling (dark/light themes)
 js/
-  core.js               namespace, content registry, progress, static highlighter
+  core.js               namespace, content registry, progress, static highlighter, instructor mode
+  instructor.js         the instructor login (salt and hash; written by tools/set-instructor-login.py)
   runner.js             Pyodide engine (stdin, stdout, matplotlib capture)
   editor.js             live CodeMirror + Run/Reset block
   widgets.js            interactive visuals (binary, truth table, flowchart, steppers, …)

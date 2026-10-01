@@ -59,6 +59,37 @@ App.progress = {
   },
 };
 
+/* ---------- Instructor mode ----------
+   The lecturer signs in (top bar); answer controls then appear on the slides:
+   the "Show answer" button, Run / Step Run on the programs of exercise slides,
+   and the reveal buttons of a blank trace table. The state lasts until the tab
+   closes (sessionStorage). It only hides: the answers stay in the page source.
+   App.INSTRUCTOR_SALT and App.INSTRUCTOR_HASH are set in js/instructor.js. */
+App.instructor = false;
+try { App.instructor = sessionStorage.getItem("pcl_instructor") === "1"; } catch (e) {}
+if (document.body) document.body.classList.toggle("instructor-mode", App.instructor);
+
+App.setInstructor = function (on) {
+  on = !!on;
+  const changed = on !== App.instructor;
+  App.instructor = on;
+  try { if (on) sessionStorage.setItem("pcl_instructor", "1"); else sessionStorage.removeItem("pcl_instructor"); } catch (e) {}
+  document.body.classList.toggle("instructor-mode", on);
+  // app.js listens: it updates the top-bar button and renders the current slide again
+  if (changed) document.dispatchEvent(new CustomEvent("instructorchange", { detail: { on } }));
+};
+
+// Resolves to "ok", "wrong", "unset" (no hash in js/instructor.js) or "nocrypto".
+App.checkInstructorLogin = async function (username, password) {
+  const want = String(App.INSTRUCTOR_HASH || "").trim().toLowerCase();
+  if (!want) return "unset";
+  if (!window.crypto || !crypto.subtle) return "nocrypto";   // Web Crypto needs https or localhost
+  const text = String(username) + ":" + String(password) + ":" + String(App.INSTRUCTOR_SALT || "");
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  const hex = Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  return hex === want ? "ok" : "wrong";
+};
+
 /* ---------- tiny static syntax highlighter for Python ---------- */
 (function () {
   const KW = new Set(("False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield").split(" "));

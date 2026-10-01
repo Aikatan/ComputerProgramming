@@ -6,7 +6,16 @@
 (function () {
   const h = App.h;
 
-  function block(b) {
+  // ctx: the slide that holds the block (authored decks only). It is used for the
+  // rules that depend on the slide: see "livecode".
+  function block(b, ctx) {
+    const el = block0(b, ctx);
+    // hideOnAnswer: the block disappears while the answer of its slide is shown
+    if (b.hideOnAnswer && el && el.classList) el.classList.add("hide-on-answer");
+    return el;
+  }
+
+  function block0(b, ctx) {
     switch (b.type) {
       case "subhead":
         return h("h4", { style: "margin:22px 0 6px;font-size:18px" }, b.text);
@@ -42,7 +51,11 @@
       case "steprun":
         return App.makeStepRun(b.code, { title: b.title, inputs: b.inputs });
       case "livecode":
-        return App.makeLive(b.code, { title: b.title, lang: b.lang, inputs: b.inputs });
+        // On an exercise slide, the program is shown without Run and Step Run: the
+        // students determine the result on paper. The buttons appear in instructor
+        // mode, or for everybody when the block sets studentRun: true.
+        return App.makeLive(b.code, { title: b.title, lang: b.lang, inputs: b.inputs,
+          noRun: !!(ctx && ctx.kind === "exercise" && !b.studentRun && !App.instructor) });
       case "practiceq":
         return App.makePractice(b);
       case "example":
@@ -181,6 +194,35 @@
     return "Lesson " + (rec.li + 1) + " of " + rec.topic.lessons.length;
   };
 
+  /* ---- answer on the same slide ----
+     slide.answer: [blocks]. The blocks are rendered into a hidden container.
+     In instructor mode the slide gets a "Show answer" / "Hide answer" button.
+     While the answer is shown, the blocks of the slide with hideOnAnswer: true are
+     hidden (for example the blank table that the completed table replaces).
+     host: the slide (or scroll-view section) element. Returns { box, btn } or null;
+     btn is null without instructor mode. host._setAnswer(false) hides the answer. */
+  App.slideAnswer = function (s, host) {
+    if (!s.answer || !s.answer.length) return null;
+    const box = h("div", { class: "slide-answer", hidden: "" });
+    s.answer.forEach((b) => box.appendChild(block(b, s)));
+    let btn = null;
+    function set(on) {
+      box.hidden = !on;
+      host.classList.toggle("answer-shown", on);
+      if (btn) { btn.textContent = on ? "Hide answer" : "Show answer"; btn.classList.toggle("ghost", !on); btn.setAttribute("aria-expanded", on ? "true" : "false"); }
+      if (!on) return;
+      // content that was built while hidden is measured again now
+      box.querySelectorAll(".live").forEach((el) => { if (el._cm) el._cm.refresh(); });
+      box.querySelectorAll(".ctrace, .kstep").forEach((t) => t._goto && t._goto(0));
+    }
+    host._setAnswer = set;
+    if (App.instructor) {
+      btn = h("button", { class: "btn ghost answer-btn", type: "button", "aria-expanded": "false" }, "Show answer");
+      btn.addEventListener("click", () => set(box.hidden));
+    }
+    return { box, btn };
+  };
+
   function renderDeckScroll(rec, root) {
     const L = rec.lesson, kick = App.deckKickers(L);
     let part = null;
@@ -189,10 +231,18 @@
         root.appendChild(h("h2", { class: "deck-part" }, s.part));
       }
       if (s.part) part = s.part;
-      const sec = h("section", { class: "deck-sec kind-" + s.kind },
-        h("div", { class: "deck-sec-kicker" }, kick[n]),
+      const kicker = h("div", { class: "deck-sec-kicker" }, kick[n]);
+      const sec = h("section", { class: "deck-sec kind-" + s.kind }, kicker,
         s.title ? h("h3", { class: "deck-sec-title" }, s.title) : null);
-      App.deckBlocks(s).forEach((b) => sec.appendChild(block(b)));
+      const nodes = App.deckBlocks(s).map((b) => block(b, s));
+      nodes.forEach((el) => sec.appendChild(el));
+      const ans = App.slideAnswer(s, sec);
+      if (ans) {
+        // answerCol: 0 puts the answer after the blocks of the left column
+        const last = s.cols && s.answerCol === 0 ? nodes[s.cols[0].length - 1] : null;
+        if (last) last.after(ans.box); else sec.appendChild(ans.box);
+        if (ans.btn) { const head = h("div", { class: "deck-sec-head" }); kicker.replaceWith(head); head.append(kicker, ans.btn); }
+      }
       root.appendChild(sec);
     });
   }

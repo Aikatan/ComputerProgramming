@@ -147,6 +147,8 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 - **Nothing is hidden:**
   - Not allowed: show-more, accordions or `deepdive`, `tabs`, hidden code, hover-only content, and guess-before-teaching beats (`predict`).
   - Allowed: normal slide navigation, and feedback after an exercise attempt (the quiz explanation, the Check result, a hint after a wrong answer).
+  - **One exception: the answer of an exercise** (the lecturer's rule, 2026-10-02). The students see only the task. The answer is on the same slide, and only instructor mode shows it (§6 "Instructor mode").
+  - No answer slide follows an exercise: no "Check your table", "Check your trace", or "Model answer" slide.
 
 ### Type and layout
 | Size | Used for |
@@ -183,14 +185,24 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 
 | Type | Build |
 |---|---|
-| Trace the code | `cols`: task + `traceTable` (`blank:true, given:1`) on the left; the program as `livecode` on the right (checked with Step Run). If the table has more than 5 columns, use two slides: "Trace the code" (task + full-width table), then "Check your trace" (the program). |
-| Determine the output | `cols`: task on the left; `livecode` on the right (paper first, then Run) |
-| Complete a table | a `table` with blank cells (for example the iterations of a search), then "Check your table" with the completed table. Use it when the program is too long for Step Run on a slide. |
+| Trace the code | One slide: the task, then a `traceTable` (`blank:true, given:1`). Add `showCode:true` when the rows do not show the whole program (a loop, a branch that is not executed). In instructor mode the table has reveal buttons, and the arrow keys fill the rows one by one. |
+| Determine the output | One slide. `cols`: task on the left; `livecode` on the right. On an exercise slide the `livecode` has no Run and no Step Run for the students; instructor mode shows both. |
+| Complete a table | One slide: the task, and a `table` with blank cells and `hideOnAnswer:true` (for example the iterations of a search). The completed table is in `answer:[...]` of the same slide. |
 | Complete missing code | `practiceq` with a gap in the starter |
 | Modify existing code | `practiceq` with working code and a new target |
 | Correct an error | `practiceq` with broken code |
 | Write a short program | `practiceq` with `# Write your program here` |
 | Design an algorithm | `practiceq` whose starter asks for `# Input / # Output / # Processing / # Algorithm` comments first |
+
+### Answers (instructor mode only)
+
+- **One slide per exercise.** The slide shows the task. The answer is on the same slide and appears only in instructor mode.
+- **A separate answer** (a completed table, a model flowchart, a model program) goes in `answer:[...]` of the slide. The block that the answer replaces gets `hideOnAnswer:true`, so that the slide keeps about the same height.
+- **A program whose result the students determine on paper** is a `livecode` on an exercise slide: it has no Run for the students. Use `studentRun:true` only when the students must run the program.
+- **A trace table** is a blank `traceTable`. The lecturer reveals its rows in class.
+- **Task text:** do not write "run the program", "check with Step Run", or "see the next slide". The students cannot do it.
+- **`practiceq`** is not changed: the students run and check their own program.
+- **Fit:** the slide must also fit with the answer shown. The buttons of instructor mode are beside the kicker: they add no height.
 
 ### Wording of instructions (the students are not native speakers of English)
 
@@ -211,7 +223,7 @@ An instruction is the prompt of a `practiceq`, the task text of an exercise slid
 - **Reasons and background** are not part of an instruction. A reason the student needs goes in the hint, as one plain sentence.
 - **Rare words:** avoid them. Write "a number cannot start with 0", not "a leading 0".
 - **Hint:** it names the statement or the idea to use, in one plain sentence. It is not a second instruction.
-- **The slide must still fit** (§4): the first line plus the numbered lines, each of about 80 characters or fewer.
+- **The slide must still fit** (§4). On a slide, the prompt of a `practiceq` is in a column of about 40 characters per line, so a longer numbered line wraps. Most slides hold 6 to 9 prompt lines; a long target output leaves fewer.
 
 > Avoid: `Write a program that displays this device label. Use commas between the values. Display the date on line 4 with sep. Write "09" as text in quotes: a number cannot be written with a leading 0.`
 >
@@ -246,6 +258,16 @@ An instruction is the prompt of a `practiceq`, the task text of an exercise slid
 - **`kind`:** overview, concept, problem, code, visual, trace, summary, exercise, or check. It sets the kicker label; exercises are numbered automatically.
 - **`part`:** the subtopic name. It appears in the kicker, the bottom bar, the outline, and the scroll view.
 - **Layout:** `blocks` stack; `cols` makes two columns, which stack below 900px.
+- **`answer`:** optional; an array of blocks (the same block types as `blocks`). It is rendered on the same slide, hidden. In instructor mode the slide has a "Show answer" / "Hide answer" button beside the kicker. Leaving the slide hides the answer again.
+- **`hideOnAnswer: true`:** a flag on any block of the slide. The block is hidden while the answer is shown.
+- **`answerCol`:** on a `cols` slide the answer is placed full width below the two columns. `answerCol: 0` (left) or `1` (right) places it at the end of that column: use the column of the block with `hideOnAnswer`.
+
+```js
+{ kind: "exercise", title: "Complete the table", blocks: [
+    { type: "text", html: "Complete the table on paper." },
+    { type: "table", hideOnAnswer: true, head: ["i", "total"], rows: [["1", ""], ["2", ""]] } ],
+  answer: [ { type: "table", head: ["i", "total"], rows: [["1", "1"], ["2", "3"]] } ] }
+```
 - **Cover slide:** added automatically, with the chapter map.
 - **Lesson ids:** keep existing ids when the subject is the same, because student progress is stored by id.
 - **Older chapters:** unconverted chapters use `learn/live/quiz` with automatic slide splitting. Convert each one to `deck` when it is improved.
@@ -257,7 +279,7 @@ An instruction is the prompt of a `practiceq`, the task text of an exercise slid
 - `table` (`head`, `rows`, `caption`, `cls:"center"`). Mark valid/invalid with `<span class='t-yes'>…</span>` and `<span class='t-no'>…</span>`.
 - `code`: read-only (`code`, `output`, `caption`, `lang:"text"`)
 - `example`: runnable (`annot:[{c,e}]`, `inputs`)
-- `livecode` (`title`, `inputs`)
+- `livecode` (`title`, `inputs`, `studentRun`). On a slide of `kind: "exercise"` it shows the program read-only, without Run and Step Run; instructor mode shows the buttons. `studentRun: true` keeps the buttons for the students. On other slides it is not changed.
 - `practiceq` (`prompt`, `expected`, `starter`, `inputs`, `hint`)
 - `quiz` (`items`); question text accepts `` `code` ``
 - `widget` (`name`, `config`)
@@ -276,8 +298,21 @@ An instruction is the prompt of a `practiceq`, the task text of an exercise slid
 - **`print`:** includes echoed input lines.
 - **`end`:** the text written after the step's `print`; the default is a line break. With `end: " "` the next `print` continues the same output line, as `print(..., end=" ")` does. In a C trace, a `printf` without `\n` uses `end: ""`.
 - **`unset`:** a list of variables that disappear. Use it when a function returns, so that its locals are removed. Name locals `"v (power)"`, meaning v inside power.
-- **`traceTable` options:** `blank:true`, `given:n`, `rows:[a,b]`.
-- **Keyboard:** on slides, → / Space step a `codeTrace`, a traced `flowchart`, or any stepper widget (`searchViz`, `bubbleViz`, `boxTrain`, `fileFlow`, …) before the deck moves on.
+- **`traceTable` options:**
+  - `blank:true`: the cells of the variables and the output are empty boxes. `given:n`: the first n rows stay filled.
+  - `rows:[a,b]`: only this part of the trace.
+  - `showCode:true`: the program is shown beside the table, read-only, with line numbers (no Run). It moves above the table when the space is narrow. `showCode:"above"` always places it above. Use it when the slide does not show the program elsewhere.
+  - `{ flow: F }`: the table of a flowchart trace; `showCode` then shows `F.code`.
+- **Blank `traceTable` in instructor mode:** the buttons "‹ Previous row", "Next row ›", "All", and "Reset" appear. "Next row" fills the next blank row with its real values and marks the row (and its line of the program, with `showCode`).
+  - On a slide the buttons are beside the kicker, so that the slide has the same height in both modes. (A slide with two blank tables keeps each row of buttons under its table.)
+  - In the scroll view the buttons are under the table.
+- **Keyboard:** on slides, → / Space step a `codeTrace`, a traced `flowchart`, or any stepper widget (`searchViz`, `bubbleViz`, `boxTrain`, `fileFlow`, …) before the deck moves on. In instructor mode a blank `traceTable` is a stepper too: the keys reveal its rows.
+
+```js
+{ kind: "exercise", title: "Trace the code", blocks: [
+    { type: "text", html: "Complete the trace table on paper.<br>1. The first row is complete. Write the other rows." },
+    { type: "widget", name: "traceTable", config: { trace: T_loop, blank: true, given: 1, showCode: true } } ] }
+```
 
 ### Widgets (reuse before building new ones)
 - **Every chapter:** `codeTrace`, `traceTable`
@@ -312,6 +347,22 @@ An instruction is the prompt of a `practiceq`, the task text of an exercise slid
   - Leave at least about 110px between the diamond and a same-row target, so the True/False label fits.
 - **Trace table:** `traceTable` takes `{ flow: F }` and shows a Shape column.
 - **On phones:** charts scroll inside their own box.
+
+### Instructor mode
+- **Purpose:** the lecturer shows the answers in class. The students, who read the same site, see only the tasks.
+- **What it shows:**
+  - the "Show answer" button of a slide with `answer`
+  - Run and Step Run on a `livecode` of an exercise slide
+  - the reveal buttons of a blank `traceTable`
+- **With the mode off,** none of these controls is on the page. All other slides are the same in both modes.
+- **Sign-in:** the button "Instructor" in the top bar opens a dialog (Username, Password, Sign in). With the mode on, the button reads "Instructor: on"; a click signs out. The mode ends when the tab is closed (`sessionStorage`).
+- **Login:** `js/instructor.js` holds a salt and the SHA-256 hash of `username:password:salt`. The default login is in `README.md`. Change it with:
+  ```
+  python tools/set-instructor-login.py
+  ```
+  The script asks for the username and twice for the password, writes `js/instructor.js`, and raises its `?v=` in `index.html`. It never displays the password.
+- **In code:** `App.instructor` is `true` or `false`. `App.setInstructor(true)` switches the mode on without the dialog (for testing in the console); `App.setInstructor(false)` switches it off. The current slide is drawn again; the page is not reloaded. The body has the class `instructor-mode` while the mode is on.
+- **It only hides.** The answers stay in the page source; there is no encryption. Do not put exam answers on the site.
 
 ### Other rules
 - **Injected content:** the `zz-*.js` files add examples and quizzes to unconverted lessons and skip `deck` lessons. When a chapter is converted, delete its entries there.
@@ -359,6 +410,7 @@ An instruction is the prompt of a `practiceq`, the task text of an exercise slid
 4. **Exercises:** run a reference solution for every `practiceq`. Its output must equal `expected` (trailing spaces and blank edge lines ignored).
 5. **Traces:** step each `codeTrace` with its buttons and the arrow keys, and compare its values and output with a real run of the program.
 6. **Scroll view:** every slide appears as a section.
+   - **Instructor mode:** check the exercises with the mode off and on (`App.setInstructor(true)` in the console). Off: no answer, no Run on the programs of exercise slides, no reveal buttons. On: run the slide audit again (it also steps every blank trace table), and show every answer once: the slide must still fit.
 7. **Console and theme:** no console errors; light-theme contrast is sufficient.
 8. **Grep the topic file** for `f"`, `f'`, `—`, `<sup>`, `predict`, `deepdive`, `tabs`, and syntax not yet taught.
 
@@ -398,3 +450,4 @@ Commit per chapter with a clear message. Push to `main` only when asked, because
 12. The chapter teaches problem-solving, not only syntax.
 13. Text is 24px, titles are 40px, and every slide fits.
 14. Every slide is understandable in class and in later self-study.
+15. No answer slide follows an exercise. Answers are on the same slide and appear only in instructor mode.

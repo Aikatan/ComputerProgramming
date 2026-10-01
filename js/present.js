@@ -31,7 +31,7 @@
   function buildDeckSlides(rec) {
     const L = rec.lesson, kick = App.deckKickers(L);
     const slides = [{ cover: true, map: true, kicker: App.lessonPos(rec), title: L.title, sub: L.sub, blocks: [] }];
-    L.deck.forEach((s, n) => slides.push({ authored: true, kind: s.kind, part: s.part, kicker: kick[n], title: s.title, blocks: s.blocks || [], cols: s.cols }));
+    L.deck.forEach((s, n) => slides.push({ authored: true, kind: s.kind, part: s.part, kicker: kick[n], title: s.title, blocks: s.blocks || [], cols: s.cols, answer: s.answer, answerCol: s.answerCol }));
     return slides;
   }
 
@@ -46,21 +46,45 @@
     return h("div", { class: "chap-map-wrap" }, h("div", { class: "chap-map-head" }, rec.topic.title), list);
   }
 
-  const render1 = (b) => (b.__quiz ? App.renderQuizItem(b.__quiz) : App.renderBlock(b));
+  // s: the slide (authored decks); some blocks depend on the kind of their slide
+  const render1 = (b, s) => (b.__quiz ? App.renderQuizItem(b.__quiz) : App.renderBlock(b, s));
   const isText = (b) => !b.__quiz && (b.type === "text" || b.type === "note" || b.type === "list");
 
   function renderSlide(s, rec) {
     const el = h("div", { class: "slide" + (s.cover ? " slide-cover" : "") + (s.map ? " has-map" : "") + (s.authored ? " slide-authored kind-" + s.kind : "") });
-    el.appendChild(h("div", { class: "slide-kicker" }, s.kicker));
+    const kicker = h("div", { class: "slide-kicker" }, s.kicker);
+    el.appendChild(kicker);
     if (s.title) el.appendChild(h("h2", { class: "slide-title" }, s.title));
     if (s.sub) el.appendChild(h("p", { class: "slide-sub" }, s.sub));
     if (s.map) { el.appendChild(chapterMap(rec)); return el; }
     if (s.authored) {
+      let colEls = null;
       if (s.cols) {
-        const left = h("div", { class: "slide-col" }); s.cols[0].forEach((b) => left.appendChild(render1(b)));
-        const right = h("div", { class: "slide-col" }); (s.cols[1] || []).forEach((b) => right.appendChild(render1(b)));
+        const left = h("div", { class: "slide-col" }); s.cols[0].forEach((b) => left.appendChild(render1(b, s)));
+        const right = h("div", { class: "slide-col" }); (s.cols[1] || []).forEach((b) => right.appendChild(render1(b, s)));
         el.appendChild(h("div", { class: "slide-split" }, left, right));
-      } else s.blocks.forEach((b) => el.appendChild(render1(b)));
+        colEls = [left, right];
+      } else s.blocks.forEach((b) => el.appendChild(render1(b, s)));
+      // Instructor controls sit beside the kicker, so that they add no height to the slide:
+      // the reveal buttons of a blank trace table (when the slide has one such table) ...
+      const tools = [];
+      const ctrls = el.querySelectorAll(".tt-ctrl");
+      if (ctrls.length === 1) {
+        if (ctrls[0].closest(".hide-on-answer")) ctrls[0].classList.add("hide-on-answer");
+        tools.push(ctrls[0]);
+      }
+      // ... and the "Show answer" button. The answer itself is hidden; it is placed full
+      // width below the content, or at the end of column answerCol (0 or 1).
+      const ans = App.slideAnswer(s, el);
+      if (ans) {
+        ((colEls && colEls[s.answerCol]) || el).appendChild(ans.box);
+        if (ans.btn) tools.push(ans.btn);
+      }
+      if (tools.length) {
+        const head = h("div", { class: "slide-head" });
+        kicker.replaceWith(head);
+        head.append(kicker, h("div", { class: "slide-tools" }, ...tools));
+      }
       return el;
     }
     const texts = s.blocks.filter(isText);
@@ -108,6 +132,7 @@
     // dir < 0: arrived moving back (a trace shows its last step).
     function draw(dir) {
       if (!cache[i]) cache[i] = renderSlide(slides[i], rec);
+      if (cache[i]._setAnswer) cache[i]._setAnswer(false);   // the answer is hidden again on every visit
       stage.replaceChildren(cache[i]);
       const theme = document.body.dataset.theme === "light" ? "default" : "material-darker";
       // CodeMirror needs a refresh (and the current theme) when its slide is (re)attached
@@ -141,14 +166,16 @@
     // Keyboard / presenter clicker: a code trace on the slide steps first,
     // the deck moves on only when the trace is at its end (or start).
     function keyStep(dir) {
-      const tr = cache[i] && cache[i].querySelector(".ctrace, .kstep");
+      // the first stepper that is visible (one inside a hidden answer does not count)
+      const tr = cache[i] && [...cache[i].querySelectorAll(".ctrace, .kstep")].find((t) => t.offsetParent !== null);
       if (tr && tr._step && tr._step(dir)) return;
       if (dir > 0) goNext(); else goPrev();
     }
     prev.addEventListener("click", goPrev);
     next.addEventListener("click", goNext);
     outlineBtn.addEventListener("click", () => openOutline(slides, i, (n) => { i = n; draw(1); }));
-    App._deckNav = { prev: goPrev, next: goNext, key: keyStep };
+    // redraw: build the current slide again (instructor mode was switched on or off)
+    App._deckNav = { prev: goPrev, next: goNext, key: keyStep, redraw: () => { cache.length = 0; draw(1); } };
 
     const root = h("div", { class: "deck" }, bc, stage, nav);
     view.appendChild(root);
@@ -178,9 +205,10 @@
   // keyboard navigation (ignored while typing in an editor/input)
   document.addEventListener("keydown", (e) => {
     if (!App._deckNav) return;
-    if (document.querySelector(".deck-outline")) return;
+    if (document.querySelector(".deck-outline, .instr-overlay")) return;   // outline or sign-in dialog is open
     const t = e.target;
     if (t && t.closest && (t.closest(".CodeMirror") || t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
+    if (e.key === " " && t && t.id === "instructorBtn") return;   // Space presses the focused Instructor button
     if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); App._deckNav.key(1); }
     else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); App._deckNav.key(-1); }
     else if (e.key === " " && !e.shiftKey) { e.preventDefault(); App._deckNav.key(1); }

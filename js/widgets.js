@@ -386,9 +386,16 @@ App.widgets.codeTrace = function (cfg) {
   return wrap;
 };
 
-/* traceTable - config: { trace, blank?, given?, rows?:[from,to] }
+/* traceTable - config: { trace | flow, blank?, given?, rows?:[from,to], showCode?, title? }
    Normal: Line | What happens | one column per variable | Output
-   Blank : Line | Code | empty boxes to fill in (rows before `given` stay filled) */
+   Blank : Line | Code | empty boxes to fill in (rows before `given` stay filled)
+   showCode: true shows the program (read-only, with line numbers) beside the table;
+             it moves above the table in a narrow container. showCode: "above" always
+             puts it above. A flowchart table ({ flow }) shows flow.code, if it has one.
+   Instructor mode, blank table: a control row (.tt-ctrl) fills the blank rows one by
+   one with the values of the normal table (the lecturer checks the paper traces
+   with it). The widget then follows the stepping contract of the deck (kstep,
+   _step, _goto). On a slide, present.js moves the control row beside the kicker. */
 App.widgets.traceTable = function (cfg) {
   // flowchart mode: the rows name the shape instead of a code line
   const flow = cfg.flow;
@@ -405,17 +412,9 @@ App.widgets.traceTable = function (cfg) {
   const thead = h("thead", null, h("tr", null, ...head.map((c, ci) =>
     h("th", { class: ci >= lead.length && ci < lead.length + T.names.length ? "tt-var" : "" }, c))));
   const tbody = h("tbody");
-  rows.forEach((r, ri) => {
-    const s = r.s, fill = ri < given;
-    const tr = h("tr");
-    if (flow) {
-      tr.appendChild(h("td", { class: "tt-code", "data-label": "Shape" }, code[s.line] || ""));
-      if (!cfg.blank) tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
-    } else {
-      tr.appendChild(h("td", { class: "tt-line", "data-label": "Line" }, String(s.line + 1)));
-      if (cfg.blank) tr.appendChild(h("td", { class: "tt-code", "data-label": "Code", html: App.highlight(code[s.line] || "", trace.lang) }));
-      else tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
-    }
+  // the cells of the variables and the output: values (fill) or empty boxes
+  function valueCells(tr, s, fill) {
+    while (tr.children.length > lead.length) tr.lastChild.remove();
     T.names.forEach((nm) => {
       const v = s.vars[nm];
       const td = h("td", { class: "tt-var", "data-label": nm });
@@ -429,11 +428,92 @@ App.widgets.traceTable = function (cfg) {
     if (!fill) outTd.appendChild(h("span", { class: "tt-box" }));
     else outTd.textContent = s.printed != null ? s.printed : "";
     tr.appendChild(outTd);
+  }
+  const trs = rows.map((r, ri) => {
+    const s = r.s;
+    const tr = h("tr");
+    if (flow) {
+      tr.appendChild(h("td", { class: "tt-code", "data-label": "Shape" }, code[s.line] || ""));
+      if (!cfg.blank) tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
+    } else {
+      tr.appendChild(h("td", { class: "tt-line", "data-label": "Line" }, String(s.line + 1)));
+      if (cfg.blank) tr.appendChild(h("td", { class: "tt-code", "data-label": "Code", html: App.highlight(code[s.line] || "", trace.lang) }));
+      else tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
+    }
+    valueCells(tr, s, ri < given);
     tbody.appendChild(tr);
+    return tr;
   });
-  return h("div", { class: "ttab-wrap" + (cfg.blank ? " tt-blank" : "") },
+  const table = h("div", { class: "ttab-wrap" + (cfg.blank ? " tt-blank" : "") },
     cfg.title ? h("div", { class: "widget-title" }, cfg.title) : null,
     h("table", { class: "ttab" }, thead, tbody));
+
+  // showCode: the program, read-only, with line numbers (no Run)
+  const src = cfg.showCode ? (flow ? flow.code : code) : null;
+  const srcEls = [];
+  let srcBox = null;
+  if (src && src.length) {
+    srcBox = h("div", { class: "step-code ct-code tt-src" });
+    src.forEach((ln, idx) => {
+      const el = h("span", { class: "ln" },
+        h("span", { class: "ct-no" }, String(idx + 1)),
+        h("span", { class: "marker" }, "  "),
+        h("span", { html: App.highlight(ln, flow ? undefined : trace.lang) || "&nbsp;" }));
+      srcBox.appendChild(el); srcEls.push(el);
+    });
+  }
+
+  // instructor mode: reveal the blank rows one by one
+  const g0 = Math.min(rows.length, cfg.blank ? (cfg.given || 0) : rows.length);
+  const reveal = !!(cfg.blank && App.instructor && rows.length > g0);
+  if (!srcBox && !reveal) return table;
+
+  let ctrl = null, api = null;
+  if (reveal) {
+    let shown = g0;     // number of filled rows
+    let cur = -1;       // the row filled last (highlighted), or -1
+    const prev = h("button", { class: "w-btn", type: "button" }, "‹ Previous row");
+    const next = h("button", { class: "w-btn on", type: "button" }, "Next row ›");
+    const all = h("button", { class: "w-btn", type: "button" }, "All");
+    const reset = h("button", { class: "w-btn", type: "button" }, "Reset");
+    const count = h("span", { class: "ct-count" });
+    const mark = () => {
+      trs.forEach((tr, ri) => tr.classList.toggle("tt-reveal", ri === cur));
+      // the program line (or the lines of the shape) of the highlighted row
+      const st = cur >= 0 ? rows[cur].s : null;
+      const lines = !st ? [] : flow ? ((flow.map && flow.map[flow.nodes[st.line].id]) || []) : [st.line];
+      srcEls.forEach((el, k) => { const on = lines.includes(k); el.classList.toggle("hl", on); el.children[1].textContent = on ? "▸ " : "  "; });
+      prev.disabled = reset.disabled = shown === g0;
+      next.disabled = all.disabled = shown === rows.length;
+      count.textContent = "Row " + shown + " of " + rows.length;
+    };
+    // show the first k rows; hl: highlight the last of them
+    const show = (k, hl) => {
+      const j = Math.max(g0, Math.min(rows.length, k));
+      const moved = j !== shown;
+      for (let ri = Math.min(shown, j); ri < Math.max(shown, j); ri++) valueCells(trs[ri], rows[ri].s, ri < j);
+      shown = j;
+      cur = hl && shown > g0 ? shown - 1 : -1;
+      mark();
+      return moved;
+    };
+    next.addEventListener("click", () => show(shown + 1, true));
+    prev.addEventListener("click", () => show(shown - 1, true));
+    all.addEventListener("click", () => show(rows.length, false));
+    reset.addEventListener("click", () => show(g0, false));
+    ctrl = h("div", { class: "w-row tt-ctrl" }, prev, next, all, reset, count);
+    api = { step: (dir) => show(shown + dir, true), go: (where) => { show(where === "end" ? rows.length : g0, false); } };
+    mark();
+  }
+  const side = srcBox ? h("div", { class: "tt-grid" }, srcBox, table) : table;
+  const wrap = h("div", { class: "tt-outer" + (srcBox ? " tt-has-code" + (cfg.showCode === "above" ? " tt-code-above" : "") : "") }, side, ctrl);
+  if (reveal) {
+    // used by the deck: the arrow keys reveal the rows before the slide changes
+    wrap.classList.add("kstep");
+    wrap._step = api.step;
+    wrap._goto = api.go;
+  }
+  return wrap;
 };
 
 /* ============================================================

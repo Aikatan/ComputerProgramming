@@ -1,6 +1,8 @@
 /* ============================================================
    editor.js - runnable code block (CodeMirror + Pyodide).
    Every editor has BOTH "Run" (output) and "Step Run" (line-by-line).
+   opts.noRun: the program only, read-only, without buttons and output
+   (the livecode of an exercise slide outside instructor mode; see lesson.js).
    ============================================================ */
 App.makeLive = function (code, opts) {
   opts = opts || {};
@@ -9,13 +11,14 @@ App.makeLive = function (code, opts) {
   const engine = isC ? App.c : App.py;
   const cmMode = isC ? "text/x-csrc" : "python";
   const hintText = "Run it, or Step Run it line by line.";
-  const wrap = h("div", { class: "live" });
-  const head = h("div", { class: "live-head" }, h("span", { class: "title" }, opts.title || (isC ? "Edit and run real C" : "Edit and run real Python")));
+  const noRun = !!opts.noRun;
+  const wrap = h("div", { class: "live" + (noRun ? " live-norun" : "") });
+  const head = h("div", { class: "live-head" }, h("span", { class: "title" }, opts.title || (noRun ? "Program" : isC ? "Edit and run real C" : "Edit and run real Python")));
   const spacer = h("span", { class: "spacer" });
   const resetBtn = h("button", { class: "btn ghost", title: "Reset code" }, "Reset");
   const stepBtn = h("button", { class: "btn ghost" }, "▶ Step Run");
   const runBtn = h("button", { class: "btn" }, "▶ Run");
-  head.append(spacer, resetBtn, stepBtn, runBtn);
+  if (!noRun) head.append(spacer, resetBtn, stepBtn, runBtn);
 
   const taHost = h("div");
   const out = h("div", { class: "live-out muted" }, hintText);
@@ -38,7 +41,7 @@ App.makeLive = function (code, opts) {
         h("div", { class: "widget-title", style: "margin-top:10px" }, "Output so far"), outView)),
     ctrl);
 
-  wrap.append(head, taHost, out, stage);
+  if (noRun) wrap.append(head, taHost); else wrap.append(head, taHost, out, stage);
 
   let cm, steps = [], finalOut = "", i = 0, timer = null, lines = [];
   requestAnimationFrame(() => {
@@ -46,7 +49,8 @@ App.makeLive = function (code, opts) {
       value: code, mode: cmMode,
       theme: document.body.dataset.theme === "light" ? "default" : "material-darker",
       lineNumbers: true, indentUnit: 4, viewportMargin: Infinity,
-      extraKeys: { "Shift-Enter": () => doRun(), Tab: (c) => c.replaceSelection("    ") },
+      readOnly: noRun ? "nocursor" : false,   // nocursor: no focus, so the arrow keys keep moving the deck
+      extraKeys: noRun ? {} : { "Shift-Enter": () => doRun(), Tab: (c) => c.replaceSelection("    ") },
     });
     wrap._cm = cm;
   });
