@@ -91,6 +91,32 @@
     ],
   };
 
+  const T_sum = {
+    code: ["total = 0", "n = 1", "while n <= 5:", "    total = total + n", "    n = n + 1", 'print("Sum =", total)'],
+    steps: [
+      { line: -1, note: "<code>total</code> is the accumulator. <code>n</code> is the counter." },
+      { line: 0, note: "The accumulator starts at 0, before the loop.", set: { total: "0" } },
+      { line: 1, note: "The counter starts at 1.", set: { n: "1" } },
+      { line: 2, note: "1 <= 5 is True: iteration 1 starts." },
+      { line: 3, note: "0 + 1 → 1. total becomes 1.", set: { total: "1" } },
+      { line: 4, note: "Update: n becomes 2.", set: { n: "2" } },
+      { line: 2, note: "2 <= 5 is True: iteration 2 starts." },
+      { line: 3, note: "1 + 2 → 3. total becomes 3.", set: { total: "3" } },
+      { line: 4, note: "Update: n becomes 3.", set: { n: "3" } },
+      { line: 2, note: "3 <= 5 is True: iteration 3 starts." },
+      { line: 3, note: "3 + 3 → 6. total becomes 6.", set: { total: "6" } },
+      { line: 4, note: "Update: n becomes 4.", set: { n: "4" } },
+      { line: 2, note: "4 <= 5 is True: iteration 4 starts." },
+      { line: 3, note: "6 + 4 → 10. total becomes 10.", set: { total: "10" } },
+      { line: 4, note: "Update: n becomes 5.", set: { n: "5" } },
+      { line: 2, note: "5 <= 5 is True: iteration 5 starts." },
+      { line: 3, note: "10 + 5 → 15. total becomes 15.", set: { total: "15" } },
+      { line: 4, note: "Update: n becomes 6.", set: { n: "6" } },
+      { line: 2, note: "6 <= 5 is False: the loop ends." },
+      { line: 5, note: "After the loop: displayed once. Result check: 1 + 2 + 3 + 4 + 5 = 15.", print: "Sum = 15" },
+    ],
+  };
+
   const T_forStr = {
     code: ['word = "AMP"', "for c in word:", "    print(c)", 'print("Done")'],
     steps: [
@@ -104,6 +130,23 @@
       { line: 2, note: "The block displays c.", print: "P" },
       { line: 1, note: "No character is left: the loop ends." },
       { line: 3, note: "After the loop. Result check: 3 characters, so 3 iterations.", print: "Done" },
+    ],
+  };
+
+  const T_forSum = {
+    code: ['n = int(input("n: "))', "total = 0", "for i in range(1, n + 1):", "    total = total + i", 'print("Sum =", total)'],
+    steps: [
+      { line: -1, note: "Test input: 3. The program adds the integers from 1 to n." },
+      { line: 0, note: "The user types 3. <code>int()</code> converts <code>'3'</code> to 3.", set: { n: "3" }, print: "n: 3" },
+      { line: 1, note: "The accumulator starts at 0, before the loop.", set: { total: "0" } },
+      { line: 2, note: "n + 1 is 4: range(1, 4) gives 1, 2, 3. i takes the first value: 1.", set: { i: "1" } },
+      { line: 3, note: "0 + 1 → 1. total becomes 1.", set: { total: "1" } },
+      { line: 2, note: "i takes the next value: 2. No update statement is needed.", set: { i: "2" } },
+      { line: 3, note: "1 + 2 → 3. total becomes 3.", set: { total: "3" } },
+      { line: 2, note: "i takes the last value: 3.", set: { i: "3" } },
+      { line: 3, note: "3 + 3 → 6. total becomes 6.", set: { total: "6" } },
+      { line: 2, note: "No value is left: the loop ends. The stop value 4 is never used." },
+      { line: 4, note: "After the loop. Result check: 1 + 2 + 3 = 6.", print: "Sum = 6" },
     ],
   };
 
@@ -127,6 +170,32 @@
     ],
   };
 
+  const T_mul = {
+    code: ["for i in range(1, 3):", "    for j in range(1, 4):", '        print(i * j, end=" ")', "    print()"],
+    steps: [
+      { line: -1, note: "i is the row and j is the column. Each value is i * j." },
+      { line: 0, note: "Outer loop: row i = 1.", set: { i: "1" } },
+      { line: 1, note: "Inner loop starts: j = 1.", set: { j: "1" } },
+      { line: 2, note: '1 * 1 → 1. <code>end=" "</code> keeps the output on the same line.', print: "1", end: " " },
+      { line: 1, note: "Inner loop: j = 2.", set: { j: "2" } },
+      { line: 2, note: "1 * 2 → 2, on the same line.", print: "2", end: " " },
+      { line: 1, note: "Inner loop: j = 3.", set: { j: "3" } },
+      { line: 2, note: "1 * 3 → 3, on the same line.", print: "3", end: " " },
+      { line: 1, note: "Inner range finished: the inner loop ends." },
+      { line: 3, note: "<code>print()</code> belongs to the outer block: it ends the row, once for each i.", print: "" },
+      { line: 0, note: "Outer loop: row i = 2.", set: { i: "2" } },
+      { line: 1, note: "The inner loop starts again: j = 1.", set: { j: "1" } },
+      { line: 2, note: "2 * 1 → 2, at the start of the new line.", print: "2", end: " " },
+      { line: 1, note: "Inner loop: j = 2.", set: { j: "2" } },
+      { line: 2, note: "2 * 2 → 4, on the same line.", print: "4", end: " " },
+      { line: 1, note: "Inner loop: j = 3.", set: { j: "3" } },
+      { line: 2, note: "2 * 3 → 6, on the same line.", print: "6", end: " " },
+      { line: 1, note: "Inner range finished: the inner loop ends." },
+      { line: 3, note: "<code>print()</code> ends the second row.", print: "" },
+      { line: 0, note: "No value is left: the loop ends. Result check: 2 rows × 3 values = 6 values." },
+    ],
+  };
+
   const T_break = {
     code: ["for n in range(1, 6):", "    if n == 3:", "        break", "    print(n)", 'print("After the loop")'],
     steps: [
@@ -141,6 +210,29 @@
       { line: 1, note: "3 == 3 is True." },
       { line: 2, note: "break: the loop ends now. 4 and 5 are never used." },
       { line: 4, note: "After the loop. Result check: break at 3, so only 1 and 2 were displayed.", print: "After the loop" },
+    ],
+  };
+
+  const T_nbreak = {
+    code: ["for i in range(1, 3):", "    for j in range(1, 4):", "        if j == 2:", "            break", "        print(i, j)", 'print("end")'],
+    steps: [
+      { line: -1, note: "break ends only the loop that contains it: here, the inner loop." },
+      { line: 0, note: "Outer loop: i = 1.", set: { i: "1" } },
+      { line: 1, note: "Inner loop starts: j = 1.", set: { j: "1" } },
+      { line: 2, note: "1 == 2 is False: break is skipped." },
+      { line: 4, note: "Display i and j.", print: "1 1" },
+      { line: 1, note: "Inner loop: j = 2.", set: { j: "2" } },
+      { line: 2, note: "2 == 2 is True." },
+      { line: 3, note: "break: the inner loop ends. j = 3 is never used. The outer loop continues." },
+      { line: 0, note: "Outer loop: i = 2.", set: { i: "2" } },
+      { line: 1, note: "The inner loop starts again: j = 1.", set: { j: "1" } },
+      { line: 2, note: "1 == 2 is False: break is skipped." },
+      { line: 4, note: "Display i and j.", print: "2 1" },
+      { line: 1, note: "Inner loop: j = 2.", set: { j: "2" } },
+      { line: 2, note: "2 == 2 is True." },
+      { line: 3, note: "break: the inner loop ends again." },
+      { line: 0, note: "No value is left: the outer loop ends normally." },
+      { line: 5, note: "After both loops. Result check: break ended the inner loop twice, not the outer.", print: "end" },
     ],
   };
 
@@ -164,24 +256,45 @@
     ],
   };
 
+  const T_contW = {
+    code: ["sensor = 0", "while sensor < 4:", "    sensor += 1", "    if sensor == 3:", "        continue", '    print("Reading sensor", sensor)'],
+    steps: [
+      { line: -1, note: "Sensor 3 is offline: the program skips it with continue." },
+      { line: 0, note: "Initialization: sensor = 0.", set: { sensor: "0" } },
+      { line: 1, note: "0 < 4 is True: iteration 1 starts." },
+      { line: 2, note: "Update: sensor becomes 1. The update comes before continue.", set: { sensor: "1" } },
+      { line: 3, note: "1 == 3 is False: continue is skipped." },
+      { line: 5, note: "The reading is displayed.", print: "Reading sensor 1" },
+      { line: 1, note: "1 < 4 is True: iteration 2 starts." },
+      { line: 2, note: "Update: sensor becomes 2.", set: { sensor: "2" } },
+      { line: 3, note: "2 == 3 is False: continue is skipped." },
+      { line: 5, note: "The reading is displayed.", print: "Reading sensor 2" },
+      { line: 1, note: "2 < 4 is True: iteration 3 starts." },
+      { line: 2, note: "Update: sensor becomes 3.", set: { sensor: "3" } },
+      { line: 3, note: "3 == 3 is True." },
+      { line: 4, note: "continue: line 6 is skipped. Execution returns to the condition in line 2." },
+      { line: 1, note: "3 < 4 is True: iteration 4. With the update after continue: an infinite loop." },
+      { line: 2, note: "Update: sensor becomes 4.", set: { sensor: "4" } },
+      { line: 3, note: "4 == 3 is False: continue is skipped." },
+      { line: 5, note: "The reading is displayed.", print: "Reading sensor 4" },
+      { line: 1, note: "4 < 4 is False: the loop ends. Result check: sensors 1, 2, and 4 are read." },
+    ],
+  };
+
   const T_else = {
-    code: ["n = 7", "if n < 2:", '    print("Not prime")', "else:", "    for i in range(2, n):", "        if n % i == 0:", '            print("Not prime")', "            break", "    else:", '        print("Prime")'],
+    code: ["n = 5","if n < 2:", '    print("Not prime")', "else:", "    for i in range(2, n):", "        if n % i == 0:", '            print("Not prime")', "            break", "    else:", '        print("Prime")'],
     steps: [
       { line: -1, note: "A number below 2 is not prime. Otherwise, search for a divisor from 2 to n - 1." },
-      { line: 0, note: "7 is stored in n.", set: { n: "7" } },
-      { line: 1, note: "7 < 2 is False: the else block of the if runs. It holds the for loop." },
+      { line: 0, note: "5 is stored in n.", set: { n: "5" } },
+      { line: 1, note: "5 < 2 is False: the else block of the if runs. It holds the for loop." },
       { line: 4, note: "i = 2.", set: { i: "2" } },
-      { line: 5, note: "7 % 2 == 0 is False: 2 is not a divisor." },
+      { line: 5, note: "5 % 2 == 0 is False: 2 is not a divisor." },
       { line: 4, note: "i = 3.", set: { i: "3" } },
-      { line: 5, note: "7 % 3 == 0 is False." },
+      { line: 5, note: "5 % 3 == 0 is False." },
       { line: 4, note: "i = 4.", set: { i: "4" } },
-      { line: 5, note: "7 % 4 == 0 is False." },
-      { line: 4, note: "i = 5.", set: { i: "5" } },
-      { line: 5, note: "7 % 5 == 0 is False." },
-      { line: 4, note: "i = 6.", set: { i: "6" } },
-      { line: 5, note: "7 % 6 == 0 is False." },
+      { line: 5, note: "5 % 4 == 0 is False." },
       { line: 4, note: "No value is left: the for loop ends without break." },
-      { line: 9, note: "No break: the else of the for runs. Result check: no divisor from 2 to 6.", print: "Prime" },
+      { line: 9, note: "No break: the else of the for runs. Result check: no divisor from 2 to 4.", print: "Prime" },
     ],
   };
 
@@ -223,7 +336,7 @@
     title: "Decisions and Boolean Logic",
     short: "Decisions & Loops",
     blurb: "Boolean values, comparisons, logical operators, if statements, while and for loops, nested loops, and loop control.",
-    intro: "This chapter covers conditions, decisions, and repetition. Each lesson uses only what the lessons before it have explained:<br>booleans → logical operators → if / elif / else → while → for → nested loops → loop control → practice.",
+    intro: "This chapter has two parts. Each lesson uses only what the lessons before it have explained.<br><b>Decisions (Lessons 1 to 3):</b> booleans → logical operators → if / elif / else.<br><b>Loops (Lessons 4 to 7):</b> while → for → nested loops → loop control.<br>Lesson 8 is the chapter practice.",
     lessons: [
       /* =============================== 1. BOOLEANS =============================== */
       {
@@ -231,7 +344,7 @@
         title: "Boolean values and comparisons",
         sub: "True and False, comparison operators, and the truth value of other types.",
         slides: "03:4, 7",
-        keywords: "bool true false comparison == != < > <= >= chained truthy falsy",
+        keywords: "bool true false comparison == != < > <= >= chained truthy falsy float round TypeError",
         deck: [
           { kind: "overview", title: "Boolean values and comparisons", blocks: [
             T("A <b>condition</b> is an expression whose result is <code>True</code> or <code>False</code>. Programs use conditions to make decisions (Lesson 3) and to control loops (Lessons 4 to 7)."),
@@ -263,6 +376,12 @@
               { c: '"A" == "a"', e: "Strings are compared exactly; capital letters matter: <code>False</code>" },
             ]),
           ] },
+          { kind: "code", part: "Comparison operators", title: "Example: a string compared with a number", blocks: [
+            EX('level = "10"\nprint(level == 10)\nprint(int(level) == 10)\nprint(level > 5)', "input() returns a str: convert it first", [
+              { c: "level == 10", e: "A str and an int are never equal: <code>False</code>. With <code>int(level)</code>: <code>True</code>" },
+              { c: "level > 5", e: "<code>TypeError: '&gt;' not supported between instances of 'str' and 'int'</code>" },
+            ]),
+          ] },
           { kind: "concept", part: "= and ==", title: "Assignment and comparison", blocks: [
             TB(["Symbol", "Meaning", "Example"], [
               ["<code>=</code>", "assignment: store a value in a variable", "<code>x = 5</code>"],
@@ -285,6 +404,13 @@
               { c: "t = 31", e: "31 <= 30 is False, so the chain is <code>False</code>" },
             ]),
           ] },
+          { kind: "code", part: "Chained comparisons", title: "Example: comparing float values", blocks: [
+            EX("x = 0.1 + 0.2\nprint(x == 0.3)\nprint(0.29 < x < 0.31)\nprint(round(x, 2) == 0.3)", "do not use == on a float result", [
+              { c: "x == 0.3", e: "x is <code>0.30000000000000004</code> (Topic 02): <code>False</code>" },
+              { c: "0.29 < x < 0.31", e: "A range check accepts the small error: <code>True</code>" },
+              { c: "round(x, 2) == 0.3", e: "Rounded first, then compared: <code>True</code>" },
+            ]),
+          ] },
           { kind: "concept", part: "The truth value of other types", title: "Truthy and falsy values", blocks: [
             T("<code>bool(value)</code> converts any value to True or False. A value that converts to False is <b>falsy</b>; every other value is <b>truthy</b>."),
             TB(["False (falsy)", "True (truthy)"], [
@@ -302,10 +428,10 @@
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "<code>True</code> and <code>False</code> are the two bool values.",
-              "<code>== != &lt; &gt; &lt;= &gt;=</code> compare two values and give a bool.",
+              "<code>== != &lt; &gt; &lt;= &gt;=</code> compare two values and give a bool: <code>True</code> or <code>False</code>.",
               "<code>=</code> stores a value. <code>==</code> compares two values.",
-              "<code>a &lt;= x &lt;= b</code> checks a range.",
+              "Convert a str with <code>int()</code> or <code>float()</code> before comparing it with a number.",
+              "<code>a &lt;= x &lt;= b</code> checks a range. Compare float results with a range or with <code>round()</code>.",
               "<code>False</code>, <code>0</code>, <code>0.0</code>, <code>\"\"</code>, and <code>None</code> are falsy. Other values are truthy.",
             ]),
             NEXT("<b>Logical operators</b>. <code>and</code>, <code>or</code>, and <code>not</code> combine several conditions into one."),
@@ -321,10 +447,6 @@
           { kind: "exercise", title: "Check your trace", cols: [
             [T("Run the program with <b>Step Run</b>. Compare the variables after each line with your table.")],
             [RUN("x = 4\ny = x * 2\nbig = y > 5\nsame = x == y\nprint(big, same)")],
-          ] },
-          { kind: "exercise", title: "Determine the truth values", cols: [
-            [T("Write True or False for each line on paper.<br>Then run the program and compare.")],
-            [RUN('print(bool(0))\nprint(bool(-3))\nprint(bool("False"))\nprint(bool(0.0))')],
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
             PQ("A battery level is stored in <code>level</code>. Complete line 2, so that <code>is_low</code> is True when the level is below 20.",
@@ -351,11 +473,11 @@
         title: "Logical operators",
         sub: "and, or, not, and combining comparisons.",
         slides: "03:5–6, 10",
-        keywords: "and or not logical operator truth table precedence combine conditions",
+        keywords: "and or not logical operator truth table precedence short-circuit combine conditions",
         deck: [
           { kind: "overview", title: "Logical operators", blocks: [
             T("A <b>logical operator</b> combines conditions. The result is again True or False."),
-            L(["and", "or", "not", "The order of logical operators", "Combining comparisons"], "Subtopics in this lesson", true),
+            L(["and", "or", "not", "The order of logical operators", "Short-circuit evaluation", "Combining comparisons"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "and", title: "and: both conditions must be True", blocks: [
             T("<code>A and B</code> is True only when <b>both</b> A and B are True."),
@@ -396,11 +518,19 @@
               { c: "(a or b) and c", e: "Parentheses first: True and False → <code>False</code>" },
             ]),
           ] },
+          { kind: "code", part: "Short-circuit evaluation", title: "Short-circuit evaluation", blocks: [
+            T("<code>and</code> stops at the first False; <code>or</code> stops at the first True. The rest of the expression is not evaluated."),
+            EX("count = 0\ntotal = 0\nok = count > 0 and total / count > 50\nprint(ok)\nok = total / count > 50 and count > 0", "the check that protects the division comes first", [
+              { c: "line 3", e: "<code>count &gt; 0</code> is False: <code>and</code> stops. The division is not evaluated: <code>False</code>" },
+              { c: "line 5", e: "The division is evaluated first: <code>ZeroDivisionError: division by zero</code>" },
+            ]),
+          ] },
           { kind: "concept", part: "Combining comparisons", title: "Range checks with and and or", blocks: [
             L([
               "Each comparison gives a bool. <code>and</code> and <code>or</code> combine them.",
               "Inside a range: <code>t &gt;= 20 and t &lt;= 30</code>, the same as <code>20 &lt;= t &lt;= 30</code>.",
               "Outside a range: <code>t &lt; 20 or t &gt; 30</code>.",
+              "Each side must be a complete comparison. <code>x == 1 or 2</code> is wrong: <code>2</code> alone is truthy (Lesson 1), so the result is truthy for every x. Write <code>x == 1 or x == 2</code>.",
             ]),
           ] },
           { kind: "code", part: "Combining comparisons", title: "Example: inside and outside a range", blocks: [
@@ -411,11 +541,11 @@
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "<code>and</code> is True only when both sides are True.",
-              "<code>or</code> is True when at least one side is True.",
+              "<code>and</code> is True only when both sides are True. <code>or</code> is True when at least one side is True.",
               "<code>not</code> reverses a truth value.",
               "Order: arithmetic, comparisons, <code>not</code>, <code>and</code>, then <code>or</code>. Parentheses come first.",
-              "Inside a range: <code>and</code>. Outside a range: <code>or</code>.",
+              "Short-circuit: <code>and</code> stops at the first False, <code>or</code> at the first True.",
+              "Inside a range: <code>and</code>. Outside a range: <code>or</code>. Each side is a complete comparison.",
             ]),
             NEXT("<b>if statements</b>. A condition decides whether a block of statements runs."),
           ] },
@@ -456,11 +586,11 @@
         title: "Decisions: if, else, and elif",
         sub: "Running a block only when a condition is True, and choosing one of several blocks.",
         slides: "03:8–10",
-        keywords: "if else elif condition block indentation branch decision",
+        keywords: "if else elif condition block indentation branch decision nested if truthy",
         deck: [
           { kind: "overview", title: "Decisions: if, else, and elif", blocks: [
             T("An <b>if statement</b> runs a block of statements only when its condition is True. With <code>else</code> and <code>elif</code>, a program chooses exactly one of several blocks."),
-            L(["if", "Blocks and indentation", "if and else", "if, elif, and else", "Conditions with logical operators"], "Subtopics in this lesson", true),
+            L(["if", "Blocks and indentation", "if and else", "if, elif, and else", "Nested if", "Values and logical operators as conditions"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "if", title: "The if statement", blocks: [
             CODE("if condition:\n    statement\n    statement", null, "syntax"),
@@ -540,22 +670,51 @@
               { c: "level >= 80", e: "Never checked. Put the highest threshold first." },
             ]),
           ] },
-          { kind: "concept", part: "Conditions with logical operators", title: "Combined conditions in if", blocks: [
+          { kind: "code", part: "if, elif, and else", title: "Example: separate if statements are not elif", blocks: [
+            EX('level = 90\nif level >= 80:\n    print("Full")\nif level >= 50:\n    print("Good")\nprint("---")\nif level >= 80:\n    print("Full")\nelif level >= 50:\n    print("Good")', "two if statements, then one if / elif", [
+              { c: "lines 2 to 5", e: "Two separate statements: each condition is checked. Both are True: <code>Full</code> and <code>Good</code>" },
+              { c: "lines 7 to 10", e: "One statement: after <code>Full</code>, the elif is not checked. Only <code>Full</code>" },
+            ]),
+          ] },
+          { kind: "concept", part: "Nested if", title: "An if inside an if", blocks: [
+            CODE("if condition1:\n    if condition2:\n        block A\nelse:\n    block B", null, "syntax"),
+            L([
+              "An if statement inside the block of another if or else is a <b>nested if</b>.",
+              "The inner condition is checked only when the outer block runs.",
+              "Each level of nesting is indented by 4 more spaces.",
+              "Here, block A runs only when both conditions are True, as with <code>and</code>.",
+            ]),
+          ] },
+          { kind: "code", part: "Nested if", title: "Example: a pump with a power switch", blocks: [
+            EX('power_on = True\nlevel = 15\nif power_on:\n    if level < 20:\n        print("Pump ON")\n    else:\n        print("Pump OFF")\nelse:\n    print("No power")', "the level is checked only with power", [
+              { c: "if power_on:", e: "True: the inner if (lines 4 to 7) is checked." },
+              { c: "if level < 20:", e: "15 < 20 is True: <code>Pump ON</code>" },
+              { c: "power_on = False", e: "The outer else runs: <code>No power</code>. Lines 4 to 7 are skipped as one block." },
+            ]),
+          ] },
+          { kind: "code", part: "Values and logical operators as conditions", title: "Example: a value as the condition", blocks: [
+            T("The condition of an if can be any value, not only a comparison. Python uses its truth value (Lesson 1): a falsy value counts as False, and a truthy value counts as True."),
+            EX('error_code = 3\nif error_code:\n    print("Error", error_code)\nelse:\n    print("No error")', "an int as the condition", [
+              { c: "if error_code:", e: "3 is not zero, so it is truthy: <code>Error 3</code>" },
+              { c: "error_code = 0", e: "0 is falsy: the else block runs. <code>No error</code>" },
+            ]),
+          ] },
+          { kind: "concept", part: "Values and logical operators as conditions", title: "Combined conditions in if", blocks: [
             T("A condition in if can combine comparisons with <code>and</code>, <code>or</code>, and <code>not</code> (Lesson 2)."),
             CODE('if 20 <= t <= 30 and humidity < 70:\n    print("Comfortable")', null, "example"),
           ] },
-          { kind: "code", part: "Conditions with logical operators", title: "Example: a pump controller", blocks: [
+          { kind: "code", part: "Values and logical operators as conditions", title: "Example: a pump controller", blocks: [
             EX('level = 15\npower_on = True\nif level < 20 and power_on:\n    print("Pump ON")\nelse:\n    print("Pump OFF")', "two conditions for one decision", [
               { c: "level < 20 and power_on", e: "True and True → True: <code>Pump ON</code>" },
             ]),
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "<code>if condition:</code> runs the indented block only when the condition is True.",
-              "Indentation (4 spaces) defines the block. The colon is required.",
+              "<code>if condition:</code> runs its indented block (4 spaces) only when the condition is True. The colon is required.",
               "<code>if</code> / <code>else</code>: exactly one of two blocks runs.",
-              "<code>if</code> / <code>elif</code> / <code>else</code>: the first True condition runs; the order of the conditions matters.",
-              "Conditions can use <code>and</code>, <code>or</code>, and <code>not</code>.",
+              "<code>if</code> / <code>elif</code> / <code>else</code>: the first True condition runs, so the order matters. Separate <code>if</code> statements are each checked.",
+              "A nested if is checked only when the outer block runs.",
+              "A condition can be any truthy or falsy value. It can use <code>and</code>, <code>or</code>, and <code>not</code>.",
             ]),
             NEXT("<b>while loops</b>. A condition can also decide how many times a block repeats."),
           ] },
@@ -570,10 +729,6 @@
           { kind: "exercise", title: "Check your trace", cols: [
             [T("Run the program with <b>Step Run</b>. Compare the variables after each line with your table.")],
             [RUN('v = 11.5\nif v < 11:\n    state = "LOW"\nelif v > 13:\n    state = "HIGH"\nelse:\n    state = "OK"\nprint(state)')],
-          ] },
-          { kind: "exercise", title: "Complete the code", blocks: [
-            PQ("Complete line 2: display ยังไม่บรรลุนิติภาวะ when the age is below 18, otherwise บรรลุนิติภาวะแล้ว. Test input: 16.",
-              "Age: 16\nยังไม่บรรลุนิติภาวะ", 'age = int(input("Age: "))\nif \n    print("ยังไม่บรรลุนิติภาวะ")\nelse:\n    print("บรรลุนิติภาวะแล้ว")\n', ["16"], "if age < 18:"),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("A temperature of 95 °C should display Overheat, but the program displays Warm. Correct the order of the conditions.",
@@ -600,7 +755,7 @@
         title: "while loops",
         sub: "Repeating a block while a condition is True.",
         slides: "03:12, 19",
-        keywords: "while loop iteration condition counter accumulator infinite loop update",
+        keywords: "while loop iteration condition counter accumulator sum product factorial sentinel infinite loop update",
         deck: [
           { kind: "overview", title: "while loops", blocks: [
             T("A <b>loop</b> repeats a block of statements. A <b>while loop</b> repeats its block as long as its condition is True. It is used when the number of repetitions depends on a condition."),
@@ -637,24 +792,26 @@
             ]),
           ] },
           { kind: "concept", part: "Accumulating a total", title: "The accumulator pattern", blocks: [
-            L([
-              "An <b>accumulator</b> is a variable that collects a result over the iterations.",
-              "It starts before the loop, usually at 0.",
-              "Each iteration adds to it: <code>total = total + value</code>.",
-              "After the loop, it holds the final result.",
+            T("An <b>accumulator</b> is a variable that collects a result over the iterations. It gets its start value before the loop, and each iteration updates it. After the loop, it holds the final result."),
+            TB(["Result", "Start value", "Update", "Example: 1 to 5"], [
+              ["Sum", "<code>0</code>", "<code>total = total + n</code>", "1 + 2 + 3 + 4 + 5 = 15"],
+              ["Product", "<code>1</code>", "<code>fact = fact * n</code>", "factorial: 1 × 2 × 3 × 4 × 5 = 120"],
             ]),
+            T("A product that starts at 0 stays 0, because 0 × n is 0."),
           ] },
-          { kind: "code", part: "Accumulating a total", title: "Example: the sum of 1 to 5", blocks: [
-            EX('total = 0\nn = 1\nwhile n <= 5:\n    total = total + n\n    n = n + 1\nprint("Sum =", total)', "a counter and an accumulator", [
-              { c: "total = total + n", e: "Adds 1, 2, 3, 4, and 5 in turn." },
-              { c: "print(...)", e: "After the loop: <code>Sum = 15</code>" },
-            ]),
+          { kind: "code", part: "Accumulating a total", title: "Example: the sum of 1 to 5", blocks: [W("codeTrace", T_sum)] },
+          { kind: "code", part: "Accumulating a total", title: "Two common mistakes with an accumulator", cols: [
+            [T("<b>Start value inside the loop.</b> <code>total = 0</code> runs in every iteration, so only the last value remains: <code>Sum = 5</code>."),
+              RUN('n = 1\nwhile n <= 5:\n    total = 0\n    total = total + n\n    n = n + 1\nprint("Sum =", total)', "Mistake 1")],
+            [T("<b>print inside the loop.</b> The indented <code>print</code> runs in every iteration: five lines, <code>Sum = 1</code>, then 3, 6, 10, and 15."),
+              RUN('total = 0\nn = 1\nwhile n <= 5:\n    total = total + n\n    n = n + 1\n    print("Sum =", total)', "Mistake 2")],
           ] },
           { kind: "concept", part: "Repeating until a condition changes", title: "When the number of iterations is not known", blocks: [
             L([
               "A while loop can stop because of a result, not a counter.",
               "Example: halve a number until it reaches 0, and count the steps.",
               "Example: ask for a value again until it is valid.",
+              "Example: read values until a stop value is entered. The stop value is called a <b>sentinel</b>.",
             ]),
           ] },
           { kind: "code", part: "Repeating until a condition changes", title: "Example: counting halvings", blocks: [
@@ -669,6 +826,13 @@
               { c: "second input", e: "80 is valid: the loop ends. Output: <code>Level = 80</code>" },
             ], ["150", "80"]),
           ] },
+          { kind: "code", part: "Repeating until a condition changes", title: "Example: read values until a stop value", blocks: [
+            EX('total = 0\nvalue = int(input("Value: "))\nwhile value != -1:\n    total = total + value\n    value = int(input("Value: "))\nprint("Total =", total)', "test input: 12, 7, 20, then -1", [
+              { c: "while value != -1:", e: "-1 is the sentinel. It ends the loop, and it is not part of the data." },
+              { c: "value = int(input(...))", e: "Before the loop: the first value. Last line of the block: the next value." },
+              { c: "print(...)", e: "After the loop. 12 + 7 + 20: <code>Total = 39</code>" },
+            ], ["12", "7", "20", "-1"]),
+          ] },
           { kind: "concept", part: "Infinite loops", title: "Infinite loops", blocks: [
             L([
               "If the condition never becomes False, the loop never ends. This is an <b>infinite loop</b>.",
@@ -682,8 +846,8 @@
             L([
               "<code>while condition:</code> repeats the block as long as the condition is True.",
               "A loop needs initialization, a condition, and an update.",
-              "A counter counts iterations. An accumulator collects a total.",
-              "A while loop can stop when a result changes, for example when input becomes valid.",
+              "A counter counts iterations. An accumulator starts before the loop: a sum at 0, a product at 1.",
+              "A while loop can also stop on a result: a valid input, or a stop value (sentinel).",
               "A condition that never becomes False gives an infinite loop.",
             ]),
             NEXT("<b>for loops</b>. When the values to go through are known, such as the numbers 1 to 10, a for loop is shorter and cannot forget the update."),
@@ -726,7 +890,7 @@
         title: "for loops and range()",
         sub: "Repeating a block once for each value of a sequence.",
         slides: "03:13, 19",
-        keywords: "for loop range start stop step string character accumulator while or for",
+        keywords: "for loop range start stop step string character accumulator maximum largest while or for",
         deck: [
           { kind: "overview", title: "for loops and range()", blocks: [
             T("A <b>for loop</b> runs its block once for each value in a sequence, such as the characters of a string or the numbers produced by <code>range()</code>. The number of iterations is known before the loop starts."),
@@ -753,8 +917,9 @@
               ["<code>range(1, 6)</code>", "1, 2, 3, 4, 5", "from start to stop - 1"],
               ["<code>range(0, 20, 5)</code>", "0, 5, 10, 15", "from start, adding step each time"],
               ["<code>range(5, 0, -2)</code>", "5, 3, 1", "a negative step counts down"],
+              ["<code>range(1, n + 1)</code>", "1, 2, …, n", "stop can be an expression; n can come from <code>input()</code>"],
             ]),
-            T("The stop value is never included."),
+            T("The stop value is never included. To include n, the stop value is <code>n + 1</code>."),
           ] },
           { kind: "code", part: "range()", title: "Example: range() with a step", blocks: [
             EX('for i in range(0, 20, 5):\n    print(i, end=" ")\nprint()\nfor i in range(5, 0, -2):\n    print(i, end=" ")', "counting up and counting down", [
@@ -767,19 +932,22 @@
               "The accumulator pattern from Lesson 4 works in a for loop too.",
               "The loop variable provides the values; no counter update is needed.",
               "An if inside the loop can select which values are added.",
+              "The same structure finds the largest value: a variable keeps the largest value seen so far, and a larger value replaces it.",
             ]),
           ] },
-          { kind: "code", part: "Accumulating with a for loop", title: "Example: the sum of 1 to 100", blocks: [
-            EX('total = 0\nfor i in range(1, 101):\n    total = total + i\nprint("Sum =", total)', "range(1, 101) gives 1 to 100", [
-              { c: "range(1, 101)", e: "The stop value is 101, so 100 is included." },
-              { c: "print(...)", e: "Output: <code>Sum = 5050</code>" },
-            ]),
-          ] },
+          { kind: "code", part: "Accumulating with a for loop", title: "Example: the sum of 1 to n", blocks: [W("codeTrace", T_forSum)] },
           { kind: "code", part: "Accumulating with a for loop", title: "Example: adding only selected values", blocks: [
             EX('total = 0\nfor i in range(1, 11):\n    if i % 3 == 0 or i % 5 == 0:\n        total = total + i\nprint("Total =", total)', "multiples of 3 or 5 from 1 to 10", [
               { c: "i % 3 == 0 or i % 5 == 0", e: "True for 3, 5, 6, 9, 10" },
               { c: "print(...)", e: "3 + 5 + 6 + 9 + 10: <code>Total = 33</code>" },
             ]),
+          ] },
+          { kind: "code", part: "Accumulating with a for loop", title: "Example: the largest value so far", blocks: [
+            EX('largest = int(input("Reading: "))\nfor k in range(3):\n    value = int(input("Reading: "))\n    if value > largest:\n        largest = value\nprint("Largest =", largest)', "test input: 42, 57, 39, 51", [
+              { c: "largest = int(input(...))", e: "The first reading is the largest value seen so far." },
+              { c: "if value > largest:", e: "A larger reading replaces it: 57 replaces 42. 39 and 51 do not." },
+              { c: "print(...)", e: "Output: <code>Largest = 57</code>. For the smallest value, use <code>&lt;</code>." },
+            ], ["42", "57", "39", "51"]),
           ] },
           { kind: "concept", part: "Choosing for or while", title: "for or while", blocks: [
             TB(["Loop", "Use it when", "Example"], [
@@ -791,9 +959,9 @@
           { kind: "summary", title: "Summary", blocks: [
             L([
               "<code>for x in sequence:</code> runs the block once for each value.",
-              "<code>range(stop)</code>, <code>range(start, stop)</code>, <code>range(start, stop, step)</code>. The stop value is excluded.",
-              "A negative step counts down.",
-              "Accumulators work in for loops too. An if selects the values.",
+              "<code>range(stop)</code>, <code>range(start, stop)</code>, <code>range(start, stop, step)</code>. The stop value is excluded. A negative step counts down.",
+              "<code>range(1, n + 1)</code> gives 1 to n.",
+              "Accumulators work in for loops too. An if selects the values. A \"largest so far\" variable finds the maximum.",
               "Use for when the values are known. Use while when a condition decides.",
             ]),
             NEXT("<b>Nested loops</b>. A loop can contain another loop, for example to go through rows and columns."),
@@ -850,26 +1018,15 @@
           { kind: "concept", part: "Counting the iterations", title: "How often the inner block runs", blocks: [
             L([
               "If the outer loop runs m times and the inner loop runs n times, the inner block runs <b>m × n</b> times.",
-              "Example: <code>range(1, 4)</code> inside <code>range(1, 4)</code>: 3 × 3 = 9 runs.",
+              "Example: <code>range(1, 4)</code> inside <code>range(1, 3)</code>: 2 × 3 = 6 runs.",
               "The inner range may depend on the outer variable, for example <code>range(1, i + 1)</code>. Then each outer iteration has a different count.",
             ]),
           ] },
-          { kind: "code", part: "Counting the iterations", title: "Example: a multiplication table", blocks: [
-            EX('for i in range(1, 4):\n    for j in range(1, 4):\n        print(i * j, end=" ")\n    print()', "rows and columns", [
-              { c: 'print(i * j, end=" ")', e: "One row stays on one line." },
-              { c: "print()", e: "After each inner loop: a new line. 3 rows of 3 values" },
-            ]),
-          ] },
+          { kind: "code", part: "Counting the iterations", title: "Example: a multiplication table", blocks: [W("codeTrace", T_mul)] },
           { kind: "code", part: "Counting the iterations", title: "Example: an inner range that depends on i", blocks: [
             EX('for i in range(1, 4):\n    for j in range(1, i + 1):\n        print(j, end=" ")\n    print()', "row i has i values", [
               { c: "range(1, i + 1)", e: "i = 1: j is 1. i = 2: j is 1, 2. i = 3: j is 1, 2, 3." },
               { c: "print()", e: "Ends each row. Output: 3 rows of 1, 2, and 3 values" },
-            ]),
-          ] },
-          { kind: "code", part: "Counting the iterations", title: "Example: a clock with two loops", blocks: [
-            EX('for hour in range(8, 10):\n    for minute in range(0, 60, 30):\n        print(hour, ":", minute)', "2 hours × 2 minute values", [
-              { c: "outer loop", e: "hour = 8, then 9" },
-              { c: "inner loop", e: "minute = 0, then 30, for each hour: 4 lines" },
             ]),
           ] },
           { kind: "concept", part: "Nested while loops", title: "Nested while loops", blocks: [
@@ -879,8 +1036,8 @@
               "A for loop resets its variable automatically; a while loop does not.",
             ]),
           ] },
-          { kind: "code", part: "Nested while loops", title: "Example: the clock with while loops", blocks: [
-            T("The first line of the outer block, <code>minute = 0</code>, resets the inner variable before the inner loop starts."),
+          { kind: "code", part: "Nested while loops", title: "Example: a clock with while loops", blocks: [
+            T("The program displays four times: 8 : 0, 8 : 30, 9 : 0, and 9 : 30. The first line of the outer block, <code>minute = 0</code>, resets the inner variable before the inner loop starts again."),
             RUN('hour = 8\nwhile hour <= 9:\n    minute = 0\n    while minute <= 59:\n        print(hour, ":", minute)\n        minute += 30\n    hour += 1'),
           ] },
           { kind: "summary", title: "Summary", blocks: [
@@ -908,10 +1065,6 @@
             PQ("Display a triangle of 4 rows. Row 1 has one star, row 2 has two stars, and so on. Use an inner loop that depends on the row number.",
               "*\n**\n***\n****", "# Write your program here\n", null, 'for i in range(1, 5): for j in range(1, i + 1): print("*", end="") ... print()'),
           ] },
-          { kind: "exercise", title: "Write a program: two tables", blocks: [
-            PQ("Display the 2 and 3 multiplication tables from × 1 to × 3, in the form shown in the target.",
-              "2 x 1 = 2\n2 x 2 = 4\n2 x 3 = 6\n3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9", "# Write your program here\n", null, 'for a in range(2, 4): for b in range(1, 4): print(a, "x", b, "=", a * b)'),
-          ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "The outer loop runs 4 times and the inner loop runs 3 times. How many times does the inner block run?", choices: ["3", "4", "7", "12"], answer: 3, explain: "4 × 3 = 12." },
             { q: "In a nested loop, the inner loop…", choices: ["runs once in total", "runs completely for each outer iteration", "runs only after the outer loop ends", "replaces the outer loop"], answer: 1, explain: "The inner loop starts again for every value of the outer loop." },
@@ -925,7 +1078,7 @@
         title: "break, continue, pass, and loop else",
         sub: "Ending a loop early, skipping an iteration, empty blocks, and else on a loop.",
         slides: "03:15–18",
-        keywords: "break continue pass else loop control search prime",
+        keywords: "break continue pass else loop control search prime flag nested break",
         deck: [
           { kind: "overview", title: "break, continue, pass, and loop else", blocks: [
             T("Four statements change the normal flow of a loop, or fill a block that has no action yet."),
@@ -947,6 +1100,7 @@
               { c: "input(...)", e: "The Lesson 4 version wrote <code>input()</code> twice. With break, it is written once." },
             ], ["150", "80"]),
           ] },
+          { kind: "code", part: "break", title: "Example: break in a nested loop", blocks: [W("codeTrace", T_nbreak)] },
           { kind: "concept", part: "continue", title: "continue skips to the next iteration", blocks: [
             L([
               "<code>continue</code> skips the rest of the current iteration.",
@@ -955,12 +1109,7 @@
             ]),
           ] },
           { kind: "code", part: "continue", title: "First example: execution step by step", blocks: [W("codeTrace", T_cont)] },
-          { kind: "code", part: "continue", title: "Example: continue in a while loop", blocks: [
-            EX('sensor = 0\nwhile sensor < 6:\n    sensor += 1\n    if sensor == 4:\n        continue\n    print("Reading sensor", sensor)', "sensor 4 is offline", [
-              { c: "sensor += 1", e: "The update comes before continue. If the update came after continue, it would be skipped at sensor 4: an infinite loop." },
-              { c: "continue", e: "Sensor 4 is skipped. Output: sensors 1, 2, 3, 5, and 6" },
-            ]),
-          ] },
+          { kind: "code", part: "continue", title: "Example: continue in a while loop", blocks: [W("codeTrace", T_contW)] },
           { kind: "concept", part: "pass", title: "pass does nothing", blocks: [
             L([
               "<code>pass</code> is a statement that does nothing.",
@@ -991,12 +1140,20 @@
               { c: "break", e: "The for loop ends with break, so its else block is skipped." },
             ]),
           ] },
+          { kind: "code", part: "else on a loop", title: "Example: a flag variable instead of else", blocks: [
+            EX('n = 9\nis_prime = True\nfor i in range(2, n):\n    if n % i == 0:\n        is_prime = False\n        break\nif is_prime and n >= 2:\n    print("Prime")\nelse:\n    print("Not prime")', "a flag replaces the else of the loop", [
+              { c: "is_prime = True", e: "The <b>flag</b>: a bool that records a result." },
+              { c: "is_prime = False", e: "9 % 3 is 0: the flag changes; break ends the loop." },
+              { c: "is_prime and n >= 2", e: "The flag decides: <code>Not prime</code>. <code>n &gt;= 2</code> excludes 0 and 1." },
+            ]),
+          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "<code>break</code> ends the loop immediately.",
+              "<code>break</code> ends the loop immediately. In a nested loop, it ends only the innermost loop.",
               "<code>continue</code> skips the rest of the current iteration.",
               "<code>pass</code> does nothing; it fills a required block.",
               "The else block of a loop runs only when the loop ends without break.",
+              "A flag variable records what a loop found. An if after the loop uses it.",
             ]),
             NEXT("<b>Chapter practice</b>. Complete problems that combine decisions and loops."),
           ] },
