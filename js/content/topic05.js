@@ -1,7 +1,8 @@
 /* ===================== Topic 05 - Functions and Modules =====================
    Authored deck format (see CHAPTER-IMPROVEMENT-PROMPT.md).
    Lesson order: defining -> parameters and return -> arguments -> scope -> nested calls and recursion -> modules -> practice.
-   Python level: t02-t04 material plus def, return, import. No lists, dicts (except *args/**kwargs with a for loop), or try.
+   Python level: t02-t04 material plus def, return, import. No lists, dicts, or try. *args appears only with a for loop;
+   **kwargs needs dictionary access and is taught in Topic 06.
    Local variables in traces are named "name (function)" and are removed when the function returns.
    ============================================================================ */
 (function () {
@@ -46,6 +47,25 @@
     ],
   };
 
+  // return inside a loop: the loop stops at the return
+  const T_divisor = {
+    code: ["def smallest_divisor(n):", "    for d in range(2, n + 1):", "        if n % d == 0:", "            return d", "", "print(smallest_divisor(35))"],
+    steps: [
+      { line: 0, note: "def creates the function <code>smallest_divisor</code>." },
+      { line: 5, note: "print needs smallest_divisor(35): the call starts with n = 35.", set: { "n (smallest_divisor)": "35" } },
+      { line: 1, note: "The loop starts with d = 2.", set: { "d (smallest_divisor)": "2" } },
+      { line: 2, note: "35 % 2 → 1. 1 == 0 is False: the return is skipped." },
+      { line: 1, note: "The next value: d = 3.", set: { "d (smallest_divisor)": "3" } },
+      { line: 2, note: "35 % 3 → 2. 2 == 0 is False." },
+      { line: 1, note: "The next value: d = 4.", set: { "d (smallest_divisor)": "4" } },
+      { line: 2, note: "35 % 4 → 3. 3 == 0 is False." },
+      { line: 1, note: "The next value: d = 5.", set: { "d (smallest_divisor)": "5" } },
+      { line: 2, note: "35 % 5 → 0. 0 == 0 is True." },
+      { line: 3, note: "return 5 ends the function at once. The loop does not continue with d = 6.", unset: ["n (smallest_divisor)", "d (smallest_divisor)"] },
+      { line: 5, note: "The call is replaced by 5, which is displayed. Result check: 35 = 5 × 7.", print: "5" },
+    ],
+  };
+
   const T_default = {
     code: ["def motor(name, voltage=220):", '    print(name, voltage, "V")', "", 'motor("Pump")', 'motor("Fan", 110)'],
     steps: [
@@ -70,6 +90,20 @@
     ],
   };
 
+  // a parameter receives a copy of the value; a return value that is not stored is lost
+  const T_copy = {
+    code: ["def add_ten(count):", "    count = count + 10", "    return count", "", "count = 5", "add_ten(count)", "print(count)"],
+    steps: [
+      { line: 0, note: "def creates the function <code>add_ten</code> with the parameter count." },
+      { line: 4, note: "A global variable: count = 5.", set: { count: "5" } },
+      { line: 5, note: "Call add_ten(count): the parameter count receives a copy of the value 5. It is a separate, local variable.", set: { "count (add_ten)": "5" } },
+      { line: 1, note: "5 + 10 → 15, assigned to the parameter. The caller's variable, the global count, is still 5.", set: { "count (add_ten)": "15" } },
+      { line: 2, note: "return sends 15 back. The local count disappears.", unset: ["count (add_ten)"] },
+      { line: 5, note: "The call is replaced by 15, but this statement does not store it: the returned value is lost." },
+      { line: 6, note: "The global count was never changed. To keep the result, store it: <code>count = add_ten(count)</code>. Result check: 5 is displayed, not 15.", print: "5" },
+    ],
+  };
+
   const T_nested = {
     code: ["def add(a, b):", "    return a + b", "", "def double_sum(a, b):", "    return add(a, b) * 2", "", "print(double_sum(1, 2))"],
     steps: [
@@ -80,6 +114,22 @@
       { line: 4, note: "double_sum returns 3 * 2 → 6. Its variables disappear.", unset: ["a (double_sum)", "b (double_sum)"] },
       { line: 6, note: "Result check: (1 + 2) × 2 = 6.", print: "6" },
     ],
+  };
+
+  // a function in a flowchart: the main chart (left) and the chart of the function (right)
+  const F_func = {
+    cols: [0, 380],
+    nodes: [
+      { id: "s", type: "terminator", text: "START", col: 0, row: 0 },
+      { id: "i", type: "io", text: "INPUT r", col: 0, row: 1 },
+      { id: "c", type: "predefined", text: "area = circle_area(r)", col: 0, row: 2 },
+      { id: "d", type: "io", text: "DISPLAY area", col: 0, row: 3 },
+      { id: "e", type: "terminator", text: "END", col: 0, row: 4 },
+      { id: "f", type: "terminator", text: "circle_area(radius)", col: 1, row: 0 },
+      { id: "p", type: "process", text: "a = 3.14 * radius * radius", col: 1, row: 1 },
+      { id: "r", type: "terminator", text: "RETURN a", col: 1, row: 2 },
+    ],
+    edges: [{ from: "s", to: "i" }, { from: "i", to: "c" }, { from: "c", to: "d" }, { from: "d", to: "e" }, { from: "f", to: "p" }, { from: "p", to: "r" }],
   };
 
   const FACT_CODE = ["def factorial(n):", "    if n == 0:", "        return 1", "    return n * factorial(n - 1)", "", "print(factorial(3))"];
@@ -127,6 +177,7 @@
               "<code>def</code> only creates the function. Its body runs when the function is called.",
               "At a call, the program jumps into the function, runs the body, and returns to the line after the call.",
               "A function must be defined before the line that calls it runs.",
+              "The parentheses are required. The name alone, <code>line</code>, is not a call: it causes no error, and the body does not run.",
             ]),
           ] },
           { kind: "code", part: "Calling a function", title: "First example: execution step by step", blocks: [W("codeTrace", T_line)] },
@@ -187,7 +238,7 @@
         deck: [
           { kind: "overview", title: "Parameters and return values", blocks: [
             T("Parameters let a function work with different values. A return value sends the result of the function back to the line that called it."),
-            L(["Parameters and arguments", "Return values", "return and print", "Returning two values"], "Subtopics in this lesson", true),
+            L(["Parameters and arguments", "Return values", "return and print", "Returning two values", "A function in a flowchart"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Parameters and arguments", title: "Parameters and arguments", blocks: [
             TB(["Term", "Meaning", "Example"], [
@@ -201,9 +252,10 @@
           ] },
           { kind: "concept", part: "Return values", title: "return sends a value back", blocks: [
             L([
-              "<code>return value</code> ends the function and sends the value back to the call.",
+              "<code>return value</code> ends the function at once and sends the value back to the call.",
               "The call is then replaced by the returned value: <code>result = power(12, 2)</code> stores 24.",
               "Statements after return in the same block do not run.",
+              "A function can have several return statements. The first one that runs ends the function, also when it is inside a loop.",
             ]),
           ] },
           { kind: "code", part: "Return values", title: "First example: execution step by step", blocks: [W("codeTrace", T_power)] },
@@ -213,6 +265,13 @@
               { c: "c_to_f(100)", e: "c = 100: returns <code>212.0</code>" },
             ]),
           ] },
+          { kind: "code", part: "Return values", title: "Example: a return in each branch", blocks: [
+            EX('def status(level):\n    if level >= 80:\n        return "Full"\n    elif level >= 20:\n        return "Normal"\n    else:\n        return "Low"\n\nprint(status(65))\nprint(status(10))', "one return runs in each call", [
+              { c: "status(65)", e: "The second condition is True: the function ends there and returns <code>Normal</code>." },
+              { c: "status(10)", e: "Both conditions are False: the else branch returns <code>Low</code>." },
+            ]),
+          ] },
+          { kind: "code", part: "Return values", title: "Example: a return inside a loop", blocks: [W("codeTrace", T_divisor)] },
           { kind: "concept", part: "return and print", title: "return is not print", blocks: [
             TB(["Statement", "Effect"], [
               ["<code>print(x)</code>", "displays x on the screen; the program cannot use the displayed text"],
@@ -221,9 +280,10 @@
             T("A function without return returns <code>None</code>, the value that means \"no value\"."),
           ] },
           { kind: "code", part: "return and print", title: "Example: a missing return", blocks: [
-            EX('def show_power(v, i):\n    print(v * i)\n\nresult = show_power(12, 2)\nprint("result =", result)', "print instead of return", [
+            EX('def show_power(v, i):\n    print(v * i)\n\nresult = show_power(12, 2)\nprint("result =", result)\nprint(show_power(12, 2))', "print instead of return", [
               { c: "print(v * i)", e: "Displays 24, but returns nothing." },
               { c: "result", e: "The function returned None: <code>result = None</code>" },
+              { c: "print(show_power(12, 2))", e: "The function displays <code>24</code>. Then print displays the returned value: <code>None</code>" },
             ]),
           ] },
           { kind: "concept", part: "Returning two values", title: "Returning two values", blocks: [
@@ -238,13 +298,17 @@
               { c: "h, m = split_time(125)", e: "h = 2 and m = 5. Output: <code>2 h 5 min</code>" },
             ]),
           ] },
+          { kind: "visual", part: "A function in a flowchart", title: "A function in a flowchart", blocks: [
+            W("flowchart", F_func),
+            T("The main chart (left) calls the function with a <b>predefined process</b> symbol (Topic 04). The function has its own chart (right): it starts with the function name and its parameters, and it ends with RETURN. In Python: <code>def circle_area(radius):</code> … <code>return a</code>."),
+          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
               "Parameters are in the definition; arguments are in the call.",
-              "<code>return</code> ends the function and sends a value back to the call.",
-              "print displays a value; return gives it to the program.",
-              "A function without return returns <code>None</code>.",
+              "<code>return</code> ends the function at once, also inside a branch or a loop, and sends a value back to the call.",
+              "print displays a value; return gives it to the program. A function without return returns <code>None</code>.",
               "<code>return a, b</code> returns two values.",
+              "In a flowchart, a predefined process symbol calls a function. The function has its own chart, which ends with RETURN.",
             ]),
             NEXT("<b>Arguments</b>. Arguments can be given by position or by name, and parameters can have default values."),
           ] },
@@ -281,7 +345,7 @@
         title: "Positional, keyword, and default arguments",
         sub: "The order of arguments, arguments by name, default values, and a variable number of arguments.",
         slides: "05:13–16",
-        keywords: "positional keyword default argument args kwargs variable length",
+        keywords: "positional keyword default argument args variable length typeerror missing argument",
         deck: [
           { kind: "overview", title: "Positional, keyword, and default arguments", blocks: [
             T("A call can give its arguments by position or by name, and a parameter can have a default value. These options make functions flexible and calls readable."),
@@ -291,7 +355,7 @@
             L([
               "Positional arguments are matched to the parameters in order: the first argument to the first parameter, and so on.",
               "The order matters: <code>describe(\"Pump\", 220)</code> and <code>describe(220, \"Pump\")</code> give different results.",
-              "Each parameter without a default value must receive exactly one argument. A parameter with a default value (later in this lesson) may receive one.",
+              "Each parameter without a default value must receive exactly one argument: too few or too many arguments cause a TypeError. A parameter with a default value (later in this lesson) may receive one.",
             ]),
           ] },
           { kind: "code", part: "Positional arguments", title: "Example: the order matters", blocks: [
@@ -323,12 +387,19 @@
               { c: "calc(1, c=10)", e: "b keeps 2: 1 + 2 * 10 → <code>21</code>" },
             ]),
           ] },
-          { kind: "concept", part: "A variable number of arguments", title: "*args and **kwargs", blocks: [
-            TB(["Parameter", "Receives", "Use in the body"], [
-              ["<code>*args</code>", "any number of positional arguments", "<code>for value in args:</code>"],
-              ["<code>**kwargs</code>", "any number of keyword arguments", "<code>for key in kwargs:</code>, and the value is <code>kwargs[key]</code>"],
+          { kind: "code", part: "Default values", title: "Example: a missing argument", blocks: [
+            EX("def area(length, width):\n    return length * width\n\nprint(area(5, 3))\nprint(area(5))", "a wrong number of arguments", [
+              { c: "area(5)", e: "The last line: <code>TypeError: area() missing 1 required positional argument: 'width'</code> The message names the parameter that received no argument." },
+              { c: "Correction", e: "<code>area(5, 3)</code>, or a default value for width." },
             ]),
-            T("<code>args</code> holds the values in order (a tuple: a sequence that cannot be changed, Topic 06). <code>kwargs</code> holds the keyword names and their values (a dictionary, Topic 06). Here both are used only with a for loop."),
+          ] },
+          { kind: "concept", part: "A variable number of arguments", title: "The *args parameter", blocks: [
+            L([
+              "A parameter with a star, <code>*args</code>, receives any number of positional arguments. Any name can follow the star: <code>*values</code>.",
+              "Inside the function, the name without the star holds the values in order. It is a tuple: a sequence that cannot be changed (Topic 06).",
+              "Here it is used only with a for loop: <code>for r in values:</code>.",
+              "<code>**kwargs</code> receives any number of keyword arguments. It needs a dictionary and is explained in Topic 06.",
+            ]),
           ] },
           { kind: "code", part: "A variable number of arguments", title: "Example: *args", blocks: [
             EX("def total_resistance(*values):\n    total = 0\n    for r in values:\n        total = total + r\n    return total\n\nprint(total_resistance(100, 220, 330))", "resistors in series", [
@@ -336,19 +407,13 @@
               { c: "for r in values", e: "Adds each value: <code>650</code>" },
             ]),
           ] },
-          { kind: "code", part: "A variable number of arguments", title: "Example: **kwargs", blocks: [
-            EX('def print_profile(**info):\n    for key in info:\n        print(key, "=", info[key])\n\nprint_profile(name="Pump", phase=3)', "keyword arguments with any names", [
-              { c: "**info", e: "Receives name and phase with their values." },
-              { c: "info[key]", e: "The value of each keyword. Output: <code>name = Pump</code>, <code>phase = 3</code>" },
-            ]),
-          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
               "Positional arguments are matched in order.",
               "Keyword arguments name their parameter; their order does not matter.",
-              "A default value is used when the call gives no argument for that parameter.",
+              "A default value is used when the call gives no argument for that parameter. Without a default value, a missing argument causes a TypeError.",
               "In a call: positional arguments first, then keyword arguments.",
-              "<code>*args</code> and <code>**kwargs</code> accept any number of arguments.",
+              "<code>*args</code> accepts any number of positional arguments.",
             ]),
             NEXT("<b>Variable scope</b>. Which variables a function can see and change."),
           ] },
@@ -381,7 +446,7 @@
         title: "Variable scope",
         sub: "Local and global variables, and the global keyword.",
         slides: "05:9–11",
-        keywords: "scope local global variable global keyword",
+        keywords: "scope local global variable global keyword parameter copy unboundlocalerror",
         deck: [
           { kind: "overview", title: "Variable scope", blocks: [
             T("The <b>scope</b> of a variable is the part of the program where the variable can be used. A function has its own local variables, separate from the variables of the main program."),
@@ -422,8 +487,24 @@
             ]),
           ] },
           { kind: "code", part: "The same name: local and global", title: "First example: execution step by step", blocks: [W("codeTrace", T_scope)] },
+          { kind: "concept", part: "The same name: local and global", title: "A parameter receives a copy of the value", blocks: [
+            L([
+              "A parameter is a local variable. At a call, it receives a copy of the argument's value.",
+              "Assigning to a parameter does not change the caller's variable, even when both have the same name.",
+              "A return value that is not stored is lost. To keep it, store it: <code>count = add_ten(count)</code>.",
+              "Topic 06 explains what changes when the argument is a list.",
+            ]),
+          ] },
+          { kind: "code", part: "The same name: local and global", title: "Example: assigning to a parameter", blocks: [W("codeTrace", T_copy)] },
+          { kind: "code", part: "The global keyword", title: "Example: UnboundLocalError", blocks: [
+            EX("count = 0\n\ndef add_one():\n    count = count + 1\n\nadd_one()\nprint(count)", "a function assigns to a global name", [
+              { c: "count = count + 1", e: "The assignment makes count local. The right side reads it before it has a value." },
+              { c: "add_one()", e: "<code>UnboundLocalError: cannot access local variable 'count' …</code>" },
+            ]),
+          ] },
           { kind: "concept", part: "The global keyword", title: "The global keyword", blocks: [
             L([
+              "Without <code>global</code>, a function can read a global variable but cannot assign to it.",
               "<code>global x</code> inside a function means: x in this function is the global variable.",
               "An assignment to x then changes the global variable.",
               "Use it rarely. A return value is usually clearer.",
@@ -437,10 +518,10 @@
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "Variables assigned inside a function (and parameters) are local.",
-              "Local variables exist only during the call.",
+              "Variables assigned inside a function, and parameters, are local: they exist only during the call.",
               "A function can read global variables.",
               "An assignment inside a function creates a local variable, even with a global name.",
+              "Assigning to a parameter does not change the caller's variable. A return value must be stored to be kept.",
               "<code>global x</code> lets a function change the global x.",
             ]),
             NEXT("<b>Nested calls and recursion</b>. A function can call another function, or itself."),
@@ -567,11 +648,11 @@
         title: "Modules",
         sub: "Using functions from other files, the standard library, and third-party packages.",
         slides: "05:18–21",
-        keywords: "module import from as math sqrt pow pi ceil floor random os pip install help",
+        keywords: "module import from as math sqrt pow pi ceil floor random pip install help",
         deck: [
           { kind: "overview", title: "Modules", blocks: [
             T("A <b>module</b> is a <code>.py</code> file that contains functions and variables. Other programs can import it and use its functions."),
-            L(["Modules and import", "from … import", "The standard library", "Third-party modules and pip", "help()"], "Subtopics in this lesson", true),
+            L(["Modules and import", "from … import", "The standard library", "Third-party modules and pip"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Modules and import", title: "A module is a file", blocks: [
             L([
@@ -586,7 +667,7 @@
           ] },
           { kind: "concept", part: "from … import", title: "from … import and as", blocks: [
             TB(["Statement", "Use in the program"], [
-              ["<code>import tools</code>", "<code>tools.add(1, 2)</code>"],
+              ["<code>import tools</code>", "<code>tools.add(1, 2)</code>; a bare <code>add(1, 2)</code> causes a NameError"],
               ["<code>from tools import add</code>", "<code>add(1, 2)</code>; only add is imported, and the name tools is not defined"],
               ["<code>import math as m</code>", "<code>m.sqrt(16)</code>: a short alias"],
             ]),
@@ -607,8 +688,8 @@
               ["<code>math</code>", "<code>math.pi</code>", "<code>3.141592653589793</code>: the constant π"],
               ["<code>math</code>", "<code>math.ceil(2.1)</code>, <code>math.floor(2.9)</code>", "<code>3</code> (round up), <code>2</code> (round down)"],
               ["<code>random</code>", "<code>random.randint(1, 10)</code>", "a random integer from 1 to 10"],
-              ["<code>os</code>", "<code>os.getcwd()</code>", "the current folder"],
             ]),
+            T("<code>help(math.sqrt)</code> displays the documentation of a function: its docstring (Lesson 1)."),
           ] },
           { kind: "code", part: "The standard library", title: "Example: math and random", blocks: [
             EX("import math\nimport random\n\nprint(math.pow(2, 3))\nprint(math.sqrt(2))\nprint(random.randint(1, 10))", "the last value is random", [
@@ -625,20 +706,12 @@
               "Topic 08 uses the third-party modules NumPy and pandas.",
             ]),
           ] },
-          { kind: "concept", part: "help()", title: "help() shows the documentation", blocks: [
-            L([
-              "<code>help(module)</code> or <code>help(module.function)</code> displays the documentation.",
-              "The documentation includes the docstrings of the functions (Lesson 1).",
-            ]),
-            CODE("import math\nhelp(math.sqrt)", "Help on built-in function sqrt in module math:\n\nsqrt(x, /)\n    Return the square root of x.", "example"),
-          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
               "A module is a .py file; its name is the file name without .py.",
               "<code>import m</code> → <code>m.f()</code>. <code>from m import f</code> → <code>f()</code>. <code>import m as a</code> → <code>a.f()</code>.",
-              "The standard library (math, random, os) needs no installation.",
+              "The standard library (math, random) needs no installation. <code>help()</code> displays its documentation.",
               "<code>pip install name</code> installs a third-party module.",
-              "<code>help()</code> displays documentation.",
             ]),
             NEXT("<b>Chapter practice</b>. Complete problems solved with functions."),
           ] },
@@ -667,7 +740,7 @@
         title: "Chapter practice",
         sub: "Complete problems solved with functions.",
         slides: "05:23",
-        keywords: "practice function time to seconds profile random sqrt prime recursion",
+        keywords: "practice function time to seconds random sqrt prime input battery recursion",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
             T("Solve every problem with a function, in the five steps:"),
@@ -686,47 +759,48 @@
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the function", blocks: [
             PQ("Write the function and display <code>time_to_seconds(1, 2, 5)</code>.", "3725", "# Write your program here\n", null, "return hours * 3600 + minutes * 60 + seconds"),
           ] },
-          { kind: "problem", part: "Problem 2", title: "Problem 2: a device profile", blocks: [
-            T("Define <code>print_profile(**info)</code> that displays each keyword and its value on its own line."),
-            IPO([["Parameters", "any keyword arguments"], ["Output", "one line for each: key = value"], ["Processing", "for key in info: display key and info[key]"]]),
-          ] },
-          { kind: "exercise", part: "Problem 2", title: "Problem 2: write the function", blocks: [
-            PQ("Write the function and call <code>print_profile(name=\"Pump\", voltage=220, phase=3)</code>.", "name = Pump\nvoltage = 220\nphase = 3", "# Write your program here\n", null, 'for key in info: print(key, "=", info[key])'),
-          ] },
-          { kind: "problem", part: "Problem 3", title: "Problem 3: square root of a random number", blocks: [
+          { kind: "problem", part: "Problem 2", title: "Problem 2: square root of a random number", blocks: [
             T("Define <code>generate_random_sqrt(n)</code> that picks a random integer from 1 to n and returns its square root."),
             IPO([["Parameter", "n"], ["Return value", "the square root of a random integer from 1 to n"], ["Processing", "random.randint(1, n), then math.sqrt"]]),
             N("<code>random.seed(1)</code> makes the random numbers repeat, so that the output can be checked."),
           ] },
-          { kind: "exercise", part: "Problem 3", title: "Problem 3: write the function", blocks: [
+          { kind: "exercise", part: "Problem 2", title: "Problem 2: write the function", blocks: [
             PQ("Write the function. After <code>random.seed(1)</code>, display <code>round(generate_random_sqrt(100), 3)</code>.", "4.243", "import math\nimport random\n\nrandom.seed(1)\n# Write the function and the call here\n", null, "return math.sqrt(random.randint(1, n))"),
           ] },
-          { kind: "problem", part: "Problem 4", title: "Problem 4: a prime test", blocks: [
+          { kind: "problem", part: "Problem 3", title: "Problem 3: a prime test", blocks: [
             T("Define <code>is_prime(n)</code> that returns True if n is a prime number, otherwise False."),
             IPO([["Parameter", "n (int, greater than 1)"], ["Return value", "True or False"], ["Processing", "return False at the first divisor from 2 to n − 1; return True after the loop"]]),
           ] },
-          { kind: "exercise", part: "Problem 4", title: "Problem 4: write the function", blocks: [
+          { kind: "exercise", part: "Problem 3", title: "Problem 3: write the function", blocks: [
             PQ("Write the function and display <code>is_prime(13), is_prime(15)</code> on one line.", "True False", "# Write your program here\n", null, "for i in range(2, n): if n % i == 0: return False; return True"),
           ] },
-          { kind: "problem", part: "Problem 5", title: "Problem 5: temperature conversion with a default", blocks: [
+          { kind: "problem", part: "Problem 4", title: "Problem 4: temperature conversion with a default", blocks: [
             T("Define <code>convert(t, unit=\"F\")</code> that converts a temperature t in °C: to °F when unit is \"F\" (F = C × 9 / 5 + 32), to kelvin when unit is \"K\" (K = C + 273.15)."),
             IPO([["Parameters", "t, and unit with the default \"F\""], ["Return value", "the converted temperature"], ["Decision", "unit == \"F\" or unit == \"K\""]]),
           ] },
-          { kind: "exercise", part: "Problem 5", title: "Problem 5: write the function", blocks: [
+          { kind: "exercise", part: "Problem 4", title: "Problem 4: write the function", blocks: [
             PQ("Write the function and display <code>convert(25), convert(25, unit=\"K\")</code> on one line.", "77.0 298.15", "# Write your program here\n", null, 'if unit == "F": return t * 9 / 5 + 32 else: return t + 273.15'),
           ] },
-          { kind: "problem", part: "Problem 6", title: "Problem 6: power with two functions", blocks: [
-            T("Define <code>current(v, r)</code> that returns V ÷ R, and <code>power(v, r)</code> that returns V × I, using current()."),
-            IPO([["Parameters", "v, r"], ["Return values", "the current; the power"], ["Processing", "power calls current"]]),
+          { kind: "problem", part: "Problem 5", title: "Problem 5: battery run time from input", blocks: [
+            T("The main program reads the capacity of a battery (mAh) and the load current (mA), calls a function, and displays the run time in hours."),
+            IPO([
+              ["Input", "capacity and current (float), read with input() in the main program"],
+              ["Function", "<code>run_time(capacity, current)</code> returns capacity ÷ current"],
+              ["Output", "the run time, displayed with print() in the main program"],
+              ["Rule", "the function itself uses no input() and no print()"],
+            ]),
           ] },
-          { kind: "exercise", part: "Problem 6", title: "Problem 6: write the functions", blocks: [
-            PQ("Write both functions and display <code>round(power(12, 4.7), 2)</code>.", "30.64", "# Write your program here\n", null, "return v * current(v, r)"),
+          { kind: "exercise", part: "Problem 5", title: "Problem 5: write the program", blocks: [
+            PQ("Write the function. Then complete the main program: call the function and display the result as in the target. Test input: 2000 and 250.",
+              "Capacity (mAh): 2000\nCurrent (mA): 250\nRun time = 8.0 h",
+              '# Write the function here\n\ncapacity = float(input("Capacity (mAh): "))\ncurrent = float(input("Current (mA): "))\n# Call the function and display the result\n',
+              ["2000", "250"], 'hours = run_time(capacity, current), then print("Run time =", hours, "h")'),
           ] },
-          { kind: "problem", part: "Problem 7", title: "Problem 7: recursive sum of digits", blocks: [
+          { kind: "problem", part: "Problem 6", title: "Problem 6: recursive sum of digits", blocks: [
             T("Define a recursive <code>digit_sum(n)</code> that returns the sum of the digits of a positive integer n."),
             IPO([["Parameter", "n"], ["Return value", "the sum of the digits"], ["Base case", "n &lt; 10: return n"], ["Recursive case", "the last digit (n % 10) + digit_sum(n // 10)"]]),
           ] },
-          { kind: "exercise", part: "Problem 7", title: "Problem 7: write the function", blocks: [
+          { kind: "exercise", part: "Problem 6", title: "Problem 6: write the function", blocks: [
             PQ("Write the function and display <code>digit_sum(2026)</code>.", "10", "# Write your program here\n", null, "if n < 10: return n; return n % 10 + digit_sum(n // 10)"),
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [
