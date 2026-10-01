@@ -192,6 +192,35 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 | Write a short program | `practiceq` with `# Write your program here` |
 | Design an algorithm | `practiceq` whose starter asks for `# Input / # Output / # Processing / # Algorithm` comments first |
 
+### Wording of instructions (the students are not native speakers of English)
+
+An instruction is the prompt of a `practiceq`, the task text of an exercise slide, or a hint. A student must be able to follow it without guessing.
+
+- **First line:** the task in one plain sentence. Example: "Write a program that displays the device label in the target output."
+- **Then the requirements as numbered lines**, one requirement per line, at most four: `<br>1. …<br>2. …`.
+- **Each requirement names exactly what and where:**
+  - the statement or function to use, written in full: "use `sep="/"` in `print()`", not "with sep"
+  - the place it applies to: "the 4th line of the output", "line 3 of the program"
+- **Verbs:** use the same simple verbs every time: write, display, read, store, compute, add, change, replace, correct.
+  - "Display" is for output; "read" is for input.
+- **Sentences:**
+  - short (about 15 words or fewer), active voice, present tense
+  - no idioms, no abbreviations
+  - no "it" or "this" when the noun is not in the same sentence: repeat the noun
+- **Given values:** list them explicitly: "Use these values: voltage 12, current 2."
+- **Reasons and background** are not part of an instruction. A reason the student needs goes in the hint, as one plain sentence.
+- **Rare words:** avoid them. Write "a number cannot start with 0", not "a leading 0".
+- **Hint:** it names the statement or the idea to use, in one plain sentence. It is not a second instruction.
+- **The slide must still fit** (§4): the first line plus the numbered lines, each of about 80 characters or fewer.
+
+> Avoid: `Write a program that displays this device label. Use commas between the values. Display the date on line 4 with sep. Write "09" as text in quotes: a number cannot be written with a leading 0.`
+>
+> Prefer: `Write a program that displays the device label in the target output.`
+> `1. Lines 1 to 3 of the output: use one print() for each line, with commas between the values.`
+> `2. Line 4 of the output (the date): use sep="/" in print().`
+> `3. Write the month as the text "09".`
+> Hint: `A number cannot start with 0, so 09 must be text in quotes.`
+
 - **Mix:** each lesson uses several of these types. Multiple choice appears only in the final Check.
 - **Targets:** a `practiceq` target includes the echoed input lines (for example `Age: 19`).
 
