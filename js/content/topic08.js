@@ -43,7 +43,7 @@
         title: "Text files",
         sub: "Opening and closing files, writing lines, and reading them back.",
         slides: "08:4, 7–11",
-        keywords: "file open close with write writelines read readline readlines newline",
+        keywords: "file open close with write writelines read readline readlines newline position encoding utf-8 strip str convert",
         deck: [
           { kind: "overview", title: "Text files", blocks: [
             T("A <b>file</b> stores data on the disk, so that it remains after the program ends. A text file holds lines of characters."),
@@ -53,8 +53,16 @@
             CODE('with open("data.txt", "w") as f:\n    statements that use f', null, "syntax"),
             L([
               "<code>open(name, mode)</code> opens a file and returns a file object, here f. <code>\"w\"</code> writes, <code>\"r\"</code> reads (Lesson 2 lists all modes).",
-              "A file must be closed after use: <code>f.close()</code>.",
+              "A file must be closed after use: <code>f.close()</code>. Written data is safely in the file only after the close.",
               "<code>with</code> closes the file automatically at the end of its block, also after an error. Always use with.",
+              "For text that is not English (for example Thai), add <code>encoding=\"utf-8\"</code>: <code>open(name, mode, encoding=\"utf-8\")</code>. Without it, the encoding depends on the computer.",
+            ]),
+          ] },
+          { kind: "code", part: "Opening and closing a file", title: "Example: open() and close() without with", blocks: [
+            EX('f = open("note.txt", "w")\nf.write("hi")\ncheck = open("note.txt")\nprint(len(check.read()))\ncheck.close()\nf.close()\ncheck = open("note.txt")\nprint(len(check.read()))\ncheck.close()', "data is saved at close()", [
+              { c: 'f.write("hi")', e: "The text waits in memory, not yet in the file. The file holds <code>0</code> characters." },
+              { c: "f.close()", e: "Writes the waiting text into the file and closes it. It now holds <code>2</code> characters." },
+              { c: "with open(...) as f:", e: "Calls close() automatically at the end of its block, so no data is left waiting." },
             ]),
           ] },
           { kind: "concept", part: "Writing to a file", title: "write() and writelines()", blocks: [
@@ -84,8 +92,12 @@
               ["<code>f.read()</code>", "the whole remaining content as one string"],
               ["<code>f.read(n)</code>", "the next n characters"],
             ]),
-            T("The file object remembers its position: the next read continues where the previous one stopped."),
-            T("A line break <code>\"\\n\"</code> is one character: read(n) counts it like any other character."),
+            TB(["Position", "0", "1", "2", "3", "4", "5", "6", "7", "8"], [
+              ["Character", "f", "a", "n", "\\n", "p", "u", "m", "p", "\\n"],
+              ["<code>f.read(5)</code>", "f", "a", "n", "\\n", "p", "", "", "", ""],
+              ["<code>f.readline()</code>", "", "", "", "", "", "u", "m", "p", "\\n"],
+            ], "A file with the lines fan and pump: 9 characters. A line break <code>\"\\n\"</code> is one character.", "center"),
+            T("The file object remembers its <b>position</b>: each read continues where the previous one stopped. After <code>f.read(5)</code> the position is 5. <code>f.readline()</code> (next part) then reads to the end of that line: position 9, the end of the file."),
           ] },
           { kind: "code", part: "Reading a whole file", title: "Example: read(n) continues", blocks: [
             EX('with open("code.txt", "w") as f:\n    f.write("ABCDEFG")\nwith open("code.txt") as f:\n    print(f.read(3))\n    print(f.read(2))\n    print(f.read())', "the position moves on", [
@@ -108,6 +120,7 @@
               ["<code>for line in f:</code>", "one line per iteration"],
             ]),
             T("<code>line.strip()</code> removes the \"\\n\" at the end; <code>float(line)</code> converts a number line."),
+            T("An empty line becomes <code>\"\"</code>, and <code>float(\"\")</code> stops the program: <code>ValueError: could not convert string to float: ''</code>"),
           ] },
           { kind: "code", part: "Reading line by line", title: "Example: readline and readlines", blocks: [
             EX('with open("r.txt", "w") as f:\n    f.write("21.5\\n22.0\\n23.1\\n")\nwith open("r.txt") as f:\n    print(f.readline())\n    print(f.readlines())', "one line, then the rest as a list", [
@@ -121,12 +134,20 @@
               { c: "print(...)", e: "<code>22.2</code>" },
             ]),
           ] },
+          { kind: "code", part: "Reading line by line", title: "Example: convert the text, skip empty lines", blocks: [
+            EX('with open("r.txt", "w") as f:\n    f.write("21.5\\n22.0\\n\\n")\nwith open("r.txt") as f:\n    lines = f.readlines()\ntotal = 0\nfor line in lines:\n    text = line.strip()\n    if text != "":\n        total = total + float(text)\nprint(total)', "data from a file is always a str", [
+              { c: "lines", e: "<code>['21.5\\n', '22.0\\n', '\\n']</code>: every element is a str, also a line with a number. Convert it before a calculation." },
+              { c: "line.strip()", e: "Removes the \\n: the empty last line becomes <code>\"\"</code>." },
+              { c: 'if text != "":', e: "Skips the empty line: the output is <code>43.5</code>." },
+            ]),
+          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "<code>with open(name, mode) as f:</code> opens a file and closes it at the end of the block.",
+              "<code>with open(name, mode) as f:</code> opens a file and closes it at the end of the block. Written data is in the file after the close.",
               "<code>write()</code> and <code>writelines()</code> write strings; add \"\\n\" for new lines.",
               "<code>read()</code>: everything; <code>read(n)</code>: n characters; the position moves on.",
               "<code>readline()</code>: one line; <code>readlines()</code>: a list; <code>for line in f</code>: a loop.",
+              "Data from a file is always a str: convert it with <code>float()</code> or <code>int()</code>, and skip empty lines.",
             ]),
             NEXT("<b>File modes, errors, and folders</b>. Appending, creating, missing files, and the os module."),
           ] },
@@ -170,15 +191,11 @@
             ]),
             T("Adding <code>b</code> (for example <code>\"rb\"</code>) opens a file in binary mode, for images and other non-text files."),
           ] },
-          { kind: "code", part: "Append compared with write", title: "Example: w empties, a adds", blocks: [
-            EX('with open("log.txt", "w") as f:\n    f.write("start\\n")\nwith open("log.txt", "a") as f:\n    f.write("running\\n")\nwith open("log.txt") as f:\n    print(f.read())', "a keeps the old content", [
-              { c: '"w"', e: "The file now holds only start." },
-              { c: '"a"', e: "running is added after start: two lines." },
-            ]),
-          ] },
-          { kind: "code", part: "Append compared with write", title: "Example: w a second time", blocks: [
-            EX('with open("log.txt", "w") as f:\n    f.write("start\\n")\nwith open("log.txt", "w") as f:\n    f.write("new\\n")\nwith open("log.txt") as f:\n    print(f.read())', "the old content is lost", [
-              { c: 'second open(..., "w")', e: "Empties the file first: only <code>new</code> remains." },
+          { kind: "code", part: "Append compared with write", title: "Example: a adds, w empties", blocks: [
+            EX('with open("log.txt", "w") as f:\n    f.write("start\\n")\nwith open("log.txt", "a") as f:\n    f.write("running\\n")\nwith open("log.txt") as f:\n    print(f.read())\nwith open("log.txt", "w") as f:\n    f.write("new\\n")\nwith open("log.txt") as f:\n    print(f.read())', "a keeps the old content", [
+              { c: 'first open(..., "w")', e: "The file holds only start." },
+              { c: 'open(..., "a")', e: "running is added after start. The first read() displays two lines: <code>start</code>, <code>running</code>" },
+              { c: 'second open(..., "w")', e: "Empties the file first. The second read() displays only <code>new</code>" },
             ]),
           ] },
           { kind: "concept", part: "Errors when opening files", title: "FileNotFoundError and FileExistsError", blocks: [
@@ -202,10 +219,10 @@
           { kind: "concept", part: "The os module", title: "The os module", blocks: [
             TB(["Function", "Result"], [
               ["<code>os.getcwd()</code>", "the current working folder"],
-              ["<code>os.listdir(path)</code>", "a list of the names in a folder"],
               ["<code>os.path.exists(name)</code>", "True if the file or folder exists"],
-              ["<code>os.mkdir(name)</code>", "creates a folder"],
               ["<code>os.remove(name)</code>", "deletes a file"],
+              ["<code>os.listdir(path)</code>", "a list of the names in a folder"],
+              ["<code>os.mkdir(name)</code>", "creates a folder"],
             ]),
             T("A file name without a folder refers to the current working folder."),
             T("On this site, files are kept in the browser's memory, not on the computer's disk."),
@@ -249,11 +266,11 @@
         title: "CSV files",
         sub: "Tables as comma-separated text: writing rows and reading them back.",
         slides: "08:12–13",
-        keywords: "csv comma separated writer writerow reader dictreader header table",
+        keywords: "csv comma separated writer writerow reader dictreader header table convert compare typeerror",
         deck: [
           { kind: "overview", title: "CSV files", blocks: [
             T("A <b>CSV</b> file (comma-separated values) stores a table as text: one row per line, with the columns separated by commas. Spreadsheets and data loggers use it."),
-            L(["The CSV format", "Writing rows", "Reading rows", "Reading rows as dictionaries"], "Subtopics in this lesson", true),
+            L(["The CSV format", "Writing rows", "Reading rows", "Reading rows as dictionaries", "Reading, computing, and writing"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "The CSV format", title: "A table as text", blocks: [
             CODE("Name,Voltage,Current\npump,220,1.5\nfan,110,0.4", null, "devices.csv", "text"),
@@ -279,7 +296,7 @@
           { kind: "concept", part: "Reading rows", title: "csv.reader", blocks: [
             L([
               "<code>for row in csv.reader(f):</code> gives each row as a list of strings.",
-              "The header is also a row. Skip it with a counter, or read all rows with <code>list(csv.reader(f))</code> and slice <code>[1:]</code>.",
+              "The header is also a row. <code>rows = list(csv.reader(f))</code> reads all rows into a list; <code>rows[1:]</code> skips the header.",
               "Convert numbers: <code>float(row[1])</code>.",
             ]),
           ] },
@@ -289,6 +306,14 @@
           { kind: "code", part: "Reading rows", title: "Example: the total voltage", blocks: [
             T("<code>rows[1:]</code> skips the header row, and <code>int()</code> converts each voltage. The output is 330 = 220 + 110."),
             RUN('import csv\nwith open("devices.csv", "w") as f:\n    f.write("Name,Voltage\\npump,220\\nfan,110\\n")\nwith open("devices.csv") as f:\n    rows = list(csv.reader(f))\ntotal = 0\nfor row in rows[1:]:\n    total = total + int(row[1])\nprint(total)'),
+          ] },
+          { kind: "concept", part: "Reading rows", title: "Convert before comparing", blocks: [
+            T("A value from a CSV file is a string. Convert it with <code>int()</code> or <code>float()</code> before a comparison, as before a calculation."),
+            TB(["Code", "Result for row = [\"cable\", \"40\"]"], [
+              ["<code>row[1] &gt; \"100\"</code>", "<code>True</code>, with no error. <code>\"40\" &gt; \"100\"</code> compares the characters, and \"4\" comes after \"1\": the answer is wrong."],
+              ["<code>row[1] &gt; 100</code>", "<code>TypeError: '&gt;' not supported between instances of 'str' and 'int'</code>"],
+              ["<code>int(row[1]) &gt; 100</code>", "<code>False</code>: 40 and 100 are compared as numbers."],
+            ]),
           ] },
           { kind: "concept", part: "Reading rows as dictionaries", title: "csv.DictReader", blocks: [
             L([
@@ -304,12 +329,17 @@
               { c: 'row["Voltage"]', e: "By column name: <code>220</code>, then <code>110</code>" },
             ]),
           ] },
+          { kind: "code", part: "Reading, computing, and writing", title: "Example: read, compute, write a new file", blocks: [
+            T("The program reads devices.csv, computes the power of each data row, and writes power.csv. The output is the text of the new file: <code>Name,Power</code>, <code>pump,330.0</code>, <code>fan,44.0</code>."),
+            RUN('import csv\nwith open("devices.csv", "w") as f:\n    f.write("Name,Voltage,Current\\npump,220,1.5\\nfan,110,0.4\\n")\nwith open("devices.csv") as f:\n    rows = list(csv.reader(f))\nwith open("power.csv", "w", newline="") as f:\n    w = csv.writer(f)\n    w.writerow(["Name", "Power"])\n    for row in rows[1:]:\n        power = float(row[1]) * float(row[2])\n        w.writerow([row[0], power])\nwith open("power.csv") as f:\n    print(f.read())'),
+          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
               "A CSV file is a table as text: one row per line, values separated by commas.",
               "<code>csv.writer(f).writerow(list)</code> writes a row; open with <code>newline=\"\"</code>.",
-              "<code>csv.reader(f)</code> gives rows as lists of strings; convert the numbers.",
+              "<code>csv.reader(f)</code> gives rows as lists of strings. Convert the numbers before a calculation or a comparison.",
               "<code>csv.DictReader(f)</code> gives rows as dictionaries keyed by the header.",
+              "Data processing: read the rows, compute a value for each row, write the new rows to a file.",
             ]),
             NEXT("<b>JSON files</b>. Dictionaries and lists stored as text."),
           ] },
@@ -334,7 +364,7 @@
         title: "JSON files",
         sub: "Dictionaries and lists as text: dump, load, dumps, and loads.",
         slides: "08:14–15",
-        keywords: "json dump load dumps loads dictionary serialize",
+        keywords: "json dump load dumps loads dictionary serialize indent true false null jsondecodeerror",
         deck: [
           { kind: "overview", title: "JSON files", blocks: [
             T("<b>JSON</b> is a text format for dictionaries and lists. Web services and configuration files use it."),
@@ -343,23 +373,31 @@
           { kind: "concept", part: "The JSON format", title: "Dictionaries and lists as text", blocks: [
             CODE('{"name": "Pump", "voltage": 220, "modes": ["auto", "manual"]}', null, "JSON text", "text"),
             L([
-              "It looks like a Python dictionary, but strings always use double quotes.",
-              "true, false, and null in JSON become True, False, and None in Python.",
+              "The text looks like a Python dictionary: keys and values in { }, lists in [ ]. A few values are written differently.",
               "The module <code>json</code> converts between Python data and JSON text: <code>import json</code>.",
             ]),
           ] },
-          { kind: "visual", part: "The JSON format", title: "A dictionary and its JSON text", blocks: [
-            W("jsonFlow", { data: { name: "Pump", voltage: 220, modes: ["auto", "manual"] } }),
+          { kind: "concept", part: "The JSON format", title: "A dictionary and its JSON text", blocks: [
+            TB(["Python", "JSON text"], [
+              ["<code>True</code>", "<code>true</code>"],
+              ["<code>False</code>", "<code>false</code>"],
+              ["<code>None</code>", "<code>null</code>"],
+              ["<code>'text'</code> or <code>\"text\"</code>", "<code>\"text\"</code>: double quotes only"],
+              ["numbers, lists, dictionaries", "written in the same way"],
+            ]),
+            T("The dictionary <code>{'name': 'Pump', 'on': True, 'error': None}</code> becomes the JSON text <code>{\"name\": \"Pump\", \"on\": true, \"error\": null}</code>."),
           ] },
           { kind: "concept", part: "Files: dump and load", title: "json.dump and json.load", blocks: [
             TB(["Function", "Effect"], [
               ["<code>json.dump(data, f)</code>", "writes a dictionary or list to an open file as JSON text"],
               ["<code>json.load(f)</code>", "reads JSON text from an open file and returns the Python data"],
             ]),
+            T("<code>json.dump(data, f)</code> writes one line of text. With <code>json.dump(data, f, indent=4)</code>, each key is on its own line, indented by 4 spaces."),
           ] },
           { kind: "code", part: "Files: dump and load", title: "First example: save and load settings", blocks: [
-            EX('import json\nsettings = {"name": "Pump",\n            "voltage": 220}\nwith open("settings.json", "w") as f:\n    json.dump(settings, f)\nwith open("settings.json") as f:\n    loaded = json.load(f)\nprint(loaded["voltage"])', "a round trip through a file", [
-              { c: "json.dump(settings, f)", e: "The file holds <code>{\"name\": \"Pump\", \"voltage\": 220}</code>." },
+            EX('import json\nsettings = {"name": "Pump",\n            "voltage": 220}\nwith open("settings.json", "w") as f:\n    json.dump(settings, f)\nwith open("settings.json") as f:\n    print(f.read())\nwith open("settings.json") as f:\n    loaded = json.load(f)\nprint(loaded["voltage"])', "a round trip through a file", [
+              { c: "json.dump(settings, f)", e: "Writes the dictionary into the file as one line of JSON text." },
+              { c: "print(f.read())", e: "<code>{\"name\": \"Pump\", \"voltage\": 220}</code>" },
               { c: "json.load(f)", e: "A new dictionary; <code>loaded[\"voltage\"]</code> is <code>220</code>." },
             ]),
           ] },
@@ -369,6 +407,7 @@
               ["<code>json.loads(text)</code>", "converts a JSON string into Python data"],
             ]),
             T("Data received from a network or a sensor often arrives as a JSON string; loads converts it."),
+            T("The text must be valid JSON. With single quotes, <code>json.loads(\"{'a': 1}\")</code> raises <code>json.decoder.JSONDecodeError: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)</code>."),
           ] },
           { kind: "code", part: "Strings: dumps and loads", title: "Example: a sensor message", blocks: [
             EX('import json\ntext = \'{"id": "T1", "value": 25.4}\'\ndata = json.loads(text)\nprint(data["value"] + 1)\ndata["ok"] = True\nprint(json.dumps(data))', "string to dictionary and back", [
@@ -379,7 +418,7 @@
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "JSON is text for dictionaries and lists; strings use double quotes.",
+              "JSON is text for dictionaries and lists: double quotes only, and true, false, null for True, False, None.",
               "<code>json.dump(data, f)</code> / <code>json.load(f)</code> work with files.",
               "<code>json.dumps(data)</code> / <code>json.loads(text)</code> work with strings.",
             ]),
@@ -406,7 +445,7 @@
         title: "NumPy arrays",
         sub: "Creating arrays, shape, indexing, element-wise operations, and aggregation.",
         slides: "08:17–24",
-        keywords: "numpy array np shape ndim size indexing slicing element-wise sum mean max min axis",
+        keywords: "numpy array np shape ndim size indexing slicing element-wise list sum mean max min axis",
         deck: [
           { kind: "overview", title: "NumPy arrays", blocks: [
             T("<b>NumPy</b> is a library for numerical computing. Its <b>array</b> stores many numbers of the same type and calculates with all of them at once."),
@@ -451,22 +490,28 @@
           ] },
           { kind: "concept", part: "Element-wise operations", title: "Element-wise operations", blocks: [
             L([
-              "An operator between two arrays of the same shape works on the elements at the same positions: <code>a + b</code>, <code>a * b</code>.",
-              "An operator with a single number applies to every element: <code>a * 2</code>, <code>a + 10</code>.",
+              "An operator between two arrays works on the elements at the same positions: <code>a + b</code>, <code>a * b</code>.",
+              "The two arrays must have the same shape. Arrays of 3 and 2 elements give <code>ValueError: operands could not be broadcast together with shapes (3,) (2,)</code>.",
+              "An operator with a single number applies the number to every element: for <code>a = np.array([1, 2, 3])</code>, <code>a * 2</code> is <code>[2 4 6]</code>.",
               "Functions such as <code>np.sqrt(a)</code> also work element by element.",
             ]),
           ] },
           { kind: "visual", part: "Element-wise operations", title: "a + b: matching positions", blocks: [
             W("arrayOp", { title: "a + b", a: [1, 2, 3], b: [4, 5, 6], op: "+" }),
           ] },
-          { kind: "visual", part: "Element-wise operations", title: "a * 2: the number applies to every element", blocks: [
-            W("arrayOp", { title: "a * 2", a: [1, 2, 3], b: 2, op: "*" }),
-          ] },
           { kind: "code", part: "Element-wise operations", title: "Example: temperature rise", blocks: [
             EX("import numpy as np\nmorning = np.array([20, 25, 30])\nnoon = np.array([31, 36, 42])\nprint(noon - morning)\nprint(morning * 9 / 5 + 32)", "no loop is needed", [
               { c: "noon - morning", e: "Position by position: 31 − 20, 36 − 25, 42 − 30 → <code>[11 11 12]</code>" },
               { c: "morning * 9 / 5 + 32", e: "Each number applies to every element: the values in °F, <code>[68. 77. 86.]</code>" },
             ]),
+          ] },
+          { kind: "concept", part: "Element-wise operations", title: "Operators on a list and on an array", blocks: [
+            TB(["Code", "a and b are lists", "a and b are arrays"], [
+              ["<code>a * 2</code>", "<code>[1, 2, 3, 1, 2, 3]</code>: the list is repeated", "<code>[2 4 6]</code>: each element is multiplied"],
+              ["<code>a + b</code>", "<code>[1, 2, 3, 4, 5, 6]</code>: the lists are joined", "<code>[5 7 9]</code>: the elements are added"],
+              ["<code>a / 2</code>", "<code>TypeError: unsupported operand type(s) for /: 'list' and 'int'</code>", "<code>[0.5 1.&nbsp; 1.5]</code>: each element is divided"],
+            ], "<code>a</code> holds 1, 2, 3 and <code>b</code> holds 4, 5, 6."),
+            T("For a calculation on every element, convert the list first: <code>np.array(a)</code>."),
           ] },
           { kind: "concept", part: "Aggregation", title: "Aggregation functions", blocks: [
             TB(["Function", "Result for a = np.array([2, 4, 9])"], [
@@ -487,7 +532,8 @@
             L([
               "<code>np.array(list)</code> creates an array; it prints without commas.",
               "<code>shape</code>, <code>ndim</code>, <code>size</code> describe it; <code>m[row, col]</code> indexes 2-D arrays.",
-              "Operators and np functions work element by element, without loops.",
+              "Operators and np functions work element by element, without loops; two arrays must have the same shape.",
+              "A list is different: <code>* 2</code> repeats a list, and <code>+</code> joins two lists.",
               "<code>np.sum</code>, <code>np.mean</code>, <code>np.max</code>, <code>np.min</code>; <code>axis=0</code>: each column, <code>axis=1</code>: each row.",
             ]),
             NEXT("<b>pandas DataFrames</b>. Tables with named columns."),
@@ -511,13 +557,13 @@
       {
         id: "pandas",
         title: "pandas: DataFrames",
-        sub: "Creating tables, reading CSV files, inspecting, selecting, and column statistics.",
+        sub: "Creating tables, reading CSV files, inspecting, selecting, column statistics, and plotting.",
         slides: "08:26–32",
-        keywords: "pandas dataframe series read_csv head tail info describe column select loc iloc mean max",
+        keywords: "pandas dataframe series read_csv head tail info describe std column select iloc mean max plot matplotlib",
         deck: [
           { kind: "overview", title: "pandas: DataFrames", blocks: [
             T("<b>pandas</b> is a library for tables. A <b>DataFrame</b> is a table with named columns and a row index. Each column is a <b>Series</b>."),
-            L(["Creating a DataFrame", "Reading and writing CSV files", "Inspecting a table", "Selecting columns and rows", "Column statistics"], "Subtopics in this lesson", true),
+            L(["Creating a DataFrame", "Reading and writing CSV files", "Inspecting a table", "Selecting columns and rows", "Column statistics", "Plotting columns"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Creating a DataFrame", title: "Creating a DataFrame", blocks: [
             L([
@@ -531,8 +577,8 @@
             TB(["Function", "Effect"], [
               ["<code>pd.read_csv(\"file.csv\")</code>", "reads a CSV file into a DataFrame; the header gives the column names"],
               ["<code>df.to_csv(\"file.csv\", index=False)</code>", "writes the table; index=False leaves out the row numbers"],
+              ["<code>pd.read_excel(file)</code>, <code>pd.read_json(file)</code>", "read an Excel file or a JSON file in the same way"],
             ]),
-            T("<code>read_excel</code> and <code>read_json</code> read other formats in the same way."),
           ] },
           { kind: "code", part: "Reading and writing CSV files", title: "First example: a table from a CSV file", blocks: [
             EX('import pandas as pd\nwith open("staff.csv", "w") as f:\n    f.write("Name,Age,City\\n")\n    f.write("Ali,25,Bangkok\\n")\n    f.write("Bob,30,Chiang Mai\\n")\n    f.write("Char,35,Phuket\\n")\ndf = pd.read_csv("staff.csv")\nprint(df)', "the file becomes a table", [
@@ -549,19 +595,28 @@
               ["<code>df.describe()</code>", "count, mean, min, max, … of each numeric column"],
             ]),
           ] },
+          { kind: "code", part: "Inspecting a table", title: "Example: head() and shape", cols: [
+            [CODE('import pandas as pd\ndf = pd.DataFrame({\n    "Name": ["Ali", "Bob", "Char"],\n    "Age": [25, 30, 35]})\nprint(df.head(2))\nprint(df.shape)', null, "program")],
+            [CODE("  Name  Age\n0  Ali   25\n1  Bob   30\n(3, 2)", null, "output", "text")],
+          ] },
+          { kind: "code", part: "Inspecting a table", title: "Example: describe()", cols: [
+            [CODE('import pandas as pd\ndf = pd.DataFrame({\n    "Name": ["Ali", "Bob", "Char"],\n    "Age": [25, 30, 35]})\nprint(df.describe())', null, "program"),
+              T("<b>std</b> is the standard deviation: how far the values lie from the mean. <b>25%</b>, <b>50%</b>, <b>75%</b>: a quarter, a half (the median), and three quarters of the values lie below this value.")],
+            [CODE("        Age\ncount   3.0\nmean   30.0\nstd     5.0\nmin    25.0\n25%    27.5\n50%    30.0\n75%    32.5\nmax    35.0", null, "output", "text")],
+          ] },
           { kind: "concept", part: "Selecting columns and rows", title: "Selecting columns and rows", blocks: [
             TB(["Code", "Result"], [
-              ["<code>df[\"Age\"]</code>", "one column (a Series)"],
+              ["<code>df[\"Age\"]</code>", "one column: a <b>Series</b>, the values of the column with the row index"],
+              ["<code>df[\"Age\"].tolist()</code>", "the values of the column as a list"],
               ["<code>df[[\"Name\", \"City\"]]</code>", "several columns (a DataFrame): note the double brackets"],
-              ["<code>df.loc[0]</code>", "the row with the index label 0"],
-              ["<code>df.iloc[0]</code>", "the row at position 0"],
+              ["<code>df.iloc[0]</code>", "the row at position 0; positions count from 0, as in a list"],
             ]),
           ] },
           { kind: "code", part: "Selecting columns and rows", title: "Example: one column and one row", blocks: [
-            EX('import pandas as pd\ndf = pd.DataFrame({\n    "Name": ["Ali", "Bob", "Char"],\n    "Age": [25, 30, 35]})\nprint(df.shape)\nprint(df["Name"].tolist())\nprint(df.iloc[1]["Age"])', "shape, a column, a row", [
-              { c: "df.shape", e: "<code>(3, 2)</code>" },
-              { c: 'df["Name"].tolist()', e: "The column as a list: <code>['Ali', 'Bob', 'Char']</code>" },
-              { c: 'df.iloc[1]["Age"]', e: "Row 1, column Age: <code>30</code>" },
+            EX('import pandas as pd\ndf = pd.DataFrame({\n    "Name": ["Ali", "Bob", "Char"],\n    "Age": [25, 30, 35]})\nprint(df["Age"])\nprint(df["Age"].tolist())\nprint(df.iloc[1]["Age"])', "a Series, a list, a row", [
+              { c: 'df["Age"]', e: "A Series: one line for each row, with the index and the value (<code>0&nbsp;&nbsp;&nbsp;&nbsp;25</code>), then <code>Name: Age, dtype: int64</code>" },
+              { c: 'df["Age"].tolist()', e: "Only the values, as a list: <code>[25, 30, 35]</code>" },
+              { c: 'df.iloc[1]["Age"]', e: "The row at position 1, then its Age: <code>30</code>" },
             ]),
           ] },
           { kind: "concept", part: "Column statistics", title: "Column statistics", blocks: [
@@ -571,13 +626,20 @@
               ["<code>df[\"Age\"].sum()</code>", "<code>90</code>"],
             ]),
           ] },
+          { kind: "code", part: "Plotting columns", title: "Example: plotting two columns", blocks: [
+            EX('import pandas as pd\nimport matplotlib.pyplot as plt\nwith open("day.csv", "w") as f:\n    f.write("hour,temp\\n6,23\\n9,27\\n")\n    f.write("12,31\\n15,30\\n")\ndf = pd.read_csv("day.csv")\nplt.plot(df["hour"], df["temp"])\nplt.xlabel("Hour")\nplt.ylabel("Temperature (C)")\nplt.show()', "data from a file as a line plot", [
+              { c: 'pd.read_csv("day.csv")', e: "A table with the columns hour and temp." },
+              { c: 'plt.plot(df["hour"], df["temp"])', e: "A column is used like a list (Topic 07): hour gives the x values, temp the y values." },
+              { c: "plt.xlabel, plt.ylabel", e: "The axis labels, with the unit." },
+            ]),
+          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
               "A DataFrame is a table: named columns (Series) and a row index.",
               "<code>pd.DataFrame(dict)</code> or <code>pd.read_csv(file)</code> creates it; <code>to_csv</code> saves it.",
               "<code>head()</code>, <code>tail()</code>, <code>shape</code>, <code>info()</code>, <code>describe()</code> inspect it.",
-              "<code>df[\"col\"]</code> selects a column; <code>loc</code> and <code>iloc</code> select rows.",
-              "<code>df[\"col\"].mean()</code>, <code>.max()</code>, <code>.min()</code>, <code>.sum()</code>.",
+              "<code>df[\"col\"]</code> selects a column (a Series), <code>df.iloc[n]</code> a row; <code>.mean()</code>, <code>.max()</code>, <code>.min()</code>, <code>.sum()</code> summarize a column.",
+              "<code>plt.plot(df[\"x\"], df[\"y\"])</code> plots one column against another.",
             ]),
             NEXT("<b>pandas: filtering, sorting, and changing data</b>."),
           ] },
@@ -602,7 +664,7 @@
         title: "pandas: filtering, sorting, and changing data",
         sub: "Selecting rows by a condition, sorting, new columns, and groups.",
         slides: "08:32–37",
-        keywords: "pandas filter condition sort_values reset_index new column groupby mean",
+        keywords: "pandas filter condition and or sort_values loc iloc reset_index new column concat groupby mean",
         deck: [
           { kind: "overview", title: "pandas: filtering, sorting, and changing data", blocks: [
             T("pandas answers questions about a table with short expressions: which rows meet a condition, in which order, and what each group contains."),
@@ -612,7 +674,8 @@
             L([
               "<code>df[\"Age\"] &gt; 28</code> gives True or False for every row.",
               "<code>df[df[\"Age\"] &gt; 28]</code> keeps only the rows where it is True.",
-              "Combine conditions with <code>&amp;</code> (and) and <code>|</code> (or), each in parentheses: <code>df[(df[\"Age\"] &gt; 20) &amp; (df[\"City\"] == \"Bangkok\")]</code>.",
+              "Combine conditions with <code>&amp;</code> (and) and <code>|</code> (or), each condition in parentheses: <code>df[(df[\"Age\"] &gt; 20) &amp; (df[\"City\"] == \"Bangkok\")]</code>.",
+              "The keywords <code>and</code> and <code>or</code> do not work here: they need a single True or False, not one value for every row. They raise <code>ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().</code> The same error appears without the parentheses.",
             ]),
           ] },
           { kind: "visual", part: "Filtering rows", title: "A filter, row by row", blocks: [
@@ -626,18 +689,27 @@
               { c: "print(...)", e: "<code>['Bob', 'Char']</code> and <code>2</code>" },
             ]),
           ] },
-          { kind: "concept", part: "Sorting", title: "sort_values and reset_index", blocks: [
+          { kind: "code", part: "Filtering rows", title: "Example: two conditions", blocks: [
+            EX('import pandas as pd\ndf = pd.DataFrame({\n    "temp": [24, 31, 35, 28],\n    "hum": [60, 45, 30, 70]})\nboth = df[(df["temp"] > 30) &\n          (df["hum"] < 40)]\neither = df[(df["temp"] > 30) |\n            (df["hum"] < 40)]\nprint(both["temp"].tolist())\nprint(either["temp"].tolist())', "& and |, each condition in parentheses", [
+              { c: "(...) & (...)", e: "Both conditions are True only for temp 35, hum 30: <code>[35]</code>" },
+              { c: "(...) | (...)", e: "At least one condition is True in two rows: <code>[31, 35]</code>" },
+            ]),
+          ] },
+          { kind: "concept", part: "Sorting", title: "sort_values, loc and iloc, reset_index", blocks: [
             TB(["Code", "Result"], [
               ["<code>df.sort_values(\"Age\")</code>", "a new table sorted by Age, increasing"],
               ["<code>df.sort_values(\"Age\", ascending=False)</code>", "sorted by Age, decreasing"],
-              ["<code>df.reset_index(drop=True)</code>", "renumbers the rows 0, 1, 2, … after a sort or a filter"],
+              ["<code>df.loc[0]</code>", "the row with the index <b>label</b> 0"],
+              ["<code>df.iloc[0]</code>", "the row at <b>position</b> 0, the first row"],
+              ["<code>df.reset_index(drop=True)</code>", "renumbers the labels 0, 1, 2, … after a sort or a filter"],
             ]),
+            T("In a new table, label and position are the same. A sort or a filter moves or removes rows, but each row keeps its label: then loc and iloc give different rows."),
           ] },
           { kind: "code", part: "Sorting", title: "Example: the highest first", blocks: [
-            EX('import pandas as pd\ndf = pd.DataFrame({\n    "Name": ["Ali", "Bob", "Char"],\n    "Score": [78, 92, 85]})\ntop = df.sort_values("Score",\n                     ascending=False)\nprint(top.loc[0]["Name"])\ntop = top.reset_index(drop=True)\nprint(top.loc[0]["Name"])', "sort, then renumber", [
-              { c: "sort_values(..., ascending=False)", e: "Bob 92, Char 85, Ali 78. Each row keeps its index label: 1, 2, 0." },
-              { c: 'top.loc[0]["Name"]', e: "Label 0 is still the row of Ali: <code>Ali</code>" },
-              { c: "reset_index(drop=True)", e: "Renumbers the rows 0, 1, 2. Label 0 is now the best: <code>Bob</code>" },
+            EX('import pandas as pd\ndf = pd.DataFrame({\n    "Name": ["Ali", "Bob", "Char"],\n    "Score": [78, 92, 85]})\ntop = df.sort_values("Score",\n                     ascending=False)\nprint(top.loc[0]["Name"])\nprint(top.iloc[0]["Name"])\ntop = top.reset_index(drop=True)\nprint(top.loc[0]["Name"])', "sort, then renumber", [
+              { c: "sort_values(...)", e: "Bob 92, Char 85, Ali 78. Each row keeps its index label: 1, 2, 0." },
+              { c: "top.loc[0], top.iloc[0]", e: "Label 0 is still the row of Ali: <code>Ali</code>. Position 0 is the first row: <code>Bob</code>" },
+              { c: "reset_index(drop=True)", e: "Renumbers the labels 0, 1, 2. Label 0 is now the first row: <code>Bob</code>" },
             ]),
           ] },
           { kind: "concept", part: "Adding and changing columns", title: "New and changed columns", blocks: [
@@ -652,12 +724,6 @@
               { c: 'df["Voltage"] * df["Current"]', e: "Row by row: 220 × 1.5 = 330.0 and 110 × 0.4 = 44.0" },
               { c: 'df["Power"] = power', e: "Stores the results as a new column." },
               { c: "print(df)", e: "The table now has four columns." },
-            ]),
-          ] },
-          { kind: "code", part: "Adding and changing columns", title: "Example: joining two tables with concat", blocks: [
-            EX('import pandas as pd\nday1 = pd.DataFrame({\n    "Hour": [8, 12],\n    "Temp": [24, 31]})\nday2 = pd.DataFrame({\n    "Hour": [8, 12],\n    "Temp": [23, 30]})\nboth = pd.concat([day1, day2])\nprint(both)\nprint(len(both))', "two tables with the same columns", [
-              { c: "pd.concat([day1, day2])", e: "The rows of day2 are placed below the rows of day1: <code>4</code> rows." },
-              { c: "print(both)", e: "Each row keeps its index label: 0, 1, 0, 1. <code>reset_index(drop=True)</code> renumbers them." },
             ]),
           ] },
           { kind: "concept", part: "Groups", title: "groupby", blocks: [
@@ -675,8 +741,8 @@
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "<code>df[df[\"col\"] &gt; x]</code> filters rows; combine conditions with &amp; and |.",
-              "<code>sort_values(col, ascending=False)</code> sorts; <code>reset_index(drop=True)</code> renumbers.",
+              "<code>df[df[\"col\"] &gt; x]</code> filters rows; combine conditions with &amp; and |, each in parentheses, not with and / or.",
+              "<code>sort_values(col, ascending=False)</code> sorts; each row keeps its label. <code>loc</code> uses the label, <code>iloc</code> the position; <code>reset_index(drop=True)</code> renumbers.",
               "<code>df[\"new\"] = expression</code> adds a computed column.",
               "<code>df.groupby(col)[other].mean()</code> summarizes each group.",
             ]),
@@ -703,7 +769,7 @@
         title: "Chapter practice",
         sub: "Complete data processing problems.",
         slides: "08:39",
-        keywords: "practice numpy array row sum dataframe average csv filter groupby file",
+        keywords: "practice numpy array row sum dataframe average csv filter groupby file summary maximum minimum try except",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
             T("Solve every problem with the five steps:"),
@@ -723,11 +789,17 @@
             PQ("Write the program.", "[ 6 15 24]\n9", "import numpy as np\n# Write your program here\n", null, "print(np.sum(m, axis=1)); print(np.max(m))"),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: readings from a text file", blocks: [
-            T("A data logger writes one temperature per line into a text file. Compute the average, rounded to 1 decimal place."),
-            IPO([["Input", "the file temps.txt"], ["Output", "the average"], ["Processing", "read each line, float(), sum, count"]]),
+            T("A data logger writes one temperature per line into a text file. A line can be damaged. Write the maximum, the minimum, and the average of the valid readings into a summary file."),
+            IPO([
+              ["Input", "the file temps.txt: one reading per line"],
+              ["Output", "the file summary.txt with three lines: max, min, avg (1 decimal place). Display the file."],
+              ["Processing", "read each line, float(), collect the values in a list; max(), min(), sum() / len()"],
+              ["Exceptions (Topic 07)", "ValueError from float(): skip the line. FileNotFoundError from open(): display \"temps.txt not found\"."],
+              ["Test", "valid readings 22.0, 24.5, 27.0: (22.0 + 24.5 + 27.0) / 3 = 24.5"],
+            ]),
           ] },
           { kind: "exercise", part: "Problem 2", title: "Problem 2: write the program", blocks: [
-            PQ("The starter writes the file. Read it and display the average.", "24.5", 'with open("temps.txt", "w") as f:\n    f.write("22.0\\n24.5\\n27.0\\n")\n# Write your program here\n', null, "round(total / count, 1)"),
+            PQ("The starter writes the file; one line is not a number. Write summary.txt with the three lines of the target, then read it and display it. Use try for both exceptions.", "max 27.0\nmin 22.0\navg 24.5", 'with open("temps.txt", "w") as f:\n    f.write("22.0\\n24.5\\nerror\\n27.0\\n")\n# Write your program here\n', null, 'try: values.append(float(line)) / except ValueError: continue. Then f.write("max " + str(max(values)) + "\\n")'),
           ] },
           { kind: "problem", part: "Problem 3", title: "Problem 3: mean salary per department", blocks: [
             T("Create a DataFrame of employees (name, dept, salary) and display the mean salary of each department."),
@@ -745,10 +817,10 @@
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [
             TB(["Lesson", "Key rule"], [
-              ["1–2. Files", "<code>with open(name, mode)</code>; r / w / a / x; read, readline, readlines; FileNotFoundError."],
-              ["3–4. CSV and JSON", "csv.writer / reader / DictReader; json.dump / load / dumps / loads."],
-              ["5. NumPy", "Arrays, shape, element-wise operations, np.sum / mean / max, axis."],
-              ["6–7. pandas", "DataFrame, read_csv, head, df[\"col\"], filters, sort_values, groupby."],
+              ["1–2. Files", "<code>with open(name, mode)</code>; r / w / a / x; read, readline, readlines; data from a file is a str; FileNotFoundError."],
+              ["3–4. CSV and JSON", "csv.writer / reader / DictReader; convert before comparing; json.dump / load / dumps / loads."],
+              ["5. NumPy", "Arrays, shape, element-wise operations (not as with lists), np.sum / mean / max, axis."],
+              ["6–7. pandas", "DataFrame, read_csv, head, describe, df[\"col\"], plotting columns, filters with &amp; and |, sort_values, groupby."],
             ]),
             N("<b>Topic 09: Algorithms and efficiency</b>. How to measure and compare the speed of algorithms.", "Next topic"),
           ] },
