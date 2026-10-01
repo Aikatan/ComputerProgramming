@@ -1,7 +1,8 @@
 /* ===================== Topic 04 - Flowcharts and Pseudocode =====================
    Authored deck format (see CHAPTER-IMPROVEMENT-PROMPT.md).
    Lesson order: symbols and sequence -> decisions -> loops -> pseudocode -> practice.
-   Python level: t02-t03 material (if, while, for, range, break). No lists, dicts, functions, or try.
+   Python level: t02-t03 material (if, nested if, while, for, range, break, continue, nested loops).
+   No lists, dicts, functions, or try.
    Flowcharts use the "flowchart" widget: shapes on a grid (col, row), drawn at 1:1 scale.
    ================================================================================= */
 (function () {
@@ -133,6 +134,12 @@
       E("q2", "e", { port: "left", lane: "left", label: "False" }), E("h", "e")],
     code: ["x = int(input())", "if x > 10:", '    print("Hi-value")', "elif x > 15:", "    print(x)   # never runs"],
   };
+  // a decision on the True exit of another decision: an if inside an if
+  const F_inner = {
+    nodes: [ST("s", "START", 0, 0), IO("i", "INPUT x", 0, 1), DE("q1", "x > 10 ?", 0, 2), DE("q2", "x < 20 ?", 0, 3), IO("d", "DISPLAY x", 0, 4), ST("e", "END", 0, 5)],
+    edges: [E("s", "i"), E("i", "q1"), E("q1", "q2", { label: "True" }), E("q2", "d", { label: "True" }), E("d", "e"),
+      E("q1", "e", { port: "left", lane: "left", label: "False" }), E("q2", "e", { port: "right", lane: "right", label: "False" })],
+  };
   const F_hot = {
     cols: [0, 300],
     nodes: [ST("s", "START", 0, 0), IO("i", "INPUT t", 0, 1), DE("q1", "t > 30 ?", 0, 2), IO("h", 'DISPLAY "HOT"', 1, 2), DE("q2", "t > 20 ?", 0, 3), IO("w", 'DISPLAY "WARM"', 1, 3), IO("c", 'DISPLAY "COLD"', 0, 4), ST("e", "END", 0, 5)],
@@ -152,7 +159,7 @@
 
   const F_while = {
     nodes: [ST("s", "START", 0, 0), IO("i", "INPUT x", 0, 1), DE("q", "x > 10 ?", 0, 2), IO("d", "DISPLAY x", 0, 3), ST("e", "END", 0, 4)],
-    edges: [E("s", "i"), E("i", "q"), E("q", "d", { label: "True" }), E("d", "e"), E("q", "i", { port: "left", lane: "left", label: "False" })],
+    edges: [E("s", "i"), E("i", "q"), E("q", "d", { label: "True" }), E("d", "e"), E("q", "i", { port: "left", lane: "left", laneIndex: 2, label: "False" })],   // lane 2: the arrow goes up, clear of its False label
     code: ["x = int(input())", "while not (x > 10):", "    x = int(input())", "print(x)"], map: { i: [0, 2], q: [1], d: [3] },
     trace: [
       { node: "s", note: "START. Test values: the user enters 5, 8, then 12." },
@@ -166,22 +173,26 @@
       { node: "e", note: "END. Result check: 5 and 8 are not above 10; 12 is the first value above 10, so 12 is displayed." },
     ],
   };
+  // the body (DISPLAY x) comes before the update; the loop-back leaves the update sideways
   const F_count = {
-    nodes: [ST("s", "START", 0, 0), PR("a", "x = 1", 0, 1), DE("q", "x < 4 ?", 0, 2), PR("b", "x = x + 1", 0, 3), IO("d", "DISPLAY x", 0, 4), ST("e", "END", 0, 5)],
-    edges: [E("s", "a"), E("a", "q"), E("q", "b", { label: "True" }), E("b", "q", { lane: "left" }), E("q", "d", { port: "right", lane: "right", label: "False" }), E("d", "e")],
-    code: ["x = 1", "while x < 4:", "    x = x + 1", "print(x)"], map: { a: [0], q: [1], b: [2], d: [3] },
+    cols: [0, 230],
+    nodes: [ST("s", "START", 0, 0), PR("a", "x = 1", 0, 1), DE("q", "x < 4 ?", 0, 2), IO("d", "DISPLAY x", 0, 3), ST("e", "END", 1, 3), PR("b", "x = x + 1", 0, 4)],
+    edges: [E("s", "a"), E("a", "q"), E("q", "d", { label: "True" }), E("d", "b"), E("b", "q", { port: "left", lane: "left" }), E("q", "e", { port: "right", label: "False" })],
+    code: ["x = 1", "while x < 4:", '    print(x, end=" ")', "    x = x + 1"], map: { a: [0], q: [1], d: [2], b: [3] },
     trace: [
       { node: "s", note: "START." },
       { node: "a", note: "Initialize the counter: x = 1.", set: { x: "1" } },
-      { node: "q", note: "1 < 4 is True: into the loop." },
-      { node: "b", note: "Update: x becomes 2. Back to the decision.", set: { x: "2" } },
-      { node: "q", note: "2 < 4 is True." },
-      { node: "b", note: "x becomes 3.", set: { x: "3" } },
-      { node: "q", note: "3 < 4 is True." },
-      { node: "b", note: "x becomes 4.", set: { x: "4" } },
-      { node: "q", note: "4 < 4 is False: leave the loop." },
-      { node: "d", note: "Output: x is displayed.", print: "4" },
-      { node: "e", note: "END. Result check: 1 + 1 + 1 + 1 = 4. After <code>for x in range(1, 4)</code>, x would be 3, the last value used." },
+      { node: "q", note: "Test: 1 < 4 is True, into the loop." },
+      { node: "d", note: "Body: x is displayed.", print: "1", end: " " },
+      { node: "b", note: "Update: x becomes 2. Back to the test.", set: { x: "2" } },
+      { node: "q", note: "Test: 2 < 4 is True." },
+      { node: "d", note: "Body: x is displayed.", print: "2", end: " " },
+      { node: "b", note: "Update: x becomes 3.", set: { x: "3" } },
+      { node: "q", note: "Test: 3 < 4 is True." },
+      { node: "d", note: "Body: x is displayed.", print: "3", end: " " },
+      { node: "b", note: "Update: x becomes 4.", set: { x: "4" } },
+      { node: "q", note: "Test: 4 < 4 is False, the loop ends." },
+      { node: "e", note: "END. Result check: 1 2 3, as range(1, 4)." },
     ],
   };
   const F_step2 = {
@@ -192,20 +203,61 @@
   const F_inf = {
     cols: [0, 260],
     nodes: [ST("s", "START", 0, 0), PR("a", "x = 1", 0, 1), DE("q", "x < 10 ?", 0, 2), PR("b", "x = x + 2", 0, 3), PR("r", "x = 1", 1, 3), IO("d", "DISPLAY x", 0, 4), ST("e", "END", 0, 5)],
-    edges: [E("s", "a"), E("a", "q"), E("q", "b", { label: "True" }), E("b", "r"), E("r", "q", { lane: "right", laneIndex: 1 }), E("q", "d", { port: "left", lane: "left", label: "False" }), E("d", "e")],
+    edges: [E("s", "a"), E("a", "q"), E("q", "b", { label: "True" }), E("b", "r", { port: "right" }), E("r", "q", { lane: "right", laneIndex: 1 }), E("q", "d", { port: "left", lane: "left", label: "False" }), E("d", "e")],
     code: ["x = 1", "while x < 10:", "    x = x + 2", "    x = 1      # resets x", "print(x)     # never reached"],
   };
   const F_break = {
     cols: [0, 290],
     nodes: [ST("s", "START", 0, 0), PR("a", "n = 51", 0, 1), DE("q1", "n < 100 ?", 0, 2), DE("q2", "n % 7 == 0 ?", 0, 3), IO("d", "DISPLAY n", 1, 3), PR("b", "n = n + 1", 0, 4), ST("e", "END", 1, 4)],
-    edges: [E("s", "a"), E("a", "q1"), E("q1", "q2", { label: "True" }), E("q2", "d", { port: "right", label: "True" }), E("q2", "b", { label: "False" }), E("b", "q1", { lane: "left" }),
+    edges: [E("s", "a"), E("a", "q1"), E("q1", "q2", { label: "True" }), E("q2", "d", { port: "right", label: "True" }), E("q2", "b", { label: "False" }), E("b", "q1", { port: "left", lane: "left" }),
       E("d", "e"), E("q1", "e", { port: "right", lane: "right", label: "False" })],
     code: ["n = 51", "while n < 100:", "    if n % 7 == 0:", "        print(n)", "        break", "    n = n + 1"],
   };
+  // for x in range(1, 6) with continue: the continue arrow joins the flow before the update
+  const F_cont = {
+    cols: [0, 250],
+    nodes: [ST("s", "START", 0, 0), PR("a", "x = 1", 0, 1), DE("q1", "x < 6 ?", 0, 2), ST("e", "END", 1, 2), DE("q2", "x % 2 == 0 ?", 0, 3), IO("d", "DISPLAY x", 0, 4), PR("b", "x = x + 1", 0, 5)],
+    edges: [E("s", "a"), E("a", "q1"), E("q1", "e", { port: "right", label: "False" }), E("q1", "q2", { label: "True" }), E("q2", "d", { label: "False" }), E("d", "b"),
+      E("q2", "b", { port: "right", lane: "right", label: "True" }), E("b", "q1", { port: "left", lane: "left" })],
+    code: ["for x in range(1, 6):", "    if x % 2 == 0:", "        continue", '    print(x, end=" ")'], map: { a: [0], q1: [0], q2: [1], d: [3], b: [0] },
+    trace: [
+      { node: "s", note: "START." },
+      { node: "a", note: "Initialize the counter: x = 1.", set: { x: "1" } },
+      { node: "q1", note: "1 < 6 is True: into the loop." },
+      { node: "q2", note: "1 % 2 == 0 is False: 1 is odd." },
+      { node: "d", note: "x is displayed.", print: "1", end: " " },
+      { node: "b", note: "Update: x becomes 2.", set: { x: "2" } },
+      { node: "q1", note: "2 < 6 is True." },
+      { node: "q2", note: "2 % 2 == 0 is True: continue." },
+      { node: "b", note: "DISPLAY is skipped. x becomes 3.", set: { x: "3" } },
+      { node: "q1", note: "3 < 6 is True." },
+      { node: "q2", note: "3 % 2 == 0 is False." },
+      { node: "d", note: "x is displayed.", print: "3", end: " " },
+      { node: "b", note: "Update: x becomes 4.", set: { x: "4" } },
+      { node: "q1", note: "4 < 6 is True." },
+      { node: "q2", note: "4 % 2 == 0 is True: continue." },
+      { node: "b", note: "DISPLAY is skipped. x becomes 5.", set: { x: "5" } },
+      { node: "q1", note: "5 < 6 is True." },
+      { node: "q2", note: "5 % 2 == 0 is False." },
+      { node: "d", note: "x is displayed.", print: "5", end: " " },
+      { node: "b", note: "Update: x becomes 6.", set: { x: "6" } },
+      { node: "q1", note: "6 < 6 is False: the loop ends." },
+      { node: "e", note: "END. Result check: 1 3 5, the odd values." },
+    ],
+  };
+  // a loop inside a loop: j = 1 is on the True exit of the outer decision
+  const F_nest = {
+    cols: [0, 320],
+    nodes: [ST("s", "START", 0, 0), PR("a", "i = 1", 0, 1), DE("q1", "i < 3 ?", 0, 2), ST("e", "END", 1, 2), PR("c", "j = 1", 0, 3), DE("q2", "j < 4 ?", 0, 4), IO("d", "DISPLAY i, j", 1, 4),
+      PR("u", "i = i + 1", 0, 5), PR("v", "j = j + 1", 1, 5)],
+    edges: [E("s", "a"), E("a", "q1"), E("q1", "e", { port: "right", label: "False" }), E("q1", "c", { label: "True" }), E("c", "q2"), E("q2", "d", { port: "right", label: "True" }), E("d", "v"),
+      E("v", "q2", { port: "right", lane: "right" }), E("q2", "u", { label: "False" }), E("u", "q1", { port: "left", lane: "left" })],
+    code: ["for i in range(1, 3):", "    for j in range(1, 4):", "        print(i, j)"],
+  };
+  // one column, so that the chart fits beside its trace table
   const F_exLoop = {
-    cols: [0, 290],
-    nodes: [ST("s", "START", 0, 0), PR("a", "total = 0, k = 1", 0, 1), DE("q", "k <= 2 ?", 0, 2), PR("b", "total = total + k", 0, 3), PR("c", "k = k + 1", 0, 4), IO("d", "DISPLAY total", 1, 3), ST("e", "END", 1, 4)],
-    edges: [E("s", "a"), E("a", "q"), E("q", "b", { label: "True" }), E("b", "c"), E("c", "q", { lane: "left" }), E("q", "d", { port: "right", label: "False" }), E("d", "e")],
+    nodes: [ST("s", "START", 0, 0), PR("a", "total = 0, k = 1", 0, 1), DE("q", "k <= 2 ?", 0, 2), PR("b", "total = total + k", 0, 3), PR("c", "k = k + 1", 0, 4), IO("d", "DISPLAY total", 0, 5), ST("e", "END", 0, 6)],
+    edges: [E("s", "a"), E("a", "q"), E("q", "b", { label: "True" }), E("b", "c"), E("c", "q", { port: "right", lane: "right" }), E("q", "d", { port: "left", lane: "left", label: "False" }), E("d", "e")],
     trace: [
       { node: "a", note: "total = 0, k = 1", set: { total: "0", k: "1" } },
       { node: "q", note: "1 <= 2 is True" },
@@ -248,7 +300,7 @@
         keywords: "algorithm flowchart symbol terminator process input output decision connector predefined sequence",
         deck: [
           { kind: "overview", title: "Flowcharts and their symbols", blocks: [
-            T("An <b>algorithm</b> is a finite sequence of steps that solves a problem. A <b>flowchart</b> draws an algorithm as connected symbols. Pseudocode (Lesson 4) writes it as structured text. Both are used to design a program before it is coded."),
+            T("A <b>flowchart</b> draws an algorithm (Topic 00) as connected symbols. Pseudocode (Lesson 4) writes it as structured text. Both are used to design a program before it is coded."),
             L(["Flowcharts", "Flowchart symbols", "Rules for drawing flowcharts", "Sequence: steps in order", "Connectors and predefined processes"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Flowcharts", title: "What a flowchart shows", blocks: [
@@ -388,13 +440,13 @@
           ] },
           { kind: "code", part: "The same logic, written two ways", title: "Example: the condition x <= 10", blocks: [
             STATIC(F_alt),
-            T("This chart displays x only when <code>x &gt; 10</code>, like the first example. The True branch is empty, so the Python code uses <code>pass</code>."),
+            T("This chart displays x only when <code>x &gt; 10</code>, like the first example. Its True branch is empty, so this code needs <code>pass</code>. In a program, write <code>if x &gt; 10:</code> instead: no empty branch."),
           ] },
           { kind: "concept", part: "Several conditions", title: "A decision after a decision", blocks: [
             L([
               "A second decision can follow an exit of the first decision.",
-              "A second decision on the False exit is <code>elif</code> in Python.",
-              "The conditions are checked in order. The first True condition decides the path.",
+              "On the False exit, it is <code>elif</code> in Python. The conditions are checked in order, and the first True condition decides the path.",
+              "On the True exit, it is an if inside an if (Topic 03). It is checked only when the first condition is True.",
             ]),
           ] },
           { kind: "code", part: "Several conditions", title: "Example: two decisions", blocks: [STATIC(F_nested)] },
@@ -404,6 +456,11 @@
               ["12", "False", "True", "12"],
               ["5", "False", "False", "(nothing)"],
             ], null, "center"),
+          ] },
+          { kind: "code", part: "Several conditions", title: "Example: a decision on the True exit", cols: [
+            [CHART(F_inner)],
+            [T("Here the second decision is on the True exit: an if inside an if. x is displayed only when both conditions are True. In the previous example it is on the False exit: <code>elif</code>."),
+              CODE("x = int(input())\nif x > 10:\n    if x < 20:\n        print(x)", null, "program")],
           ] },
           { kind: "concept", part: "Unreachable conditions", title: "Unreachable conditions", blocks: [
             T("A condition that can never be True on its path is an <b>unreachable condition</b>. Its branch never runs."),
@@ -418,7 +475,7 @@
               "A decision has one condition and two exits: True and False.",
               "Steps on one exit: <code>if</code>. Steps on both exits: <code>if … else</code>.",
               "An opposite condition with exchanged exits gives the same result.",
-              "A decision on the False exit of another decision is <code>elif</code>.",
+              "A decision on the False exit of another decision is <code>elif</code>. On the True exit, it is an if inside an if.",
               "Check the stricter condition first, or the other branch is unreachable.",
             ]),
             NEXT("<b>Loops in flowcharts</b>. An arrow that goes back to a decision repeats steps."),
@@ -458,13 +515,13 @@
       {
         id: "flowchart-loops",
         title: "Loops in flowcharts",
-        sub: "Loops with a condition, counting loops, infinite loops, and break.",
+        sub: "Loops with a condition, counting loops, for and range(), infinite loops, break, continue, and nested loops.",
         slides: "04:12–15",
-        keywords: "loop flowchart while for counter infinite break back arrow",
+        keywords: "loop flowchart while for range counter update infinite break continue nested back arrow",
         deck: [
           { kind: "overview", title: "Loops in flowcharts", blocks: [
             T("A loop in a flowchart is an arrow that goes back to an earlier symbol. A decision decides whether the loop repeats or ends."),
-            L(["The loop structure", "A counting loop", "A loop that repeats an input", "Infinite loops", "Leaving a loop early"], "Subtopics in this lesson", true),
+            L(["The loop structure", "A counting loop", "A loop that repeats an input", "Infinite loops", "break and continue", "A loop inside a loop"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "The loop structure", title: "A decision with an arrow back", blocks: [
             L([
@@ -475,7 +532,7 @@
           ] },
           { kind: "concept", part: "A counting loop", title: "A counting loop", blocks: [
             L([
-              "A counting loop has three steps: initialize the counter, test it in the decision, update it in the loop.",
+              "A counting loop has three steps around its body: initialize the counter, test it in the decision, and update it after the body.",
               "In Python, a counting loop with a decision is a while loop. <code>for x in range(1, 4)</code> uses the same values 1, 2, 3 (Topic 03).",
             ]),
           ] },
@@ -483,6 +540,18 @@
           { kind: "code", part: "A counting loop", title: "Example: a step of 2", blocks: [
             STATIC(F_step2),
             T("x takes 1, 3, 5, 7, 9, and then 11. 11 &lt; 10 is False, so 11 is displayed."),
+          ] },
+          { kind: "concept", part: "A counting loop", title: "for and range() in a flowchart", blocks: [
+            TB(["In <code>for i in range(a, b, s)</code>", "In the flowchart", "Position"], [
+              ["start <code>a</code>", "process <code>i = a</code>", "before the loop"],
+              ["stop <code>b</code>", "decision <code>i &lt; b ?</code>", "True enters the loop"],
+              ["the block", "the steps on the True exit", "the body"],
+              ["step <code>s</code>", "process <code>i = i + s</code>", "after the body, then back to the decision"],
+            ]),
+            L([
+              "A negative step counts down, and the decision is <code>i &gt; b ?</code>. Example: <code>range(5, 0, -1)</code> gives <code>i = 5</code>, <code>i &gt; 0 ?</code>, and <code>i = i - 1</code>.",
+              "After the loop, the counter of the chart holds the first value that fails the test. After a Python <code>for</code> loop, the variable keeps the last value used.",
+            ]),
           ] },
           { kind: "concept", part: "A loop that repeats an input", title: "A loop that repeats an input", blocks: [
             L([
@@ -501,38 +570,43 @@
             ]),
           ] },
           { kind: "visual", part: "Infinite loops", title: "Example: an infinite loop (do not run)", blocks: [STATIC(F_inf)] },
-          { kind: "concept", part: "Leaving a loop early", title: "break in a flowchart", blocks: [
+          { kind: "concept", part: "break and continue", title: "break in a flowchart", blocks: [
             L([
               "<code>break</code> is an arrow from inside the loop directly to the first step after the loop.",
               "The loop then has two exits: the normal exit of the decision, and the break exit.",
               "In the example, the search stops at the first multiple of 7.",
             ]),
           ] },
-          { kind: "code", part: "Leaving a loop early", title: "Example: the first multiple of 7 from 51", blocks: [
+          { kind: "code", part: "break and continue", title: "Example: the first multiple of 7 from 51", blocks: [
             STATIC(F_break),
             T("51 to 55 are not multiples of 7. At n = 56, <code>56 % 7 == 0</code> is True: 56 is displayed, and the break arrow leads directly to END. Output: <code>56</code>"),
           ] },
+          { kind: "concept", part: "break and continue", title: "continue in a flowchart", blocks: [
+            L([
+              "<code>continue</code> is an arrow from inside the loop back to the decision of the loop. The steps after it are skipped for this value.",
+              "In a counting loop, the arrow must pass through the update first. A <code>for</code> loop does this automatically (Topic 03).",
+              "If the arrow goes directly to the decision, the counter does not change, and the loop never ends.",
+            ]),
+          ] },
+          { kind: "code", part: "break and continue", title: "Example: skipping the even numbers", blocks: [FLOW(F_cont)] },
+          { kind: "code", part: "A loop inside a loop", title: "Example: a loop inside a loop", blocks: [
+            T("<code>j = 1</code> is inside the outer loop: j starts again at 1 for each value of i."),
+            STATIC(F_nest),
+          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "A loop is an arrow back to a decision (or to a step before it).",
-              "A counting loop: initialize, test, update.",
-              "The while condition is the condition of the exit that enters the loop; use not when that exit is False.",
+              "A loop is an arrow back to a decision (or to a step before it). The while condition is the condition of the exit that enters the loop; use not when that exit is False.",
+              "A counting loop: initialize, test, body, update. <code>for i in range(a, b, s)</code> has the same four parts.",
               "The loop must change the tested value toward the exit, or it never ends.",
-              "break is an arrow from inside the loop to the first step after it.",
+              "break: an arrow to the first step after the loop. continue: an arrow back to the decision, through the update of a counting loop.",
+              "A nested loop: each loop has its own arrow back, and the inner counter is set again inside the outer loop.",
             ]),
             NEXT("<b>Pseudocode</b>. The same algorithms written as structured text."),
           ] },
-          { kind: "exercise", title: "Trace the flowchart", blocks: [
-            T("Follow this flowchart step by step. The next exercise records each step in a trace table."),
-            CHART(F_exLoop),
-          ] },
-          { kind: "exercise", title: "Complete the trace table (part 1 of 2)", blocks: [
-            T("Complete the table on paper. The first row is done."),
-            W("traceTable", { flow: F_exLoop, blank: true, given: 1, rows: [0, 5] }),
-          ] },
-          { kind: "exercise", title: "Complete the trace table (part 2 of 2)", blocks: [
-            T("Continue the table. The next exercise checks it."),
-            W("traceTable", { flow: F_exLoop, blank: true, given: 0, rows: [5, 9] }),
+          { kind: "exercise", title: "Trace the flowchart", cols: [
+            [CHART(F_exLoop)],
+            [T("Trace the flowchart on paper. Write one row for each step between START and END: 9 rows."),
+              W("traceTable", { flow: F_exLoop, blank: true, given: 1, rows: [0, 5] })],
           ] },
           { kind: "exercise", title: "Check your trace", cols: [
             [T("This program follows the flowchart. Run it with <b>Step Run</b> and compare with your table.")],
@@ -588,7 +662,7 @@
           { kind: "concept", part: "Keywords", title: "Common keywords", blocks: [
             TB(["Pseudocode", "Meaning", "Python"], [
               ["<code>START</code> / <code>END</code>", "the beginning and the end", "(none)"],
-              ["<code>INPUT x</code>", "read a value", "<code>x = int(input())</code>"],
+              ["<code>INPUT x</code>", "read a value; its type (int or float) comes from the problem", "<code>x = int(input())</code><br><code>x = float(input())</code>"],
               ["<code>SET x TO 1</code>", "assign a value", "<code>x = 1</code>"],
               ["<code>INCREMENT x BY 1</code>", "add to a variable", "<code>x = x + 1</code>"],
               ["<code>DISPLAY x</code>", "show a value", "<code>print(x)</code>"],
@@ -654,8 +728,8 @@
             T("Pseudocode for a person can be informal. Pseudocode for a programmer uses the program structures, so that each line becomes code."),
           ] },
           { kind: "code", part: "From problem to pseudocode to Python", title: "Example: checking a lamp", cols: [
-            [PSEUDO("Check if the lamp is working.\nIf yes, stop.\nIf no, check if it is plugged in.\nIf not, plug it in and stop.\nIf yes, check the bulb.\nIf it is burned out, replace it.\nOtherwise, repair the lamp.", "easy to read")],
-            [PSEUDO("IF lamp is working THEN\n    END\nELSE IF lamp is not plugged in THEN\n    Plug in lamp\nELSE IF bulb is burned out THEN\n    Replace bulb\nELSE\n    Repair lamp\nEND IF", "easy to code")],
+            [PSEUDO("The lamp does not work.\nCheck if it is plugged in.\nIf not, plug it in.\nIf yes, replace the bulb.", "easy to read")],
+            [PSEUDO("IF lamp is not plugged in THEN\n    Plug in lamp\nELSE\n    Replace bulb\nEND IF", "easy to code")],
           ] },
           { kind: "concept", part: "From problem to pseudocode to Python", title: "From a problem to a program", blocks: [
             L([
@@ -682,6 +756,7 @@
               "Pseudocode is structured plain language, independent of any programming language.",
               "Keywords: INPUT, SET, INCREMENT, DISPLAY, IF … END IF, WHILE … END WHILE, FOR … END FOR.",
               "Indentation shows the steps inside a decision or a loop.",
+              "A flowchart and its pseudocode have the same structure: a decision is IF, and a decision on the False exit is ELSE IF.",
               "Design order: analyse the problem, write pseudocode, trace it, convert it to Python.",
             ]),
             NEXT("<b>Chapter practice</b>. Complete problems: design with a flowchart or pseudocode, then write the program."),
@@ -700,6 +775,17 @@
           ] },
           { kind: "visual", title: "Model answer", blocks: [
             PSEUDO("START\nSET total TO 0\nFOR i FROM 1 TO 5\n    IF i % 2 == 1 THEN\n        SET total TO total + i\n    END IF\nEND FOR\nDISPLAY total\nEND"),
+          ] },
+          { kind: "visual", title: "Example: from a flowchart to pseudocode", blocks: [CHART(F_hot)] },
+          { kind: "code", title: "The pseudocode of the flowchart", cols: [
+            [PSEUDO("START\nINPUT t\nIF t > 30 THEN\n    DISPLAY \"HOT\"\nELSE IF t > 20 THEN\n    DISPLAY \"WARM\"\nELSE\n    DISPLAY \"COLD\"\nEND IF\nEND")],
+            [TB(["In the flowchart", "In the pseudocode"], [
+              ["the first decision", "<code>IF … THEN</code>"],
+              ["a decision on the False exit", "<code>ELSE IF … THEN</code>"],
+              ["the last False exit", "<code>ELSE</code>"],
+              ["the paths join again", "<code>END IF</code>"],
+            ]),
+            T("The steps on each exit are indented under their keyword.")],
           ] },
           { kind: "exercise", title: "Design and write: sum of even numbers", blocks: [
             PQ("First write the pseudocode as comments. Then write the program: read n and display the sum of the even numbers from 1 to n. Use the prompt <code>n: </code>. Test input: 10.",
@@ -775,8 +861,8 @@
           { kind: "summary", title: "Chapter summary", blocks: [
             TB(["Lesson", "Key rule"], [
               ["1. Symbols", "Terminator, process, input/output, decision; the flow goes from top to bottom."],
-              ["2. Decisions", "A diamond with True and False exits: if, if … else, elif."],
-              ["3. Loops", "An arrow back to a decision. The loop must move toward its exit."],
+              ["2. Decisions", "A diamond with True and False exits: if, if … else, elif, and an if inside an if."],
+              ["3. Loops", "An arrow back to a decision: while, for, break, continue. The loop must move toward its exit."],
               ["4. Pseudocode", "INPUT, SET, DISPLAY, IF, WHILE, FOR, with indentation."],
             ]),
             N("<b>Topic 05: Functions and modules</b>. A predefined process becomes a function: a named block of code with its own inputs and result.", "Next topic"),
