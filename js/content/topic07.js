@@ -1,6 +1,6 @@
 /* ===================== Topic 07 - Data Visualization and Exceptions =====================
    Authored deck format (see CHAPTER-IMPROVEMENT-PROMPT.md).
-   Lesson order: line plots -> other chart types -> handling exceptions -> raise and assert -> practice.
+   Lesson order: line plots -> other chart types -> handling exceptions -> exceptions in functions, raise and assert -> practice.
    Python level: t02-t06 material plus matplotlib.pyplot and try / except / else / finally, raise, assert.
    ======================================================================================== */
 (function () {
@@ -35,6 +35,50 @@
       { line: 6, note: "The loop has ended. The program continues normally. Result check: \"12\" converts to 12; \"4x\" does not.", print: "Done" },
     ],
   };
+  const T_func = {
+    code: ["def divide(a, b):", "    return a / b", "def safe_divide(a, b):", "    try:", "        return divide(a, b)", "    except ZeroDivisionError:", "        return None", "print(safe_divide(8, 0))"],
+    steps: [
+      { line: -1, note: "No variable exists yet." },
+      { line: 0, note: "def creates divide. It has no try statement." },
+      { line: 2, note: "def creates safe_divide. It calls divide inside a try block." },
+      { line: 7, note: "print needs safe_divide(8, 0): the call starts.", set: { "a (safe_divide)": "8", "b (safe_divide)": "0" } },
+      { line: 3, note: "try: the following block is watched for errors." },
+      { line: 4, note: "divide(a, b) is called with 8 and 0.", set: { "a (divide)": "8", "b (divide)": "0" } },
+      { line: 1, note: "8 / 0 raises a ZeroDivisionError. divide ends at once and returns no value.", unset: ["a (divide)", "b (divide)"] },
+      { line: 4, note: "The error passes to the caller: this line of safe_divide, inside its try block." },
+      { line: 5, note: "The error type matches except ZeroDivisionError: the error is handled here." },
+      { line: 6, note: "safe_divide returns None. Its variables disappear.", unset: ["a (safe_divide)", "b (safe_divide)"] },
+      { line: 7, note: "The program continues. Result check: 8 / 0 has no result, so None is displayed. With b = 2, line 5 returns 4.0.", print: "None" },
+    ],
+  };
+  /* tryFlow config: the program of "Example: all four blocks" with three inputs.
+     out is the whole output so far; every step matches a real run. */
+  const TF_blocks = {
+    title: "One program, three inputs: 4, 0, and abc",
+    blocks: [
+      { id: "try", label: "try:", code: '    r = 10 / int(input("Divisor: "))' },
+      { id: "except", label: "except ZeroDivisionError:", code: '    print("Division by zero")' },
+      { id: "else", label: "else:", code: '    print("Result:", r)' },
+      { id: "finally", label: "finally:", code: '    print("Finished")' },
+    ],
+    scenarios: [
+      { label: "Input: 4", steps: [
+        { active: "try", note: "int(\"4\") → 4 and 10 / 4 → 2.5: r is 2.5. The try block completes without an error.", out: "Divisor: 4" },
+        { active: "else", note: "No error occurred: the except block is skipped, and the else block runs.", out: "Divisor: 4\nResult: 2.5" },
+        { active: "finally", note: "The finally block runs last, as always.", out: "Divisor: 4\nResult: 2.5\nFinished" },
+      ] },
+      { label: "Input: 0", steps: [
+        { active: "try", note: "int(\"0\") → 0. 10 / 0 raises a ZeroDivisionError: r receives no value.", out: "Divisor: 0", badge: "ZeroDivisionError", raised: true },
+        { active: "except", note: "The error type matches except ZeroDivisionError: the except block runs.", out: "Divisor: 0\nDivision by zero" },
+        { active: "finally", note: "An error occurred, so the else block is skipped. The finally block runs last.", out: "Divisor: 0\nDivision by zero\nFinished" },
+      ] },
+      { label: "Input: abc", steps: [
+        { active: "try", note: "int(\"abc\") raises a ValueError. The division does not run.", out: "Divisor: abc", badge: "ValueError", raised: true },
+        { active: "finally", note: "No except block matches a ValueError, and else is skipped. The finally block still runs.", out: "Divisor: abc\nFinished", badge: "no match", badgeOn: "except" },
+        { active: "", note: "The error was not handled: the program stops. The last line of its traceback is shown.", out: "Divisor: abc\nFinished\nValueError: invalid literal for int() with base 10: 'abc'" },
+      ] },
+    ],
+  };
   const T_raise = {
     code: ["def check_voltage(v):", "    if v < 0:", '        raise ValueError("voltage < 0")', "    return v", "try:", "    check_voltage(-5)", "except ValueError as e:", '    print("Error:", e)'],
     steps: [
@@ -58,13 +102,13 @@
       {
         id: "matplotlib-basics",
         title: "Line plots with Matplotlib",
-        sub: "Importing Matplotlib, plot(), labels, title, legend, line styles, and saving a figure.",
+        sub: "Importing Matplotlib, plot(), labels, title, legend, line styles, saving a figure, and plotting computed values.",
         slides: "07:4–7",
-        keywords: "matplotlib pyplot plot show xlabel ylabel title legend color linestyle marker grid savefig",
+        keywords: "matplotlib pyplot plot show xlabel ylabel title legend color linestyle marker format string grid savefig current figure computed values loop",
         deck: [
           { kind: "overview", title: "Line plots with Matplotlib", blocks: [
             T("<b>Matplotlib</b> is a Python library that draws charts from data. Its module <code>pyplot</code> provides one function for each chart part."),
-            L(["Importing Matplotlib", "A line plot", "Labels, title, and grid", "Several lines and a legend", "Line styles", "Saving a figure"], "Subtopics in this lesson", true),
+            L(["Importing Matplotlib", "A line plot", "Labels, title, and grid", "Several lines and a legend", "Line styles", "Saving a figure", "Plotting computed values"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Importing Matplotlib", title: "Importing Matplotlib", blocks: [
             L([
@@ -76,8 +120,8 @@
           { kind: "concept", part: "A line plot", title: "plot() and show()", blocks: [
             L([
               "<code>plt.plot(x, y)</code> draws a line through the points (x[0], y[0]), (x[1], y[1]), …",
-              "x and y are lists of the same length.",
-              "<code>plt.show()</code> displays the figure. On this site the figure appears in the output area.",
+              "x and y must have the same number of values. With 3 and 2 values, the program stops: <code>ValueError: x and y must have same first dimension, but have shapes (3,) and (2,)</code>",
+              "<code>plt.show()</code> displays the figure. Without show(), a program run in VS Code or Thonny displays no chart. On this site the figure appears in the output area.",
             ]),
           ] },
           { kind: "code", part: "A line plot", title: "First example: temperature during a day", blocks: [
@@ -101,9 +145,9 @@
           ] },
           { kind: "concept", part: "Several lines and a legend", title: "Several lines and a legend", blocks: [
             L([
-              "Each call of <code>plt.plot()</code> before <code>plt.show()</code> adds a line to the same chart.",
-              "<code>label=\"...\"</code> names a line.",
-              "<code>plt.legend()</code> displays the names in a box.",
+              "Every <code>plt.plot()</code> call draws on the <b>current figure</b> until <code>plt.show()</code> displays it. Several plot() calls therefore give several lines in one chart, and <code>plt.savefig()</code> (later in this lesson) comes before show().",
+              "<code>label=\"...\"</code> in plot() names a line.",
+              "<code>plt.legend()</code> displays the names in a box. It needs <code>label=</code> in plot(): without a label, the box is empty.",
             ]),
           ] },
           { kind: "code", part: "Several lines and a legend", title: "Example: two sensors", blocks: [
@@ -114,11 +158,13 @@
           ] },
           { kind: "concept", part: "Line styles", title: "Colors, line styles, and markers", blocks: [
             TB(["Argument", "Examples", "Effect"], [
-              ["<code>color=</code>", "<code>\"red\"</code>, <code>\"blue\"</code>", "the color of the line"],
+              ["<code>color=</code>", "<code>\"red\"</code>, <code>\"blue\"</code>", "the color of the line, by name"],
+              ["<code>color=</code>", "<code>\"r\"</code>, <code>\"g\"</code>, <code>\"b\"</code>, <code>\"k\"</code>", "by short code: red, green, blue, black"],
               ["<code>linestyle=</code>", "<code>\"-\"</code>, <code>\"--\"</code>, <code>\":\"</code>", "solid, dashed, dotted"],
               ["<code>marker=</code>", "<code>\"o\"</code>, <code>\"s\"</code>, <code>\"x\"</code>", "a symbol at each point"],
               ["<code>linewidth=</code>", "<code>2</code>", "the thickness of the line"],
             ]),
+            T("A <b>format string</b> as the third argument combines color, marker and line style: <code>plt.plot(x, y, \"ro--\")</code> is the short form of <code>color=\"red\", marker=\"o\", linestyle=\"--\"</code>."),
           ] },
           { kind: "code", part: "Line styles", title: "Example: a styled line", blocks: [
             EX('import matplotlib.pyplot as plt\n\nx = [1, 2, 3, 4]\ny = [3, 5, 4, 6]\nplt.plot(x, y, color="red",\n         linestyle="--", marker="o")\nplt.show()', "a red dashed line with circles", null),
@@ -132,13 +178,20 @@
             ]),
             CODE('plt.plot(hours, temps)\nplt.savefig("temperature.png")\nplt.show()', null, "example"),
           ] },
+          { kind: "code", part: "Plotting computed values", title: "Example: power computed in a loop", blocks: [
+            EX('import matplotlib.pyplot as plt\ncurrents = [0, 1, 2, 3, 4, 5]\np12 = []\np24 = []\nfor current in currents:\n    p12.append(12 * current)\n    p24.append(24 * current)\nplt.plot(currents, p12, label="12 V")\nplt.plot(currents, p24, label="24 V")\nplt.xlabel("Current (A)")\nplt.ylabel("Power (W)")\nplt.legend()\nplt.show()', "P = V × I at 12 V and at 24 V", [
+              { c: "p12.append(12 * current)", e: "The loop computes P = V × I for each current: p12 becomes [0, 12, 24, 36, 48, 60]." },
+              { c: 'plt.plot(currents, p12, label="12 V")', e: "The computed list is the y data. Check one point by hand: 12 V × 2 A = 24 W." },
+              { c: 'plt.ylabel("Power (W)")', e: "Both axes name the quantity and its unit." },
+            ]),
+          ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "<code>import matplotlib.pyplot as plt</code>, then <code>plt.plot(x, y)</code> and <code>plt.show()</code>.",
+              "<code>import matplotlib.pyplot as plt</code>, then <code>plt.plot(x, y)</code> and <code>plt.show()</code>. x and y have the same number of values.",
               "<code>xlabel</code>, <code>ylabel</code>, <code>title</code>, and <code>grid</code> make a chart readable.",
-              "Several plot() calls give several lines; <code>label=</code> and <code>legend()</code> name them.",
-              "<code>color</code>, <code>linestyle</code>, <code>marker</code> style a line.",
-              "<code>savefig()</code> saves the figure, before show().",
+              "Every plot() call draws on the current figure until show(): several calls give several lines, which <code>label=</code> and <code>legend()</code> name, and <code>savefig()</code> comes before show().",
+              "<code>color</code>, <code>linestyle</code>, <code>marker</code>, or a format string such as <code>\"ro--\"</code>, style a line.",
+              "The lists for plot() can be computed in a loop.",
             ]),
             NEXT("<b>Other chart types</b>. Bar charts, scatter plots, and histograms."),
           ] },
@@ -218,12 +271,13 @@
               ["Are two quantities related?", "scatter plot", "<code>plt.scatter(x, y)</code>"],
               ["How are many values distributed?", "histogram", "<code>plt.hist(data, bins)</code>"],
             ]),
+            T("<code>bar()</code> takes values that are already counted or measured, one for each category. <code>hist()</code> takes the raw data and counts the values in each bin itself."),
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "<code>bar()</code> compares named groups.",
+              "<code>bar()</code> compares named groups: one given value for each group.",
               "<code>scatter()</code> shows points to reveal a relation.",
-              "<code>hist()</code> shows how many values fall into each interval.",
+              "<code>hist()</code> counts raw data and shows how many values fall into each interval.",
               "Choose the chart by the question that the data should answer.",
             ]),
             NEXT("<b>Handling exceptions</b>. A program can react to errors instead of stopping."),
@@ -266,7 +320,7 @@
         title: "Handling exceptions",
         sub: "try and except, several except blocks, else, and finally.",
         slides: "07:13–20",
-        keywords: "exception try except else finally valueerror zerodivisionerror indexerror keyerror typeerror handling",
+        keywords: "exception try except else finally valueerror zerodivisionerror indexerror keyerror typeerror handling except exception as e traceback",
         deck: [
           { kind: "overview", title: "Handling exceptions", blocks: [
             T("An <b>exception</b> is an error that occurs while a program runs (a runtime error, Topic 02). Without handling, it stops the program. With <code>try</code> and <code>except</code>, the program reacts and continues."),
@@ -281,6 +335,7 @@
               ["<code>KeyError</code>", "a missing dictionary key", "<code>{}[\"x\"]</code>"],
               ["<code>FileNotFoundError</code>", "a file that does not exist (Topic 08)", "<code>open(\"no.txt\")</code>"],
             ]),
+            T("The last line of a traceback starts with the name of the exception (Topic 02). That name is written after <code>except</code>."),
           ] },
           { kind: "concept", part: "try and except", title: "try and except", blocks: [
             CODE("try:\n    statements that may fail\nexcept ErrorType:\n    statements that handle the error", null, "syntax"),
@@ -300,16 +355,18 @@
           ] },
           { kind: "concept", part: "Several except blocks", title: "Several except blocks", blocks: [
             L([
-              "A try statement can have several except blocks, one for each error type.",
-              "Python checks them from top to bottom; the first matching block runs, and the others are skipped.",
+              "A try statement can have several except blocks, one for each error type. Python checks them from top to bottom: the first matching block runs, and the others are skipped.",
               "<code>except (ValueError, TypeError):</code> handles two types in one block.",
               "<code>except ValueError as e:</code> stores the error in e; <code>print(e)</code> shows its message.",
+              "<code>except Exception as e:</code> catches any remaining error. It must be the last except block: placed first, it matches every error, and the specific blocks never run.",
+              "Catching every error also hides programming mistakes, such as a misspelled variable name (NameError). Name the expected types when they are known.",
             ]),
           ] },
           { kind: "code", part: "Several except blocks", title: "Example: division with two possible errors", blocks: [
-            EX('try:\n    a = int(input("a: "))\n    b = int(input("b: "))\n    print(a / b)\nexcept ValueError:\n    print("Not a number")\nexcept ZeroDivisionError:\n    print("Cannot divide by zero")', "test input: 10 and 0", [
+            EX('try:\n    a = int(input("a: "))\n    b = int(input("b: "))\n    print(a / b)\nexcept ValueError:\n    print("Not a number")\nexcept ZeroDivisionError as e:\n    print("Error:", e)', "test input: 10 and 0", [
               { c: "a / b", e: "b is 0: a ZeroDivisionError" },
-              { c: "except ZeroDivisionError", e: "The second block matches: <code>Cannot divide by zero</code>" },
+              { c: "except ZeroDivisionError as e", e: "The second block matches. e holds the error." },
+              { c: 'print("Error:", e)', e: "Displays the message of Python itself: <code>Error: division by zero</code>" },
             ], ["10", "0"]),
           ] },
           { kind: "concept", part: "else and finally", title: "else and finally", blocks: [
@@ -319,32 +376,22 @@
               ["<code>else</code>", "no error occurred in try"],
               ["<code>finally</code>", "always, last, with or without an error"],
             ]),
-            T("finally is used for work that must always happen, such as closing a file (Topic 08)."),
-            T("If no except block matches the error, finally still runs; then the program stops with the traceback."),
+            T("Statements that depend on the success go into else, not into try: the except blocks then handle only the errors of the statement that can fail."),
+            T("finally is used for work that must always happen, such as closing a file (Topic 08). It also runs when no except block matches; the program then stops with the traceback."),
           ] },
-          { kind: "code", part: "else and finally", title: "Example: all four blocks", blocks: [
-            EX('try:\n    r = 10 / int(input("Divisor: "))\nexcept ZeroDivisionError:\n    print("Division by zero")\nelse:\n    print("Result:", r)\nfinally:\n    print("Finished")', "test input: 4", [
-              { c: "try", e: "10 / 4 → 2.5: no error" },
-              { c: "else", e: "Runs because there was no error: <code>Result: 2.5</code>" },
-              { c: "finally", e: "Always runs: <code>Finished</code>" },
-            ], ["4"]),
-          ] },
-          { kind: "concept", part: "else and finally", title: "Which blocks run", blocks: [
-            TB(["Divisor", "try", "except ZeroDivisionError", "else", "finally", "Output"], [
-              ["4", "completes", "skipped", "runs", "runs", "Result: 2.5, Finished"],
-              ["0", "stops at the division", "runs", "skipped", "runs", "Division by zero, Finished"],
-              ["abc", "stops at int(): ValueError", "skipped: no match", "skipped", "runs", "Finished, then the traceback"],
-            ], "The example with three different inputs", "center"),
-            T("With abc, the last line of the traceback is <code>ValueError: invalid literal for int() with base 10: 'abc'</code>."),
-          ] },
+          { kind: "code", part: "else and finally", title: "Example: all four blocks", blocks: [W("tryFlow", TF_blocks)] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "try runs the risky statements; except handles a matching error.",
-              "After an error, the rest of the try block is skipped.",
-              "With several except blocks, the first matching type runs.",
+              "try runs the statements that can fail; after an error, the rest of the try block is skipped.",
+              "The first matching except block runs. <code>except Exception</code> catches any remaining error and comes last.",
               "else runs only without an error; finally always runs.",
             ]),
-            NEXT("<b>raise and assert</b>. A program can also create its own errors on purpose."),
+            TB(["Divisor", "try", "except", "else", "finally", "Output"], [
+              ["4", "completes", "skipped", "runs", "runs", "Result: 2.5, Finished"],
+              ["0", "ZeroDivisionError", "runs", "skipped", "runs", "Division by zero, Finished"],
+              ["abc", "ValueError", "no match", "skipped", "runs", "Finished, then the traceback"],
+            ], "The example with all four blocks (except ZeroDivisionError) and three inputs", "center"),
+            NEXT("<b>raise and assert</b>. Errors inside functions, and errors that a program creates on purpose."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
             [T("Write the output on paper.<br>Then run the program and compare.")],
@@ -373,19 +420,28 @@
       {
         id: "raise-assert",
         title: "raise and assert",
-        sub: "Creating errors on purpose, and checking conditions while testing.",
+        sub: "Errors inside functions, creating errors on purpose, and checking conditions while testing.",
         slides: "07:21–24",
-        keywords: "raise assert assertionerror valueerror validation message",
+        keywords: "raise assert assertionerror valueerror validation message function caller safe_divide return none",
         deck: [
           { kind: "overview", title: "raise and assert", blocks: [
-            T("A program can create an error on purpose when data is invalid. The caller then handles it with try and except."),
-            L(["raise", "assert"], "Subtopics in this lesson", true),
+            T("An error inside a function passes to the code that called the function. A program can also create an error on purpose when data is invalid."),
+            L(["Exceptions and functions", "raise", "assert"], "Subtopics in this lesson", true),
           ] },
+          { kind: "concept", part: "Exceptions and functions", title: "An error inside a function", blocks: [
+            L([
+              "An error that a function does not handle ends the function at once: the function returns no value.",
+              "The error passes to the <b>caller</b>, the statement that called the function. A try statement around the call handles it.",
+              "If the caller does not handle the error, it passes on in the same way. When no code handles it, the program stops with a traceback (Topic 02).",
+              "A function can also handle its own error: a try statement inside the function, with a <code>return</code> in the try block and in the except block. The caller then receives a value in both cases.",
+            ]),
+          ] },
+          { kind: "code", part: "Exceptions and functions", title: "First example: execution step by step", blocks: [W("codeTrace", T_func)] },
           { kind: "concept", part: "raise", title: "raise creates an exception", blocks: [
             L([
               "<code>raise ValueError(\"message\")</code> creates a ValueError with a message.",
-              "The rest of the current block is skipped. Python goes to the nearest matching except, also in the code that called the function. Without one, the program stops with a traceback.",
-              "Use it when a function receives values that it cannot process, for example a negative voltage.",
+              "A value can be valid for Python but wrong for the problem: a battery level of 150 %, a negative resistance. Python reports no error for it, so the program raises the error itself.",
+              "A raised error behaves as any other error: the rest of the block is skipped, and the error passes to the nearest matching except, also in the caller.",
               "The caller catches it with <code>except ValueError as e:</code>; <code>print(e)</code> displays the message.",
             ]),
           ] },
@@ -406,7 +462,8 @@
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "<code>raise ErrorType(\"message\")</code> creates an error on purpose.",
+              "An error inside a function passes to the caller. A try statement around the call, or inside the function, handles it.",
+              "<code>raise ErrorType(\"message\")</code> creates an error on purpose, for a value that Python accepts but the problem does not.",
               "The caller handles it with try and except; <code>as e</code> gives the message.",
               "<code>assert condition, \"message\"</code> raises an AssertionError when the condition is False.",
             ]),
@@ -436,7 +493,7 @@
         title: "Chapter practice",
         sub: "Complete problems with charts and error handling.",
         slides: "07:26",
-        keywords: "practice division error handling chart plot validation",
+        keywords: "practice validation raise battery level error handling chart plot",
         deck: [
           { kind: "overview", title: "Chapter practice", blocks: [
             T("Solve every problem with the five steps:"),
@@ -448,13 +505,18 @@
               "<b>Correct</b>: if the output differs, find the wrong step, correct it, and test again.",
             ], null, true),
           ] },
-          { kind: "problem", part: "Problem 1", title: "Problem 1: safe division", blocks: [
-            T("Read two numbers and display their quotient. Report invalid numbers and division by zero instead of stopping."),
-            IPO([["Input", "a, b (float)"], ["Output", "a / b, or an error message"], ["Errors", "ValueError: not a number; ZeroDivisionError: b = 0"]]),
+          { kind: "problem", part: "Problem 1", title: "Problem 1: validate a battery level", blocks: [
+            T("Read a battery level in percent and display it. A level below 0 or above 100 is a number for Python, but it is not a possible level: the program raises an error for it."),
+            IPO([
+              ["Input", "a battery level (float), valid from 0 to 100"],
+              ["Output", "the level, or \"Error:\" and the message of the error"],
+              ["Processing", "<code>check_level(level)</code> raises <code>ValueError(\"level must be 0 to 100\")</code> outside the range; otherwise it returns level. The main program calls it inside try."],
+              ["Errors", "ValueError from float(): not a number. ValueError from check_level(): outside the range. One except block with <code>as e</code> handles both."],
+            ]),
           ] },
           { kind: "exercise", part: "Problem 1", title: "Problem 1: write the program", blocks: [
-            PQ("Use the prompts <code>a: </code> and <code>b: </code>. Display \"Invalid number\" or \"Division by zero\". Test input: 12 and x.",
-              "a: 12\nb: x\nInvalid number", "# Write your program here\n", ["12", "x"], "float(input(...)) inside try; two except blocks"),
+            PQ("Use the prompt <code>Battery (%): </code>. Display a valid level as <code>Level: 80.0 %</code>. For an error, display \"Error:\" and its message. Test input: 150.",
+              "Battery (%): 150\nError: level must be 0 to 100", "# Write your program here\n", ["150"], "In check_level: if level < 0 or level > 100: raise ValueError(\"level must be 0 to 100\"). In try: level = check_level(float(input(\"Battery (%): \"))). Then: except ValueError as e: print(\"Error:\", e)"),
           ] },
           { kind: "problem", part: "Problem 2", title: "Problem 2: read until valid", blocks: [
             T("Ask for a temperature until the user enters a valid number, then display it."),
@@ -491,10 +553,10 @@
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [
             TB(["Lesson", "Key rule"], [
-              ["1. Line plots", "<code>plt.plot(x, y)</code>, labels, title, legend, styles, <code>savefig()</code> before <code>show()</code>."],
-              ["2. Chart types", "bar: groups; scatter: relations; hist: distributions."],
+              ["1. Line plots", "<code>plt.plot(x, y)</code> draws on the current figure until <code>show()</code>: labels, title, legend, styles, <code>savefig()</code> before show()."],
+              ["2. Chart types", "bar: given values of groups; scatter: relations; hist: raw data counted into bins."],
               ["3. Exceptions", "try / except (first match) / else (no error) / finally (always)."],
-              ["4. raise and assert", "raise creates an error on purpose; assert checks a condition."],
+              ["4. raise and assert", "An error in a function passes to the caller; raise creates an error on purpose; assert checks a condition."],
             ]),
             N("<b>Topic 08: Data processing</b>. Reading and writing files, CSV and JSON data, NumPy arrays, and pandas tables.", "Next topic"),
           ] },
