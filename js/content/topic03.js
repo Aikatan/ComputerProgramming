@@ -18,6 +18,10 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
+  /* ---------- exercises: the answer is on the same slide (instructor mode) ---------- */
+  const PAPER = "Write the output of the program on paper, line by line.";
+  const OUT = (text) => CODE(text, null, "output", "text");            // the real output of the program
+  const HIDE = (b) => Object.assign(b, { hideOnAnswer: true });        // the block that the answer replaces
 
   /* ---------- traces: one object drives codeTrace and traceTable ---------- */
   const T_cmp = {
@@ -436,17 +440,13 @@
             ]),
             NEXT("<b>Logical operators</b>. <code>and</code>, <code>or</code>, and <code>not</code> combine several conditions into one."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Find the output of the program on paper.<br>1. Write the output of lines 3 to 6.<br>2. Run the program.<br>3. Compare the output of the program with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T(PAPER)],
             [RUN("a = 7\nb = 10\nprint(a > b)\nprint(a != b)\nprint(a + 3 == b)\nprint(5 <= a <= 7)")],
-          ] },
+          ], answer: [OUT("False\nTrue\nTrue\nTrue")] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper.<br>1. The first row is complete. Write the other rows.<br>2. Check your trace table with the next exercise."),
+            T("Complete the trace table on paper.<br>1. The first row is complete. Write the other rows."),
             W("traceTable", { trace: T_exCmp, blank: true, given: 1 }),
-          ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [T("Check your trace table with the program.<br>1. Run the program with <b>Step Run</b>.<br>2. After each line, compare the variables with your trace table.")],
-            [RUN("x = 4\ny = x * 2\nbig = y > 5\nsame = x == y\nprint(big, same)")],
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
             PQ("Complete line 2 of the program, so that the program displays the target output.<br>1. Line 2 must store True in <code>is_low</code> when <code>level</code> is below 20.",
@@ -549,17 +549,13 @@
             ]),
             NEXT("<b>if statements</b>. A condition decides whether a block of statements runs."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Find the output of the program on paper.<br>1. Write True or False for each of lines 3 to 6.<br>2. Run the program.<br>3. Compare the output of the program with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T(PAPER)],
             [RUN("a = 5\nb = 12\nprint(a > 3 and b > 10)\nprint(a > 8 or b > 20)\nprint(not a == 5)\nprint(a < 10 and not b < 10)")],
-          ] },
+          ], answer: [OUT("True\nFalse\nFalse\nTrue")] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper.<br>1. The first row is complete. Write the other rows.<br>2. Check your trace table with the next exercise."),
+            T("Complete the trace table on paper.<br>1. The first row is complete. Write the other rows."),
             W("traceTable", { trace: T_exLogic, blank: true, given: 1 }),
-          ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [T("Check your trace table with the program.<br>1. Run the program with <b>Step Run</b>.<br>2. After each line, compare the variables with your trace table.")],
-            [RUN("x = 6\np = x > 5\nq = x % 2 == 1\nr = p and not q\nprint(p, q, r)")],
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
             PQ("Complete line 3 of the program, so that the program displays the target output.<br>1. Line 3 must store True in <code>ok</code> when both conditions are True.<br>2. Condition 1: <code>voltage</code> is from 220 to 240.<br>3. Condition 2: <code>temp</code> is below 60.",
@@ -718,17 +714,16 @@
             ]),
             NEXT("<b>while loops</b>. A condition can also decide how many times a block repeats."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Find the output of the program on paper.<br>1. Compute the result of each condition: True or False.<br>2. Write the output.<br>3. Run the program.<br>4. Compare the output of the program with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T("Find the output of the program on paper.<br>1. Compute the result of each condition: True or False.<br>2. Write the output.")],
             [RUN('x = 8\ny = 3\nif x % y == 2 and x // y == 2:\n    print("P")\nelif x % y == 2 or x // y == 3:\n    print("Q")\nelse:\n    print("R")')],
+          ], answer: [
+            OUT("P"),
+            T("Line 3: <code>8 % 3 == 2</code> is True, and <code>8 // 3 == 2</code> is True. The <code>elif</code> condition is not checked."),
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper.<br>1. The first row is complete. Write the other rows.<br>2. Check your trace table with the next exercise."),
-            W("traceTable", { trace: T_exElif, blank: true, given: 1 }),
-          ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [T("Check your trace table with the program.<br>1. Run the program with <b>Step Run</b>.<br>2. After each line, compare the variables with your trace table.")],
-            [RUN('v = 11.5\nif v < 11:\n    state = "LOW"\nelif v > 13:\n    state = "HIGH"\nelse:\n    state = "OK"\nprint(state)')],
+            T("Complete the trace table on paper.<br>1. The first row is complete. Write the other rows."),
+            W("traceTable", { trace: T_exElif, blank: true, given: 1, showCode: true }),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("Correct the program, so that the program displays the target output.<br>1. Change the order of the two conditions.<br>2. For the temperature 95, the output must be Overheat, not Warm.",
@@ -852,14 +847,16 @@
             ]),
             NEXT("<b>for loops</b>. When the values to go through are known, such as the numbers 1 to 10, a for loop is shorter and cannot forget the update."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Find the output of the program on paper.<br>1. Write each line of the output.<br>2. Run the program.<br>3. Compare the output of the program with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T(PAPER)],
             [RUN('x = 1\nwhile x < 20:\n    print(x)\n    x = x * 3\nprint("End:", x)')],
-          ] },
-          { kind: "exercise", title: "Trace the iterations", cols: [
-            [T("Complete the table on paper.<br>1. Write one row for each iteration of the loop.<br>2. Run the program with <b>Step Run</b>.<br>3. Compare the variables with your table."),
-              TB(["Iteration", "n before", "total after", "n after"], [["1", "3", "", ""], ["2", "", "", ""], ["3", "", "", ""]], null, "center")],
+          ], answer: [OUT("1\n3\n9\nEnd: 27")] },
+          { kind: "exercise", title: "Trace the iterations", answerCol: 0, cols: [
+            [T("Complete the table on paper.<br>1. Write one row for each iteration of the loop."),
+              HIDE(TB(["Iteration", "n before", "total after", "n after"], [["1", "3", "", ""], ["2", "", "", ""], ["3", "", "", ""]], null, "center"))],
             [RUN("n = 3\ntotal = 0\nwhile n > 0:\n    total = total + n\n    n = n - 1\nprint(total)")],
+          ], answer: [
+            TB(["Iteration", "n before", "total after", "n after"], [["1", "3", "3", "2"], ["2", "2", "5", "1"], ["3", "1", "6", "0"]], null, "center"),
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
             PQ("Complete lines 2 and 4, so that the program displays the target output.<br>1. Line 2: complete the condition of the loop.<br>2. Line 4: complete the update of <code>x</code>.",
@@ -966,14 +963,16 @@
             ]),
             NEXT("<b>Nested loops</b>. A loop can contain another loop, for example to go through rows and columns."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Find the output of the program on paper.<br>1. Write each line of the output.<br>2. Run the program.<br>3. Compare the output of the program with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T(PAPER)],
             [RUN('for i in range(2, 11, 4):\n    print(i)\nfor c in "OK":\n    print(c + c)')],
-          ] },
-          { kind: "exercise", title: "Determine the values of range()", cols: [
-            [T("Complete the table on paper. Each row is one loop of the program.<br>1. Values: write the values that the loop displays.<br>2. Iterations: write the number of iterations.<br>3. Run the program.<br>4. Compare the output of the program with your table."),
-              TB(["Call", "Values", "Iterations"], [["<code>range(4)</code>", "", ""], ["<code>range(3, 8)</code>", "", ""], ["<code>range(10, 0, -3)</code>", "", ""]], null, "center")],
+          ], answer: [OUT("2\n6\n10\nOO\nKK")] },
+          { kind: "exercise", title: "Determine the values of range()", answerCol: 0, cols: [
+            [T("Complete the table on paper. Each row is one loop of the program.<br>1. Values: write the values that the loop displays.<br>2. Iterations: write the number of iterations."),
+              HIDE(TB(["Call", "Values", "Iterations"], [["<code>range(4)</code>", "", ""], ["<code>range(3, 8)</code>", "", ""], ["<code>range(10, 0, -3)</code>", "", ""]], null, "center"))],
             [RUN('for i in range(4):\n    print(i, end=" ")\nprint()\nfor i in range(3, 8):\n    print(i, end=" ")\nprint()\nfor i in range(10, 0, -3):\n    print(i, end=" ")')],
+          ], answer: [
+            TB(["Call", "Values", "Iterations"], [["<code>range(4)</code>", "0 1 2 3", "4"], ["<code>range(3, 8)</code>", "3 4 5 6 7", "5"], ["<code>range(10, 0, -3)</code>", "10 7 4 1", "4"]], null, "center"),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("Correct line 1, so that the program displays the target output.<br>1. The program must display the numbers 1 to 5.",
@@ -1049,13 +1048,16 @@
             ]),
             NEXT("<b>Loop control</b>. <code>break</code>, <code>continue</code>, <code>pass</code>, and <code>else</code> change the normal flow of a loop."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Find the output of the program on paper.<br>1. Write the complete output.<br>2. Run the program.<br>3. Compare the output of the program with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T(PAPER)],
             [RUN('for i in range(3):\n    for j in range(2):\n        print("*", end="")\n    print()')],
-          ] },
-          { kind: "exercise", title: "Count the iterations", cols: [
-            [T("Count the iterations of the program on paper.<br>1. Compute the number of times that line 4 runs.<br>2. Write the value that the program displays.<br>3. Run the program.<br>4. Compare the output of the program with your answer.")],
+          ], answer: [OUT("**\n**\n**")] },
+          { kind: "exercise", title: "Count the iterations", answerCol: 0, cols: [
+            [T("Count the iterations of the program on paper.<br>1. Compute the number of times that line 4 runs.<br>2. Write the value that the program displays.")],
             [RUN("count = 0\nfor i in range(1, 5):\n    for j in range(1, 4):\n        count = count + 1\nprint(count)")],
+          ], answer: [
+            T("Line 4 runs 4 × 3 = 12 times."),
+            OUT("12"),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("Add one missing line, so that the program displays the target output.<br>1. The program must also display the times of hour 9.",
@@ -1157,13 +1159,19 @@
             ]),
             NEXT("<b>Chapter practice</b>. Complete problems that combine decisions and loops."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Find the output of the program on paper.<br>1. Write the output.<br>2. Count the values in the output.<br>3. Run the program.<br>4. Compare the output of the program with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T("Find the output of the program on paper.<br>1. Write the output.<br>2. Count the values in the output.")],
             [RUN('for i in range(1, 4):\n    for j in range(1, 4):\n        if i == j:\n            continue\n        print(i * j, end=" ")')],
+          ], answer: [
+            OUT("2 3 2 6 3 6"),
+            T("The output has 6 values, on one line."),
           ] },
-          { kind: "exercise", title: "Determine the output: break and else", cols: [
-            [T("Find the output of the program on paper.<br>1. Decide whether the <code>else</code> block runs.<br>2. Write the output.<br>3. Run the program.<br>4. Compare the output of the program with your answer.")],
+          { kind: "exercise", title: "Determine the output: break and else", answerCol: 0, cols: [
+            [T("Find the output of the program on paper.<br>1. Decide whether the <code>else</code> block runs.<br>2. Write the output.")],
             [RUN('for c in "SENSOR":\n    if c == "N":\n        print("Found N")\n        break\n    print(c)\nelse:\n    print("No N")')],
+          ], answer: [
+            OUT("S\nE\nFound N"),
+            T("The loop ends with <code>break</code>, so the <code>else</code> block does not run."),
           ] },
           { kind: "exercise", title: "Write a program: the first multiple", blocks: [
             PQ("Write a program that displays the target output.<br>1. Use a <code>for</code> loop to check each number from 51 to 99.<br>2. Display the first number that is divisible by 7.<br>3. Then end the loop with <code>break</code>.",

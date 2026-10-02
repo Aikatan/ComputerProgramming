@@ -20,6 +20,9 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
+  /* ---------- exercises: the answer is on the same slide (instructor mode) ---------- */
+  const OUT = (text) => CODE(text, null, "output", "text");            // the real output of the program
+  const HIDE = (b) => Object.assign(b, { hideOnAnswer: true });        // the block that the answer replaces
   const FLOW = (f) => W("flowchart", f);
   const STATIC = (f) => W("flowchart", Object.assign({}, f, { trace: null }));
   const CHART = (f) => W("flowchart", Object.assign({}, f, { trace: null, code: null }));
@@ -146,6 +149,26 @@
     edges: [E("s", "i"), E("i", "q1"), E("q1", "h", { port: "right", label: "True" }), E("q1", "q2", { label: "False" }), E("q2", "w", { port: "right", label: "True" }),
       E("q2", "c", { label: "False" }), E("c", "e"), E("h", "e", { lane: "right", laneIndex: 1 }), E("w", "e", { lane: "right" })],
   };
+  // the answer of the exercise "Determine the output on paper": the three test values, traced on the chart
+  const F_hotRuns = Object.assign({}, F_hot, { trace: [
+    { node: "s", note: "Answers: 35 → HOT, 25 → WARM, 12 → COLD. Run 1 starts: t = 35." },
+    { node: "i", note: "Input: 35 is stored in t.", set: { t: "35" } },
+    { node: "q1", note: "35 > 30 is True: follow the True arrow." },
+    { node: "h", note: "Output: HOT.", print: "HOT" },
+    { node: "e", note: "END of run 1. The second decision is not checked." },
+    { node: "s", note: "Run 2 starts: t = 25.", unset: ["t"] },
+    { node: "i", note: "Input: 25 is stored in t.", set: { t: "25" } },
+    { node: "q1", note: "25 > 30 is False: go to the second decision." },
+    { node: "q2", note: "25 > 20 is True: follow the True arrow." },
+    { node: "w", note: "Output: WARM.", print: "WARM" },
+    { node: "e", note: "END of run 2." },
+    { node: "s", note: "Run 3 starts: t = 12.", unset: ["t"] },
+    { node: "i", note: "Input: 12 is stored in t.", set: { t: "12" } },
+    { node: "q1", note: "12 > 30 is False: go to the second decision." },
+    { node: "q2", note: "12 > 20 is False: follow the False arrow." },
+    { node: "c", note: "Output: COLD.", print: "COLD" },
+    { node: "e", note: "END of run 3. The output box shows the three answers." },
+  ] });
   const F_pos = {
     cols: [0, -170, 170],
     nodes: [ST("s", "START", 0, 0), IO("i", "INPUT n", 0, 1), DE("q", "n > 0 ?", 0, 2), IO("y", 'DISPLAY "positive"', 1, 3), IO("n", 'DISPLAY "not positive"', 2, 3), ST("e", "END", 0, 4)],
@@ -376,12 +399,19 @@
           ] },
           { kind: "exercise", title: "Name the symbols", blocks: [
             T("Complete the table on paper.<br>1. Column Name: write the name of the symbol.<br>2. Column Python: write a Python statement that the symbol can become.<br>3. Check your answers with the symbol tables of this lesson."),
-            TB(["Symbol", "Name", "Python"], [[icon("io"), "", ""], [icon("decision"), "", ""], [icon("process"), "", ""], [icon("terminator"), "", ""]]),
+            HIDE(TB(["Symbol", "Name", "Python"], [[icon("io"), "", ""], [icon("decision"), "", ""], [icon("process"), "", ""], [icon("terminator"), "", ""]])),
+          ], answer: [
+            TB(["Symbol", "Name", "Python"], [
+              [icon("io"), "Input / Output", "<code>input()</code>, <code>print()</code>"],
+              [icon("decision"), "Decision", "<code>if</code>, <code>while</code>"],
+              [icon("process"), "Process", "<code>x = x + 2</code>"],
+              [icon("terminator"), "Terminator", "(none)"],
+            ]),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
+          { kind: "exercise", title: "Determine the output", answerCol: 1, cols: [
             [CHART(F_ex1)],
-            [T("Find the output of the flowchart on paper.<br>1. Trace the flowchart from START to END.<br>2. Write the output.<br>3. Run the Python program of the flowchart.<br>4. Compare the output of the program with your answer."), RUN("a = 5\nb = a * 3\na = b - 4\nprint(a, b)")],
-          ] },
+            [T("Trace the flowchart on paper, from START to END.<br>Write the output of the flowchart."), RUN("a = 5\nb = a * 3\na = b - 4\nprint(a, b)")],
+          ], answer: [OUT("11 15")] },
           { kind: "problem", title: "Problem: the area of a circle", blocks: [
             T("The flowchart computes the area of a circle from the radius r, with π ≈ 3.14. The next exercise converts the flowchart into Python."),
             CHART(F_circle),
@@ -390,11 +420,10 @@
             PQ("Write the Python program for the flowchart on the previous slide.<br>1. Read <code>r</code> as a float with the prompt <code>Radius: </code>.<br>2. The output must match the target output.<br>Test input: 2.",
               "Radius: 2\n12.56", "# Write your program here\n", ["2"], 'Read the radius with r = float(input("Radius: ")).'),
           ] },
-          { kind: "exercise", title: "Draw a flowchart", blocks: [
-            T("Draw the flowchart of this program on paper.<br>Then compare your flowchart with the model answer on the next slide."),
-            CODE("c = float(input())\nf = c * 9 / 5 + 32\nprint(f)", null, "program"),
-          ] },
-          { kind: "visual", title: "Model answer", blocks: [CHART(F_temp)] },
+          { kind: "exercise", title: "Draw a flowchart", answerCol: 0, cols: [
+            [T("Draw the flowchart of this program on paper.")],
+            [CODE("c = float(input())\nf = c * 9 / 5 + 32\nprint(f)", null, "program")],
+          ], answer: [CHART(F_temp)] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which symbol represents a decision?", choices: ["Rectangle", "Rounded rectangle", "Diamond", "Parallelogram"], answer: 2, explain: "A diamond holds a condition and has a True exit and a False exit." },
             { q: "Which symbol is used for `print(x)`?", choices: ["Terminator", "Process", "Input / Output (parallelogram)", "Connector"], answer: 2, explain: "Displaying a value is output, drawn as a parallelogram." },
@@ -481,17 +510,12 @@
             NEXT("<b>Loops in flowcharts</b>. An arrow that goes back to a decision repeats steps."),
           ] },
           { kind: "exercise", title: "Determine the output on paper: t = 35, 25, 12", blocks: [
-            CHART(F_hot),
-          ] },
-          { kind: "exercise", title: "Check your answers", cols: [
-            [T("The program follows the flowchart of the previous slide.<br>1. Run the program three times.<br>2. Enter 35 the first time, 25 the second time, and 12 the third time.<br>3. Compare each output with your answer.")],
-            [RUN('t = int(input("t: "))\nif t > 30:\n    print("HOT")\nelif t > 20:\n    print("WARM")\nelse:\n    print("COLD")')],
-          ] },
+            HIDE(CHART(F_hot)),
+          ], answer: [FLOW(F_hotRuns)] },
           { kind: "exercise", title: "Draw a flowchart", blocks: [
-            T("Draw the flowchart of this program on paper.<br>Then compare your flowchart with the model answer on the next slide."),
-            CODE('n = int(input())\nif n > 0:\n    print("positive")\nelse:\n    print("not positive")', null, "program"),
-          ] },
-          { kind: "visual", title: "Model answer", blocks: [CHART(F_pos)] },
+            T("Draw the flowchart of this program on paper."),
+            HIDE(CODE('n = int(input())\nif n > 0:\n    print("positive")\nelse:\n    print("not positive")', null, "program")),
+          ], answer: [CHART(F_pos)] },
           { kind: "problem", title: "Problem: battery warning", blocks: [
             T("The flowchart checks a battery level. The next exercise converts the flowchart into Python."),
             CHART(F_batt),
@@ -605,21 +629,29 @@
           ] },
           { kind: "exercise", title: "Trace the flowchart", cols: [
             [CHART(F_exLoop)],
-            [T("Trace the flowchart on paper. Write one row for each step between START and END. The table has 9 rows."),
-              W("traceTable", { flow: F_exLoop, blank: true, given: 1, rows: [0, 5] })],
-          ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [T("The program follows the flowchart of the previous slide.<br>1. Run the program with <b>Step Run</b>.<br>2. After each line, compare the variables with your trace table.")],
-            [RUN("total = 0\nk = 1\nwhile k <= 2:\n    total = total + k\n    k = k + 1\nprint(total)")],
+            [HIDE(T("Trace the flowchart on paper. Write one row for each step between START and END. The table has 9 rows.")),
+              HIDE(W("traceTable", { flow: F_exLoop, blank: true, given: 1, rows: [0, 5] }))],
+          ], answerCol: 1, answer: [
+            TB(["Shape", "total", "k", "Output"], [
+              ["total = 0, k = 1", "0", "1", ""],
+              ["k &lt;= 2 ?", "0", "1", ""],
+              ["total = total + k", "1", "1", ""],
+              ["k = k + 1", "1", "2", ""],
+              ["k &lt;= 2 ?", "1", "2", ""],
+              ["total = total + k", "3", "2", ""],
+              ["k = k + 1", "3", "3", ""],
+              ["k &lt;= 2 ?", "3", "3", ""],
+              ["DISPLAY total", "3", "3", "3"],
+            ]),
           ] },
           { kind: "exercise", title: "Draw a flowchart", blocks: [
-            T("Draw the flowchart of this program on paper.<br>Then compare your flowchart with the model answer on the next slide."),
-            CODE("a = 2\nb = 11\nwhile a < b:\n    if a % 2 == 0:\n        a = a + 3\n    else:\n        b = b - 2\n        a = a + 1\n    print(a, b)", null, "program"),
-          ] },
-          { kind: "visual", title: "Model answer", blocks: [CHART(F_exam)] },
-          { kind: "exercise", title: "Determine the output of the model flowchart", blocks: [
-            RUN("a = 2\nb = 11\nwhile a < b:\n    if a % 2 == 0:\n        a = a + 3\n    else:\n        b = b - 2\n        a = a + 1\n    print(a, b)", "Trace the model flowchart on paper first. Then run this program."),
-          ] },
+            HIDE(T("Draw the flowchart of this program on paper.")),
+            HIDE(CODE("a = 2\nb = 11\nwhile a < b:\n    if a % 2 == 0:\n        a = a + 3\n    else:\n        b = b - 2\n        a = a + 1\n    print(a, b)", null, "program")),
+          ], answer: [CHART(F_exam)] },
+          { kind: "exercise", title: "Determine the output of the program", answerCol: 0, cols: [
+            [T("Write the output of the program on paper, line by line.")],
+            [RUN("a = 2\nb = 11\nwhile a < b:\n    if a % 2 == 0:\n        a = a + 3\n    else:\n        b = b - 2\n        a = a + 1\n    print(a, b)")],
+          ], answer: [OUT("5 11\n6 9\n9 9")] },
           { kind: "problem", title: "Problem: the sum 1 to n", blocks: [
             T("The flowchart adds the numbers from 1 to n. The next exercise converts the flowchart into Python."),
             CHART(F_sum),
@@ -769,11 +801,10 @@
             PQ("Write the Python program for the pseudocode on the previous slide.<br>1. Read the voltage as a float with the prompt <code>Voltage: </code>.<br>2. Read the current as a float with the prompt <code>Current: </code>.<br>Test input: voltage 12, current 10.",
               "Voltage: 12\nCurrent: 10\nOverload", "# Write your program here\n", ["12", "10"], "Use if power > 100 to display Overload, and else to display the power."),
           ] },
-          { kind: "exercise", title: "Write pseudocode", blocks: [
-            T("Write the pseudocode for this program on paper.<br>Then compare your pseudocode with the model answer on the next slide."),
-            CODE("total = 0\nfor i in range(1, 6):\n    if i % 2 == 1:\n        total = total + i\nprint(total)", null, "program"),
-          ] },
-          { kind: "visual", title: "Model answer", blocks: [
+          { kind: "exercise", title: "Write pseudocode", answerCol: 0, cols: [
+            [T("Write the pseudocode for this program on paper.")],
+            [CODE("total = 0\nfor i in range(1, 6):\n    if i % 2 == 1:\n        total = total + i\nprint(total)", null, "program")],
+          ], answer: [
             PSEUDO("START\nSET total TO 0\nFOR i FROM 1 TO 5\n    IF i % 2 == 1 THEN\n        SET total TO total + i\n    END IF\nEND FOR\nDISPLAY total\nEND"),
           ] },
           { kind: "visual", title: "Example: from a flowchart to pseudocode", blocks: [CHART(F_hot)] },
