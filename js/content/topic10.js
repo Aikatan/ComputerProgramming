@@ -32,10 +32,9 @@
   const IPO = (rows) => TB(["Step", "Result"], rows);
   const TRACE = (trace) => W("codeTrace", trace);
   const MAIN = (body) => "#include <stdio.h>\nint main(void) {\n" + body + "\n    return 0;\n}";
-  const MAIN_U8 = (body) => "#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n" + body + "\n    return 0;\n}";
-  const STEP_RUN = T("Check your trace table.<br>1. Run the program with <b>Step Run</b>.<br>2. After each line, compare the values of the variables with your table.");
-  const PAPER = T("Write the output of the program on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.");   // in a half column
-  const PAPER_LINE = T("Write the output on paper. Then run the program and compare the output with your answer.");   // one line, above a full-width program
+  const PAPER = T("Write the output of the program on paper, line by line.");   // the task of a "Determine the output" exercise
+  const OUT = (text) => ({ type: "code", lang: "text", code: text, caption: "output" });   // the answer of such an exercise: the real output
+  const HIDE = (b) => Object.assign(b, { hideOnAnswer: true });   // the block is hidden while the answer of its slide is shown
   const STARTER = MAIN("    // write your program here");
 
   /* ---------- traces ---------- */
@@ -541,7 +540,7 @@ int main(void) {
           { kind: "exercise", title: "Determine the output", cols: [
             [PAPER],
             [RUN('#include <stdio.h>\nint main(void) {\n    printf("A");\n    printf("B\\n");\n    printf("C\\tD\\n");\n    return 0;\n}')],
-          ] },
+          ], answerCol: 0, answer: [OUT("AB\nC\tD")] },
           { kind: "exercise", title: "Correct an error", blocks: [
             PQ("Correct the two errors in the program, so that the program displays the target output.",
               "Sensor ready", '#include <stdio.h>\nint main(void) {\n    Printf("Sensor ready\\n")\n    return 0;\n}', null, "C is case-sensitive, and every statement ends with ;."),
@@ -715,24 +714,20 @@ int main(void) {
             NEXT("<b>Input and formatted output</b>. Reading values with scanf and controlling the output format."),
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. The first row is already complete.<br>The table shows the statements inside <code>main</code>. Check your table on the next slide."),
-            W("traceTable", { trace: T_exSwap, blank: true, given: 1 }),
-          ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [STEP_RUN],
-            [RUN(MAIN("    " + T_exSwap.code.join("\n    ")))],
+            T("Complete the trace table on paper. The first row is already complete.<br>The program shows only the statements inside <code>main</code>."),
+            W("traceTable", { trace: T_exSwap, blank: true, given: 1, showCode: true }),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            PAPER_LINE,
-            RUN(`#include <stdio.h>
+            PAPER,
+            HIDE(RUN(`#include <stdio.h>
 int main(void) {
     int n = 7;
     double v = 2.5;
     char c = 'x';
     printf("%d %.2f %c %d\\n", n, v, c, c);
     return 0;
-}`),
-          ] },
+}`)),
+          ], answer: [OUT("7 2.50 x 120")] },
           { kind: "exercise", title: "Correct an error", blocks: [
             PQ("Correct the two errors in the program, so that the program displays the target output.",
               "Area = 12.50", '#include <stdio.h>\nint main(void) {\n    double w = 2.5\n    double h = 5.0;\n    printf("Area = %d\\n", w * h);\n    return 0;\n}', null, "One statement has no ; at the end, and printf needs %.2f for a double, not %d."),
@@ -880,10 +875,10 @@ int main(void) {
             ]),
             NEXT("<b>Operators and expressions</b>. Arithmetic, integer division, casting, and conditions."),
           ] },
-          { kind: "exercise", title: "Determine the output", blocks: [
-            T("The user types <code>7 2.46</code>. Write the output on paper. Then run the program and compare the output with your answer."),
-            RUN('#include <stdio.h>\nint main(void) {\n    int a;\n    double b;\n    scanf("%d %lf", &a, &b);\n    printf("[%4d][%-6.1f]\\n", a, b);\n    return 0;\n}', "Program", ["7 2.46"]),
-          ] },
+          { kind: "exercise", title: "Determine the output", cols: [
+            [T("The user types <code>7 2.46</code>. Write the output of the program on paper, line by line.")],
+            [RUN('#include <stdio.h>\nint main(void) {\n    int a;\n    double b;\n    scanf("%d %lf", &a, &b);\n    printf("[%4d][%-6.1f]\\n", a, b);\n    return 0;\n}', "Program", ["7 2.46"])],
+          ], answerCol: 0, answer: [OUT("[   7][2.5   ]")] },
           { kind: "exercise", title: "Correct an error", blocks: [
             PQ("Correct the two errors in line 5 of the program: the <code>scanf</code> statement.<br>The program must read a price and display the price with 2 decimal places, as in the target output.",
               "Price: 4.5\n4.50", '#include <stdio.h>\nint main(void) {\n    double price;\n    printf("Price: ");\n    scanf("%d", price);\n    printf("%.2f\\n", price);\n    return 0;\n}', ["4.5"], "In scanf, a double needs %lf, and the variable needs & before its name: &price."),
@@ -1071,9 +1066,9 @@ int main(void) {
             ]),
             NEXT("<b>Decisions</b>. if, else, else if, and switch."),
           ] },
-          { kind: "exercise", title: "Determine the output", blocks: [
-            PAPER_LINE,
-            RUN(`#include <stdio.h>
+          { kind: "exercise", title: "Determine the output", cols: [
+            [PAPER],
+            [RUN(`#include <stdio.h>
 int main(void) {
     int x = 17 % 5;
     int y = 7 / 2;
@@ -1081,15 +1076,11 @@ int main(void) {
     printf("%d %d %.1f\\n", x, y, z);
     printf("%d\\n", x > y && y > 2);
     return 0;
-}`),
-          ] },
+}`)],
+          ], answerCol: 0, answer: [OUT("2 3 3.5\n0")] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. The first row is already complete.<br>The table shows the statements inside <code>main</code>. Check your table on the next slide."),
-            W("traceTable", { trace: T_exOps, blank: true, given: 1 }),
-          ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [STEP_RUN],
-            [RUN(MAIN("    " + T_exOps.code.join("\n    ")))],
+            T("Complete the trace table on paper. The first row is already complete.<br>The program shows only the statements inside <code>main</code>."),
+            W("traceTable", { trace: T_exOps, blank: true, given: 1, showCode: true }),
           ] },
           { kind: "exercise", title: "Write a program: four operations", blocks: [
             PQ("Complete the program, so that it displays four results on one line, as in the target output.<br>1. Display the sum, the difference, and the product of <code>a</code> and <code>b</code>.<br>2. Display <code>a</code> divided by <code>b</code> as a <code>double</code>: use <code>%.2f</code> in <code>printf</code>.",
@@ -1258,23 +1249,19 @@ int main(void) {
             NEXT("<b>Loops</b>. while, do-while, and for."),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            PAPER_LINE,
-            RUN(`#include <stdio.h>
+            PAPER,
+            HIDE(RUN(`#include <stdio.h>
 int main(void) {
     int a = 4, b = 9;
     if (a > b) { printf("X\\n"); }
     else if (a * 2 > b) { printf("Y\\n"); }
     else { printf("Z\\n"); }
     return 0;
-}`),
-          ] },
+}`)),
+          ], answer: [OUT("Z")] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. The first row is already complete.<br>The table shows the statements inside <code>main</code>. Check your table on the next slide."),
+            T("Complete the trace table on paper. The first row is already complete.<br>The table shows the statements inside <code>main</code> that run. Line 3 does not run: <code>case 1: printf(\"one\\n\");</code>"),
             W("traceTable", { trace: T_exSw, blank: true, given: 1 }),
-          ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [STEP_RUN],
-            [RUN(MAIN("    " + T_exSw.code.join("\n    ")))],
           ] },
           { kind: "exercise", title: "Write a program: grade", blocks: [
             PQ("Complete the program, so that it displays the target output.<br>1. Display <code>Invalid score</code> for a score below 0 or above 100.<br>2. Display the grade: <code>A</code> for 80 to 100, <code>B</code> for 70 to 79, <code>C</code> for 60 to 69, <code>D</code> for 50 to 59, <code>F</code> for 0 to 49.",
@@ -1451,14 +1438,10 @@ int main(void) {
     printf("\\n");
     return 0;
 }`)],
-          ] },
+          ], answerCol: 0, answer: [OUT("5 2 1 ")] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. The first row is already complete.<br>The table shows the statements inside <code>main</code>. Check your table on the next slide."),
-            W("traceTable", { trace: T_exWhile, blank: true, given: 1 }),
-          ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [STEP_RUN],
-            [RUN(MAIN("    " + T_exWhile.code.join("\n    ")))],
+            T("Complete the trace table on paper. The first row is already complete.<br>The program shows only the statements inside <code>main</code>."),
+            W("traceTable", { trace: T_exWhile, blank: true, given: 1, showCode: true }),
           ] },
           { kind: "exercise", title: "Determine the output: a nested loop", cols: [
             [PAPER],
@@ -1472,7 +1455,7 @@ int main(void) {
     }
     return 0;
 }`)],
-          ] },
+          ], answerCol: 0, answer: [OUT("1 2 3 \n4 6 \n9 ")] },
           { kind: "exercise", title: "Write a program: 1 to N", blocks: [
             PQ("Complete the program, so that it displays the target output.<br>1. Use a <code>for</code> loop.<br>2. Display the numbers 1 to <code>n</code> on one line.<br>3. Then display the sum of the numbers on the next line.",
               "N: 5\n1 2 3 4 5\nSum = 15", '#include <stdio.h>\nint main(void) {\n    int n, sum = 0;\n    printf("N: ");\n    scanf("%d", &n);\n    // use a for loop\n    return 0;\n}', ["5"], "Use printf(\"%d \", i) inside the loop, and printf(\"\\n\") after the loop."),
@@ -1653,9 +1636,9 @@ int main(void) {
             ]),
             NEXT("<b>Arrays</b>. Many values of one type under one name."),
           ] },
-          { kind: "exercise", title: "Determine the output", blocks: [
-            PAPER_LINE,
-            RUN(`#include <stdio.h>
+          { kind: "exercise", title: "Determine the output", cols: [
+            [PAPER],
+            [RUN(`#include <stdio.h>
 int f(int x) {
     return 2 * x + 1;
 }
@@ -1663,15 +1646,11 @@ int main(void) {
     int a = f(3);
     printf("%d %d\\n", a, f(a));
     return 0;
-}`),
-          ] },
+}`)],
+          ], answerCol: 0, answer: [OUT("7 15")] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table of the program on paper. The first row is already complete.<br>Check your table on the next slide."),
+            T("Complete the trace table of the program on paper. The first row is already complete.<br>Lines 1 to 4 of the program are the function <code>int twice(int v)</code>. <code>main</code> starts at line 5."),
             W("traceTable", { trace: T_exFunc, blank: true, given: 1 }),
-          ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [STEP_RUN],
-            [RUN("#include <stdio.h>\n" + T_exFunc.code.join("\n"))],
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
             PQ("Complete the function <code>c_to_f</code>, so that the program displays the target output.<br>The function returns the temperature in °F: F = C × 9 / 5 + 32. C is the parameter <code>c</code>.",
@@ -1866,7 +1845,7 @@ int main(void) {
     printf("\\n");
     return 0;
 }`)],
-          ] },
+          ], answerCol: 0, answer: [OUT("6 1 9 3 ")] },
           { kind: "exercise", title: "Complete missing code", blocks: [
             PQ("Complete line 6 of the program, so that the program displays the target output.<br>After the loop, <code>min</code> must store the smallest element of the array <code>d</code>.",
               "Min = 2", '#include <stdio.h>\nint main(void) {\n    int d[5] = {4, 9, 2, 7, 5};\n    int min = d[0];\n    for (int i = 1; i < 5; i++) {\n        \n    }\n    printf("Min = %d\\n", min);\n    return 0;\n}', null, "Compare each element with min: if (d[i] < min) { min = d[i]; }"),
@@ -2087,17 +2066,17 @@ int main(void) {
             NEXT("<b>Structures</b>. Several values of different types under one name."),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            PAPER_LINE,
+            PAPER,
             T("<code>(int)</code> turns the size from strlen into an int, for %d. This is a cast (Lesson 4)."),
-            RUN(`#include <stdio.h>
+            HIDE(RUN(`#include <stdio.h>
 #include <string.h>
 int main(void) {
     char w[10] = "valve";
     w[0] = 'h';
     printf("%s %d %c\\n", w, (int) strlen(w), w[4]);
     return 0;
-}`),
-          ] },
+}`)),
+          ], answer: [OUT("halve 5 e")] },
           { kind: "exercise", title: "Write a program: greeting", blocks: [
             PQ("Complete the program, so that it displays the target output.<br>1. Read a name of one word into the array <code>name</code>.<br>2. Display <code>Hello, </code>, then the name, then <code>!</code>.",
               "Name: Mali\nHello, Mali!", '#include <stdio.h>\nint main(void) {\n    char name[20];\n    printf("Name: ");\n    // read the name and greet\n    return 0;\n}', ["Mali"], 'Use %s in scanf and in printf: scanf("%s", name); printf("Hello, %s!\\n", name);'),
@@ -2266,13 +2245,9 @@ int main(void) {
             T("Complete the trace table on paper. The first row is already complete.<br>The table shows the statements inside <code>main</code>. <code>struct point</code> has the members <code>x</code> and <code>y</code>."),
             W("traceTable", { trace: T_exStruct, blank: true, given: 1 }),
           ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [STEP_RUN],
-            [RUN("#include <stdio.h>\nstruct point { int x; int y; };\nint main(void) {\n    " + T_exStruct.code.join("\n    ") + "\n    return 0;\n}")],
-          ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            PAPER_LINE,
-            RUN(`#include <stdio.h>
+            PAPER,
+            HIDE(RUN(`#include <stdio.h>
 struct part { int qty; int price; };
 int main(void) {
     struct part s[3] = {{2, 50}, {1, 80}, {4, 10}};
@@ -2280,8 +2255,8 @@ int main(void) {
     for (int i = 0; i < 3; i++) { total += s[i].qty * s[i].price; }
     printf("%d %d\\n", s[1].price, total);
     return 0;
-}`),
-          ] },
+}`)),
+          ], answer: [OUT("80 220")] },
           { kind: "exercise", title: "Complete missing code", blocks: [
             PQ("Complete the function <code>make_sensor</code>, so that the program displays the target output.<br>The function returns a <code>struct sensor</code>. The members of the struct receive the values of the parameters <code>id</code> and <code>value</code>.",
               "4 18.5", '#include <stdio.h>\nstruct sensor { int id; double value; };\nstruct sensor make_sensor(int id, double value) {\n    \n}\nint main(void) {\n    struct sensor s = make_sensor(4, 18.5);\n    printf("%d %.1f\\n", s.id, s.value);\n    return 0;\n}', null, "Create a struct variable and return the variable: struct sensor s = {id, value}; return s;"),
@@ -2451,7 +2426,7 @@ int main(void) {
     printf("%d %d\\n", a, b);
     return 0;
 }`)],
-          ] },
+          ], answerCol: 0, answer: [OUT("6 13")] },
           { kind: "exercise", title: "Complete missing code", blocks: [
             PQ("Complete the function <code>to_percent</code>, so that the program displays the target output.<br>The function multiplies by 100 the variable that the parameter <code>x</code> points to.",
               "45.0", '#include <stdio.h>\nvoid to_percent(double *x) {\n    \n}\nint main(void) {\n    double load = 0.45;\n    to_percent(&load);\n    printf("%.1f\\n", load);\n    return 0;\n}', null, "*x is the variable that x points to: *x = *x * 100;"),
@@ -2632,14 +2607,13 @@ int main(void) {
     printf("%o\\n", 64);
     return 0;
 }`)],
-          ] },
+          ], answerCol: 0, answer: [OUT("32 7 10\nFF 0a\n100")] },
           { kind: "exercise", title: "Complete the table", blocks: [
-            T("Write the missing values of the table on paper. Each row shows one number in binary, in hexadecimal, and in decimal.<br>Check your table on the next slide."),
-            TB(["Binary", "Hexadecimal", "Decimal"], [["0011 0111", "", ""], ["", "0xA4", ""], ["", "", "200"], ["1111 1111", "", ""]], null, "center"),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            T("Write the missing values of the table on paper. Each row shows one number in binary, in hexadecimal, and in decimal."),
+            HIDE(TB(["Binary", "Hexadecimal", "Decimal"], [["0011 0111", "", ""], ["", "0xA4", ""], ["", "", "200"], ["1111 1111", "", ""]], null, "center")),
+          ], answer: [
             TB(["Binary", "Hexadecimal", "Decimal"], [["0011 0111", "0x37", "55"], ["1010 0100", "0xA4", "164"], ["1100 1000", "0xC8", "200"], ["1111 1111", "0xFF", "255"]], null, "center"),
-            T("Compare this table with your table. To check a row with a program, use <code>printf</code>: <code>printf(\"%d %X\", 0b00110111, 55);</code>"),
+            T("To check a row with a program, use <code>printf</code>: <code>printf(\"%d %X\", 0b00110111, 55);</code>"),
           ] },
           { kind: "exercise", title: "Write a program: hexadecimal", blocks: [
             PQ("Complete the program, so that it displays the number <code>v</code> (0 to 255) in hexadecimal, as in the target output.<br>1. Display <code>0x</code> first.<br>2. Then display <code>v</code> as two hexadecimal digits, with upper-case letters.",
@@ -2828,14 +2802,10 @@ int main(void) {
     printf("%d %d\\n", 6 & 1, 6 && 1);
     return 0;
 }`)],
-          ] },
+          ], answerCol: 0, answer: [OUT("0C 5F\nA3 23\n0 1")] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. Write each value in hexadecimal. The first row is already complete.<br>The table shows the statements inside <code>main</code>."),
-            W("traceTable", { trace: T_exBits, blank: true, given: 1 }),
-          ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [STEP_RUN],
-            [RUN(MAIN_U8("    " + T_exBits.code.join("\n    ")))],
+            T("Complete the trace table on paper. Write each value in hexadecimal. The first row is already complete.<br>The program shows only the statements inside <code>main</code>."),
+            W("traceTable", { trace: T_exBits, blank: true, given: 1, showCode: true }),
           ] },
           { kind: "exercise", title: "Determine the output: two nibbles", cols: [
             [PAPER, T("A <b>nibble</b> is a group of 4 bits: one hexadecimal digit.")],
@@ -2847,7 +2817,7 @@ int main(void) {
     printf("%02X %d\\n", x, x & 0x0F);
     return 0;
 }`)],
-          ] },
+          ], answerCol: 0, answer: [OUT("C3 3")] },
           { kind: "exercise", title: "Complete missing code", blocks: [
             PQ("Complete line 6 of the program, so that the program displays the target output.<br>1. Switch off the LED that is connected to bit 5 of <code>port</code>.<br>2. Keep the other bits of <code>port</code> unchanged.",
               "0x87", '#include <stdio.h>\n#include <stdint.h>\nint main(void) {\n    uint8_t port = 0xA7;\n    // switch off bit 5\n    \n    printf("0x%02X\\n", port);\n    return 0;\n}', null, "Clear bit 5 with & and an inverted mask: port &= ~(1 << 5);"),
@@ -3023,8 +2993,8 @@ int main(void) {
             ]),
             NEXT("<b>Chapter practice</b>. Complete programs that use the whole chapter."),
           ] },
-          { kind: "exercise", title: "Determine the output on paper, then run", blocks: [
-            RUN(`#include <stdio.h>
+          { kind: "exercise", title: "Determine the output: a static variable", blocks: [
+            HIDE(RUN(`#include <stdio.h>
 int tick(void) {
     static int t = 10;
     t += 5;
@@ -3034,8 +3004,8 @@ int main(void) {
     tick();
     printf("%d\\n", tick());
     return 0;
-}`),
-          ] },
+}`)),
+          ], answer: [OUT("20")] },
           { kind: "exercise", title: "Determine the output: a traffic light", cols: [
             [PAPER],
             [RUN(`#include <stdio.h>
@@ -3048,7 +3018,7 @@ int main(void) {
     }
     return 0;
 }`)],
-          ] },
+          ], answerCol: 0, answer: [OUT("0\n1\n2\n0\n1")] },
           { kind: "exercise", title: "Write a program: segments", blocks: [
             PQ("Complete the program, so that it displays the segments that are on for the digit 3, as in the target output.<br>1. Test the bits 0 to 6 of <code>code</code>, in this order.<br>2. When a bit is 1, display the letter of the segment: <code>'a' + bit</code>.",
               "abcdg", '#include <stdio.h>\n#include <stdint.h>\nconst uint8_t SEG[4] = {0x3F, 0x06, 0x5B, 0x4F};\nint main(void) {\n    uint8_t code = SEG[3];\n    // for each bit 0..6 that is 1, display \'a\' + bit\n    return 0;\n}', null, "Use this loop: for (int s = 0; s < 7; s++) { if (code & (1 << s)) { printf(\"%c\", 'a' + s); } }"),
@@ -3158,22 +3128,22 @@ int main(void) {
     printf("\\n");
     return 0;
 }`)],
-          ] },
+          ], answerCol: 0, answer: [OUT("00011111")] },
           { kind: "problem", part: "Problem 9", title: "Problem 9: a status register", blocks: [
             T("A device reports a status byte. Bit 0 means READY, bit 3 means ERROR, and bit 5 means BUSY. The program tests each of these bits with &amp; and displays the name of each flag that is set."),
             IPO([["Input", "the status byte 0x21 (in the program)"], ["Output", "the name of each flag that is set, one per line"], ["Processing", "status &amp; (1 &lt;&lt; n) is not 0 only when bit n is 1"]]),
           ] },
           { kind: "exercise", part: "Problem 9", title: "Problem 9: determine the output", blocks: [
-            PAPER_LINE,
-            RUN(`#include <stdio.h>
+            PAPER,
+            HIDE(RUN(`#include <stdio.h>
 int main(void) {
     unsigned int status = 0x21;
     if (status & (1 << 0)) { printf("READY\\n"); }
     if (status & (1 << 3)) { printf("ERROR\\n"); }
     if (status & (1 << 5)) { printf("BUSY\\n"); }
     return 0;
-}`),
-          ] },
+}`)),
+          ], answer: [OUT("READY\nBUSY")] },
           { kind: "summary", title: "Chapter summary", blocks: [
             TB(["Lessons", "Key rules"], [
               ["1–4. Basics", "Compile, then run; declare types; printf and scanf specifiers; int / int; casts."],
