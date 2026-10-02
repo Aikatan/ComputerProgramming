@@ -601,17 +601,19 @@
             ]),
             NEXT("<b>Arithmetic operations</b>. Python computes new values from stored numbers with arithmetic operators."),
           ] },
-          { kind: "exercise", title: "Convert decimal to binary", cols: [
-            [T("Convert the decimal number 25 to an 8-bit binary number.<br>1. Use the division algorithm. Write each division on paper.<br>2. Enter 25 in the converter.<br>3. Compare the result with your answer on paper.")],
-            [W("binaryConverter", { value: 0 })],
+          { kind: "exercise", title: "Convert decimal to binary", blocks: [
+            T("Convert the decimal number 25 to an 8-bit binary number on paper.<br>1. Use the division algorithm.<br>2. Write each number, quotient, and remainder in a table.<br>3. Write the result with 8 bits."),
+          ], answer: [
+            TB(["Number", "Quotient (÷ 2)", "Remainder"], [
+              ["25", "12", "1"], ["12", "6", "0"], ["6", "3", "0"], ["3", "1", "1"], ["1", "0", "1"],
+            ], "The remainders read upward: 11001. With 8 bits: <code>00011001</code>.", "center"),
           ] },
-          { kind: "exercise", title: "Convert binary to decimal", cols: [
-            [L([
-              "The byte <code>01000010</code> is stored in memory. Compute the decimal value of the byte with the place values.",
-              "The decimal value is an ASCII code. Find the character with the code in the ASCII table.",
-              "Enter the decimal value in the converter. Compare the result with both answers.",
-            ], null, true)],
-            [W("binaryConverter", { value: 0 })],
+          { kind: "exercise", title: "Convert binary to decimal", blocks: [
+            T("The byte <code>01000010</code> is stored in memory. Find its value on paper.<br>1. Compute the decimal value of the byte with the place values.<br>2. The decimal value is an ASCII code. Write the character that has this code."),
+          ], answer: [
+            TB(["Place value", "128", "64", "32", "16", "8", "4", "2", "1"], [
+              ["Bits", "0", "1", "0", "0", "0", "0", "1", "0"],
+            ], "64 + 2 = 66. The ASCII code 66 is the character <code>'B'</code>.", "center"),
           ] },
           { kind: "exercise", title: "Calculate memory size", blocks: [
             PQ("Compute two results on paper. Then write a program that displays the target output.<br>1. Output line 1: the number of bit patterns in 2 bytes (one byte has 256).<br>2. Output line 2: the memory in bytes for 1000 C <code>int</code> values (4 bytes each).",
