@@ -1,14 +1,17 @@
 """Trace challenges of Topic 05 (Lesson 7). Build with: python tools/make-trace.py t05
 
-Basic statements only (the lecturer's rule, 2026-10-03): def, parameters, return, default and
-keyword arguments, local and global names, a call inside a call, and recursion. No *args, no
-global statement, no return of two values, no module.
-Eight programs, in the order of the lessons; the last two have missing lines.
+Python level: t02 to t04 material plus def, return, import. No lists, dicts, or try.
+*args appears only with a for loop. No f-strings.
+Eight programs, in the order of the lessons; the last two have a missing line.
 
-Row style: the row of return removes the local variables and also holds what the line of the
-call then does with the returned value (it stores, displays, or passes the value), as the
-chapter's own trace exercise does. Names are short because a local variable has a wide
-column ("v (half)").
+All programs use the side layout: the students write the number of the line that runs.
+All programs use the default rows of the tool (no resume), as the trace exercise of Lesson 2
+(T_area) does: the row of return removes the local variables and also holds what the line of
+the call then does with the returned value (it stores, displays, or passes the value).
+A line with two calls of functions of the program gets no row between the calls: no program
+has such a line. Do not write "f(a) + f(b)" or "f(g(a))" in one line.
+A line "global name" gets no row. Only C_total has one, and its table is complete.
+Names are short because a local variable has a wide column ("v (half)").
 """
 
 TRACES = [
@@ -35,16 +38,15 @@ x = drop(i=1, v=x)
 x = drop(x * 9, i=x // 2)
 print(x)
 '''),
-    dict(name="C_first", hide=["limit (first)"], about="A return inside a loop ends the function at once; the second call ends the loop and returns 0.", side=True, code='''
-def first(limit):
-    for n in range(1, 3):
-        if n * 10 >= limit:
-            return n
+    dict(name="C_first", about="*args with 3 and 0 arguments: a return inside the loop ends the function (40 is not tested); with no argument the loop does not run.", side=True, hide=["temps"], code='''
+def first(*temps):
+    for t in temps:
+        if t > 30:
+            return t
     return 0
 
-a = first(15)
-b = first(50)
-print(a, b)
+a = first(28, 35, 40)
+print(a, first())
 '''),
     dict(name="C_boost", about="A parameter with the name of a global variable; a returned value that is lost; a global variable that is read.", side=True, code='''
 gain = 2
@@ -60,19 +62,21 @@ gain = boost(gain + 1)
 level = boost(level)
 print(level, gain)
 '''),
-    dict(name="C_nested", about="Each function has its own v; a call inside a function; / gives a float.", side=True, code='''
-def half(v):
-    v = v + 6
-    return v / 2
+    dict(name="C_nested", about="Each call has its own v: line 9 uses the v of diff. math.sqrt returns a float.", side=True, code='''
+import math
+
+def root(v):
+    v = v + 7
+    return math.sqrt(v)
 
 def diff(v):
-    w = half(v * 3)
+    w = root(v * 3)
     return w - v
 
-x = half(2)
+x = root(2)
 print(x, diff(x))
 '''),
-    dict(name="C_recur", about="A function that calls itself: n + n // 2 + n // 4 + ... + 1. The calls return in reverse order: 1, then 4, then 10.", side=True, code='''
+    dict(name="C_recur", about="n + n // 2 + n // 4 + ... + 1. The calls return in reverse order: 1, then 4, then 10.", side=True, code='''
 def f(n):
     if n > 1:
         n = n + f(n // 2)
@@ -80,29 +84,31 @@ def f(n):
 
 print(f(6))
 '''),
-    dict(name="C_low", missing=[3, 4], about="Missing lines 3 and 4: the two return lines of a function with an if.", side=True, code='''
+    dict(name="C_low", missing=[3, 4], about="Missing lines 3 and 4: return b, a. Its two rows store the smaller value first; the targets of line 7 are y, x.", side=True, code='''
 def low(a, b):
     if a > b:
-        return b
-    return a
+        return b, a
+    return a, b
 
-x = low(7, 3)
-y = low(x, x + 4)
-x = low(y - 1, x)
+x, y = low(7, 3)
+y, x = low(x, y + 1)
+x, y = low(x, y)
 print(x, y)
 '''),
-    dict(name="C_total", missing=[4, 8], about="Missing lines 4 and 8: an assignment inside a function makes a local variable; a function can read a global variable.", side=True, code='''
+    dict(name="C_total", missing=[4, 8], about="Missing lines 4 and 8: total = total + n. global makes it change the global variable; clear() changes a local total; add() returns None.", side=True, code='''
 total = 10
-
 def add(n):
-    total = n + 1
+    global total
+    total = total + n
+
+def clear():
+    total = 0
     return total
 
-def scale(k):
-    return total * k
-
-x = add(5)
-y = scale(3)
-print(total, x, y)
+add(5)
+x = clear()
+print(total, x)
+x = add(x + 2)
+print(total, x)
 '''),
 ]

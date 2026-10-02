@@ -141,146 +141,146 @@
   };
 
   /* ---------- trace challenges (generated: edit tools/traces/t06.py, then run "python tools/make-trace.py t06") ---------- */
-  // Indexes of a string: the last index is n - 1, and n // 2 is the middle.
-  const C_chars = {
-    code: ["code = \"T2-K9\"", "n = len(code)", "first = code[0]", "last = code[n - 1]", "mid = code[n // 2]", "tag = last + mid + first", "print(tag, n)"],
+  // strip() without assignment, find() on the old text, find() gives -1, index -1.
+  const C_message = {
+    code: ["msg = \" Temp:25C \"", "msg.strip()", "pos = msg.find(\":\")", "msg = msg.strip().lower()", "num = msg[pos:-1]", "low = msg.find(\"T\")", "unit = msg[low]", "print(msg[:pos], num[::-1])", "print(unit, num.isdigit())"],
     steps: [
-      { line: 0, set: { code: "'T2-K9'" } },
-      { line: 1, set: { n: "5" } },
-      { line: 2, set: { first: "'T'" } },
-      { line: 3, set: { last: "'9'" } },
-      { line: 4, set: { mid: "'-'" } },
-      { line: 5, set: { tag: "'9-T'" } },
-      { line: 6, print: "9-T 5" },
+      { line: 0, set: { msg: "' Temp:25C '" } },
+      { line: 1 },
+      { line: 2, set: { pos: "5" } },
+      { line: 3, set: { msg: "'temp:25c'" } },
+      { line: 4, set: { num: "'25'" } },
+      { line: 5, set: { low: "-1" } },
+      { line: 6, set: { unit: "'c'" } },
+      { line: 7, print: "temp: 52" },
+      { line: 8, print: "c True" },
     ],
   };
 
-  // A loop over the characters: characters are compared as text; ch + unit puts the new character in front.
+  // A loop over the characters: '.' is not a digit; ch + unit puts the character in front; a chain of methods.
   const C_unit = {
     side: true,
-    code: ["text = \"2mA\"", "num = \"\"", "unit = \"\"", "for ch in text:", "    if \"0\" <= ch <= \"9\":", "        num = num + ch", "    else:", "        unit = ch + unit", "print(num, unit)"],
+    code: ["num = \"\"", "unit = \"\"", "for ch in \"3.5k\":", "    if ch.isdigit():", "        num = num + ch", "    else:", "        unit = ch + unit", "print(num, unit.upper().find(\"k\"))"],
     steps: [
-      { line: 0, set: { text: "'2mA'" } },
-      { line: 1, set: { num: "''" } },
-      { line: 2, set: { unit: "''" } },
-      { line: 3, set: { ch: "'2'" } },
-      { line: 4, test: "True" },
-      { line: 5, set: { num: "'2'" } },
-      { line: 3, set: { ch: "'m'" } },
-      { line: 4, test: "False" },
-      { line: 7, set: { unit: "'m'" } },
-      { line: 3, set: { ch: "'A'" } },
-      { line: 4, test: "False" },
-      { line: 7, set: { unit: "'Am'" } },
-      { line: 3 },
-      { line: 8, print: "2 Am" },
+      { line: 0, set: { num: "''" } },
+      { line: 1, set: { unit: "''" } },
+      { line: 2, set: { ch: "'3'" } },
+      { line: 3, test: "True" },
+      { line: 4, set: { num: "'3'" } },
+      { line: 2, set: { ch: "'.'" } },
+      { line: 3, test: "False" },
+      { line: 6, set: { unit: "'.'" } },
+      { line: 2, set: { ch: "'5'" } },
+      { line: 3, test: "True" },
+      { line: 4, set: { num: "'35'" } },
+      { line: 2, set: { ch: "'k'" } },
+      { line: 3, test: "False" },
+      { line: 6, set: { unit: "'k.'" } },
+      { line: 2 },
+      { line: 7, print: "35 -1" },
     ],
   };
 
-  // Elements of a list: an index on both sides, append(), and len() after the list grows.
+  // insert and remove move the elements; append adds a list as one element; pop returns it.
   const C_levels = {
-    code: ["levels = [4, 9, 6]", "levels[0] = levels[2] + 1", "levels.append(levels[0] - levels[1])", "n = len(levels)", "levels[n - 1] = levels[n - 2] * 2", "top = levels[1] + levels[3]", "print(levels, top)"],
+    code: ["levels = [4, 9, 6]", "levels.insert(1, levels[-1])", "levels.remove(6)", "top = levels.pop(1)", "levels.append([top, 1])", "n = len(levels)", "last = levels.pop()", "levels.extend(last)", "del levels[n - 4]", "print(levels, n)"],
     steps: [
       { line: 0, set: { levels: "[4, 9, 6]" } },
-      { line: 1, set: { levels: "[7, 9, 6]" } },
-      { line: 2, set: { levels: "[7, 9, 6, -2]" } },
-      { line: 3, set: { n: "4" } },
-      { line: 4, set: { levels: "[7, 9, 6, 12]" } },
-      { line: 5, set: { top: "21" } },
-      { line: 6, print: "[7, 9, 6, 12] 21" },
+      { line: 1, set: { levels: "[4, 6, 9, 6]" } },
+      { line: 2, set: { levels: "[4, 9, 6]" } },
+      { line: 3, set: { levels: "[4, 6]", top: "9" } },
+      { line: 4, set: { levels: "[4, 6, [9, 1]]" } },
+      { line: 5, set: { n: "3" } },
+      { line: 6, set: { levels: "[4, 6]", last: "[9, 1]" } },
+      { line: 7, set: { levels: "[4, 6, 9, 1]" } },
+      { line: 8, set: { levels: "[4, 6, 9]" } },
+      { line: 9, print: "[4, 6, 9] 3" },
     ],
   };
 
-  // Two names for one list: view = data is not a copy; a new list for view ends the shared name.
+  // Two names for one list, a slice is a copy, sort() returns None, a new list for an old name.
   const C_names = {
-    code: ["data = [7, 3]", "view = data", "saved = [data[0], data[1]]", "view[0] = 5", "data[1] = view[0] + saved[0]", "saved[1] = data[1] * 2", "view = [0]", "print(data, saved, view)"],
+    code: ["data = [7, 3]", "view = data", "saved = data[:]", "view.append(5)", "saved.insert(0, data[-1])", "res = view.sort()", "view = view[1:]", "view[0] = saved[0] * 2", "data.reverse()", "print(data[0], view[0])", "print(res)"],
     steps: [
       { line: 0, set: { data: "[7, 3]" } },
       { line: 1, set: { view: "[7, 3]" } },
       { line: 2, set: { saved: "[7, 3]" } },
-      { line: 3, set: { data: "[5, 3]", view: "[5, 3]" } },
-      { line: 4, set: { data: "[5, 12]", view: "[5, 12]" } },
-      { line: 5, set: { saved: "[7, 24]" } },
-      { line: 6, set: { view: "[0]" } },
-      { line: 7, print: "[5, 12] [7, 24] [0]" },
+      { line: 3, set: { data: "[7, 3, 5]", view: "[7, 3, 5]" } },
+      { line: 4, set: { saved: "[5, 7, 3]" } },
+      { line: 5, set: { data: "[3, 5, 7]", view: "[3, 5, 7]", res: "None" } },
+      { line: 6, set: { view: "[5, 7]" } },
+      { line: 7, set: { view: "[10, 7]" } },
+      { line: 8, set: { data: "[7, 5, 3]" } },
+      { line: 9, print: "7 10" },
+      { line: 10, print: "None" },
     ],
   };
 
-  // The loop variable is a copy of the element: line 4 does not change the list; an index does.
-  const C_loops = {
-    side: true,
-    code: ["amp = [2, 5]", "total = 0", "for a in amp:", "    a = a * 2", "    total = total + a", "for i in range(len(amp)):", "    amp[i] = amp[i] + i", "print(amp, total)"],
+  // Packing, unpacking, a list made from a tuple is a copy, (x) is not a tuple, a slice of a tuple.
+  const C_limits = {
+    code: ["lim = 2, 8", "low, high = lim", "low, high = high - low, low", "vals = list(lim)", "vals[0] = low", "one = (vals[1])", "lim = lim[:1]", "print(lim, one, high in lim)"],
     steps: [
-      { line: 0, set: { amp: "[2, 5]" } },
-      { line: 1, set: { total: "0" } },
-      { line: 2, set: { a: "2" } },
-      { line: 3, set: { a: "4" } },
-      { line: 4, set: { total: "4" } },
-      { line: 2, set: { a: "5" } },
-      { line: 3, set: { a: "10" } },
-      { line: 4, set: { total: "14" } },
-      { line: 2 },
-      { line: 5, set: { i: "0" } },
-      { line: 6 },
-      { line: 5, set: { i: "1" } },
-      { line: 6, set: { amp: "[2, 6]" } },
-      { line: 5 },
-      { line: 7, print: "[2, 6] 14" },
+      { line: 0, set: { lim: "(2, 8)" } },
+      { line: 1, set: { low: "2", high: "8" } },
+      { line: 2, set: { low: "6", high: "2" } },
+      { line: 3, set: { vals: "[2, 8]" } },
+      { line: 4, set: { vals: "[6, 8]" } },
+      { line: 5, set: { one: "8" } },
+      { line: 6, set: { lim: "(2,)" } },
+      { line: 7, print: "(2,) 8 True" },
     ],
   };
 
-  // The position of the largest element: best holds an index, not a value.
-  const C_best = {
-    side: true,
-    code: ["temps = [21, 30, 26]", "best = 0", "for i in range(1, len(temps)):", "    if temps[i] > temps[best]:", "        best = i", "print(best, temps[best])"],
+  // get() adds no key, an existing key keeps its place, in tests the keys, pop() and popitem().
+  const C_stock = {
+    code: ["stock = {\"R\": 5, \"C\": 2}", "n = stock.get(\"L\", 9)", "stock[\"C\"] = stock[\"R\"] + n", "stock[\"L\"] = stock.pop(\"R\")", "found = 5 in stock", "key, n = stock.popitem()", "stock[key] = len(stock)", "print(stock[\"L\"], n, found)"],
     steps: [
-      { line: 0 },
-      { line: 1, set: { best: "0" } },
-      { line: 2, set: { i: "1" } },
-      { line: 3, test: "True" },
-      { line: 4, set: { best: "1" } },
-      { line: 2, set: { i: "2" } },
-      { line: 3, test: "False" },
-      { line: 2 },
-      { line: 5, print: "1 30" },
-    ],
-  };
-
-  // A dictionary: a new key, a changed value, len(), and in tests the keys (1 is a value, not a key).
-  const C_pins = {
-    code: ["pins = {3: 1, 5: 0}", "pins[5] = pins[3] + 1", "pins[8] = pins[5] - 2", "n = len(pins)", "found = 1 in pins", "pins[3] = pins[3] + n", "print(pins[3], n, found)"],
-    steps: [
-      { line: 0, set: { pins: "{3: 1, 5: 0}" } },
-      { line: 1, set: { pins: "{3: 1, 5: 2}" } },
-      { line: 2, set: { pins: "{3: 1, 5: 2, 8: 0}" } },
-      { line: 3, set: { n: "3" } },
+      { line: 0, set: { stock: "{'R': 5, 'C': 2}" } },
+      { line: 1, set: { n: "9" } },
+      { line: 2, set: { stock: "{'R': 5, 'C': 14}" } },
+      { line: 3, set: { stock: "{'C': 14, 'L': 5}" } },
       { line: 4, set: { found: "False" } },
-      { line: 5, set: { pins: "{3: 4, 5: 2, 8: 0}" } },
-      { line: 6, print: "4 3 False" },
+      { line: 5, set: { stock: "{'C': 14}", n: "5", key: "'L'" } },
+      { line: 6, set: { stock: "{'C': 14, 'L': 1}" } },
+      { line: 7, print: "1 5 False" },
     ],
   };
 
-  // Missing lines 5 and 7: counting with a dictionary. A key that exists is increased; a new key starts at 1.
+  // A set stores a value once, an operator returns a new set, discard() of a missing element, set().
+  const C_pins = {
+    code: ["pins = [3, 5, 3, 1]", "used = set(pins)", "free = {2, 3, 4} - used", "used | free", "free.add(len(used))", "used.discard(4)", "both = used & free", "used = used - both", "both = used & free", "print(len(used), both)"],
+    steps: [
+      { line: 0, set: { pins: "[3, 5, 3, 1]" } },
+      { line: 1, set: { used: "{1, 3, 5}" } },
+      { line: 2, set: { free: "{2, 4}" } },
+      { line: 3 },
+      { line: 4, set: { free: "{2, 3, 4}" } },
+      { line: 5 },
+      { line: 6, set: { both: "{3}" } },
+      { line: 7, set: { used: "{1, 5}" } },
+      { line: 8, set: { both: "set()" } },
+      { line: 9, print: "2 set()" },
+    ],
+  };
+
+  // Missing lines 3 and 4: counting with get(). A new key starts at 0, and an existing key keeps its place.
   const C_bins = {
     side: true,
-    missing: [4, 6],
-    code: ["bins = {}", "for t in [24, 9, 27]:", "    b = t // 10", "    if b in bins:", "        bins[b] = bins[b] + 1", "    else:", "        bins[b] = 1", "print(bins[2], len(bins))"],
+    missing: [2, 3],
+    code: ["bins = {}", "for t in [24, 9, 27]:", "    b = t // 10", "    bins[b] = bins.get(b, 0) + 1", "print(bins)"],
     steps: [
       { line: 0, set: { bins: "{}" } },
       { line: 1, set: { t: "24" } },
       { line: 2, set: { b: "2" } },
-      { line: 3, test: "False" },
-      { line: 6, set: { bins: "{2: 1}" } },
+      { line: 3, set: { bins: "{2: 1}" } },
       { line: 1, set: { t: "9" } },
       { line: 2, set: { b: "0" } },
-      { line: 3, test: "False" },
-      { line: 6, set: { bins: "{2: 1, 0: 1}" } },
+      { line: 3, set: { bins: "{2: 1, 0: 1}" } },
       { line: 1, set: { t: "27" } },
       { line: 2, set: { b: "2" } },
-      { line: 3, test: "True" },
-      { line: 4, set: { bins: "{2: 2, 0: 1}" } },
+      { line: 3, set: { bins: "{2: 2, 0: 1}" } },
       { line: 1 },
-      { line: 7, print: "2 2" },
+      { line: 4, print: "{2: 2, 0: 1}" },
     ],
   };
   /* ---------- end of the generated traces ---------- */
@@ -1055,14 +1055,14 @@
         sub: "Eight programs to trace on paper: the value of every variable and the output, line by line.",
         keywords: "trace table trace the code execute by hand variable values output challenge string list tuple dictionary set",
         deck: [
-          { kind: "exercise", title: "A device code", blocks: [CH(C_chars)] },
+          { kind: "exercise", title: "A temperature message", blocks: [CH(C_message)] },
           { kind: "exercise", title: "A number and a unit", blocks: [CH(C_unit)] },
           { kind: "exercise", title: "Tank levels", blocks: [CH(C_levels)] },
           { kind: "exercise", title: "Data, view, and saved", blocks: [CH(C_names)] },
-          { kind: "exercise", title: "Two loops", blocks: [CH(C_loops)] },
-          { kind: "exercise", title: "The largest reading", blocks: [CH(C_best, 2)] },
-          { kind: "exercise", title: "Pins", blocks: [CH(C_pins)] },
-          { kind: "exercise", title: "Temperature groups", blocks: [T("Write lines 5 and 7 of the program."), CH(C_bins)], answer: [CODE("bins[b] = bins[b] + 1\nbins[b] = 1", null, "lines 5 and 7")] },
+          { kind: "exercise", title: "Two limits", blocks: [CH(C_limits)] },
+          { kind: "exercise", title: "Parts in stock", blocks: [CH(C_stock)] },
+          { kind: "exercise", title: "Pins in use", blocks: [CH(C_pins)] },
+          { kind: "exercise", title: "Temperature groups", blocks: [T("Write lines 3 and 4 of the program."), CH(C_bins)], answer: [CODE("b = t // 10\nbins[b] = bins.get(b, 0) + 1", null, "lines 3 and 4")] },
         ],
       },
 

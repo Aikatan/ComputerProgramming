@@ -96,18 +96,19 @@ print(a)
 '''),
 
     # ---------------- Lesson 7 (a program of functions) ----------------
-    dict(name="C_valid", side=True,
-         about="A function that returns True or False, called in a loop: only valid readings are added and counted.", code='''
+    dict(name="C_valid", side=True, hide=["v (valid)", "a (mean)"],
+         about="Two functions: each call runs line 2 or line 5, then the program continues after the call. 1 <= 7 <= 5 is False; / gives a float.", code='''
 def valid(v):
     return 1 <= v <= 5
 
-total = 0
-count = 0
+def mean(a):
+    return sum(a) / len(a)
+
+kept = []
 for r in [5, 7]:
     if valid(r):
-        total = total + r
-        count = count + 1
-print(total / count)
+        kept.append(r)
+print(mean(kept))
 '''),
 
     # ---------------- Missing line ----------------

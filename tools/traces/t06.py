@@ -1,87 +1,96 @@
 """Trace challenges of Topic 06 (Lesson 7). Build with: python tools/make-trace.py t06
 
-Basic operations only (the lecturer's rule, 2026-10-03): indexing, len(), assignment to an
-element, append(), in, loops, and a dictionary with d[key]. No method or function that only
-Python has (no find, isdigit, strip, sort, pop, get, set(), tuples, slices).
-Eight programs, in the order of the lessons; the last one has two missing lines.
+Python level: t02 to t05 (if, loops, functions) plus strings, lists, tuples, dictionaries, sets.
+No try, no files, no f-strings. A set holds small integers only, so that its order is fixed
+(every set of these programs is displayed in increasing order).
 Width: a list or a dictionary fills its column in every row, so the values are short.
+Eight programs, in the order of the lessons; the last one has a missing line.
 """
 
 TRACES = [
-    dict(name="C_chars", about="Indexes of a string: the last index is n - 1, and n // 2 is the middle.", code='''
-code = "T2-K9"
-n = len(code)
-first = code[0]
-last = code[n - 1]
-mid = code[n // 2]
-tag = last + mid + first
-print(tag, n)
+    dict(name="C_message", about="strip() without assignment, find() on the old text, find() gives -1, index -1.", code='''
+msg = " Temp:25C "
+msg.strip()
+pos = msg.find(":")
+msg = msg.strip().lower()
+num = msg[pos:-1]
+low = msg.find("T")
+unit = msg[low]
+print(msg[:pos], num[::-1])
+print(unit, num.isdigit())
 '''),
-    dict(name="C_unit", about="A loop over the characters: characters are compared as text; ch + unit puts the new character in front.", side=True, code='''
-text = "2mA"
+    dict(name="C_unit", about="A loop over the characters: '.' is not a digit; ch + unit puts the character in front; a chain of methods.", side=True, code='''
 num = ""
 unit = ""
-for ch in text:
-    if "0" <= ch <= "9":
+for ch in "3.5k":
+    if ch.isdigit():
         num = num + ch
     else:
         unit = ch + unit
-print(num, unit)
+print(num, unit.upper().find("k"))
 '''),
-    dict(name="C_levels", about="Elements of a list: an index on both sides, append(), and len() after the list grows.", code='''
+    dict(name="C_levels", about="insert and remove move the elements; append adds a list as one element; pop returns it.", code='''
 levels = [4, 9, 6]
-levels[0] = levels[2] + 1
-levels.append(levels[0] - levels[1])
+levels.insert(1, levels[-1])
+levels.remove(6)
+top = levels.pop(1)
+levels.append([top, 1])
 n = len(levels)
-levels[n - 1] = levels[n - 2] * 2
-top = levels[1] + levels[3]
-print(levels, top)
+last = levels.pop()
+levels.extend(last)
+del levels[n - 4]
+print(levels, n)
 '''),
-    dict(name="C_names", about="Two names for one list: view = data is not a copy; a new list for view ends the shared name.", code='''
+    dict(name="C_names", about="Two names for one list, a slice is a copy, sort() returns None, a new list for an old name.", code='''
 data = [7, 3]
 view = data
-saved = [data[0], data[1]]
-view[0] = 5
-data[1] = view[0] + saved[0]
-saved[1] = data[1] * 2
-view = [0]
-print(data, saved, view)
+saved = data[:]
+view.append(5)
+saved.insert(0, data[-1])
+res = view.sort()
+view = view[1:]
+view[0] = saved[0] * 2
+data.reverse()
+print(data[0], view[0])
+print(res)
 '''),
-    dict(name="C_loops", about="The loop variable is a copy of the element: line 4 does not change the list; an index does.", side=True, code='''
-amp = [2, 5]
-total = 0
-for a in amp:
-    a = a * 2
-    total = total + a
-for i in range(len(amp)):
-    amp[i] = amp[i] + i
-print(amp, total)
+    dict(name="C_limits", about="Packing, unpacking, a list made from a tuple is a copy, (x) is not a tuple, a slice of a tuple.", code='''
+lim = 2, 8
+low, high = lim
+low, high = high - low, low
+vals = list(lim)
+vals[0] = low
+one = (vals[1])
+lim = lim[:1]
+print(lim, one, high in lim)
 '''),
-    dict(name="C_best", hide=["temps"], about="The position of the largest element: best holds an index, not a value.", side=True, code='''
-temps = [21, 30, 26]
-best = 0
-for i in range(1, len(temps)):
-    if temps[i] > temps[best]:
-        best = i
-print(best, temps[best])
+    dict(name="C_stock", about="get() adds no key, an existing key keeps its place, in tests the keys, pop() and popitem().", code='''
+stock = {"R": 5, "C": 2}
+n = stock.get("L", 9)
+stock["C"] = stock["R"] + n
+stock["L"] = stock.pop("R")
+found = 5 in stock
+key, n = stock.popitem()
+stock[key] = len(stock)
+print(stock["L"], n, found)
 '''),
-    dict(name="C_pins", about="A dictionary: a new key, a changed value, len(), and in tests the keys (1 is a value, not a key).", code='''
-pins = {3: 1, 5: 0}
-pins[5] = pins[3] + 1
-pins[8] = pins[5] - 2
-n = len(pins)
-found = 1 in pins
-pins[3] = pins[3] + n
-print(pins[3], n, found)
+    dict(name="C_pins", about="A set stores a value once, an operator returns a new set, discard() of a missing element, set().", code='''
+pins = [3, 5, 3, 1]
+used = set(pins)
+free = {2, 3, 4} - used
+used | free
+free.add(len(used))
+used.discard(4)
+both = used & free
+used = used - both
+both = used & free
+print(len(used), both)
 '''),
-    dict(name="C_bins", missing=[5, 7], about="Missing lines 5 and 7: counting with a dictionary. A key that exists is increased; a new key starts at 1.", side=True, code='''
+    dict(name="C_bins", missing=[3, 4], about="Missing lines 3 and 4: counting with get(). A new key starts at 0, and an existing key keeps its place.", side=True, code='''
 bins = {}
 for t in [24, 9, 27]:
     b = t // 10
-    if b in bins:
-        bins[b] = bins[b] + 1
-    else:
-        bins[b] = 1
-print(bins[2], len(bins))
+    bins[b] = bins.get(b, 0) + 1
+print(bins)
 '''),
 ]

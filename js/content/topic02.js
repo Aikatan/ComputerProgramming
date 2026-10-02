@@ -200,7 +200,7 @@
 
   // The order of operations, and int and float results.
   const C_order = {
-    code: ["a = 7", "b = 2", "c = a / b", "d = a // b * b", "a = a % b + d ** 2", "c = c * b - d", "b = -b ** 2 + a // 3", "print(a, b, c)"],
+    code: ["a = 7", "b = 2", "c = a / b", "d = a // b * b", "a = a % b + d ** 2", "c = c * b - d", "b = -b ** 2 + a // 3", "print(a, b, c)", "print(type(c), round(c / 3, 2))"],
     steps: [
       { line: 0, set: { a: "7" } },
       { line: 1, set: { b: "2" } },
@@ -210,6 +210,7 @@
       { line: 5, set: { c: "1.0" } },
       { line: 6, set: { b: "8" } },
       { line: 7, print: "37 8 1.0" },
+      { line: 8, print: "<class 'float'> 0.33" },
     ],
   };
 
@@ -228,16 +229,37 @@
     ],
   };
 
-  // Indexes of a string: the last index is n - 1. Text digits are converted before they are added.
+  // Slices, str() and *, and a method call that changes nothing.
   const C_code = {
-    code: ["code = \"TMP36\"", "n = len(code)", "last = code[n - 1]", "num = int(code[3]) + int(last)", "tag = code[0] + str(num)", "print(tag, n)"],
+    code: ["code = \"TMP36-A\"", "left = code[:3].lower()", "num = int(code[3:5])", "num = num // 10 + num % 10", "tag = code[-1] + str(num) * 2", "code = left + \"-\" + tag", "code.upper()", "print(code, len(code))"],
     steps: [
-      { line: 0, set: { code: "'TMP36'" } },
-      { line: 1, set: { n: "5" } },
-      { line: 2, set: { last: "'6'" } },
+      { line: 0, set: { code: "'TMP36-A'" } },
+      { line: 1, set: { left: "'tmp'" } },
+      { line: 2, set: { num: "36" } },
       { line: 3, set: { num: "9" } },
-      { line: 4, set: { tag: "'T9'" } },
-      { line: 5, print: "T9 5" },
+      { line: 4, set: { tag: "'A99'" } },
+      { line: 5, set: { code: "'tmp-A99'" } },
+      { line: 6 },
+      { line: 7, print: "tmp-A99 7" },
+    ],
+  };
+
+  // The whole chapter in one program: input, slices, conversion, arithmetic, reassignment, sep.
+  const C_report = {
+    code: ["msg = input(\"Data: \")", "value = float(msg[:4])", "value = value * int(msg[-2])", "value = value * 90 / 60", "whole = int(value)", "value = value - whole", "tag = msg[4] + msg[-1]", "tag = tag.lower() + str(whole)", "whole = whole % 10 * len(tag)", "print(tag, value, sep=\":\")", "print(\"=\" * (whole // 10))", "print(whole)"],
+    steps: [
+      { line: 0, set: { msg: "'12.5V2A'" }, print: "Data: 12.5V2A" },
+      { line: 1, set: { value: "12.5" } },
+      { line: 2, set: { value: "25.0" } },
+      { line: 3, set: { value: "37.5" } },
+      { line: 4, set: { whole: "37" } },
+      { line: 5, set: { value: "0.5" } },
+      { line: 6, set: { tag: "'VA'" } },
+      { line: 7, set: { tag: "'va37'" } },
+      { line: 8, set: { whole: "28" } },
+      { line: 9, print: "va37:0.5" },
+      { line: 10, print: "==" },
+      { line: 11, print: "28" },
     ],
   };
 
@@ -1273,7 +1295,7 @@
               "Read the last line of an error message first, then the line number.",
               "To find a logical error, compare a hand calculation with a trace of the program.",
             ]),
-            NEXT("<b>Trace challenges</b>. Seven programs to trace by hand. They use the rules of all lessons of this chapter."),
+            NEXT("<b>Trace challenges</b>. Eight programs to trace by hand. They use the rules of all lessons of this chapter."),
           ] },
           { kind: "exercise", title: "Correct the syntax error", blocks: [
             PQ("Correct the syntax error, so that the program displays the target output.<br>The error: the program does not start.", "Current = 2 A", 'print("Current =" 2, "A")\n', null, "A comma is missing between the values."),
@@ -1303,7 +1325,7 @@
       {
         id: "trace",
         title: "Trace challenges",
-        sub: "Seven programs to trace on paper: the value of every variable and the output, line by line.",
+        sub: "Eight programs to trace on paper: the value of every variable and the output, line by line.",
         keywords: "trace table trace the code execute by hand variable values output challenge",
         deck: [
           { kind: "exercise", title: "Two tanks", blocks: [CH(C_tanks)] },
@@ -1311,6 +1333,7 @@
           { kind: "exercise", title: "Order and types", blocks: [CH(C_order)] },
           { kind: "exercise", title: "Two inputs", blocks: [T("Test input: 12 and 5."), CH(C_digits_text)] },
           { kind: "exercise", title: "A device code", blocks: [CH(C_code)] },
+          { kind: "exercise", title: "A sensor message", blocks: [T("Test input: 12.5V2A"), CH(C_report)] },
           { kind: "exercise", title: "Coins", blocks: [T("Write lines 3 and 4 of the program."), CH(C_coins)], answer: [CODE("amount = amount % 10\nfives = amount // 5", null, "lines 3 and 4")] },
           { kind: "exercise", title: "Three digits", blocks: [T("Write lines 2, 3 and 4 of the program."), CH(C_digits)], answer: [CODE("a = n // 100\nb = n // 10 % 10\nc = n % 10", null, "lines 2, 3 and 4")] },
         ],

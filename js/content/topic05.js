@@ -191,26 +191,21 @@
     ],
   };
 
-  // A return inside a loop ends the function at once; the second call ends the loop and returns 0.
+  // *args with 3 and 0 arguments: a return inside the loop ends the function (40 is not tested); with no argument the loop does not run.
   const C_first = {
     side: true,
-    code: ["def first(limit):", "    for n in range(1, 3):", "        if n * 10 >= limit:", "            return n", "    return 0", "", "a = first(15)", "b = first(50)", "print(a, b)"],
+    code: ["def first(*temps):", "    for t in temps:", "        if t > 30:", "            return t", "    return 0", "", "a = first(28, 35, 40)", "print(a, first())"],
     steps: [
       { line: 0 },
       { line: 6 },
-      { line: 1, set: { "n (first)": "1" } },
+      { line: 1, set: { "t (first)": "28" } },
       { line: 2, test: "False" },
-      { line: 1, set: { "n (first)": "2" } },
+      { line: 1, set: { "t (first)": "35" } },
       { line: 2, test: "True" },
-      { line: 3, unset: ["n (first)"], set: { a: "2" } },
+      { line: 3, unset: ["t (first)"], set: { a: "35" } },
       { line: 7 },
-      { line: 1, set: { "n (first)": "1" } },
-      { line: 2, test: "False" },
-      { line: 1, set: { "n (first)": "2" } },
-      { line: 2, test: "False" },
       { line: 1 },
-      { line: 4, unset: ["n (first)"], set: { b: "0" } },
-      { line: 8, print: "2 0" },
+      { line: 4, print: "35 0" },
     ],
   };
 
@@ -236,25 +231,26 @@
     ],
   };
 
-  // Each function has its own v; a call inside a function; / gives a float.
+  // Each call has its own v: line 9 uses the v of diff. math.sqrt returns a float.
   const C_nested = {
     side: true,
-    code: ["def half(v):", "    v = v + 6", "    return v / 2", "", "def diff(v):", "    w = half(v * 3)", "    return w - v", "", "x = half(2)", "print(x, diff(x))"],
+    code: ["import math", "", "def root(v):", "    v = v + 7", "    return math.sqrt(v)", "", "def diff(v):", "    w = root(v * 3)", "    return w - v", "", "x = root(2)", "print(x, diff(x))"],
     steps: [
       { line: 0 },
-      { line: 4 },
-      { line: 8, set: { "v (half)": "2" } },
-      { line: 1, set: { "v (half)": "8" } },
-      { line: 2, unset: ["v (half)"], set: { x: "4.0" } },
-      { line: 9, set: { "v (diff)": "4.0" } },
-      { line: 5, set: { "v (half)": "12.0" } },
-      { line: 1, set: { "v (half)": "18.0" } },
-      { line: 2, unset: ["v (half)"], set: { "w (diff)": "9.0" } },
-      { line: 6, unset: ["v (diff)", "w (diff)"], print: "4.0 5.0" },
+      { line: 2 },
+      { line: 6 },
+      { line: 10, set: { "v (root)": "2" } },
+      { line: 3, set: { "v (root)": "9" } },
+      { line: 4, unset: ["v (root)"], set: { x: "3.0" } },
+      { line: 11, set: { "v (diff)": "3.0" } },
+      { line: 7, set: { "v (root)": "9.0" } },
+      { line: 3, set: { "v (root)": "16.0" } },
+      { line: 4, unset: ["v (root)"], set: { "w (diff)": "4.0" } },
+      { line: 8, unset: ["v (diff)", "w (diff)"], print: "3.0 1.0" },
     ],
   };
 
-  // A function that calls itself: n + n // 2 + n // 4 + ... + 1. The calls return in reverse order: 1, then 4, then 10.
+  // n + n // 2 + n // 4 + ... + 1. The calls return in reverse order: 1, then 4, then 10.
   const C_recur = {
     side: true,
     code: ["def f(n):", "    if n > 1:", "        n = n + f(n // 2)", "    return n", "", "print(f(6))"],
@@ -272,41 +268,44 @@
     ],
   };
 
-  // Missing lines 3 and 4: the two return lines of a function with an if.
+  // Missing lines 3 and 4: return b, a. Its two rows store the smaller value first; the targets of line 7 are y, x.
   const C_low = {
     side: true,
     missing: [2, 3],
-    code: ["def low(a, b):", "    if a > b:", "        return b", "    return a", "", "x = low(7, 3)", "y = low(x, x + 4)", "x = low(y - 1, x)", "print(x, y)"],
+    code: ["def low(a, b):", "    if a > b:", "        return b, a", "    return a, b", "", "x, y = low(7, 3)", "y, x = low(x, y + 1)", "x, y = low(x, y)", "print(x, y)"],
     steps: [
       { line: 0 },
       { line: 5, set: { "a (low)": "7", "b (low)": "3" } },
       { line: 1, test: "True" },
-      { line: 2, unset: ["a (low)", "b (low)"], set: { x: "3" } },
-      { line: 6, set: { "a (low)": "3", "b (low)": "7" } },
+      { line: 2, unset: ["a (low)", "b (low)"], set: { x: "3", y: "7" } },
+      { line: 6, set: { "a (low)": "3", "b (low)": "8" } },
       { line: 1, test: "False" },
-      { line: 3, unset: ["a (low)", "b (low)"], set: { y: "3" } },
-      { line: 7, set: { "a (low)": "2", "b (low)": "3" } },
-      { line: 1, test: "False" },
-      { line: 3, unset: ["a (low)", "b (low)"], set: { x: "2" } },
-      { line: 8, print: "2 3" },
+      { line: 3, unset: ["a (low)", "b (low)"], set: { x: "8", y: "3" } },
+      { line: 7, set: { "a (low)": "8", "b (low)": "3" } },
+      { line: 1, test: "True" },
+      { line: 2, unset: ["a (low)", "b (low)"], set: { x: "3", y: "8" } },
+      { line: 8, print: "3 8" },
     ],
   };
 
-  // Missing lines 4 and 8: an assignment inside a function makes a local variable; a function can read a global variable.
+  // Missing lines 4 and 8: total = total + n. global makes it change the global variable; clear() changes a local total; add() returns None.
   const C_total = {
     side: true,
     missing: [3, 7],
-    code: ["total = 10", "", "def add(n):", "    total = n + 1", "    return total", "", "def scale(k):", "    return total * k", "", "x = add(5)", "y = scale(3)", "print(total, x, y)"],
+    code: ["total = 10", "def add(n):", "    global total", "    total = total + n", "", "def clear():", "    total = 0", "    return total", "", "add(5)", "x = clear()", "print(total, x)", "x = add(x + 2)", "print(total, x)"],
     steps: [
       { line: 0, set: { total: "10" } },
-      { line: 2 },
-      { line: 6 },
+      { line: 1 },
+      { line: 5 },
       { line: 9, set: { "n (add)": "5" } },
-      { line: 3, set: { "total (add)": "6" } },
-      { line: 4, unset: ["n (add)", "total (add)"], set: { x: "6" } },
-      { line: 10, set: { "k (scale)": "3" } },
-      { line: 7, unset: ["k (scale)"], set: { y: "30" } },
-      { line: 11, print: "10 6 30" },
+      { line: 3, unset: ["n (add)"], set: { total: "15" } },
+      { line: 10 },
+      { line: 6, set: { "total (clear)": "0" } },
+      { line: 7, unset: ["total (clear)"], set: { x: "0" } },
+      { line: 11, print: "15 0" },
+      { line: 12, set: { "n (add)": "2" } },
+      { line: 3, unset: ["n (add)"], set: { total: "17", x: "None" } },
+      { line: 13, print: "17 None" },
     ],
   };
   /* ---------- end of the generated traces ---------- */
@@ -925,12 +924,12 @@
         deck: [
           { kind: "exercise", title: "Two functions", blocks: [CH(C_two, 3)] },
           { kind: "exercise", title: "A voltage drop", blocks: [CH(C_drop, 2)] },
-          { kind: "exercise", title: "A limit", blocks: [CH(C_first, 3)] },
+          { kind: "exercise", title: "Temperature readings", blocks: [CH(C_first, 3)] },
           { kind: "exercise", title: "Gain and level", blocks: [CH(C_boost, 3)] },
-          { kind: "exercise", title: "A call inside a call", blocks: [CH(C_nested, 3)] },
+          { kind: "exercise", title: "A call inside a call", blocks: [CH(C_nested, 4)] },
           { kind: "exercise", title: "A function that calls itself", blocks: [CH(C_recur, 2)] },
-          { kind: "exercise", title: "The lower value", blocks: [T("Write lines 3 and 4 of the program."), CH(C_low)], answer: [CODE("    return b\nreturn a", null, "lines 3 and 4")] },
-          { kind: "exercise", title: "Total and scale", blocks: [T("Write lines 4 and 8 of the program."), CH(C_total)], answer: [CODE("total = n + 1\nreturn total * k", null, "lines 4 and 8")] },
+          { kind: "exercise", title: "Low and high", blocks: [T("Write lines 3 and 4 of the program."), CH(C_low)], answer: [CODE("    return b, a\nreturn a, b", null, "lines 3 and 4")] },
+          { kind: "exercise", title: "A running total", blocks: [T("Write lines 4 and 8 of the program."), CH(C_total)], answer: [CODE("total = total + n\nreturn total", null, "lines 4 and 8")] },
         ],
       },
 
