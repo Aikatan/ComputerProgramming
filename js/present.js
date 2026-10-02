@@ -142,6 +142,7 @@
         setTimeout(() => el._cm.refresh(), 0);
       });
       cache[i].querySelectorAll(".ctrace, .kstep").forEach((t) => t._goto && t._goto(dir < 0 ? "end" : 0));
+      fitHead(true);
       counter.textContent = (i + 1) + " / " + slides.length;
       progress.firstChild.style.width = ((i + 1) / slides.length * 100) + "%";
       const part = slides[i].part;
@@ -150,6 +151,15 @@
       history.replaceState(null, "", "#/l/" + key + "/" + i);
       if (i === slides.length - 1) App.progress.setDone(key, true), App.buildSidebar && App.buildSidebar();
       window.scrollTo(0, 0);
+    }
+    // the height of the kicker row (with the instructor buttons): a long trace table keeps
+    // its head row below this row while the page scrolls (styles.css, tt-long). The row is
+    // observed, because its height also changes without a window resize (the sidebar closes).
+    const headWatch = window.ResizeObserver ? new ResizeObserver(() => fitHead(false)) : null;
+    function fitHead(watch) {
+      const head = cache[i] && cache[i].querySelector(".slide-head");
+      if (cache[i]) cache[i].style.setProperty("--slide-head-h", (head ? head.offsetHeight : 0) + "px");
+      if (watch && headWatch) { headWatch.disconnect(); if (head) headWatch.observe(head); }
     }
     function goNext() {
       if (i < slides.length - 1) { i++; draw(1); return; }

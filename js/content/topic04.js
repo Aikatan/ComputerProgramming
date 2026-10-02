@@ -1,6 +1,6 @@
 /* ===================== Topic 04 - Flowcharts and Pseudocode =====================
    Authored deck format (see CHAPTER-IMPROVEMENT-PROMPT.md).
-   Lesson order: symbols and sequence -> decisions -> loops -> pseudocode -> practice.
+   Lesson order: symbols and sequence -> decisions -> loops -> pseudocode -> trace challenges -> practice.
    Python level: t02-t03 material (if, nested if, while, for, range, break, continue, nested loops).
    No lists, dicts, functions, or try.
    Flowcharts use the "flowchart" widget: shapes on a grid (col, row), drawn at 1:1 scale.
@@ -307,12 +307,263 @@
     edges: [E("s", "i"), E("i", "a"), E("a", "q"), E("q", "b", { label: "True" }), E("b", "c"), E("c", "q", { lane: "left" }), E("q", "d", { port: "right", label: "False" }), E("d", "e")],
   };
 
+  /* ---------- trace challenges (generated: edit tools/traces/t04.py, then run "python tools/make-trace.py t04") ---------- */
+  // Level 1. A sequence: three processes exchange two values without a third variable.
+  const C_swap = {
+    steps: [
+      { node: "i1", set: { a: "3" } },
+      { node: "i2", set: { b: "8" } },
+      { node: "p1", set: { a: "11" } },
+      { node: "p2", set: { b: "3" } },
+      { node: "p3", set: { a: "8" } },
+      { node: "d", print: "8 3" },
+    ],
+  };
+
+  // Level 2. Two decisions in a row: the second one tests the value that the first one changed.
+  const C_cost = {
+    steps: [
+      { node: "i", set: { cost: "520" } },
+      { node: "q1", test: "True" },
+      { node: "p1", set: { cost: "470" } },
+      { node: "q2", test: "False" },
+      { node: "d", print: "470" },
+    ],
+  };
+
+  // Level 2. A decision on the True exit of a decision; the input is exactly on the limit.
+  const C_range = {
+    steps: [
+      { node: "a", set: { s: "0" } },
+      { node: "i", set: { v: "14" } },
+      { node: "q1", test: "True" },
+      { node: "q2", test: "False" },
+      { node: "d", print: "0" },
+    ],
+  };
+
+  // Level 3. The update comes before DISPLAY: a value that fails the test is displayed.
+  const C_double = {
+    steps: [
+      { node: "a", set: { x: "1" } },
+      { node: "q", test: "True" },
+      { node: "b", set: { x: "2" } },
+      { node: "d", print: "2" },
+      { node: "q", test: "True" },
+      { node: "b", set: { x: "4" } },
+      { node: "d", print: "4" },
+      { node: "q", test: "True" },
+      { node: "b", set: { x: "8" } },
+      { node: "d", print: "8" },
+      { node: "q", test: "False" },
+    ],
+  };
+
+  // Level 3. A loop that repeats an input, with a decision inside: 30 is not above 30.
+  const C_count = {
+    steps: [
+      { node: "a", set: { n: "0" } },
+      { node: "i1", set: { t: "28" } },
+      { node: "q1", test: "True" },
+      { node: "q2", test: "False" },
+      { node: "i2", set: { t: "35" } },
+      { node: "q1", test: "True" },
+      { node: "q2", test: "True" },
+      { node: "c", set: { n: "1" } },
+      { node: "i2", set: { t: "30" } },
+      { node: "q1", test: "True" },
+      { node: "q2", test: "False" },
+      { node: "i2", set: { t: "41" } },
+      { node: "q1", test: "True" },
+      { node: "q2", test: "True" },
+      { node: "c", set: { n: "2" } },
+      { node: "i2", set: { t: "0" } },
+      { node: "q1", test: "False" },
+      { node: "d", print: "2" },
+    ],
+  };
+
+  // Level 3. Two exits of a loop: the break exit is taken before the loop test fails.
+  const C_break = {
+    steps: [
+      { node: "a", set: { x: "50" } },
+      { node: "q1", test: "True" },
+      { node: "q2", test: "False" },
+      { node: "b", set: { x: "65" } },
+      { node: "q1", test: "True" },
+      { node: "q2", test: "False" },
+      { node: "b", set: { x: "80" } },
+      { node: "q1", test: "True" },
+      { node: "q2", test: "True" },
+      { node: "d", print: "80" },
+    ],
+  };
+
+  // Level 3. A loop inside a loop: the inner counter starts again, and its limit is the outer counter.
+  const C_nest = {
+    steps: [
+      { node: "a", set: { i: "1" } },
+      { node: "q1", test: "True" },
+      { node: "c", set: { j: "1" } },
+      { node: "q2", test: "True" },
+      { node: "d", print: "1" },
+      { node: "v", set: { j: "2" } },
+      { node: "q2", test: "False" },
+      { node: "u", set: { i: "2" } },
+      { node: "q1", test: "True" },
+      { node: "c", set: { j: "1" } },
+      { node: "q2", test: "True" },
+      { node: "d", print: "2" },
+      { node: "v", set: { j: "2" } },
+      { node: "q2", test: "True" },
+      { node: "d", print: "4" },
+      { node: "v", set: { j: "3" } },
+      { node: "q2", test: "False" },
+      { node: "u", set: { i: "3" } },
+      { node: "q1", test: "False" },
+    ],
+  };
+
+  // Level 4. FOR with IF / ELSE IF: 6 passes the first condition, so ELSE IF is not tested.
+  const C_chain = {
+    side: true,
+    lang: "text",
+    code: ["INPUT n", "SET total TO 0", "FOR i FROM 1 TO n", "    IF i % 2 == 0 THEN", "        SET total TO total + i", "    ELSE IF i % 3 == 0 THEN", "        SET total TO total - i", "    END IF", "END FOR", "DISPLAY total"],
+    steps: [
+      { line: 0, set: { n: "6" } },
+      { line: 1, set: { total: "0" } },
+      { line: 2, set: { i: "1" } },
+      { line: 3, test: "False" },
+      { line: 5, test: "False" },
+      { line: 2, set: { i: "2" } },
+      { line: 3, test: "True" },
+      { line: 4, set: { total: "2" } },
+      { line: 2, set: { i: "3" } },
+      { line: 3, test: "False" },
+      { line: 5, test: "True" },
+      { line: 6, set: { total: "-1" } },
+      { line: 2, set: { i: "4" } },
+      { line: 3, test: "True" },
+      { line: 4, set: { total: "3" } },
+      { line: 2, set: { i: "5" } },
+      { line: 3, test: "False" },
+      { line: 5, test: "False" },
+      { line: 2, set: { i: "6" } },
+      { line: 3, test: "True" },
+      { line: 4, set: { total: "9" } },
+      { line: 2 },
+      { line: 9, print: "9" },
+    ],
+  };
+
+  // Level 4. WHILE with IF / ELSE: the branch changes during the loop, and the last pass goes below the limit.
+  const C_level = {
+    side: true,
+    lang: "text",
+    code: ["SET level TO 100", "SET count TO 0", "WHILE level > 20", "    IF level > 60 THEN", "        SET level TO level - 30", "    ELSE", "        SET level TO level - 15", "    END IF", "    INCREMENT count BY 1", "END WHILE", "DISPLAY count", "DISPLAY level"],
+    steps: [
+      { line: 0, set: { level: "100" } },
+      { line: 1, set: { count: "0" } },
+      { line: 2, test: "True" },
+      { line: 3, test: "True" },
+      { line: 4, set: { level: "70" } },
+      { line: 8, set: { count: "1" } },
+      { line: 2, test: "True" },
+      { line: 3, test: "True" },
+      { line: 4, set: { level: "40" } },
+      { line: 8, set: { count: "2" } },
+      { line: 2, test: "True" },
+      { line: 3, test: "False" },
+      { line: 6, set: { level: "25" } },
+      { line: 8, set: { count: "3" } },
+      { line: 2, test: "True" },
+      { line: 3, test: "False" },
+      { line: 6, set: { level: "10" } },
+      { line: 8, set: { count: "4" } },
+      { line: 2, test: "False" },
+      { line: 10, print: "4" },
+      { line: 11, print: "10" },
+    ],
+  };
+
+  // Level 4. A logical error: the condition of line 3 allows a dose that the bottle does not hold.
+  const C_doses = {
+    side: true,
+    lang: "text",
+    code: ["SET volume TO 300", "SET doses TO 0", "WHILE volume > 0", "    SET volume TO volume - 120", "    INCREMENT doses BY 1", "END WHILE", "DISPLAY doses"],
+    steps: [
+      { line: 0, set: { volume: "300" } },
+      { line: 1, set: { doses: "0" } },
+      { line: 2, test: "True" },
+      { line: 3, set: { volume: "180" } },
+      { line: 4, set: { doses: "1" } },
+      { line: 2, test: "True" },
+      { line: 3, set: { volume: "60" } },
+      { line: 4, set: { doses: "2" } },
+      { line: 2, test: "True" },
+      { line: 3, set: { volume: "-60" } },
+      { line: 4, set: { doses: "3" } },
+      { line: 2, test: "False" },
+      { line: 6, print: "3" },
+    ],
+  };
+  /* ---------- end of the generated traces ---------- */
+
+  /* ---------- the trace challenges (Lesson 5): task texts, tables, and charts ---------- */
+  const TRACE_F = "Trace the flowchart on paper. The first row is complete.<br>1. Before the trace, write the output that you expect. Then complete the rows in order.";
+  const TRACE_P = "Trace the pseudocode on paper. The first row is complete.<br>1. Before the trace, write the output that you expect. Then complete the rows in order.";
+  // a flowchart beside its table. open: the column Shape is given (a sequence has only one path)
+  const CHF = (flow) => W("traceTable", { flow, blank: true, given: 1, showChart: true, hideLines: !flow.open });
+  // pseudocode beside its table: a blank row does not show which line runs
+  const CH = (trace) => W("traceTable", { trace, blank: true, given: 1, showCode: !!trace.side, hideLines: !!trace.side });
+  // one column each, so that the chart fits beside its trace table
+  const G_swap = {
+    open: true, trace: C_swap.steps,
+    nodes: [ST("s", "START", 0, 0), IO("i1", "INPUT a", 0, 1), IO("i2", "INPUT b", 0, 2), PR("p1", "a = a + b", 0, 3), PR("p2", "b = a - b", 0, 4), PR("p3", "a = a - b", 0, 5), IO("d", "DISPLAY a, b", 0, 6), ST("e", "END", 0, 7)],
+    edges: [E("s", "i1"), E("i1", "i2"), E("i2", "p1"), E("p1", "p2"), E("p2", "p3"), E("p3", "d"), E("d", "e")],
+  };
+  const G_cost = {
+    trace: C_cost.steps,
+    nodes: [ST("s", "START", 0, 0), IO("i", "INPUT cost", 0, 1), DE("q1", "cost > 500 ?", 0, 2), PR("p1", "cost = cost - 50", 0, 3), DE("q2", "cost > 480 ?", 0, 4), PR("p2", "cost = cost - 20", 0, 5), IO("d", "DISPLAY cost", 0, 6), ST("e", "END", 0, 7)],
+    edges: [E("s", "i"), E("i", "q1"), E("q1", "p1", { label: "True" }), E("p1", "q2"), E("q1", "q2", { port: "right", lane: "right", label: "False" }),
+      E("q2", "p2", { label: "True" }), E("p2", "d"), E("q2", "d", { port: "left", lane: "left", label: "False" }), E("d", "e")],
+  };
+  const G_range = {
+    trace: C_range.steps,
+    nodes: [ST("s", "START", 0, 0), PR("a", "s = 0", 0, 1), IO("i", "INPUT v", 0, 2), DE("q1", "v > 11 ?", 0, 3), DE("q2", "v < 14 ?", 0, 4), PR("p", "s = 1", 0, 5), IO("d", "DISPLAY s", 0, 6), ST("e", "END", 0, 7)],
+    edges: [E("s", "a"), E("a", "i"), E("i", "q1"), E("q1", "q2", { label: "True" }), E("q2", "p", { label: "True" }), E("p", "d"),
+      E("q1", "d", { port: "left", lane: "left", label: "False" }), E("q2", "d", { port: "right", lane: "right", label: "False" }), E("d", "e")],
+  };
+  const G_double = {
+    trace: C_double.steps,
+    nodes: [ST("s", "START", 0, 0), PR("a", "x = 1", 0, 1), DE("q", "x < 8 ?", 0, 2), PR("b", "x = x * 2", 0, 3), IO("d", "DISPLAY x", 0, 4), ST("e", "END", 0, 5)],
+    edges: [E("s", "a"), E("a", "q"), E("q", "b", { label: "True" }), E("b", "d"), E("d", "q", { port: "right", lane: "right" }), E("q", "e", { port: "left", lane: "left", label: "False" })],
+  };
+  const G_count = {
+    trace: C_count.steps,
+    nodes: [ST("s", "START", 0, 0), PR("a", "n = 0", 0, 1), IO("i1", "INPUT t", 0, 2), DE("q1", "t != 0 ?", 0, 3), DE("q2", "t > 30 ?", 0, 4), PR("c", "n = n + 1", 0, 5), IO("i2", "INPUT t", 0, 6), IO("d", "DISPLAY n", 0, 7), ST("e", "END", 0, 8)],
+    edges: [E("s", "a"), E("a", "i1"), E("i1", "q1"), E("q1", "q2", { label: "True" }), E("q2", "c", { label: "True" }), E("c", "i2"), E("q2", "i2", { port: "right", lane: "right", label: "False" }),
+      E("i2", "q1", { port: "left", lane: "left" }), E("q1", "d", { port: "right", lane: "right", laneIndex: 1, label: "False" }), E("d", "e")],
+  };
+  const G_break = {
+    trace: C_break.steps,
+    nodes: [ST("s", "START", 0, 0), PR("a", "x = 50", 0, 1), DE("q1", "x < 100 ?", 0, 2), DE("q2", "x % 4 == 0 ?", 0, 3), PR("b", "x = x + 15", 0, 4), IO("d", "DISPLAY x", 0, 5), ST("e", "END", 0, 6)],
+    edges: [E("s", "a"), E("a", "q1"), E("q1", "q2", { label: "True" }), E("q2", "b", { label: "False" }), E("b", "q1", { port: "left", lane: "left" }),
+      E("q2", "d", { port: "right", lane: "right", label: "True" }), E("q1", "d", { port: "right", lane: "right", laneIndex: 1, label: "False" }), E("d", "e")],
+  };
+  const G_nest = {
+    trace: C_nest.steps,
+    nodes: [ST("s", "START", 0, 0), PR("a", "i = 1", 0, 1), DE("q1", "i < 3 ?", 0, 2), PR("c", "j = 1", 0, 3), DE("q2", "j <= i ?", 0, 4), IO("d", "DISPLAY i * j", 0, 5), PR("v", "j = j + 1", 0, 6), PR("u", "i = i + 1", 0, 7), ST("e", "END", 0, 8)],
+    edges: [E("s", "a"), E("a", "q1"), E("q1", "c", { label: "True" }), E("c", "q2"), E("q2", "d", { label: "True" }), E("d", "v"), E("v", "q2", { port: "right", lane: "right" }),
+      E("q2", "u", { port: "left", lane: "left", label: "False" }), E("u", "q1", { port: "left", lane: "left", laneIndex: 1 }), E("q1", "e", { port: "right", lane: "right", laneIndex: 1, label: "False" })],
+  };
+
   App.registerTopic({
     id: "t04",
     title: "Flowcharts and Pseudocode",
     short: "Flowchart & Pseudocode",
     blurb: "Designing algorithms with flowcharts and pseudocode, and converting them to Python and back.",
-    intro: "This chapter covers the two design tools used before coding: flowcharts and pseudocode. Each lesson uses only what the lessons before it have explained:<br>symbols and sequence → decisions → loops → pseudocode → practice.",
+    intro: "This chapter covers the two design tools used before coding: flowcharts and pseudocode. Each lesson uses only what the lessons before it have explained:<br>symbols and sequence → decisions → loops → pseudocode → trace challenges → practice.",
     lessons: [
       /* =============================== 1. SYMBOLS AND SEQUENCE =============================== */
       {
@@ -791,7 +1042,7 @@
               "A flowchart and its pseudocode have the same structure: a decision is IF, and a decision on the False exit is ELSE IF.",
               "Design order: analyse the problem, write pseudocode, trace it, convert it to Python.",
             ]),
-            NEXT("<b>Chapter practice</b>. Complete problems: design with a flowchart or pseudocode, then write the program."),
+            NEXT("<b>Trace challenges</b>. Seven flowcharts and three pseudocode texts to trace by hand."),
           ] },
           { kind: "problem", title: "Problem: power check", blocks: [
             T("The next exercise converts this pseudocode into Python."),
@@ -829,7 +1080,106 @@
         ],
       },
 
-      /* =============================== 5. PRACTICE =============================== */
+      /* =============================== 5. TRACE CHALLENGES =============================== */
+      {
+        id: "trace",
+        title: "Trace challenges",
+        sub: "Seven flowcharts and three pseudocode texts to execute by hand, in four levels.",
+        keywords: "trace table trace the flowchart pseudocode execute by hand decision loop challenge",
+        deck: [
+          { kind: "overview", title: "Trace challenges", blocks: [
+            T("A <b>trace</b> executes a flowchart by hand, one shape at a time. Each chart in this lesson has at least one step that is easy to trace wrongly."),
+            L([
+              "Begin at START and follow the arrows. Write one row for each shape that runs. START and END have no row.",
+              "In the column <b>Shape</b>, write the text of the shape.",
+              "For a decision, write <code>True</code> or <code>False</code> in the column <b>Condition</b>. Then follow the arrow with that label.",
+              "Write the value of every variable after the shape. Write <code>–</code> for a variable that does not exist yet.",
+              "Write the output of a DISPLAY shape in the column <b>Output</b>.",
+            ], "Rules of a trace", true),
+          ] },
+          { kind: "concept", title: "The four levels", blocks: [
+            T("Each level uses only the lessons that it names. A level can be done when its lessons are complete."),
+            TB(["Level", "Lesson", "Programs", "Subject"], [
+              ["1", "1", "1", "a sequence of steps"],
+              ["2", "2", "2 and 3", "decisions: two in a row, and one on a True exit"],
+              ["3", "3", "4 to 7", "loops: the order of the steps, an input in a loop, two exits, a loop inside a loop"],
+              ["4", "4", "8 to 10", "pseudocode: FOR, WHILE, IF, ELSE IF, and a logical error"],
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 1: two inputs", blocks: [
+            T(TRACE_F + "<br>2. Test input: 3, then 8.<br>3. Write in one sentence what the three process shapes do."),
+            CHF(G_swap),
+          ], answer: [
+            T("The three processes exchange the values of <code>a</code> and <code>b</code> without a third variable. After the first process, <code>a</code> holds the sum 11. Each of the next two processes uses the value that the process before it stored."),
+          ] },
+          { kind: "exercise", title: "Level 2: two decisions", blocks: [
+            T(TRACE_F + "<br>2. Test input: 520."),
+            CHF(G_cost),
+          ], answer: [
+            T("The second decision tests the <b>current</b> value of <code>cost</code>. The first decision changed it to 470, so <code>470 &gt; 480</code> is False, and the last process does not run. With the input value 520 the second decision would be True."),
+          ] },
+          { kind: "exercise", title: "Level 2: a decision after a decision", blocks: [
+            T(TRACE_F + "<br>2. Test input: 14."),
+            CHF(G_range),
+          ], answer: [
+            T("The second decision is reached only on the True exit of the first. <code>14 &lt; 14</code> is False, because <code>&lt;</code> does not include the limit. So the process <code>s = 1</code> does not run, and the chart displays 0."),
+          ] },
+          { kind: "exercise", title: "Level 3: a loop with one variable", blocks: [
+            T(TRACE_F),
+            CHF(G_double),
+          ], answer: [
+            T("The update comes before DISPLAY. In the third pass, <code>x</code> becomes 8 and is displayed, although <code>8 &lt; 8</code> is False. The chart tests the condition only at the decision, at the start of each pass."),
+          ] },
+          { kind: "exercise", title: "Level 3: a loop that repeats an input", blocks: [
+            T(TRACE_F + "<br>2. Test input: 28, 35, 30, 41, and then 0."),
+            CHF(G_count),
+          ], answer: [
+            T("The loop ends when the input is 0. <code>n</code> counts the inputs above 30: only 35 and 41. <code>30 &gt; 30</code> is False, so 30 is not counted. The value 0 ends the loop; it is not tested by the second decision."),
+          ] },
+          { kind: "exercise", title: "Level 3: a loop with two exits", blocks: [
+            T(TRACE_F),
+            CHF(G_break),
+          ], answer: [
+            T("The loop has two exits. With <code>x = 80</code>, the second decision is True: <code>80 % 4</code> is 0. This exit is a <code>break</code>: the loop ends although <code>80 &lt; 100</code> is still True. The first two passes use the False exit: <code>50 % 4</code> is 2 and <code>65 % 4</code> is 1."),
+          ] },
+          { kind: "exercise", title: "Level 3: a loop inside a loop", blocks: [
+            T(TRACE_F),
+            CHF(G_nest),
+          ], answer: [
+            T("The process <code>j = 1</code> is inside the outer loop, so the inner counter starts again in each outer pass. The limit of the inner loop is <code>i</code>: one inner pass for <code>i = 1</code>, and two for <code>i = 2</code>. The output has three lines: 1, 2, 4."),
+          ] },
+          { kind: "concept", title: "Level 4: the trace of pseudocode", blocks: [
+            T("In the last three challenges the pseudocode is beside the table. Its lines have numbers."),
+            L([
+              "In the column <b>Line</b>, write the number of the line that runs.",
+              "A line with <code>IF</code>, <code>ELSE IF</code>, or <code>WHILE</code> tests a condition: write <code>True</code> or <code>False</code> in the column <b>Condition</b>.",
+              "A <code>FOR</code> line gives the next value to its variable. It runs one last time when no value is left: that row changes nothing.",
+              "The lines <code>ELSE</code>, <code>END IF</code>, <code>END WHILE</code>, and <code>END FOR</code> have no row.",
+            ], "Rules for pseudocode", true),
+          ] },
+          { kind: "exercise", title: "Level 4: FOR and ELSE IF", blocks: [
+            T(TRACE_P + "<br>2. Test input: 6."),
+            CH(C_chain),
+          ], answer: [
+            T("<code>ELSE IF</code> is tested only when the <code>IF</code> condition is False. For <code>i = 6</code> the first condition is True, so 6 is added. It is not subtracted, although <code>6 % 3</code> is 0. Only <code>i = 3</code> reaches line 7."),
+          ] },
+          { kind: "exercise", title: "Level 4: WHILE and IF", blocks: [
+            T(TRACE_P),
+            CH(C_level),
+          ], answer: [
+            T("The branch changes during the loop: 100 and 70 are above 60, but 40 and 25 are not. The loop tests its condition only on line 3. In the last pass, <code>25 &gt; 20</code> is True, so the level becomes 10, below the limit 20."),
+          ] },
+          { kind: "exercise", title: "Level 4: a logical error", blocks: [
+            T("A bottle holds 300 ml. One dose is 120 ml. The pseudocode must display the number of full doses in the bottle. The correct output is <code>2</code>.<br>1. Trace the pseudocode on paper. The first row is complete.<br>2. Write the first row in which a value is not possible.<br>3. Write the number of the line with the error, and the corrected line."),
+            CH(C_doses),
+          ], answer: [
+            T("In the third pass, <code>volume</code> becomes −60: the bottle cannot hold a negative volume. The error is on line 3: with 60 ml left, <code>60 &gt; 0</code> is True, so a third dose is counted."),
+            PSEUDO("WHILE volume >= 120", "line 3, corrected"),
+          ] },
+        ],
+      },
+
+      /* =============================== 6. PRACTICE =============================== */
       {
         id: "practice",
         title: "Chapter practice",

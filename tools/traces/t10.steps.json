@@ -1,0 +1,985 @@
+{
+ "C_average": {
+  "steps": [
+   {
+    "line": 0,
+    "set": {
+     "sum": "29"
+    }
+   },
+   {
+    "line": 1,
+    "set": {
+     "n": "4"
+    }
+   },
+   {
+    "line": 2,
+    "set": {
+     "avg": "7.0"
+    }
+   },
+   {
+    "line": 3,
+    "set": {
+     "rem": "1"
+    }
+   },
+   {
+    "line": 4
+   },
+   {
+    "line": 5,
+    "set": {
+     "avg": "7.25"
+    }
+   },
+   {
+    "line": 6,
+    "set": {
+     "n": "14"
+    }
+   },
+   {
+    "line": 7,
+    "set": {
+     "rem": "28"
+    }
+   },
+   {
+    "line": 8,
+    "set": {
+     "avg": "2.0"
+    }
+   },
+   {
+    "line": 9,
+    "print": "28 2.00"
+   }
+  ],
+  "output": "28 2.00\n",
+  "error": null,
+  "dropped": 1
+ },
+ "C_update": {
+  "steps": [
+   {
+    "line": 0,
+    "set": {
+     "n": "9"
+    }
+   },
+   {
+    "line": 1,
+    "set": {
+     "n": "14"
+    }
+   },
+   {
+    "line": 2,
+    "set": {
+     "n": "3"
+    }
+   },
+   {
+    "line": 3,
+    "set": {
+     "n": "12"
+    }
+   },
+   {
+    "line": 4,
+    "set": {
+     "n": "13",
+     "k": "12"
+    }
+   },
+   {
+    "line": 5,
+    "set": {
+     "k": "9"
+    }
+   },
+   {
+    "line": 6,
+    "set": {
+     "n": "4"
+    }
+   },
+   {
+    "line": 7,
+    "set": {
+     "n": "5",
+     "k": "10"
+    }
+   },
+   {
+    "line": 8,
+    "set": {
+     "c": "'A'"
+    }
+   },
+   {
+    "line": 9,
+    "set": {
+     "c": "'F'"
+    }
+   },
+   {
+    "line": 10,
+    "print": "5 10"
+   },
+   {
+    "line": 11,
+    "print": "F 70"
+   }
+  ],
+  "output": "5 10\nF 70\n",
+  "error": null,
+  "dropped": 1
+ },
+ "C_charge": {
+  "steps": [
+   {
+    "line": 0,
+    "set": {
+     "level": "5"
+    }
+   },
+   {
+    "line": 1,
+    "set": {
+     "step": "0"
+    }
+   },
+   {
+    "line": 2,
+    "test": "true"
+   },
+   {
+    "line": 3,
+    "test": "true"
+   },
+   {
+    "line": 4,
+    "set": {
+     "step": "40"
+    }
+   },
+   {
+    "line": 8,
+    "test": "true"
+   },
+   {
+    "line": 9,
+    "set": {
+     "step": "35"
+    }
+   },
+   {
+    "line": 11,
+    "set": {
+     "level": "40"
+    }
+   },
+   {
+    "line": 2,
+    "test": "true"
+   },
+   {
+    "line": 3,
+    "test": "false"
+   },
+   {
+    "line": 5,
+    "test": "true"
+   },
+   {
+    "line": 6,
+    "set": {
+     "step": "30"
+    }
+   },
+   {
+    "line": 8,
+    "test": "false"
+   },
+   {
+    "line": 11,
+    "set": {
+     "level": "70"
+    }
+   },
+   {
+    "line": 2,
+    "test": "true"
+   },
+   {
+    "line": 3,
+    "test": "false"
+   },
+   {
+    "line": 5,
+    "test": "false"
+   },
+   {
+    "line": 8,
+    "test": "false"
+   },
+   {
+    "line": 11,
+    "set": {
+     "level": "100"
+    }
+   },
+   {
+    "line": 2,
+    "test": "false"
+   },
+   {
+    "line": 13,
+    "print": "100 30"
+   }
+  ],
+  "output": "100 30\n",
+  "error": null,
+  "dropped": 1
+ },
+ "C_modes": {
+  "steps": [
+   {
+    "line": 0,
+    "set": {
+     "mode": "4"
+    }
+   },
+   {
+    "line": 1,
+    "set": {
+     "sum": "0"
+    }
+   },
+   {
+    "line": 3
+   },
+   {
+    "line": 7,
+    "set": {
+     "sum": "1"
+    }
+   },
+   {
+    "line": 9,
+    "set": {
+     "mode": "3"
+    }
+   },
+   {
+    "line": 10,
+    "test": "true"
+   },
+   {
+    "line": 3
+   },
+   {
+    "line": 4,
+    "set": {
+     "sum": "9"
+    }
+   },
+   {
+    "line": 5,
+    "set": {
+     "sum": "13"
+    }
+   },
+   {
+    "line": 9,
+    "set": {
+     "mode": "2"
+    }
+   },
+   {
+    "line": 10,
+    "test": "true"
+   },
+   {
+    "line": 3
+   },
+   {
+    "line": 5,
+    "set": {
+     "sum": "17"
+    }
+   },
+   {
+    "line": 9,
+    "set": {
+     "mode": "1"
+    }
+   },
+   {
+    "line": 10,
+    "test": "true"
+   },
+   {
+    "line": 3
+   },
+   {
+    "line": 6,
+    "set": {
+     "sum": "19"
+    }
+   },
+   {
+    "line": 7,
+    "set": {
+     "sum": "20"
+    }
+   },
+   {
+    "line": 9,
+    "set": {
+     "mode": "0"
+    }
+   },
+   {
+    "line": 10,
+    "test": "false"
+   },
+   {
+    "line": 11,
+    "print": "0 20"
+   }
+  ],
+  "output": "0 20\n",
+  "error": null,
+  "dropped": 7
+ },
+ "C_grid": {
+  "steps": [
+   {
+    "line": 0,
+    "set": {
+     "sum": "0"
+    }
+   },
+   {
+    "line": 1,
+    "test": "true",
+    "set": {
+     "r": "1"
+    }
+   },
+   {
+    "line": 2,
+    "test": "false"
+   },
+   {
+    "line": 5,
+    "test": "true",
+    "set": {
+     "c": "1"
+    }
+   },
+   {
+    "line": 6,
+    "test": "false"
+   },
+   {
+    "line": 9,
+    "set": {
+     "sum": "1"
+    }
+   },
+   {
+    "line": 5,
+    "test": "true",
+    "set": {
+     "c": "2"
+    }
+   },
+   {
+    "line": 6,
+    "test": "true"
+   },
+   {
+    "line": 7,
+    "unset": [
+     "c"
+    ]
+   },
+   {
+    "line": 1,
+    "test": "true",
+    "set": {
+     "r": "2"
+    }
+   },
+   {
+    "line": 2,
+    "test": "true"
+   },
+   {
+    "line": 3
+   },
+   {
+    "line": 1,
+    "test": "true",
+    "set": {
+     "r": "3"
+    }
+   },
+   {
+    "line": 2,
+    "test": "false"
+   },
+   {
+    "line": 5,
+    "test": "true",
+    "set": {
+     "c": "1"
+    }
+   },
+   {
+    "line": 6,
+    "test": "false"
+   },
+   {
+    "line": 9,
+    "set": {
+     "sum": "4"
+    }
+   },
+   {
+    "line": 5,
+    "test": "true",
+    "set": {
+     "c": "2"
+    }
+   },
+   {
+    "line": 6,
+    "test": "false"
+   },
+   {
+    "line": 9,
+    "set": {
+     "sum": "10"
+    }
+   },
+   {
+    "line": 5,
+    "test": "false",
+    "set": {
+     "c": "3"
+    }
+   },
+   {
+    "line": 1,
+    "test": "false",
+    "unset": [
+     "c"
+    ],
+    "set": {
+     "r": "4"
+    }
+   },
+   {
+    "line": 12,
+    "unset": [
+     "r"
+    ],
+    "print": "10"
+   }
+  ],
+  "output": "10\n",
+  "error": null,
+  "dropped": 1
+ },
+ "C_time": {
+  "steps": [
+   {
+    "line": 0,
+    "set": {
+     "t[0]": "75",
+     "t[1]": "59",
+     "t[2]": "1"
+    }
+   },
+   {
+    "line": 1,
+    "set": {
+     "i": "0"
+    }
+   },
+   {
+    "line": 2,
+    "test": "true"
+   },
+   {
+    "line": 3,
+    "set": {
+     "t[1]": "60"
+    }
+   },
+   {
+    "line": 4,
+    "set": {
+     "t[0]": "15"
+    }
+   },
+   {
+    "line": 5,
+    "set": {
+     "i": "1"
+    }
+   },
+   {
+    "line": 2,
+    "test": "true"
+   },
+   {
+    "line": 3,
+    "set": {
+     "t[2]": "2"
+    }
+   },
+   {
+    "line": 4,
+    "set": {
+     "t[1]": "0"
+    }
+   },
+   {
+    "line": 5,
+    "set": {
+     "i": "2"
+    }
+   },
+   {
+    "line": 2,
+    "test": "false"
+   },
+   {
+    "line": 7,
+    "test": "true"
+   },
+   {
+    "line": 8,
+    "print": "2 ",
+    "end": ""
+   },
+   {
+    "line": 9,
+    "set": {
+     "i": "1"
+    }
+   },
+   {
+    "line": 7,
+    "test": "true"
+   },
+   {
+    "line": 8,
+    "print": "0 ",
+    "end": ""
+   },
+   {
+    "line": 9,
+    "set": {
+     "i": "0"
+    }
+   },
+   {
+    "line": 7,
+    "test": "true"
+   },
+   {
+    "line": 8,
+    "print": "15 ",
+    "end": ""
+   },
+   {
+    "line": 9,
+    "set": {
+     "i": "-1"
+    }
+   },
+   {
+    "line": 7,
+    "test": "false"
+   },
+   {
+    "line": 11,
+    "print": ""
+   }
+  ],
+  "output": "2 0 15 \n",
+  "error": null,
+  "dropped": 1
+ },
+ "C_cut": {
+  "steps": [
+   {
+    "line": 0,
+    "set": {
+     "s": "\"T2-K\""
+    }
+   },
+   {
+    "line": 1,
+    "set": {
+     "n": "0"
+    }
+   },
+   {
+    "line": 2,
+    "set": {
+     "i": "0"
+    }
+   },
+   {
+    "line": 3,
+    "test": "true"
+   },
+   {
+    "line": 4,
+    "test": "false"
+   },
+   {
+    "line": 7,
+    "set": {
+     "n": "1"
+    }
+   },
+   {
+    "line": 9,
+    "set": {
+     "i": "1"
+    }
+   },
+   {
+    "line": 3,
+    "test": "true"
+   },
+   {
+    "line": 4,
+    "test": "false"
+   },
+   {
+    "line": 7,
+    "set": {
+     "n": "2"
+    }
+   },
+   {
+    "line": 9,
+    "set": {
+     "i": "2"
+    }
+   },
+   {
+    "line": 3,
+    "test": "true"
+   },
+   {
+    "line": 4,
+    "test": "true"
+   },
+   {
+    "line": 5,
+    "set": {
+     "s": "\"T2\""
+    }
+   },
+   {
+    "line": 9,
+    "set": {
+     "i": "3"
+    }
+   },
+   {
+    "line": 3,
+    "test": "true"
+   },
+   {
+    "line": 4,
+    "test": "false"
+   },
+   {
+    "line": 7,
+    "set": {
+     "n": "3"
+    }
+   },
+   {
+    "line": 9,
+    "set": {
+     "i": "4"
+    }
+   },
+   {
+    "line": 3,
+    "test": "false"
+   },
+   {
+    "line": 11,
+    "print": "T2 3 4"
+   }
+  ],
+  "output": "T2 3 4\n",
+  "error": null,
+  "dropped": 1
+ },
+ "C_boxes": {
+  "steps": [
+   {
+    "line": 6,
+    "set": {
+     "a.w": "9",
+     "a.h": "4"
+    }
+   },
+   {
+    "line": 7,
+    "set": {
+     "b.w": "9",
+     "b.h": "4"
+    }
+   },
+   {
+    "line": 8,
+    "set": {
+     "v (cut)": "9"
+    }
+   },
+   {
+    "line": 2,
+    "set": {
+     "v (cut)": "7"
+    }
+   },
+   {
+    "line": 3,
+    "unset": [
+     "v (cut)"
+    ]
+   },
+   {
+    "line": 8,
+    "set": {
+     "b.w": "7"
+    }
+   },
+   {
+    "line": 9,
+    "set": {
+     "v (cut)": "4"
+    }
+   },
+   {
+    "line": 2,
+    "set": {
+     "v (cut)": "2"
+    }
+   },
+   {
+    "line": 3,
+    "unset": [
+     "v (cut)"
+    ]
+   },
+   {
+    "line": 10,
+    "set": {
+     "a.h": "6"
+    }
+   },
+   {
+    "line": 11,
+    "print": "6"
+   }
+  ],
+  "output": "6\n",
+  "error": null,
+  "dropped": 1
+ },
+ "C_add": {
+  "steps": [
+   {
+    "line": 5,
+    "set": {
+     "t[0]": "3",
+     "t[1]": "4"
+    }
+   },
+   {
+    "line": 6,
+    "set": {
+     "n (add)": "3",
+     "p (add)": "&t[1]"
+    }
+   },
+   {
+    "line": 1,
+    "set": {
+     "t[1]": "7"
+    }
+   },
+   {
+    "line": 2,
+    "unset": [
+     "n (add)",
+     "p (add)"
+    ]
+   },
+   {
+    "line": 7,
+    "set": {
+     "n (add)": "7",
+     "p (add)": "&t[0]"
+    }
+   },
+   {
+    "line": 1,
+    "set": {
+     "t[0]": "10"
+    }
+   },
+   {
+    "line": 2,
+    "unset": [
+     "n (add)",
+     "p (add)"
+    ]
+   },
+   {
+    "line": 8,
+    "set": {
+     "n (add)": "7",
+     "p (add)": "&t[1]"
+    }
+   },
+   {
+    "line": 1,
+    "set": {
+     "t[1]": "14"
+    }
+   },
+   {
+    "line": 2,
+    "unset": [
+     "n (add)",
+     "p (add)"
+    ]
+   },
+   {
+    "line": 9,
+    "print": "10 14"
+   }
+  ],
+  "output": "10 14\n",
+  "error": null,
+  "dropped": 1
+ },
+ "C_bits": {
+  "steps": [
+   {
+    "line": 0,
+    "set": {
+     "reg": "0x5A"
+    }
+   },
+   {
+    "line": 1,
+    "set": {
+     "mask": "0x20"
+    }
+   },
+   {
+    "line": 2,
+    "set": {
+     "n": "254"
+    }
+   },
+   {
+    "line": 3,
+    "test": "true"
+   },
+   {
+    "line": 4,
+    "test": "false"
+   },
+   {
+    "line": 7,
+    "set": {
+     "mask": "0x40"
+    }
+   },
+   {
+    "line": 8,
+    "set": {
+     "n": "255"
+    }
+   },
+   {
+    "line": 3,
+    "test": "true"
+   },
+   {
+    "line": 4,
+    "test": "true"
+   },
+   {
+    "line": 5,
+    "set": {
+     "reg": "0x40"
+    }
+   },
+   {
+    "line": 7,
+    "set": {
+     "mask": "0x80"
+    }
+   },
+   {
+    "line": 8,
+    "set": {
+     "n": "0"
+    }
+   },
+   {
+    "line": 3,
+    "test": "true"
+   },
+   {
+    "line": 4,
+    "test": "false"
+   },
+   {
+    "line": 7,
+    "set": {
+     "mask": "0x00"
+    }
+   },
+   {
+    "line": 8,
+    "set": {
+     "n": "1"
+    }
+   },
+   {
+    "line": 3,
+    "test": "false"
+   },
+   {
+    "line": 10,
+    "print": "40 1"
+   }
+  ],
+  "output": "40 1\n",
+  "error": null,
+  "dropped": 1
+ }
+}

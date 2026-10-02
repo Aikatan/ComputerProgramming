@@ -1,6 +1,6 @@
 /* ===================== Topic 08 - Data Processing =====================
    Authored deck format (see CHAPTER-IMPROVEMENT-PROMPT.md).
-   Lesson order: text files -> file modes, errors, folders -> CSV -> JSON -> NumPy -> pandas (2 lessons) -> practice.
+   Lesson order: text files -> file modes, errors, folders -> CSV -> JSON -> NumPy -> pandas (2 lessons) -> trace challenges -> practice.
    Python level: t02-t07 material plus open/with, csv, json, numpy, pandas. No f-strings.
    Each file example writes its own file first, so it runs the same way every time.
    ===================================================================== */
@@ -34,12 +34,255 @@
     { line: 3, status: "closed", content: ["21.5", "22.0"], out: "21.5\n22.0\n\n", note: "The file is closed. Result check: two write() calls, two lines." },
   ];
 
+  /* ---------- trace challenges (generated: edit tools/traces/t08.py, then run "python tools/make-trace.py t08") ---------- */
+  // Level 1. The position in an open file: readline, read(n), readlines, and a read at the end.
+  const C_position = {
+    side: true,
+    code: ["with open(\"pins.txt\") as f:", "    head = f.readline()", "    part = f.read(2)", "    rest = f.readlines()", "    last = f.read()", "print(len(head), part)", "print(rest[0].strip())", "print(len(rest), len(last))"],
+    steps: [
+      { line: 0 },
+      { line: 1, set: { head: "'A1\\n'" } },
+      { line: 2, set: { part: "'B2'" } },
+      { line: 3, set: { rest: "['2\\n', 'C3\\n']" } },
+      { line: 4, set: { last: "''" } },
+      { line: 0 },
+      { line: 5, print: "3 B2" },
+      { line: 6, print: "2" },
+      { line: 7, print: "2 0" },
+    ],
+  };
+
+  // Level 1. A line is a str with its line break: text is joined, numbers are added; an empty line.
+  const C_lines = {
+    side: true,
+    code: ["text = \"\"", "total = 0", "with open(\"levels.txt\") as f:", "    for line in f:", "        line = line.strip()", "        if line == \"\":", "            continue", "        text += line", "        total += int(line)", "print(text, total)", "print(int(text) - total)"],
+    steps: [
+      { line: 0, set: { text: "''" } },
+      { line: 1, set: { total: "0" } },
+      { line: 2 },
+      { line: 3, set: { line: "'12\\n'" } },
+      { line: 4, set: { line: "'12'" } },
+      { line: 5, test: "False" },
+      { line: 7, set: { text: "'12'" } },
+      { line: 8, set: { total: "12" } },
+      { line: 3, set: { line: "'\\n'" } },
+      { line: 4, set: { line: "''" } },
+      { line: 5, test: "True" },
+      { line: 6 },
+      { line: 3, set: { line: "'5\\n'" } },
+      { line: 4, set: { line: "'5'" } },
+      { line: 5, test: "False" },
+      { line: 7, set: { text: "'125'" } },
+      { line: 8, set: { total: "17" } },
+      { line: 3 },
+      { line: 2 },
+      { line: 9, print: "125 17" },
+      { line: 10, print: "108" },
+    ],
+  };
+
+  // Level 1. A missing file, then mode a: write() adds the digits at the end, with no line break.
+  const C_counter = {
+    side: true,
+    code: ["for run in range(3):", "    try:", "        with open(\"n.txt\") as f:", "            count = int(f.read())", "    except FileNotFoundError:", "        count = 0", "    count += 1", "    with open(\"n.txt\", \"a\") as f:", "        f.write(str(count))", "print(count)"],
+    steps: [
+      { line: 0, set: { run: "0" } },
+      { line: 1 },
+      { line: 2 },
+      { line: 4 },
+      { line: 5, set: { count: "0" } },
+      { line: 6, set: { count: "1" } },
+      { line: 7 },
+      { line: 8 },
+      { line: 7 },
+      { line: 0, set: { run: "1" } },
+      { line: 1 },
+      { line: 2 },
+      { line: 3, set: { count: "1" } },
+      { line: 2 },
+      { line: 6, set: { count: "2" } },
+      { line: 7 },
+      { line: 8 },
+      { line: 7 },
+      { line: 0, set: { run: "2" } },
+      { line: 1 },
+      { line: 2 },
+      { line: 3, set: { count: "12" } },
+      { line: 2 },
+      { line: 6, set: { count: "13" } },
+      { line: 7 },
+      { line: 8 },
+      { line: 7 },
+      { line: 0 },
+      { line: 9, print: "13" },
+    ],
+  };
+
+  // Level 2. csv.reader: the header and an empty line are rows; every value is a str.
+  const C_parts = {
+    side: true,
+    code: ["import csv", "with open(\"parts.csv\") as f:", "    rows = list(csv.reader(f))", "total = 0", "for row in rows[1:]:", "    if row == []:", "        continue", "    total += int(row[1])", "print(len(rows), total)", "print(rows[1][1] * 2)"],
+    steps: [
+      { line: 0 },
+      { line: 1 },
+      { line: 2 },
+      { line: 1 },
+      { line: 3, set: { total: "0" } },
+      { line: 4, set: { row: "['nut', '40']" } },
+      { line: 5, test: "False" },
+      { line: 7, set: { total: "40" } },
+      { line: 4, set: { row: "[]" } },
+      { line: 5, test: "True" },
+      { line: 6 },
+      { line: 4, set: { row: "['pin', '9']" } },
+      { line: 5, test: "False" },
+      { line: 7, set: { total: "49" } },
+      { line: 4 },
+      { line: 8, print: "4 49" },
+      { line: 9, print: "4040" },
+    ],
+  };
+
+  // Level 2. csv.DictReader: the values are text, so > compares the characters.
+  const C_fastest = {
+    side: true,
+    code: ["import csv", "best = \"0\"", "name = \"\"", "with open(\"fans.csv\") as f:", "    reader = csv.DictReader(f)", "    for row in reader:", "        rpm = row[\"rpm\"]", "        if rpm > best:", "            best = rpm", "            name = row[\"fan\"]", "print(name, best)"],
+    steps: [
+      { line: 0 },
+      { line: 1, set: { best: "'0'" } },
+      { line: 2, set: { name: "''" } },
+      { line: 3 },
+      { line: 4 },
+      { line: 5 },
+      { line: 6, set: { rpm: "'800'" } },
+      { line: 7, test: "True" },
+      { line: 8, set: { best: "'800'" } },
+      { line: 9, set: { name: "'A'" } },
+      { line: 5 },
+      { line: 6, set: { rpm: "'1200'" } },
+      { line: 7, test: "False" },
+      { line: 5 },
+      { line: 6, set: { rpm: "'95'" } },
+      { line: 7, test: "True" },
+      { line: 8, set: { best: "'95'" } },
+      { line: 9, set: { name: "'C'" } },
+      { line: 5 },
+      { line: 3 },
+      { line: 10, print: "C 95" },
+    ],
+  };
+
+  // Level 2. json.load: a number, a text in quotes, and true keep their types; len() of a dictionary; json.dumps.
+  const C_log = {
+    side: true,
+    code: ["import json", "with open(\"log.json\") as f:", "    log = json.load(f)", "total = 0", "for t in log[\"t\"]:", "    t = t * 2", "    total += float(t)", "log[\"t\"] = len(log)", "print(total, log[\"ok\"])", "print(json.dumps(log))"],
+    steps: [
+      { line: 0 },
+      { line: 1 },
+      { line: 2 },
+      { line: 1 },
+      { line: 3, set: { total: "0" } },
+      { line: 4, set: { t: "21" } },
+      { line: 5, set: { t: "42" } },
+      { line: 6, set: { total: "42.0" } },
+      { line: 4, set: { t: "'19'" } },
+      { line: 5, set: { t: "'1919'" } },
+      { line: 6, set: { total: "1961.0" } },
+      { line: 4, set: { t: "20.5" } },
+      { line: 5, set: { t: "41.0" } },
+      { line: 6, set: { total: "2002.0" } },
+      { line: 4 },
+      { line: 7 },
+      { line: 8, print: "2002.0 True" },
+      { line: 9, print: "{\"t\": 2, \"ok\": true}" },
+    ],
+  };
+
+  // Level 3. The same operators on a list and on an array; / gives floats.
+  const C_twice = {
+    code: ["import numpy as np", "nums = [4, 2]", "arr = np.array(nums)", "nums = nums * 2", "arr = arr * 2", "nums = nums + [1]", "arr = arr / 2", "arr = arr + 1", "total = float(np.sum(arr))", "print(len(nums), arr.size, total)"],
+    steps: [
+      { line: 0 },
+      { line: 1, set: { nums: "[4, 2]" } },
+      { line: 2, set: { arr: "[4 2]" } },
+      { line: 3, set: { nums: "[4, 2, 4, 2]" } },
+      { line: 4, set: { arr: "[8 4]" } },
+      { line: 5, set: { nums: "[4, 2, 4, 2, 1]" } },
+      { line: 6, set: { arr: "[4. 2.]" } },
+      { line: 7, set: { arr: "[5. 3.]" } },
+      { line: 8, set: { total: "8.0" } },
+      { line: 9, print: "5 2 8.0" },
+    ],
+  };
+
+  // Level 3. Rows, columns, and axis of a 2-D array; line 10 stops: 2 elements and 3 elements.
+  const C_shapes = {
+    side: true,
+    code: ["import numpy as np", "data = [[1, 0, 2], [2, 1, 3]]", "m = np.array(data)", "row = m[1]", "col = m[:, 1]", "tot = np.sum(m, axis=1)", "col = col + tot", "tot = np.sum(m, axis=0)", "row = row + tot", "out = col * tot", "print(out)"],
+    steps: [
+      { line: 0 },
+      { line: 1 },
+      { line: 2 },
+      { line: 3, set: { row: "[2 1 3]" } },
+      { line: 4, set: { col: "[0 1]" } },
+      { line: 5, set: { tot: "[3 6]" } },
+      { line: 6, set: { col: "[3 7]" } },
+      { line: 7, set: { tot: "[3 1 5]" } },
+      { line: 8, set: { row: "[5 2 8]" } },
+      { line: 9, print: "ValueError" },
+    ],
+  };
+
+  // Level 4. read_csv: the header is not a row; a new column, a filter, and a sort that is not stored.
+  const C_pumps = {
+    code: ["import pandas as pd", "df = pd.read_csv(\"pumps.csv\")", "n = len(df)", "avg = float(df[\"kw\"].mean())", "df[\"e\"] = df[\"kw\"] * df[\"h\"]", "big = df[df[\"kw\"] >= avg]", "big.sort_values(\"e\")", "names = big[\"name\"].tolist()", "total = int(big[\"e\"].sum())", "print(n, df.shape, total)"],
+    steps: [
+      { line: 0 },
+      { line: 1 },
+      { line: 2, set: { n: "3" } },
+      { line: 3, set: { avg: "3.0" } },
+      { line: 4 },
+      { line: 5 },
+      { line: 6 },
+      { line: 7, set: { names: "['B', 'C']" } },
+      { line: 8, set: { total: "38" } },
+      { line: 9, print: "3 (3, 4) 38" },
+    ],
+  };
+
+  // Level 4. A logical error: after a sort, loc[0] is the row with the label 0, not the first row (line 7).
+  const C_lowest = {
+    code: ["import pandas as pd", "df = pd.read_csv(\"cells.csv\")", "df[\"wh\"] = df[\"v\"] * df[\"ah\"]", "energy = df[\"wh\"].tolist()", "low = df.sort_values(\"wh\")", "order = low[\"name\"].tolist()", "name = low.loc[0][\"name\"]", "print(name, min(energy))"],
+    steps: [
+      { line: 0 },
+      { line: 1 },
+      { line: 2 },
+      { line: 3, set: { energy: "[20, 8, 18]" } },
+      { line: 4 },
+      { line: 5, set: { order: "['B', 'C', 'A']" } },
+      { line: 6, set: { name: "'A'" } },
+      { line: 7, print: "A 8" },
+    ],
+  };
+  /* ---------- end of the generated traces ---------- */
+
+  // the task text of a trace challenge (Lesson 8)
+  const TRACE = "Complete the trace table on paper. The first row is complete.<br>1. Before the trace, write the output that you expect. Then complete the rows in order.";
+  // rows: "two" or "three": the first rows hold no value (an import line, or a variable that has no column)
+  const TRACE_ROWS = (rows) => TRACE.replace("The first row is", "The first " + rows + " rows are");
+  // the extra task line of a program that is beside the table (side layout); SIDE_IF: the table also has the column Condition
+  const SIDE = "<br>2. In the column Line, write the number of the line that runs.";
+  const SIDE_IF = SIDE + " In the column Condition, write True or False.";
+  // side: the program is beside the table, and a blank row does not show which line runs
+  // given: the number of rows that are complete (default 1)
+  const CH = (trace, given) => W("traceTable", { trace, blank: true, given: given || 1, showCode: !!trace.side, hideLines: !!trace.side });
+
   App.registerTopic({
     id: "t08",
     title: "Data Processing",
     short: "Data Processing",
     blurb: "Text files, CSV and JSON data, NumPy arrays, and pandas DataFrames.",
-    intro: "This chapter covers reading and writing data: text files, CSV and JSON files, and the NumPy and pandas libraries for numerical and tabular data. Each lesson uses only what the lessons before it have explained:<br>text files → file modes and errors → CSV → JSON → NumPy → pandas → practice.",
+    intro: "This chapter covers reading and writing data: text files, CSV and JSON files, and the NumPy and pandas libraries for numerical and tabular data. Each lesson uses only what the lessons before it have explained:<br>text files → file modes and errors → CSV → JSON → NumPy → pandas → trace challenges → practice.",
     lessons: [
       /* =============================== 1. TEXT FILES =============================== */
       {
@@ -756,7 +999,7 @@
               "<code>df[\"new\"] = expression</code> adds a computed column.",
               "<code>df.groupby(col)[other].mean()</code> summarizes each group.",
             ]),
-            NEXT("<b>Chapter practice</b>. Complete data processing problems."),
+            NEXT("<b>Trace challenges</b>. Ten programs to trace by hand. They use the rules of all lessons of this chapter."),
           ] },
           { kind: "exercise", title: "Write a program: filter by price", blocks: [
             PQ("Complete the program. Lines 2 and 3 already write the file \"items.csv\".<br>1. Read the file with <code>pd.read_csv()</code>.<br>2. Keep the rows with a price above 100.<br>3. Display the names of these rows as a list.",
@@ -773,7 +1016,144 @@
         ],
       },
 
-      /* =============================== 8. PRACTICE =============================== */
+      /* =============================== 8. TRACE CHALLENGES =============================== */
+      {
+        id: "trace",
+        title: "Trace challenges",
+        sub: "Ten programs to execute by hand, in four levels.",
+        keywords: "trace table trace the code execute by hand file csv json numpy pandas variable values output challenge",
+        deck: [
+          { kind: "overview", title: "Trace challenges", blocks: [
+            T("Each program in this lesson has at least one line that is easy to trace wrongly. The task shows the content of each file. Every line of a file ends with a line break."),
+            L([
+              "Write one row for each line that runs. When the program is beside the table, write the number of the line in the column <b>Line</b>.",
+              "A <code>with</code> line gets two rows: when the file is opened, and when the block ends and the file is closed. A <code>for</code> line gets one more row when the loop ends.",
+              "On an <code>if</code> line, write True or False in the column <b>Condition</b>. A <code>try:</code> line gets a row. An <code>except</code> line gets a row only after an error.",
+              "After each line, write the value of every variable. A file object, a csv reader, and a DataFrame have no column.",
+              "Write text in quotes, with <code>\\n</code> for a line break: <code>'on\\n'</code>. Write an array as <code>print()</code> displays it: <code>[1 2 3]</code>.",
+            ], "Rules of a trace", true),
+          ] },
+          { kind: "concept", title: "The four levels", blocks: [
+            T("Each level uses only the lessons that it names. A level can be done when its lessons are complete."),
+            TB(["Level", "Lessons", "Programs", "Subject"], [
+              ["1", "1 and 2", "1 to 3", "the position in a file, the lines of a file as text, the modes, a missing file"],
+              ["2", "3 and 4", "4 to 6", "<code>csv.reader</code>, <code>csv.DictReader</code>, the types of JSON values"],
+              ["3", "5", "7 and 8", "operators on a list and on an array, rows and columns, and a program that stops"],
+              ["4", "6 and 7", "9 and 10", "column statistics, a filter, a sort, and a logical error"],
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 1: pin names", blocks: [
+            T(TRACE + SIDE + "<br>3. The file <code>pins.txt</code> holds three lines: <code>A1</code>, <code>B22</code>, and <code>C3</code>."),
+            CH(C_position),
+          ], answer: [
+            L([
+              "Line 2: <code>readline()</code> returns the line with its line break: <code>'A1\\n'</code>, 3 characters.",
+              "Line 3: <code>read(2)</code> continues at position 3: <code>'B2'</code>. Line 4: <code>readlines()</code> returns the rest of the file as a list. The first element is the rest of the line B22: <code>'2\\n'</code>.",
+              "Line 5: the position is at the end of the file, so <code>read()</code> returns the empty text <code>''</code>. Its length is 0.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 1: tank levels", blocks: [
+            T(TRACE + SIDE_IF + "<br>3. The file <code>levels.txt</code> holds three lines: <code>12</code>, an empty line, and <code>5</code>."),
+            CH(C_lines),
+          ], answer: [
+            L([
+              "Line 4 stores each line with its line break: <code>'12\\n'</code>. Line 5 removes the line break.",
+              "The empty line of the file is <code>'\\n'</code>. <code>strip()</code> gives <code>''</code>, so line 6 is True, and <code>continue</code> returns to line 4.",
+              "Line 8 joins text: <code>'12' + '5'</code> → <code>'125'</code>. Line 9 adds numbers: <code>12 + 5</code> → <code>17</code>.",
+              "Line 11: <code>int('125') - 17</code> → <code>108</code>.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 1: a run counter", blocks: [
+            T(TRACE + SIDE + "<br>3. The file <code>n.txt</code> does not exist when the program starts.<br>4. After the trace, write the content of <code>n.txt</code>."),
+            CH(C_counter),
+          ], answer: [
+            L([
+              "run = 0: line 3 raises a FileNotFoundError, so line 4 does not run, and line 6 sets <code>count</code> to 0. Mode <code>\"a\"</code> creates the file: the file holds <code>1</code>.",
+              "run = 1: the file exists, so the except block does not run. Mode <code>\"a\"</code> writes at the end, and <code>write()</code> adds no line break: the file holds <code>12</code>.",
+              "run = 2: <code>int('12')</code> is 12, so <code>count</code> becomes 13. At the end, the file holds <code>1213</code>.",
+              "With mode <code>\"w\"</code> in line 8, the file holds only the last number, and the output is 3.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 2: a parts list", blocks: [
+            T(TRACE_ROWS("two") + SIDE_IF + "<br>3. The list <code>rows</code> has no column.<br>4. The file <code>parts.csv</code> holds the four lines below. Line 3 of the file is empty."),
+            CODE("name,qty\nnut,40\n\npin,9", null, "parts.csv", "text"),
+            CH(C_parts, 2),
+          ], answer: [
+            L([
+              "<code>rows</code> holds 4 rows: the header is a row, and the empty line is the empty list <code>[]</code>.",
+              "Line 5: <code>rows[1:]</code> leaves out the header. Line 6 is True for <code>[]</code>, so <code>continue</code> returns to line 5.",
+              "Line 10: <code>rows[1][1]</code> is the text <code>'40'</code>, so <code>* 2</code> repeats the text: <code>4040</code>.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 2: fan speeds", blocks: [
+            T(TRACE_ROWS("two") + SIDE_IF + "<br>3. The dictionary <code>row</code> has no column.<br>4. The file <code>fans.csv</code> holds the four lines below."),
+            CODE("fan,rpm\nA,800\nB,1200\nC,95", null, "fans.csv", "text"),
+            CH(C_fastest, 2),
+          ], answer: [
+            L([
+              "<code>csv.DictReader</code> uses the header as the keys, so the loop runs 3 times. Every value is text: <code>'800'</code>.",
+              "Line 8 compares text, character by character. <code>'1200' &gt; '800'</code> is False: <code>'1'</code> comes before <code>'8'</code>. <code>'95' &gt; '800'</code> is True: <code>'9'</code> comes after <code>'8'</code>.",
+              "The output is <code>C 95</code>, but fan B is the fastest. A correct program compares numbers: <code>best = 0</code> in line 2, and <code>rpm = int(row[\"rpm\"])</code> in line 7.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 2: a sensor log", blocks: [
+            T(TRACE_ROWS("two") + SIDE + "<br>3. The dictionary <code>log</code> has no column.<br>4. The file <code>log.json</code> holds the line below."),
+            CODE('{"t": [21, "19", 20.5], "ok": true}', null, "log.json", "text"),
+            CH(C_log, 2),
+          ], answer: [
+            L([
+              "<code>json.load()</code> keeps the type of each value: <code>21</code> is an int, <code>\"19\"</code> is text, and <code>20.5</code> is a float. Line 6 gives <code>42</code>, <code>'1919'</code>, and <code>41.0</code>.",
+              "Line 7: <code>float('1919')</code> is <code>1919.0</code>, so the total is 2002.0. With the number 19 in the file, the total is 121.0.",
+              "Line 8: <code>len(log)</code> is the number of keys: 2.",
+              "Line 9: JSON <code>true</code> is the bool <code>True</code> in Python. Line 10: <code>json.dumps()</code> writes <code>True</code> as <code>true</code>.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 3: a list and an array", blocks: [
+            T(TRACE_ROWS("two")),
+            CH(C_twice, 2),
+          ], answer: [
+            L([
+              "Lines 4 and 6 work on a list: <code>* 2</code> repeats the list, and <code>+ [1]</code> joins two lists.",
+              "Lines 5 and 8 work on an array: <code>* 2</code> multiplies every element, and <code>+ 1</code> adds 1 to every element.",
+              "Line 7: <code>/</code> gives floats: <code>[4. 2.]</code>, with a dot after each number.",
+              "Line 3 copies the values of the list: line 4 changes <code>nums</code>, and <code>arr</code> stays <code>[4 2]</code>.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 3: the program stops", blocks: [
+            T("The program stops with an error message before its last line.<br>1. Complete the trace table on paper. The first three rows are complete.<br>2. In the column Line, write the number of the line that runs.<br>3. The list <code>data</code> and the array <code>m</code> have no column.<br>4. In the last row, write the name of the error in the column Output."),
+            CH(C_shapes, 3),
+          ], answer: [
+            L([
+              "Line 4: <code>m[1]</code> is row 1: <code>[2 1 3]</code>. Line 5: <code>m[:, 1]</code> is column 1: <code>[0 1]</code>.",
+              "Line 6: <code>axis=1</code> gives one sum for each row: 2 elements. Line 7 runs: both arrays have 2 elements.",
+              "Line 8: <code>axis=0</code> gives one sum for each column: 3 elements. Line 9 runs: both arrays have 3 elements.",
+              "Line 10 stops with a <b>ValueError</b>: <code>col</code> has 2 elements, and <code>tot</code> has 3. Line 11 does not run.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 4: a table of pumps", blocks: [
+            T(TRACE_ROWS("two") + "<br>2. The tables <code>df</code> and <code>big</code> have no column.<br>3. The file <code>pumps.csv</code> holds the four lines below."),
+            CODE("name,kw,h\nA,1,10\nB,5,4\nC,3,6", null, "pumps.csv", "text"),
+            CH(C_pumps, 2),
+          ], answer: [
+            L([
+              "Line 3: the header gives the column names, so the table has 3 rows. Line 4: <code>mean()</code> gives a float: <code>3.0</code>.",
+              "Line 6: <code>3 &gt;= 3.0</code> is True, so the rows of B and C stay.",
+              "Line 7 changes nothing: <code>sort_values()</code> returns a new table, and the program does not store it. The order stays B, C.",
+              "Line 9: <code>20 + 18</code> → <code>38</code>. Line 10: the new column <code>e</code> is the 4th column: <code>(3, 4)</code>.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 4: the first wrong value", blocks: [
+            T("The program must display the battery pack with the lowest energy, and this energy. The correct output is <code>B 8</code>.<br>1. Complete the trace table on paper. The first two rows are complete.<br>2. The tables <code>df</code> and <code>low</code> have no column. The file <code>cells.csv</code> holds the four lines below.<br>3. Write the number of the line with the first wrong value, and the corrected line."),
+            CODE("name,v,ah\nA,4,5\nB,2,4\nC,3,6", null, "cells.csv", "text"),
+            CH(C_lowest, 2),
+          ], answer: [
+            T("Line 7 has the first wrong value. The sort moves the rows, but each row keeps its label: the first row of <code>low</code> is B, with the label 1. <code>loc[0]</code> takes the row with the label 0: the row of A. <code>iloc[0]</code> takes the first row."),
+            CODE('name = low.iloc[0]["name"]', null, "line 7, corrected"),
+          ] },
+        ],
+      },
+
+      /* =============================== 9. PRACTICE =============================== */
       {
         id: "practice",
         title: "Chapter practice",

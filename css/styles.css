@@ -1068,8 +1068,10 @@ body.slide-mode .deck-nav .btn, body.slide-mode .deck-counter, body.slide-mode .
 .ttab .tt-val { display: inline-block; padding: 0 10px; min-width: 0; }
 .ttab .tt-same { color: var(--text-dim); }
 .ttab .tt-dim { color: var(--text-dim); }
-.ttab .tt-box { display: inline-block; min-width: 3.4em; min-height: 1.4em; border: 2px dashed var(--text-dim); border-radius: 6px; vertical-align: middle; }
-.ttab td.tt-out .tt-box { min-width: 7em; }
+.ttab .tt-box { display: inline-block; min-width: 3em; min-height: 1.4em; border: 2px dashed var(--text-dim); border-radius: 6px; vertical-align: middle; }
+.ttab td.tt-out .tt-box { min-width: 5em; }
+/* a wide blank table: a program line is not wrapped while it has 32 characters or fewer (--tt-code-w is set by the widget) */
+@container (min-width: 1100px) { .ttab td.tt-code { min-width: min(var(--tt-code-w, 0ch), 33ch); } }
 .slide .ttab th, .slide .ttab td { font-size: 24px; }
 @container (max-width: 480px) {
   .ttab thead { display: none; }
@@ -1244,13 +1246,35 @@ body.slide-mode .instr-dialog, body.slide-mode .instr-title, body.slide-mode .in
 .tt-outer { container-type: inline-size; margin: 12px 0; }
 .slide .tt-outer { margin: 8px 0; }
 .tt-outer .ttab-wrap, .slide .tt-outer .ttab-wrap { margin: 0; }
-.tt-grid { display: grid; grid-template-columns: fit-content(45%) minmax(0, 1fr); gap: 20px; align-items: start; }
+.tt-grid { display: grid; grid-template-columns: fit-content(50%) minmax(0, 1fr); gap: 20px; align-items: start; }
 .tt-code-above .tt-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
 @container (max-width: 900px) { .tt-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; } }
 .tt-src { margin: 0; min-width: 0; line-height: 1.4; }
+/* showChart: the flowchart keeps its drawn width; the table takes the rest */
+.tt-has-chart .tt-grid { grid-template-columns: auto minmax(0, 1fr); }
+@container (max-width: 900px) { .tt-has-chart .tt-grid { grid-template-columns: minmax(0, 1fr); } }
+.ttab td.tt-code .tt-box { min-width: 6em; }
+/* beside a program or a chart the table is narrow: a smaller Output box */
+.tt-has-code .ttab td.tt-out .tt-box { min-width: 4em; }
 .ttab tr.tt-reveal td { background: rgba(59,201,164,.16); }
 .ttab tr.tt-reveal td:first-child { box-shadow: inset 4px 0 0 var(--accent-2); }
 .tt-ctrl { margin-top: 8px; }
+/* a long trace table (tt-long, more than 7 rows) runs below the screen of a slide. The top bar is 56px;
+   --slide-head-h is the height of the kicker row with the reveal buttons (set by present.js).
+   The head row, the reveal buttons, and the program stay in view while the page scrolls. */
+@container slide (min-width: 1000px) {
+  .slide .ttab-wrap.tt-long { overflow-x: clip; }   /* a scroll container would stop position: sticky */
+  .slide .tt-long .ttab thead th { position: sticky; top: calc(56px + var(--slide-head-h, 0px)); z-index: 2; box-shadow: 0 -1px 0 var(--border), 0 1px 0 var(--border); }
+  .slide:has(.tt-long) .slide-head { position: sticky; top: 56px; z-index: 3; margin: 0; padding: 2px 0 8px; background: var(--bg); }
+  .slide:has(.tt-long) .tt-src { position: sticky; top: calc(56px + var(--slide-head-h, 0px) + 8px); }
+}
+.slide .ttab tbody tr { scroll-margin: 190px 0 84px; }
+.ttab td.tt-test { white-space: nowrap; }
+/* a value is not broken inside a word: the column is as wide as its longest value */
+.ttab th.tt-var, .ttab td.tt-var { overflow-wrap: break-word; }
+/* a value keeps its spaces and stays on one line: ' Temp:25C ', [2, 5, 3] */
+.ttab .tt-val, .ttab .tt-same { white-space: pre; }
+.ttab td.tt-line .tt-box { min-width: 1.8em; }
 .tt-ctrl .w-btn:disabled { opacity: .5; cursor: default; }
 .tt-ctrl .w-btn:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
 

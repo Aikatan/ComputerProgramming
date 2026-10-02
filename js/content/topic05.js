@@ -1,6 +1,6 @@
 /* ===================== Topic 05 - Functions and Modules =====================
    Authored deck format (see CHAPTER-IMPROVEMENT-PROMPT.md).
-   Lesson order: defining -> parameters and return -> arguments -> scope -> nested calls and recursion -> modules -> practice.
+   Lesson order: defining -> parameters and return -> arguments -> scope -> nested calls and recursion -> modules -> trace challenges -> practice.
    Python level: t02-t04 material plus def, return, import. No lists, dicts, or try. *args appears only with a for loop;
    **kwargs needs dictionary access and is taught in Topic 06.
    Local variables in traces are named "name (function)" and are removed when the function returns.
@@ -154,12 +154,231 @@
   const FACT_CODE = ["def factorial(n):", "    if n == 0:", "        return 1", "    return n * factorial(n - 1)", "", "print(factorial(3))"];
   const f = (n, state, ret) => ({ call: "factorial(" + n + ")", detail: "n = " + n, state, ret });
 
+  /* ---------- trace challenges (generated: edit tools/traces/t05.py, then run "python tools/make-trace.py t05") ---------- */
+  // Level 1. One function returns a value, the other only displays: the call line stores None.
+  const C_two = {
+    side: true,
+    code: ["def half(v):", "    return v / 2", "", "def show(v):", "    print(\"V =\", v)", "", "a = half(9)", "b = show(a)", "a = half(a)", "print(a, b)"],
+    steps: [
+      { line: 0 },
+      { line: 3 },
+      { line: 6, set: { "v (half)": "9" } },
+      { line: 1, unset: ["v (half)"], set: { a: "4.5" } },
+      { line: 7, set: { "v (show)": "4.5" } },
+      { line: 4, unset: ["v (show)"], set: { b: "None" }, print: "V = 4.5" },
+      { line: 8, set: { "v (half)": "4.5" } },
+      { line: 1, unset: ["v (half)"], set: { a: "2.25" } },
+      { line: 9, print: "2.25 None" },
+    ],
+  };
+
+  // Level 1. Two return values; a return in an if ends the function; the targets of line 7 are y, x.
+  const C_low = {
+    side: true,
+    code: ["def low(a, b):", "    if a > b:", "        return b, a", "    return a, b", "", "x, y = low(7, 3)", "y, x = low(x, y + 1)", "x, y = low(x, y)", "print(x, y)"],
+    steps: [
+      { line: 0 },
+      { line: 5, set: { "a (low)": "7", "b (low)": "3" } },
+      { line: 1, test: "True" },
+      { line: 2, unset: ["a (low)", "b (low)"], set: { x: "3", y: "7" } },
+      { line: 6, set: { "a (low)": "3", "b (low)": "8" } },
+      { line: 1, test: "False" },
+      { line: 3, unset: ["a (low)", "b (low)"], set: { x: "8", y: "3" } },
+      { line: 7, set: { "a (low)": "8", "b (low)": "3" } },
+      { line: 1, test: "True" },
+      { line: 2, unset: ["a (low)", "b (low)"], set: { x: "3", y: "8" } },
+      { line: 8, print: "3 8" },
+    ],
+  };
+
+  // Level 1. A return inside a loop ends the function; the second call ends the loop and returns 0.
+  const C_heat = {
+    side: true,
+    code: ["def heat(t):", "    for n in range(1, 3):", "        t = t + 10", "        if t >= 40:", "            return n", "    return 0", "", "a = heat(30)", "print(a, heat(a))"],
+    steps: [
+      { line: 0 },
+      { line: 7, set: { "t (heat)": "30" } },
+      { line: 1, set: { "n (heat)": "1" } },
+      { line: 2, set: { "t (heat)": "40" } },
+      { line: 3, test: "True" },
+      { line: 4, unset: ["t (heat)", "n (heat)"], set: { a: "1" } },
+      { line: 8, set: { "t (heat)": "1" } },
+      { line: 1, set: { "n (heat)": "1" } },
+      { line: 2, set: { "t (heat)": "11" } },
+      { line: 3, test: "False" },
+      { line: 1, set: { "n (heat)": "2" } },
+      { line: 2, set: { "t (heat)": "21" } },
+      { line: 3, test: "False" },
+      { line: 1 },
+      { line: 5, unset: ["t (heat)", "n (heat)"], print: "1 0" },
+    ],
+  };
+
+  // Level 2. A default that is replaced by position, keyword arguments in another order, a default that is kept.
+  const C_drop = {
+    side: true,
+    code: ["def drop(v, r=10, i=2):", "    return v - r * i", "", "x = drop(60)", "x = drop(100, x)", "print(x)", "x = drop(i=1, v=x)", "x = drop(x * 9, i=x // 2)", "print(x)"],
+    steps: [
+      { line: 0 },
+      { line: 3, set: { "v (drop)": "60", "r (drop)": "10", "i (drop)": "2" } },
+      { line: 1, unset: ["v (drop)", "r (drop)", "i (drop)"], set: { x: "40" } },
+      { line: 4, set: { "v (drop)": "100", "r (drop)": "40", "i (drop)": "2" } },
+      { line: 1, unset: ["v (drop)", "r (drop)", "i (drop)"], set: { x: "20" } },
+      { line: 5, print: "20" },
+      { line: 6, set: { "v (drop)": "20", "r (drop)": "10", "i (drop)": "1" } },
+      { line: 1, unset: ["v (drop)", "r (drop)", "i (drop)"], set: { x: "10" } },
+      { line: 7, set: { "v (drop)": "90", "r (drop)": "10", "i (drop)": "5" } },
+      { line: 1, unset: ["v (drop)", "r (drop)", "i (drop)"], set: { x: "40" } },
+      { line: 8, print: "40" },
+    ],
+  };
+
+  // Level 2. *args with 2, 0, and 2 arguments: with no argument the loop does not run; hi starts at 0.
+  const C_top = {
+    side: true,
+    code: ["def top(*temps):", "    hi = 0", "    for t in temps:", "        if t > hi:", "            hi = t", "    return hi", "", "a = top(35, 28)", "print(top())", "b = top(-4, -a)", "print(a, b)"],
+    steps: [
+      { line: 0 },
+      { line: 7 },
+      { line: 1, set: { "hi (top)": "0" } },
+      { line: 2, set: { "t (top)": "35" } },
+      { line: 3, test: "True" },
+      { line: 4, set: { "hi (top)": "35" } },
+      { line: 2, set: { "t (top)": "28" } },
+      { line: 3, test: "False" },
+      { line: 2 },
+      { line: 5, unset: ["hi (top)", "t (top)"], set: { a: "35" } },
+      { line: 8 },
+      { line: 1, set: { "hi (top)": "0" } },
+      { line: 2 },
+      { line: 5, unset: ["hi (top)"], print: "0" },
+      { line: 9 },
+      { line: 1, set: { "hi (top)": "0" } },
+      { line: 2, set: { "t (top)": "-4" } },
+      { line: 3, test: "False" },
+      { line: 2, set: { "t (top)": "-35" } },
+      { line: 3, test: "False" },
+      { line: 2 },
+      { line: 5, unset: ["hi (top)", "t (top)"], set: { b: "0" } },
+      { line: 10, print: "35 0" },
+    ],
+  };
+
+  // Level 3. A parameter with the name of a global variable; a returned value that is lost; a global variable that is read.
+  const C_boost = {
+    side: true,
+    code: ["gain = 2", "level = 10", "", "def boost(level):", "    level = level * gain", "    return level", "", "boost(level)", "print(level)", "gain = boost(gain + 1)", "level = boost(level)", "print(level, gain)"],
+    steps: [
+      { line: 0, set: { gain: "2" } },
+      { line: 1, set: { level: "10" } },
+      { line: 3 },
+      { line: 7, set: { "level (boost)": "10" } },
+      { line: 4, set: { "level (boost)": "20" } },
+      { line: 5, unset: ["level (boost)"] },
+      { line: 8, print: "10" },
+      { line: 9, set: { "level (boost)": "3" } },
+      { line: 4, set: { "level (boost)": "6" } },
+      { line: 5, unset: ["level (boost)"], set: { gain: "6" } },
+      { line: 10, set: { "level (boost)": "10" } },
+      { line: 4, set: { "level (boost)": "60" } },
+      { line: 5, unset: ["level (boost)"], set: { level: "60" } },
+      { line: 11, print: "60 6" },
+    ],
+  };
+
+  // Level 3. global changes the global variable; without global the assignment is local; add() returns None.
+  const C_total = {
+    side: true,
+    code: ["total = 10", "def add(n):", "    global total", "    total = total + n", "", "def clear():", "    total = 0", "    return total", "", "add(5)", "x = clear()", "print(total, x)", "x = add(x + 2)", "print(total, x)"],
+    steps: [
+      { line: 0, set: { total: "10" } },
+      { line: 1 },
+      { line: 5 },
+      { line: 9, set: { "n (add)": "5" } },
+      { line: 3, unset: ["n (add)"], set: { total: "15" } },
+      { line: 10 },
+      { line: 6, set: { "total (clear)": "0" } },
+      { line: 7, unset: ["total (clear)"], set: { x: "0" } },
+      { line: 11, print: "15 0" },
+      { line: 12, set: { "n (add)": "2" } },
+      { line: 3, unset: ["n (add)"], set: { total: "17", x: "None" } },
+      { line: 13, print: "17 None" },
+    ],
+  };
+
+  // Level 4. Each call has its own v; math.sqrt returns a float; in line 12, diff(9) runs before root.
+  const C_nested = {
+    side: true,
+    code: ["import math", "", "def root(v):", "    v = v + 7", "    return math.sqrt(v)", "", "def diff(v):", "    w = root(v * 2)", "    return w - v", "", "print(diff(1))", "x = root(diff(9) + 6)", "print(x)"],
+    steps: [
+      { line: 0 },
+      { line: 2 },
+      { line: 6 },
+      { line: 10, set: { "v (diff)": "1" } },
+      { line: 7, set: { "v (root)": "2" } },
+      { line: 3, set: { "v (root)": "9" } },
+      { line: 4, unset: ["v (root)"], set: { "w (diff)": "3.0" } },
+      { line: 8, unset: ["v (diff)", "w (diff)"], print: "2.0" },
+      { line: 11, set: { "v (diff)": "9" } },
+      { line: 7, set: { "v (root)": "18" } },
+      { line: 3, set: { "v (root)": "25" } },
+      { line: 4, unset: ["v (root)"], set: { "w (diff)": "5.0" } },
+      { line: 8, unset: ["v (diff)", "w (diff)"], set: { "v (root)": "2.0" } },
+      { line: 3, set: { "v (root)": "9.0" } },
+      { line: 4, unset: ["v (root)"], set: { x: "3.0" } },
+      { line: 12, print: "3.0" },
+    ],
+  };
+
+  // Level 4. An unnamed program: n + n // 2 + n // 4 + ... + 1. The calls return in reverse order: 1, then 4, then 10.
+  const C_recur = {
+    side: true,
+    code: ["def f(n):", "    if n > 1:", "        n = n + f(n // 2)", "    return n", "", "print(f(6))"],
+    steps: [
+      { line: 0 },
+      { line: 5, set: { "n (f)": "6" } },
+      { line: 1, test: "True" },
+      { line: 2, set: { "n (f #2)": "3" } },
+      { line: 1, test: "True" },
+      { line: 2, set: { "n (f #3)": "1" } },
+      { line: 1, test: "False" },
+      { line: 3, unset: ["n (f #3)"], set: { "n (f #2)": "4" } },
+      { line: 3, unset: ["n (f #2)"], set: { "n (f)": "10" } },
+      { line: 3, unset: ["n (f)"], print: "10" },
+    ],
+  };
+
+  // Level 4. Lines 10 to 12 look wrong but run (None, a name without parentheses); line 13 stops with a NameError.
+  const C_stop = {
+    side: true,
+    code: ["from math import floor", "", "def half(n):", "    return floor(n / 2)", "", "def show(n):", "    h = half(n)", "    print(\"half:\", h)", "", "a = show(9)", "half", "print(a)", "b = math.floor(4.5)", "print(b)"],
+    steps: [
+      { line: 0 },
+      { line: 2 },
+      { line: 5 },
+      { line: 9, set: { "n (show)": "9" } },
+      { line: 6, set: { "n (half)": "9" } },
+      { line: 3, unset: ["n (half)"], set: { "h (show)": "4" } },
+      { line: 7, unset: ["n (show)", "h (show)"], set: { a: "None" }, print: "half: 4" },
+      { line: 10 },
+      { line: 11, print: "None" },
+      { line: 12, print: "NameError" },
+    ],
+  };
+  /* ---------- end of the generated traces ---------- */
+
+  // the task text of a trace challenge (Lesson 7). n: the number of rows that are complete
+  const TRACE = (n) => "Complete the trace table on paper. The first " + n + " rows are complete.<br>1. Before the trace, write the output that you expect. Then complete the rows in order.";
+  // side: the program is beside the table, and a blank row does not show which line runs
+  // given: the number of rows that are complete (the rows of the def lines hold no value, so more than one row is given)
+  const CH = (trace, given) => W("traceTable", { trace, blank: true, given: given || 1, showCode: !!trace.side, hideLines: !!trace.side });
+
   App.registerTopic({
     id: "t05",
     title: "Functions and Modules",
     short: "Functions & Modules",
     blurb: "Defining and calling functions, parameters and return values, arguments, scope, recursion, and modules.",
-    intro: "This chapter covers functions, named blocks of code that can be reused, and modules, files that group functions. Each lesson uses only what the lessons before it have explained:<br>defining → parameters and return → arguments → scope → nested calls and recursion → modules → practice.",
+    intro: "This chapter covers functions, named blocks of code that can be reused, and modules, files that group functions. Each lesson uses only what the lessons before it have explained:<br>defining → parameters and return → arguments → scope → nested calls and recursion → modules → trace challenges → practice.",
     lessons: [
       /* =============================== 1. DEFINING =============================== */
       {
@@ -734,7 +953,7 @@
               "The standard library (math, random) needs no installation. <code>help()</code> displays its documentation.",
               "<code>pip install name</code> installs a third-party module.",
             ]),
-            NEXT("<b>Chapter practice</b>. Complete problems solved with functions."),
+            NEXT("<b>Trace challenges</b>. Ten programs to trace by hand. They use the rules of all lessons of this chapter."),
           ] },
           { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
             [T("Write the output of the program on paper, line by line.")],
@@ -755,7 +974,135 @@
         ],
       },
 
-      /* =============================== 7. PRACTICE =============================== */
+      /* =============================== 7. TRACE CHALLENGES =============================== */
+      {
+        id: "trace",
+        title: "Trace challenges",
+        sub: "Ten programs to execute by hand, in four levels.",
+        keywords: "trace table trace the code execute by hand function call parameter return local variable scope recursion challenge",
+        deck: [
+          { kind: "overview", title: "Trace challenges", blocks: [
+            T("Each program in this lesson has at least one line that is easy to trace wrongly."),
+            L([
+              "Write one row for each line that runs, with its number in the column <b>Line</b>. A <code>def</code> line only creates the function: its row holds no value.",
+              "The row of a call line holds the parameters. The next row is the first line inside the function.",
+              "A column such as <code>v (half)</code> is the variable <code>v</code> inside <code>half</code>. Write <code>–</code> for a variable that does not exist.",
+              "On the row where a function ends, its variables disappear. The same row holds the value that the call line stores or displays: <code>None</code> for a function without <code>return</code>.",
+              "In the column <b>Condition</b>, write True or False on a line that tests a condition. A <code>for</code> line gets one more row when its loop ends.",
+            ], "Rules of a trace", true),
+          ] },
+          { kind: "concept", title: "The four levels", blocks: [
+            T("Each level uses only the lessons that it names. A level can be done when its lessons are complete."),
+            TB(["Level", "Lessons", "Programs", "Subject"], [
+              ["1", "1 and 2", "1 to 3", "calls, parameters, <code>return</code>, <code>None</code>, a return in a branch or a loop"],
+              ["2", "3", "4 and 5", "positional and keyword arguments, default values, <code>*args</code>"],
+              ["3", "4", "6 and 7", "local and global variables, the same name inside and outside, <code>global</code>"],
+              ["4", "5 and 6", "8 to 10", "nested calls, recursion, <code>math</code>, and a program that stops"],
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 1: two functions", blocks: [
+            T(TRACE(3)),
+            CH(C_two, 3),
+          ], answer: [
+            T("<code>show()</code> displays a value, but it has no <code>return</code>: the function returns <code>None</code>, and line 8 stores None in <code>b</code>. Line 2: <code>/</code> gives a float: <code>4.5</code>, then <code>2.25</code>. Each call creates a new local <code>v</code>, which disappears when the function ends."),
+          ] },
+          { kind: "exercise", title: "Level 1: two return values", blocks: [
+            T(TRACE(2)),
+            CH(C_low, 2),
+          ], answer: [
+            L([
+              "Lines 6 and 8: <code>a &gt; b</code> is True. Line 3 returns and ends the function: line 4 does not run.",
+              "Line 7: the arguments are evaluated first: <code>low(3, 8)</code>. The condition is False, so line 4 returns 3 and 8.",
+              "Line 7 assigns the two values in order to <code>y, x</code>: <code>y</code> receives 3, and <code>x</code> receives 8.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 1: heating steps", blocks: [
+            T(TRACE(2)),
+            CH(C_heat, 2),
+          ], answer: [
+            L([
+              "Line 8: in the first pass, <code>40 &gt;= 40</code> is True. Line 5 returns 1 and ends the function at once: the loop does not continue with <code>n = 2</code>.",
+              "Line 9: <code>heat(a)</code> is <code>heat(1)</code>. The values 11 and 21 are less than 40, so the loop ends, and line 6 returns 0.",
+              "Line 9 displays when the call has returned: the output <code>1 0</code> is in the row of line 6.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 2: a voltage drop", blocks: [
+            T(TRACE(2)),
+            CH(C_drop, 2),
+          ], answer: [
+            L([
+              "Line 4: one argument. <code>r</code> and <code>i</code> use the default values: <code>60 - 10 * 2</code> → <code>40</code>.",
+              "Line 5: the second position is <code>r</code>, so 40 replaces the default 10: <code>100 - 40 * 2</code> → <code>20</code>.",
+              "Line 7: a keyword argument names its parameter, so the order does not matter: v = 20, i = 1. <code>r</code> keeps 10.",
+              "Line 8: the arguments are evaluated first: v = 90, i = 5. <code>r</code> keeps 10: <code>90 - 10 * 5</code> → <code>40</code>.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 2: the highest temperature", blocks: [
+            T(TRACE(3) + "<br>2. The parameter <code>temps</code> has no column in the table."),
+            CH(C_top, 3),
+          ], answer: [
+            L([
+              "Line 9: <code>top()</code> receives no argument, so the loop of line 3 does not run. The function returns the start value of <code>hi</code>: 0.",
+              "Line 10: the arguments are -4 and -35. No value is greater than 0, so <code>hi</code> stays 0: <code>b</code> is 0, not -4.",
+              "The function returns the highest value only when at least one argument is greater than 0.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 3: gain and level", blocks: [
+            T(TRACE(3)),
+            CH(C_boost, 3),
+          ], answer: [
+            L([
+              "The parameter <code>level</code> is a local variable. Line 5 changes the local variable, not the global <code>level</code>.",
+              "Line 8 does not store the returned value 20: the value is lost, and line 9 displays 10.",
+              "Line 5 reads the global <code>gain</code> when it runs: 2 in the calls of lines 8 and 10, and 6 in the call of line 11.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 3: a running total", blocks: [
+            T(TRACE(3) + "<br>2. Line 3, <code>global total</code>, has no row in the table."),
+            CH(C_total, 3),
+          ], answer: [
+            L([
+              "Line 4 changes the global <code>total</code>, because line 3 names it with <code>global</code>.",
+              "Line 7 is in a function without <code>global</code>: it creates a local <code>total</code>. The global <code>total</code> is still 15, and <code>clear()</code> returns 0.",
+              "Line 13: <code>add()</code> has no <code>return</code>, so it returns <code>None</code>: <code>x</code> becomes None. The global <code>total</code> is 17.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 4: a call inside a call", blocks: [
+            T(TRACE(4) + "<br>2. Line 12 has two calls: the row of the <code>return</code> of the first call also holds the parameter of the second call."),
+            CH(C_nested, 4),
+          ], answer: [
+            L([
+              "<code>root</code> and <code>diff</code> each have their own <code>v</code>. Line 4 changes only the <code>v</code> of <code>root</code>: in line 9, the <code>v</code> of <code>diff</code> is still 1, and later 9.",
+              "<code>math.sqrt()</code> returns a float: <code>3.0</code> and <code>5.0</code>. Line 9: <code>3.0 - 1</code> → <code>2.0</code>, and <code>5.0 - 9</code> → <code>-4.0</code>.",
+              "Line 12: the argument is evaluated first, so <code>diff(9)</code> runs before <code>root</code>. Then <code>-4.0 + 6</code> → <code>2.0</code> is passed to <code>root</code>: the row of the return of <code>diff</code> holds <code>v (root)</code> = 2.0.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 4: a program without a name", blocks: [
+            T(TRACE(2) + "<br>2. The column <code>n (f #2)</code> is the variable <code>n</code> inside the second active call of <code>f</code>.<br>3. Write in one sentence what <code>f(n)</code> returns."),
+            CH(C_recur, 2),
+          ], answer: [
+            L([
+              "Each call has its own <code>n</code>: 6, 3, and 1. Each call waits in line 3 for the call inside it.",
+              "The last call, with n = 1, is the base case: the condition is False, and line 4 returns 1.",
+              "The calls return in reverse order. Line 3 of each waiting call then stores its sum: <code>3 + 1</code> → <code>4</code>, then <code>6 + 4</code> → <code>10</code>.",
+              "<code>f(n)</code> returns n + n // 2 + n // 4 + … down to 1: 6 + 3 + 1 = 10.",
+            ]),
+          ] },
+          { kind: "exercise", title: "Level 4: the program stops", blocks: [
+            T("The program stops with an error message before its last line.<br>1. Complete the trace table on paper. The first 4 rows are complete.<br>2. In the last row, write the name of the error in the column Output.<br>3. Write the number of the line that stops, and the corrected line."),
+            CH(C_stop, 4),
+          ], answer: [
+            L([
+              "Line 10 does not stop: <code>show()</code> has no <code>return</code>, so <code>a</code> is None. Line 12 displays <code>None</code>.",
+              "Line 11 does not stop: the name <code>half</code> without parentheses is not a call, and the body does not run.",
+              "Line 13 stops with a <b>NameError</b>: line 1 imports only <code>floor</code>, so the name <code>math</code> is not defined. Line 14 does not run.",
+            ]),
+            CODE("b = floor(4.5)", null, "line 13, corrected"),
+          ] },
+        ],
+      },
+
+      /* =============================== 8. PRACTICE =============================== */
       {
         id: "practice",
         title: "Chapter practice",

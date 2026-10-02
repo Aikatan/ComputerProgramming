@@ -239,6 +239,8 @@ App.widgets.loopViz = function (cfg) {
    - line  : 0-based index into code; -1 = before the program starts
    - set   : only the variables that change on this step (values accumulate)
    - print : text this step adds to the output (may contain \n)
+   - test  : "True" | "False": the result of the condition that this step tests
+             (if, elif, while). The trace table then has a column "Condition".
    - end   : what follows the print text, as in Python's print(..., end=...).
              Default "\n": each print is a line of its own. end: " " (or "")
              keeps the next print on the same line. print: "" alone prints an
@@ -288,7 +290,7 @@ App.traceStates = function (cfg) {
     }
     const out = outLines(text);
     maxOut = Math.max(maxOut, out.length);
-    return { line: st.line, note: st.note || "", vars: Object.assign({}, vars), changed, out, printed, newFrom };
+    return { line: st.line, note: st.note || "", vars: Object.assign({}, vars), changed, out, printed, newFrom, test: st.test };
   });
   return { names, states, maxOut };
 };
@@ -386,9 +388,21 @@ App.widgets.codeTrace = function (cfg) {
   return wrap;
 };
 
-/* traceTable - config: { trace | flow, blank?, given?, rows?:[from,to], showCode?, title? }
+/* traceTable - config: { trace | flow, blank?, given?, rows?:[from,to], showCode?, showChart?, hideLines?, title? }
    Normal: Line | What happens | one column per variable | Output
    Blank : Line | Code | empty boxes to fill in (rows before `given` stay filled)
+   A trace with `test` steps has the column "Condition" before the variables: the
+   rows that test a condition hold True or False (a box in a blank table).
+   hideLines: true (a blank table with showCode): a blank row does not show which line
+             runs. The table has no Code column, and the Line cell of a blank row is an
+             empty box: the students decide which line runs next (a branch, a loop, a
+             function call, a program that stops). A filled row shows the line number.
+   showChart: true (a flowchart table): the chart is drawn beside the table. In instructor
+             mode, the shape of the row that is filled last is marked on the chart. With
+             hideLines, the Shape cell of a blank row is an empty box: the students follow
+             the arrows and write the shape that runs next.
+   A table of more than 7 rows runs below the screen of a slide (class tt-long):
+   its head row and the program stay in view, and a revealed row scrolls into view.
    showCode: true shows the program (read-only, with line numbers) beside the table;
              it moves above the table in a narrow container. showCode: "above" always
              puts it above. A flowchart table ({ flow }) shows flow.code, if it has one.
@@ -407,14 +421,28 @@ App.widgets.traceTable = function (cfg) {
   let rows = T.states.map((s, k) => ({ s, k })).filter((r) => r.s.line >= 0);
   if (cfg.rows) rows = rows.slice(cfg.rows[0], cfg.rows[1]);
   const given = cfg.blank ? (cfg.given || 0) : Infinity;
-  const lead = flow ? (cfg.blank ? ["Shape"] : ["Shape", "What happens"]) : ["Line", cfg.blank ? "Code" : "What happens"];
-  const head = lead.concat(T.names, ["Output"]);
+  const hideLines = !!(cfg.blank && cfg.hideLines && (flow ? cfg.showChart : cfg.showCode));
+  const lead = flow ? (cfg.blank ? ["Shape"] : ["Shape", "What happens"]) : hideLines ? ["Line"] : ["Line", cfg.blank ? "Code" : "What happens"];
+  // the first cell of a row whose path is hidden: the line number (or the shape), or an empty box
+  const pathCell = (s, fill) => fill ? (flow ? (code[s.line] || "") : String(s.line + 1)) : h("span", { class: "tt-box" });
+  const hasTest = T.states.some((s) => s.test != null);
+  const pre = lead.concat(hasTest ? ["Condition"] : []);
+  const head = pre.concat(T.names, ["Output"]);
   const thead = h("thead", null, h("tr", null, ...head.map((c, ci) =>
-    h("th", { class: ci >= lead.length && ci < lead.length + T.names.length ? "tt-var" : "" }, c))));
+    h("th", { class: ci >= lead.length && ci < pre.length + T.names.length ? "tt-var" : "" }, c))));
   const tbody = h("tbody");
   // the cells of the variables and the output: values (fill) or empty boxes
   function valueCells(tr, s, fill) {
     while (tr.children.length > lead.length) tr.lastChild.remove();
+    if (hideLines) tr.firstChild.replaceChildren(pathCell(s, fill));
+    if (hasTest) {
+      const td = h("td", { class: "tt-var tt-test", "data-label": "Condition" });
+      // a blank row whose line is hidden has a box in every row: a dash would show that the line tests nothing
+      if (s.test == null && (fill || !hideLines)) td.appendChild(h("span", { class: "tt-dim" }, "–"));
+      else if (!fill) td.appendChild(h("span", { class: "tt-box" }));
+      else td.appendChild(h("span", { class: "tt-val bt-ball bt-bool" }, String(s.test)));
+      tr.appendChild(td);
+    }
     T.names.forEach((nm) => {
       const v = s.vars[nm];
       const td = h("td", { class: "tt-var", "data-label": nm });
@@ -437,21 +465,29 @@ App.widgets.traceTable = function (cfg) {
       if (!cfg.blank) tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
     } else {
       tr.appendChild(h("td", { class: "tt-line", "data-label": "Line" }, String(s.line + 1)));
-      if (cfg.blank) tr.appendChild(h("td", { class: "tt-code", "data-label": "Code", html: App.highlight(code[s.line] || "", trace.lang) }));
+      if (hideLines) { /* no Code column: the program is beside the table */ }
+      else if (cfg.blank) tr.appendChild(h("td", { class: "tt-code", "data-label": "Code", html: App.highlight(code[s.line] || "", trace.lang) }));
       else tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
     }
     valueCells(tr, s, ri < given);
     tbody.appendChild(tr);
     return tr;
   });
-  const table = h("div", { class: "ttab-wrap" + (cfg.blank ? " tt-blank" : "") },
+  const table = h("div", { class: "ttab-wrap" + (cfg.blank ? " tt-blank" : "") + (rows.length > 7 ? " tt-long" : "") },
     cfg.title ? h("div", { class: "widget-title" }, cfg.title) : null,
     h("table", { class: "ttab" }, thead, tbody));
+  // the Code column of a blank table: wide enough for its longest line (styles.css limits it)
+  if (cfg.blank && !flow && !hideLines) table.style.setProperty("--tt-code-w", Math.max(0, ...rows.map((r) => (code[r.s.line] || "").length)) + 1 + "ch");
 
   // showCode: the program, read-only, with line numbers (no Run)
   const src = cfg.showCode ? (flow ? flow.code : code) : null;
   const srcEls = [];
-  let srcBox = null;
+  let srcBox = null, chartEls = null;
+  if (flow && cfg.showChart) {
+    const fc = fcSvg(flow);
+    chartEls = fc.els;
+    srcBox = h("div", { class: "fc-chart tt-src tt-chart" }, fc.svg);
+  }
   if (src && src.length) {
     srcBox = h("div", { class: "step-code ct-code tt-src" });
     src.forEach((ln, idx) => {
@@ -483,6 +519,7 @@ App.widgets.traceTable = function (cfg) {
       const st = cur >= 0 ? rows[cur].s : null;
       const lines = !st ? [] : flow ? ((flow.map && flow.map[flow.nodes[st.line].id]) || []) : [st.line];
       srcEls.forEach((el, k) => { const on = lines.includes(k); el.classList.toggle("hl", on); el.children[1].textContent = on ? "▸ " : "  "; });
+      if (chartEls) Object.keys(chartEls).forEach((id) => chartEls[id].classList.toggle("fc-active", !!st && flow.nodes[st.line].id === id));
       prev.disabled = reset.disabled = shown === g0;
       next.disabled = all.disabled = shown === rows.length;
       count.textContent = "Row " + shown + " of " + rows.length;
@@ -495,6 +532,8 @@ App.widgets.traceTable = function (cfg) {
       shown = j;
       cur = hl && shown > g0 ? shown - 1 : -1;
       mark();
+      // a long table: the row filled last must be on the screen
+      if (moved && cur >= 0 && trs[cur].offsetParent !== null) trs[cur].scrollIntoView({ block: "nearest" });
       return moved;
     };
     next.addEventListener("click", () => show(shown + 1, true));
@@ -506,7 +545,7 @@ App.widgets.traceTable = function (cfg) {
     mark();
   }
   const side = srcBox ? h("div", { class: "tt-grid" }, srcBox, table) : table;
-  const wrap = h("div", { class: "tt-outer" + (srcBox ? " tt-has-code" + (cfg.showCode === "above" ? " tt-code-above" : "") : "") }, side, ctrl);
+  const wrap = h("div", { class: "tt-outer" + (srcBox ? " tt-has-code" + (chartEls ? " tt-has-chart" : "") + (cfg.showCode === "above" ? " tt-code-above" : "") : "") }, side, ctrl);
   if (reveal) {
     // used by the deck: the arrow keys reveal the rows before the slide changes
     wrap.classList.add("kstep");
@@ -552,7 +591,8 @@ App.widgets.memoryModel = function (cfg) {
      trace: [{ node, note, set, print }]   (optional: step-by-step mode)
    }
    ============================================================ */
-const FC = { fs: 24, h: 40, hDec: 64, gap: 16, gapDec: 32, lane: 30, pad: 22, margin: 8 };
+// turn: an arrow that enters a shape from the side turns this far above the shape (clear of the shape above it)
+const FC = { fs: 24, h: 40, hDec: 64, gap: 16, gapDec: 32, lane: 30, pad: 22, margin: 8, turn: 9 };
 let fcMeasureCtx = null;
 function fcTextW(text) {
   if (!fcMeasureCtx) fcMeasureCtx = document.createElement("canvas").getContext("2d");
@@ -665,11 +705,11 @@ function fcSvg(cfg) {
       pts = [[sx, sy], [b.cx > a.cx ? b.x : b.x + b.w, sy]];
     } else if (e.lane) {
       const lx = L.laneX(e.lane, e.laneIndex || 0);
-      pts = p === "bottom" ? [[sx, sy], [sx, sy + 14], [lx, sy + 14], [lx, ty - 14], [tx, ty - 14], [tx, ty]]
-                           : [[sx, sy], [lx, sy], [lx, ty - 14], [tx, ty - 14], [tx, ty]];
+      pts = p === "bottom" ? [[sx, sy], [sx, sy + 14], [lx, sy + 14], [lx, ty - FC.turn], [tx, ty - FC.turn], [tx, ty]]
+                           : [[sx, sy], [lx, sy], [lx, ty - FC.turn], [tx, ty - FC.turn], [tx, ty]];
     } else if (p === "left" || p === "right") pts = [[sx, sy], [tx, sy], [tx, ty]];
     else if (Math.abs(sx - tx) < 1) pts = [[sx, sy], [tx, ty]];
-    else pts = [[sx, sy], [sx, ty - 14], [tx, ty - 14], [tx, ty]];
+    else pts = [[sx, sy], [sx, ty - FC.turn], [tx, ty - FC.turn], [tx, ty]];
     const path = document.createElementNS(svgNS, "path");
     path.setAttribute("d", "M" + pts.map((q) => q[0] + "," + q[1]).join(" L"));
     path.setAttribute("class", "fc-line");
