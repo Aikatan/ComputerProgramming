@@ -337,7 +337,7 @@
           ] },
           { kind: "concept", part: "strip() and find()", title: "strip() and find()", blocks: [
             TB(["Method", "Result", "Example"], [
-              ["<code>s.strip()</code>", "a copy without spaces at the start and the end", "<code>\"  hi  \".strip()</code> → <code>'hi'</code>"],
+              ["<code>s.strip()</code>", "a copy without spaces at the start and the end", "<code>\" \u00a0hi \u00a0\".strip()</code> → <code>'hi'</code>"],
               ["<code>s.find(x)</code>", "the index of the first match of x", "<code>\"sensor\".find(\"n\")</code> → <code>2</code>"],
               ["<code>s.find(x)</code>", "<code>-1</code> when x is not found", "<code>\"sensor\".find(\"x\")</code> → <code>-1</code>"],
             ]),
@@ -627,7 +627,7 @@
           ] },
           { kind: "concept", part: "Strings and lists: split() and join()", title: "split() and join()", blocks: [
             TB(["Expression", "Result"], [
-              ["<code>\"a b  c\".split()</code>", "<code>['a', 'b', 'c']</code>: split at spaces"],
+              ["<code>\"a b \u00a0c\".split()</code>", "<code>['a', 'b', 'c']</code>: split at spaces"],
               ["<code>\"2025-10-15\".split(\"-\")</code>", "<code>['2025', '10', '15']</code>: split at each -"],
               ["<code>\"/\".join(['2025', '10', '15'])</code>", "<code>'2025/10/15'</code>: join with / between"],
             ]),

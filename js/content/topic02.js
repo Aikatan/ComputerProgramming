@@ -1196,7 +1196,7 @@
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: '`"Python"[-1]` is…', choices: ["P", "n", "o", "Error"], answer: 1, explain: "Index -1 is the last character: n." },
-            { q: '`len("  hi ")` is…', choices: ["2", "3", "4", "5"], answer: 3, explain: "Spaces are characters: 2 spaces + 2 letters + 1 space = 5." },
+            { q: '`len(" \u00a0hi ")` is…', choices: ["2", "3", "4", "5"], answer: 3, explain: "Spaces are characters: 2 spaces + 2 letters + 1 space = 5." },
           ])] },
         ],
       },
