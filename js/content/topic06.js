@@ -300,21 +300,13 @@
       {
         id: "strings",
         title: "Strings: more operations",
-        sub: "Multi-line strings, slicing in both directions, and methods for processing text.",
+        sub: "Slicing in both directions, methods for processing text, and loops over the characters.",
         slides: "06:4–12",
-        keywords: "string triple quotes slicing reverse strip find count startswith endswith isdigit case-sensitive chaining loop vowels",
+        keywords: "string slicing reverse strip find count startswith endswith isdigit case-sensitive chaining loop vowels",
         deck: [
           { kind: "overview", title: "Strings: more operations", blocks: [
             T("Topic 02 introduced strings: indexing, slicing, <code>len()</code>, <code>+</code>, <code>*</code>, <code>in</code>, <code>upper()</code>, <code>lower()</code>, <code>replace()</code>, and immutability. This lesson adds the operations that process text data."),
-            L(["Multi-line strings", "Slicing in both directions", "strip() and find()", "count() and checking methods", "Processing a string with a loop"], "Subtopics in this lesson", true),
-          ] },
-          { kind: "concept", part: "Multi-line strings", title: "Triple quotes", blocks: [
-            L([
-              "A string in triple quotes, <code>\"\"\"...\"\"\"</code> or <code>'''...'''</code>, can span several lines.",
-              "The line breaks are part of the string.",
-              "Triple quotes are also used for docstrings (Topic 05).",
-            ]),
-            CODE('note = """Line 1\nLine 2"""\nprint(note)', "Line 1\nLine 2", "example"),
+            L(["Slicing in both directions", "strip() and find()", "count() and checking methods", "Processing a string with a loop"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Slicing in both directions", title: "Slicing rules", blocks: [
             T("<code>s[start:end:step]</code>: start is included, end is excluded (Topic 02)."),
@@ -385,7 +377,6 @@
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "Triple quotes make multi-line strings.",
               "<code>s[::-1]</code> reverses; an end beyond the string is not an error.",
               "<code>strip()</code> removes outer spaces; <code>find()</code> gives an index or -1.",
               "<code>count()</code>, <code>startswith()</code>, <code>endswith()</code>, <code>isdigit()</code> check text.",

@@ -1059,7 +1059,7 @@
         title: "Strings",
         sub: "Creating text, length, joining, indexing, slicing, and string methods.",
         slides: "02:35–41",
-        keywords: "string str quotes escape newline len concatenate repeat index slice immutable in upper lower replace",
+        keywords: "string str quotes escape newline triple quotes multi-line len concatenate repeat index slice immutable in upper lower replace",
         deck: [
           { kind: "overview", title: "Strings", blocks: [
             T("A <b>string</b> (<code>str</code>) is a sequence of characters, such as a device name, a unit, or a message from a sensor."),
@@ -1084,6 +1084,14 @@
               { c: "\\t", e: "A tab between the letters" },
               { c: "\\\"", e: "Quotes inside the text. Output: <code>Status: \"OK\"</code>" },
             ]),
+          ] },
+          { kind: "concept", part: "Creating strings", title: "Triple quotes", blocks: [
+            L([
+              "A string in triple quotes, <code>\"\"\"...\"\"\"</code> or <code>'''...'''</code>, can span several lines.",
+              "The line breaks are part of the string.",
+              "The string in the example is the same as <code>\"Line 1\\nLine 2\"</code>.",
+            ]),
+            CODE('note = """Line 1\nLine 2"""\nprint(note)', "Line 1\nLine 2", "example"),
           ] },
           { kind: "concept", part: "Length, joining, and repeating", title: "len(), +, and *", blocks: [
             TB(["Operation", "Example", "Result"], [
@@ -1165,7 +1173,7 @@
           ] },
           { kind: "summary", title: "Summary", blocks: [
             L([
-              "A string is written in quotes. <code>\\n</code> is a new line.",
+              "A string is written in quotes. <code>\\n</code> is a new line. Triple quotes span several lines.",
               "<code>len()</code> counts characters. <code>+</code> joins strings. <code>*</code> repeats a string.",
               "<code>s[i]</code> uses an index from 0. <code>s[-1]</code> is the last character.",
               "<code>s[start:end]</code> stops before <code>end</code>.",

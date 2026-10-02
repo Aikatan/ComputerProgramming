@@ -368,7 +368,7 @@
           ] },
           { kind: "concept", part: "Docstrings", title: "Docstrings", blocks: [
             L([
-              "A <b>docstring</b> is a string in triple quotes on the first line of the body.",
+              "A <b>docstring</b> is a string in triple quotes (Topic 02) on the first line of the body.",
               "It describes what the function does, for the people who read or use it.",
               "<code>help(function_name)</code> displays the docstring.",
             ]),
