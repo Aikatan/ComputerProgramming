@@ -2431,10 +2431,6 @@ int main(void) {
             PQ("Complete the function <code>to_percent</code>, so that the program displays the target output.<br>The function multiplies by 100 the variable that the parameter <code>x</code> points to.",
               "45.0", '#include <stdio.h>\nvoid to_percent(double *x) {\n    \n}\nint main(void) {\n    double load = 0.45;\n    to_percent(&load);\n    printf("%.1f\\n", load);\n    return 0;\n}', null, "*x is the variable that x points to: *x = *x * 100;"),
           ] },
-          { kind: "exercise", title: "Correct an error", blocks: [
-            PQ("Correct the function <code>add_bonus</code>, so that the program displays the target output.<br>The function must add 10 to the variable <code>s</code> of <code>main</code>. Now <code>s</code> stays 50.",
-              "60", '#include <stdio.h>\nvoid add_bonus(int *score) {\n    score = score + 10;\n}\nint main(void) {\n    int s = 50;\n    add_bonus(&s);\n    printf("%d\\n", s);\n    return 0;\n}', null, "score is the address; *score is the variable."),
-          ] },
           { kind: "exercise", title: "Write a program: two results", blocks: [
             PQ("Write a program with this function:<br><code>void min_max(int v[], int n, int *lo, int *hi)</code><br>1. The function stores the smallest element in <code>*lo</code> and the largest element in <code>*hi</code>.<br>2. Call the function with the array {4, 9, 2, 7, 5}.<br>3. Display the two results as in the target output: <code>2 9</code>.",
               "2 9", STARTER, null, "Start with *lo = v[0]; *hi = v[0]; then compare each element with *lo and *hi."),
