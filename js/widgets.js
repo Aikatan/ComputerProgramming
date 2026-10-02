@@ -401,6 +401,12 @@ App.widgets.codeTrace = function (cfg) {
              mode, the shape of the row that is filled last is marked on the chart. With
              hideLines, the Shape cell of a blank row is an empty box: the students follow
              the arrows and write the shape that runs next.
+   trace.missing: [n, ...] (0-based lines): the "missing lines" exercise. Every row is
+             filled, and each of these lines of the program is an empty box (in the Code
+             cells and in the program beside the table): the students write the lines
+             from the values of their rows.
+   trace.files: [{ name, text }]: the files that the program reads, shown above the program
+             (or above the table, when the program is not beside it).
    A table of more than 7 rows runs below the screen of a slide (class tt-long):
    its head row and the program stay in view, and a revealed row scrolls into view.
    showCode: true shows the program (read-only, with line numbers) beside the table;
@@ -420,7 +426,10 @@ App.widgets.traceTable = function (cfg) {
   const code = trace.code;
   let rows = T.states.map((s, k) => ({ s, k })).filter((r) => r.s.line >= 0);
   if (cfg.rows) rows = rows.slice(cfg.rows[0], cfg.rows[1]);
-  const given = cfg.blank ? (cfg.given || 0) : Infinity;
+  const missing = !flow && trace.missing != null ? [].concat(trace.missing) : [];
+  const nGiven = missing.length ? Infinity : (cfg.given || 0);   // a missing-lines table is complete
+  const given = cfg.blank ? nGiven : Infinity;
+  const gap = () => h("span", { class: "tt-box tt-miss" });
   const hideLines = !!(cfg.blank && cfg.hideLines && (flow ? cfg.showChart : cfg.showCode));
   const lead = flow ? (cfg.blank ? ["Shape"] : ["Shape", "What happens"]) : hideLines ? ["Line"] : ["Line", cfg.blank ? "Code" : "What happens"];
   // the first cell of a row whose path is hidden: the line number (or the shape), or an empty box
@@ -466,6 +475,7 @@ App.widgets.traceTable = function (cfg) {
     } else {
       tr.appendChild(h("td", { class: "tt-line", "data-label": "Line" }, String(s.line + 1)));
       if (hideLines) { /* no Code column: the program is beside the table */ }
+      else if (cfg.blank && missing.includes(s.line)) tr.appendChild(h("td", { class: "tt-code", "data-label": "Code" }, gap()));
       else if (cfg.blank) tr.appendChild(h("td", { class: "tt-code", "data-label": "Code", html: App.highlight(code[s.line] || "", trace.lang) }));
       else tr.appendChild(h("td", { class: "tt-note", "data-label": "What happens", html: s.note }));
     }
@@ -494,15 +504,21 @@ App.widgets.traceTable = function (cfg) {
       const el = h("span", { class: "ln" },
         h("span", { class: "ct-no" }, String(idx + 1)),
         h("span", { class: "marker" }, "  "),
-        h("span", { html: App.highlight(ln, flow ? undefined : trace.lang) || "&nbsp;" }));
+        !flow && missing.includes(idx) ? h("span", null, ln.match(/^\s*/)[0], gap())
+          : h("span", { html: App.highlight(ln, flow ? undefined : trace.lang) || "&nbsp;" }));
       srcBox.appendChild(el); srcEls.push(el);
     });
   }
+  // the files that the program reads: one block for each file, with its name
+  const fileEls = ((!flow && trace.files) || []).map((f) => h("div", { class: "tt-file" },
+    h("div", { class: "tt-file-name" }, f.name),
+    h("div", { class: "step-code tt-file-text" }, ...String(f.text).split("\n").map((ln) => h("span", { class: "ln" }, ln || " ")))));
+  const plain = fileEls.length ? h("div", { class: "tt-outer" }, ...fileEls, table) : table;
 
   // instructor mode: reveal the blank rows one by one
-  const g0 = Math.min(rows.length, cfg.blank ? (cfg.given || 0) : rows.length);
+  const g0 = Math.min(rows.length, cfg.blank ? nGiven : rows.length);
   const reveal = !!(cfg.blank && App.instructor && rows.length > g0);
-  if (!srcBox && !reveal) return table;
+  if (!srcBox && !reveal) return plain;
 
   let ctrl = null, api = null;
   if (reveal) {
@@ -544,7 +560,7 @@ App.widgets.traceTable = function (cfg) {
     api = { step: (dir) => show(shown + dir, true), go: (where) => { show(where === "end" ? rows.length : g0, false); } };
     mark();
   }
-  const side = srcBox ? h("div", { class: "tt-grid" }, srcBox, table) : table;
+  const side = srcBox ? h("div", { class: "tt-grid" }, h("div", { class: "tt-left" }, ...fileEls, srcBox), table) : plain;
   const wrap = h("div", { class: "tt-outer" + (srcBox ? " tt-has-code" + (chartEls ? " tt-has-chart" : "") + (cfg.showCode === "above" ? " tt-code-above" : "") : "") }, side, ctrl);
   if (reveal) {
     // used by the deck: the arrow keys reveal the rows before the slide changes

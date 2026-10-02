@@ -165,7 +165,7 @@
   };
 
   /* ---------- trace challenges (generated: edit tools/traces/t02.py, then run "python tools/make-trace.py t02") ---------- */
-  // Level 1. A swap through a third variable, then a swap that loses a value.
+  // A swap through a third variable, then a swap that loses a value.
   const C_tanks = {
     code: ["tank_a = 30", "tank_b = 70", "temp = tank_a", "tank_a = tank_b", "tank_b = temp", "print(tank_a, tank_b)", "tank_a = tank_b", "tank_b = tank_a", "print(tank_a, tank_b)"],
     steps: [
@@ -181,7 +181,7 @@
     ],
   };
 
-  // Level 1. A variable stores a value, not a formula; +=, -=, several names in one line, sep and end.
+  // A variable stores a value, not a formula; +=, -=, several names in one line, sep and end.
   const C_values = {
     code: ["x = 4", "y = x + 1", "x = x * 2", "total = x + y", "y -= 3", "x, y = y, x", "total += x", "x = y = total - 10", "print(x, y, total, sep=\"-\", end=\"!\")", "print(x + y)"],
     steps: [
@@ -198,35 +198,7 @@
     ],
   };
 
-  // Level 2. // and % in a chain: the same variable keeps the rest.
-  const C_coins = {
-    code: ["amount = 87", "tens = amount // 10", "amount = amount % 10", "fives = amount // 5", "amount = amount % 5", "print(tens, fives, amount)", "print(tens * 10 + fives * 5 + amount)"],
-    steps: [
-      { line: 0, set: { amount: "87" } },
-      { line: 1, set: { tens: "8" } },
-      { line: 2, set: { amount: "7" } },
-      { line: 3, set: { fives: "1" } },
-      { line: 4, set: { amount: "2" } },
-      { line: 5, print: "8 1 2" },
-      { line: 6, print: "87" },
-    ],
-  };
-
-  // Level 2. An unnamed program: r holds the digits of n in reverse order.
-  const C_digits = {
-    code: ["n = 472", "a = n // 100", "b = n // 10 % 10", "c = n % 10", "r = c * 100 + b * 10 + a", "print(r)", "print(n - r)"],
-    steps: [
-      { line: 0, set: { n: "472" } },
-      { line: 1, set: { a: "4" } },
-      { line: 2, set: { b: "7" } },
-      { line: 3, set: { c: "2" } },
-      { line: 4, set: { r: "274" } },
-      { line: 5, print: "274" },
-      { line: 6, print: "198" },
-    ],
-  };
-
-  // Level 2. The order of operations, and int and float results.
+  // The order of operations, and int and float results.
   const C_order = {
     code: ["a = 7", "b = 2", "c = a / b", "d = a // b * b", "a = a % b + d ** 2", "c = c * b - d", "b = -b ** 2 + a // 3", "print(a, b, c)", "print(type(c), round(c / 3, 2))"],
     steps: [
@@ -242,7 +214,7 @@
     ],
   };
 
-  // Level 3. Text digits are joined; numbers are added. int() removes the fraction.
+  // Text digits are joined; numbers are added. int() removes the fraction.
   const C_digits_text = {
     code: ["a = input(\"A: \")", "b = input(\"B: \")", "text = a + b", "total = int(a) + int(b)", "n = int(int(a) / int(b))", "text = text * n", "total = total + len(text)", "print(text, total)"],
     steps: [
@@ -257,7 +229,7 @@
     ],
   };
 
-  // Level 3. Slices, str() and *, and a method call that changes nothing.
+  // Slices, str() and *, and a method call that changes nothing.
   const C_code = {
     code: ["code = \"TMP36-A\"", "left = code[:3].lower()", "num = int(code[3:5])", "num = num // 10 + num % 10", "tag = code[-1] + str(num) * 2", "code = left + \"-\" + tag", "code.upper()", "print(code, len(code))"],
     steps: [
@@ -272,7 +244,7 @@
     ],
   };
 
-  // Level 3. The whole chapter in one program: input, slices, conversion, arithmetic, reassignment, sep.
+  // The whole chapter in one program: input, slices, conversion, arithmetic, reassignment, sep.
   const C_report = {
     code: ["msg = input(\"Data: \")", "value = float(msg[:4])", "value = value * int(msg[-2])", "value = value * 90 / 60", "whole = int(value)", "value = value - whole", "tag = msg[4] + msg[-1]", "tag = tag.lower() + str(whole)", "whole = whole % 10 * len(tag)", "print(tag, value, sep=\":\")", "print(\"=\" * (whole // 10))", "print(whole)"],
     steps: [
@@ -291,37 +263,37 @@
     ],
   };
 
-  // Level 4. A logical error: the first wrong value is on line 3 (parentheses are missing).
-  const C_rise = {
-    code: ["t1 = 20", "t2 = 24", "mean = t1 + t2 / 2", "rise = mean - t1", "percent = rise / t1 * 100", "print(percent, \"%\")"],
+  // Missing lines 3 and 4: the same variable keeps the rest of the division.
+  const C_coins = {
+    missing: [2, 3],
+    code: ["amount = 87", "tens = amount // 10", "amount = amount % 10", "fives = amount // 5", "amount = amount % 5", "print(tens, fives, amount)", "print(tens * 10 + fives * 5 + amount)"],
     steps: [
-      { line: 0, set: { t1: "20" } },
-      { line: 1, set: { t2: "24" } },
-      { line: 2, set: { mean: "32.0" } },
-      { line: 3, set: { rise: "12.0" } },
-      { line: 4, set: { percent: "60.0" } },
-      { line: 5, print: "60.0 %" },
+      { line: 0, set: { amount: "87" } },
+      { line: 1, set: { tens: "8" } },
+      { line: 2, set: { amount: "7" } },
+      { line: 3, set: { fives: "1" } },
+      { line: 4, set: { amount: "2" } },
+      { line: 5, print: "8 1 2" },
+      { line: 6, print: "87" },
     ],
   };
 
-  // Level 4. Lines 3, 5, and 6 look wrong but run; line 7 stops with a ValueError.
-  const C_stop = {
-    side: true,
-    code: ["width = input(\"Width: \")", "height = 3", "area = width * height", "print(\"Area =\", area)", "last = area[height - 1]", "count = int(area) // 100", "side = int(width + \".0\")", "print(\"Side =\", side)"],
+  // Missing lines 2, 3 and 4: the middle digit. r holds the digits of n in reverse order.
+  const C_digits = {
+    missing: [1, 2, 3],
+    code: ["n = 472", "a = n // 100", "b = n // 10 % 10", "c = n % 10", "r = c * 100 + b * 10 + a", "print(r)", "print(n - r)"],
     steps: [
-      { line: 0, set: { width: "'4'" }, print: "Width: 4" },
-      { line: 1, set: { height: "3" } },
-      { line: 2, set: { area: "'444'" } },
-      { line: 3, print: "Area = 444" },
-      { line: 4, set: { last: "'4'" } },
-      { line: 5, set: { count: "4" } },
-      { line: 6, print: "ValueError" },
+      { line: 0, set: { n: "472" } },
+      { line: 1, set: { a: "4" } },
+      { line: 2, set: { b: "7" } },
+      { line: 3, set: { c: "2" } },
+      { line: 4, set: { r: "274" } },
+      { line: 5, print: "274" },
+      { line: 6, print: "198" },
     ],
   };
   /* ---------- end of the generated traces ---------- */
 
-  // the task text of a trace challenge (Lesson 9)
-  const TRACE = "Complete the trace table on paper. The first row is complete.<br>1. Before the trace, write the output that you expect. Then complete the rows in order.";
   // side: the program is beside the table, and a blank row does not show which line runs
   // given: the number of rows that are complete (default 1)
   const CH = (trace, given) => W("traceTable", { trace, blank: true, given: given || 1, showCode: !!trace.side, hideLines: !!trace.side });
@@ -1323,7 +1295,7 @@
               "Read the last line of an error message first, then the line number.",
               "To find a logical error, compare a hand calculation with a trace of the program.",
             ]),
-            NEXT("<b>Trace challenges</b>. Ten programs to trace by hand. They use the rules of all lessons of this chapter."),
+            NEXT("<b>Trace challenges</b>. Eight programs to trace by hand. They use the rules of all lessons of this chapter."),
           ] },
           { kind: "exercise", title: "Correct the syntax error", blocks: [
             PQ("Correct the syntax error, so that the program displays the target output.<br>The error: the program does not start.", "Current = 2 A", 'print("Current =" 2, "A")\n', null, "A comma is missing between the values."),
@@ -1353,102 +1325,17 @@
       {
         id: "trace",
         title: "Trace challenges",
-        sub: "Ten programs to execute by hand, in four levels.",
+        sub: "Eight programs to trace on paper: the value of every variable and the output, line by line.",
         keywords: "trace table trace the code execute by hand variable values output challenge",
         deck: [
-          { kind: "overview", title: "Trace challenges", blocks: [
-            T("A <b>trace</b> executes a program by hand, one line at a time. Each program in this lesson has at least one line that is easy to trace wrongly."),
-            L([
-              "Execute the lines in order, from top to bottom. Write one row for each line.",
-              "Evaluate the right side of an assignment with the <b>current</b> values of the variables.",
-              "After each line, write the value of every variable. Write <code>–</code> for a variable that does not exist yet.",
-              "Write text values in quotes, such as <code>'12'</code>. Write a float with its decimal point, such as <code>24.0</code>.",
-              "Write the output of the line exactly as the screen displays it.",
-            ], "Rules of a trace", true),
-          ] },
-          { kind: "concept", title: "The four levels", blocks: [
-            T("Each level uses only the lessons that it names. A level can be done when its lessons are complete."),
-            TB(["Level", "Lessons", "Programs", "Subject"], [
-              ["1", "1 and 2", "1 and 2", "output, assignment, reassignment, updating"],
-              ["2", "3 to 5", "3 to 5", "<code>//</code>, <code>%</code>, order of operations, int and float results"],
-              ["3", "6 and 7", "6 to 8", "input, type conversion, indexing, slicing, methods"],
-              ["4", "8", "9 and 10", "a logical error, and a program that stops"],
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 1: two tanks", blocks: [
-            T(TRACE),
-            CH(C_tanks),
-          ], answer: [
-            T("Lines 3 to 5 exchange the two values through <code>temp</code>. Lines 7 and 8 do not exchange them: line 7 replaces the value of <code>tank_a</code>, so line 8 copies the same value back."),
-          ] },
-          { kind: "exercise", title: "Level 1: three numbers", blocks: [
-            T(TRACE),
-            CH(C_values),
-          ], answer: [
-            T("Line 3 changes <code>x</code>, but <code>y</code> keeps the value 5: a variable stores a value, not a formula. Line 6 evaluates the right side first, <code>2, 8</code>, and then assigns both values. Line 9 ends with <code>!</code> instead of a new line, so line 10 continues the same output line."),
-          ] },
-          { kind: "exercise", title: "Level 2: coins", blocks: [
-            T(TRACE),
-            CH(C_coins),
-          ], answer: [
-            T("<code>amount</code> is reassigned twice: after line 3 it is 7, and after line 5 it is 2. Line 4 uses the value 7, not 87."),
-          ] },
-          { kind: "exercise", title: "Level 2: a program without a name", blocks: [
-            T(TRACE + "<br>2. Write in one sentence what the program computes in <code>r</code>."),
-            CH(C_digits),
-          ], answer: [
-            T("<code>a</code>, <code>b</code>, and <code>c</code> are the three digits of <code>n</code>. <code>r</code> is the number with the digits of <code>n</code> in reverse order: 274. Line 3: <code>//</code> and <code>%</code> have the same priority, so <code>n // 10</code> is evaluated first: <code>47 % 10</code> → <code>7</code>."),
-          ] },
-          { kind: "exercise", title: "Level 2: order and types", blocks: [
-            T(TRACE),
-            CH(C_order),
-          ], answer: [
-            L([
-              "Line 3: <code>/</code> gives a float, <code>3.5</code>. Line 4: left to right, <code>7 // 2</code> → <code>3</code>, then <code>3 * 2</code> → <code>6</code>.",
-              "Line 5: <code>**</code> first: <code>1 + 36</code>. Line 6: a float operand gives a float: <code>7.0 - 6</code> → <code>1.0</code>.",
-              "Line 7: <code>**</code> comes before the minus sign: <code>-(2 ** 2) + 12</code> → <code>8</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: two inputs", blocks: [
-            T(TRACE + "<br>2. Test input: 12 and 5."),
-            CH(C_digits_text),
-          ], answer: [
-            T("Line 3 joins two texts: <code>'125'</code>. Line 4 adds two numbers: 17. Line 5: <code>12 / 5</code> → <code>2.4</code>, and <code>int()</code> removes the fraction: 2. Line 6 repeats the text; it does not multiply a number."),
-          ] },
-          { kind: "exercise", title: "Level 3: a device code", blocks: [
-            T(TRACE),
-            CH(C_code),
-          ], answer: [
-            T("Line 7 changes nothing: <code>upper()</code> returns a new string, and the program does not store it. Line 3: the slice <code>[3:5]</code> takes the indexes 3 and 4, <code>'36'</code>. Line 5: <code>str(9) * 2</code> → <code>'99'</code>."),
-          ] },
-          { kind: "exercise", title: "Level 3: a sensor message", blocks: [
-            T(TRACE + "<br>2. Test input: 12.5V2A"),
-            CH(C_report),
-          ], answer: [
-            L([
-              "Line 2: the slice <code>[:4]</code> takes the indexes 0 to 3: <code>'12.5'</code>. Line 3: <code>msg[-2]</code> is <code>'2'</code>, so <code>12.5 * 2</code> → <code>25.0</code>.",
-              "Line 4: left to right: <code>25.0 * 90</code> → <code>2250.0</code>, then <code>/ 60</code> → <code>37.5</code>.",
-              "Line 6 reassigns <code>value</code>: <code>37.5 - 37</code> → <code>0.5</code>. Line 8 uses <code>whole</code> before line 9 changes it.",
-              "Line 9: <code>37 % 10</code> → <code>7</code>, then <code>7 * 4</code> → <code>28</code>. Line 11: <code>28 // 10</code> → <code>2</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: the first wrong value", blocks: [
-            T("The program must display the rise from 20 °C to the mean of 20 °C and 24 °C, in percent. The correct output is <code>10.0 %</code>.<br>1. Complete the trace table on paper. The first row is complete.<br>2. Compute the correct value of each variable by hand: mean 22.0, rise 2.0, percent 10.0.<br>3. Write the number of the line with the first wrong value, and the corrected line."),
-            CH(C_rise),
-          ], answer: [
-            T("Line 3 has the first wrong value: <code>t2 / 2</code> is evaluated first, so <code>20 + 12.0</code> → <code>32.0</code>. The values of lines 4 and 5 are wrong only because <code>mean</code> is wrong."),
-            CODE("mean = (t1 + t2) / 2", null, "line 3, corrected"),
-          ] },
-          { kind: "exercise", title: "Level 4: the program stops", blocks: [
-            T("The program stops with an error message before its last line. Test input: 4.<br>1. Complete the trace table on paper. The first row is complete.<br>2. In the column Line, write the number of the line that runs.<br>3. In the last row, write the name of the error in the column Output."),
-            CH(C_stop),
-          ], answer: [
-            L([
-              "Line 3 does not stop: <code>'4' * 3</code> repeats the text: <code>'444'</code>. The value is wrong, but it is not an error for Python.",
-              "Line 5: index 2 exists in <code>'444'</code>. Line 6: <code>int('444')</code> is valid.",
-              "Line 7 stops with a <b>ValueError</b>: <code>'4.0'</code> is not the text of a whole number. Line 8 does not run.",
-            ]),
-          ] },
+          { kind: "exercise", title: "Two tanks", blocks: [CH(C_tanks)] },
+          { kind: "exercise", title: "Three numbers", blocks: [CH(C_values)] },
+          { kind: "exercise", title: "Order and types", blocks: [CH(C_order)] },
+          { kind: "exercise", title: "Two inputs", blocks: [T("Test input: 12 and 5."), CH(C_digits_text)] },
+          { kind: "exercise", title: "A device code", blocks: [CH(C_code)] },
+          { kind: "exercise", title: "A sensor message", blocks: [T("Test input: 12.5V2A"), CH(C_report)] },
+          { kind: "exercise", title: "Coins", blocks: [T("Write lines 3 and 4 of the program."), CH(C_coins)], answer: [CODE("amount = amount % 10\nfives = amount // 5", null, "lines 3 and 4")] },
+          { kind: "exercise", title: "Three digits", blocks: [T("Write lines 2, 3 and 4 of the program."), CH(C_digits)], answer: [CODE("a = n // 100\nb = n // 10 % 10\nc = n % 10", null, "lines 2, 3 and 4")] },
         ],
       },
       /* =============================== 10. PRACTICE =============================== */

@@ -418,7 +418,7 @@
     ] };
 
   /* ---------- trace challenges (generated: edit tools/traces/t10.py, then run "python tools/make-trace.py t10"; the steps come from tools/c-trace.js) ---------- */
-  // Level 1. int / int in lines 3, 5, 8, and 9; the position of a cast in lines 6, 7, and 9.
+  // int / int in lines 3, 5, 8, and 9; the position of a cast in lines 6, 7, and 9.
   const C_average = {
     lang: "c",
     code: ["int sum = 29;", "int n = 4;", "double avg = sum / n;", "int rem = sum % n;", "avg = avg + rem / n;", "avg = (double) sum / n;", "n = (int) avg * 2;", "rem = sum / n * n;", "avg = (double) (sum / n);", "printf(\"%d %.2f\\n\", rem, avg);"],
@@ -436,91 +436,62 @@
     ],
   };
 
-  // Level 1. Compound assignment (n *= n + 1), n++ and ++n inside an expression, %, and a char as a number.
-  const C_update = {
-    lang: "c",
-    code: ["int n = 9;", "n += 5;", "n /= 4;", "n *= n + 1;", "int k = n++;", "k -= n % 5;", "n %= k;", "k = ++n * 2;", "char c = 'A';", "c = c + n;", "printf(\"%d %d\\n\", n, k);", "printf(\"%c %d\\n\", c, c);"],
-    steps: [
-      { line: 0, set: { n: "9" } },
-      { line: 1, set: { n: "14" } },
-      { line: 2, set: { n: "3" } },
-      { line: 3, set: { n: "12" } },
-      { line: 4, set: { n: "13", k: "12" } },
-      { line: 5, set: { k: "9" } },
-      { line: 6, set: { n: "4" } },
-      { line: 7, set: { n: "5", k: "10" } },
-      { line: 8, set: { c: "'A'" } },
-      { line: 9, set: { c: "'F'" } },
-      { line: 10, print: "5 10" },
-      { line: 11, print: "F 70" },
-    ],
-  };
-
-  // Level 2. An else-if chain without else in a while loop: 40 < 40 and 70 < 70 are false; in the third repetition no block runs.
+  // An else-if chain without else in a while loop: 70 < 70 is false, so no block of the chain runs; the separate if still runs.
   const C_charge = {
     side: true,
     lang: "c",
-    code: ["int level = 5;", "int step = 0;", "while (level < 90) {", "    if (level < 40) {", "        step = 40;", "    } else if (level < 70) {", "        step = 30;", "    }", "    if (step > 30) {", "        step -= 5;", "    }", "    level += step;", "}", "printf(\"%d %d\\n\", level, step);"],
+    code: ["int level = 35;", "int step = 0;", "while (level < 90) {", "    if (level < 40) {", "        step = 40;", "    } else if (level < 70) {", "        step = 30;", "    }", "    if (step > 30) {", "        step -= 5;", "    }", "    level += step;", "}", "printf(\"%d %d\\n\", level, step);"],
     steps: [
-      { line: 0, set: { level: "5" } },
+      { line: 0, set: { level: "35" } },
       { line: 1, set: { step: "0" } },
       { line: 2, test: "true" },
       { line: 3, test: "true" },
       { line: 4, set: { step: "40" } },
       { line: 8, test: "true" },
       { line: 9, set: { step: "35" } },
-      { line: 11, set: { level: "40" } },
-      { line: 2, test: "true" },
-      { line: 3, test: "false" },
-      { line: 5, test: "true" },
-      { line: 6, set: { step: "30" } },
-      { line: 8, test: "false" },
       { line: 11, set: { level: "70" } },
       { line: 2, test: "true" },
       { line: 3, test: "false" },
       { line: 5, test: "false" },
-      { line: 8, test: "false" },
+      { line: 8, test: "true" },
+      { line: 9, set: { step: "30" } },
       { line: 11, set: { level: "100" } },
       { line: 2, test: "false" },
       { line: 13, print: "100 30" },
     ],
   };
 
-  // Level 2. do-while with a switch: cases without break continue into the next case; break leaves the switch, not the loop.
+  // do-while with a switch: cases without break continue into the next case; break leaves the switch, not the loop.
   const C_modes = {
     side: true,
     lang: "c",
-    code: ["int mode = 4;", "int sum = 0;", "do {", "    switch (mode) {", "        case 3: sum += 8;", "        case 2: sum += 4; break;", "        case 1: sum += 2;", "        default: sum += 1;", "    }", "    mode--;", "} while (mode > 0);", "printf(\"%d %d\\n\", mode, sum);"],
+    code: ["int mode = 3;", "int sum = 0;", "do {", "    switch (mode) {", "        case 3: sum += 8;", "        case 2: sum += 4; break;", "        case 1: sum += 2;", "        default: sum += 1;", "    }", "    mode--;", "} while (mode > 0);", "printf(\"%d %d\\n\", mode, sum);"],
     steps: [
-      { line: 0, set: { mode: "4" } },
+      { line: 0, set: { mode: "3" } },
       { line: 1, set: { sum: "0" } },
       { line: 3 },
-      { line: 7, set: { sum: "1" } },
-      { line: 9, set: { mode: "3" } },
-      { line: 10, test: "true" },
-      { line: 3 },
-      { line: 4, set: { sum: "9" } },
-      { line: 5, set: { sum: "13" } },
+      { line: 4, set: { sum: "8" } },
+      { line: 5, set: { sum: "12" } },
       { line: 9, set: { mode: "2" } },
       { line: 10, test: "true" },
       { line: 3 },
-      { line: 5, set: { sum: "17" } },
+      { line: 5, set: { sum: "16" } },
       { line: 9, set: { mode: "1" } },
       { line: 10, test: "true" },
       { line: 3 },
-      { line: 6, set: { sum: "19" } },
-      { line: 7, set: { sum: "20" } },
+      { line: 6, set: { sum: "18" } },
+      { line: 7, set: { sum: "19" } },
       { line: 9, set: { mode: "0" } },
       { line: 10, test: "false" },
-      { line: 11, print: "0 20" },
+      { line: 11, print: "0 19" },
     ],
   };
 
-  // Level 2. Nested for loops: continue jumps to r++, break ends only the inner loop, and the inner loop starts again at c = 1.
+  // Nested for loops: break ends only the inner loop; continue jumps to r++.
   const C_grid = {
     side: true,
     lang: "c",
-    code: ["int sum = 0;", "for (int r = 1; r <= 3; r++) {", "    if (r == 2) {", "        continue;", "    }", "    for (int c = 1; c <= 2; c++) {", "        if (c > r) {", "            break;", "        }", "        sum += r * c;", "    }", "}", "printf(\"%d\\n\", sum);"],
+    code: ["int sum = 0;", "for (int r = 1; r <= 2; r++) {", "    if (r == 2) {", "        continue;", "    }", "    for (int c = 1; c <= 2; c++) {", "        if (c > r) {", "            break;", "        }", "        sum += r * c;", "    }", "}", "printf(\"%d\\n\", sum);"],
     steps: [
       { line: 0, set: { sum: "0" } },
       { line: 1, test: "true", set: { r: "1" } },
@@ -534,82 +505,12 @@
       { line: 1, test: "true", set: { r: "2" } },
       { line: 2, test: "true" },
       { line: 3 },
-      { line: 1, test: "true", set: { r: "3" } },
-      { line: 2, test: "false" },
-      { line: 5, test: "true", set: { c: "1" } },
-      { line: 6, test: "false" },
-      { line: 9, set: { sum: "4" } },
-      { line: 5, test: "true", set: { c: "2" } },
-      { line: 6, test: "false" },
-      { line: 9, set: { sum: "10" } },
-      { line: 5, test: "false", set: { c: "3" } },
-      { line: 1, test: "false", unset: ["c"], set: { r: "4" } },
-      { line: 12, unset: ["r"], print: "10" },
+      { line: 1, test: "false", set: { r: "3" } },
+      { line: 12, unset: ["r"], print: "1" },
     ],
   };
 
-  // Level 3. An array with the indexes i and i + 1: the second repetition uses the new value of t[1], 60; i is 2 after the first loop.
-  const C_time = {
-    side: true,
-    lang: "c",
-    code: ["int t[3] = {75, 59, 1};", "int i = 0;", "while (i < 2) {", "    t[i + 1] += t[i] / 60;", "    t[i] = t[i] % 60;", "    i++;", "}", "while (i >= 0) {", "    printf(\"%d \", t[i]);", "    i--;", "}", "printf(\"\\n\");"],
-    steps: [
-      { line: 0, set: { "t[0]": "75", "t[1]": "59", "t[2]": "1" } },
-      { line: 1, set: { i: "0" } },
-      { line: 2, test: "true" },
-      { line: 3, set: { "t[1]": "60" } },
-      { line: 4, set: { "t[0]": "15" } },
-      { line: 5, set: { i: "1" } },
-      { line: 2, test: "true" },
-      { line: 3, set: { "t[2]": "2" } },
-      { line: 4, set: { "t[1]": "0" } },
-      { line: 5, set: { i: "2" } },
-      { line: 2, test: "false" },
-      { line: 7, test: "true" },
-      { line: 8, print: "2 ", end: "" },
-      { line: 9, set: { i: "1" } },
-      { line: 7, test: "true" },
-      { line: 8, print: "0 ", end: "" },
-      { line: 9, set: { i: "0" } },
-      { line: 7, test: "true" },
-      { line: 8, print: "15 ", end: "" },
-      { line: 9, set: { i: "-1" } },
-      { line: 7, test: "false" },
-      { line: 11, print: "" },
-    ],
-  };
-
-  // Level 3. A string loop to '\0': the loop continues after line 6 stores '\0' at index 2; %s stops at the first '\0'.
-  const C_cut = {
-    side: true,
-    lang: "c",
-    code: ["char s[] = \"T2-K\";", "int n = 0;", "int i = 0;", "while (s[i] != '\\0') {", "    if (s[i] == '-') {", "        s[i] = '\\0';", "    } else {", "        n++;", "    }", "    i++;", "}", "printf(\"%s %d %d\\n\", s, n, i);"],
-    steps: [
-      { line: 0, set: { s: "\"T2-K\"" } },
-      { line: 1, set: { n: "0" } },
-      { line: 2, set: { i: "0" } },
-      { line: 3, test: "true" },
-      { line: 4, test: "false" },
-      { line: 7, set: { n: "1" } },
-      { line: 9, set: { i: "1" } },
-      { line: 3, test: "true" },
-      { line: 4, test: "false" },
-      { line: 7, set: { n: "2" } },
-      { line: 9, set: { i: "2" } },
-      { line: 3, test: "true" },
-      { line: 4, test: "true" },
-      { line: 5, set: { s: "\"T2\"" } },
-      { line: 9, set: { i: "3" } },
-      { line: 3, test: "true" },
-      { line: 4, test: "false" },
-      { line: 7, set: { n: "3" } },
-      { line: 9, set: { i: "4" } },
-      { line: 3, test: "false" },
-      { line: 11, print: "T2 3 4" },
-    ],
-  };
-
-  // Level 3. Copies: a struct copy is independent, an argument is a copy (a.w stays 9), and line 10 does not store the result.
+  // Copies: a struct copy is independent, an argument is a copy (a.w stays 9), and line 10 does not store the result.
   const C_boxes = {
     side: true,
     lang: "c",
@@ -629,7 +530,7 @@
     ],
   };
 
-  // Level 4. A pointer parameter changes the caller's element; n is a copy; the name t is the address of t[0].
+  // A pointer parameter changes the caller's element; n is a copy; the name t is the address of t[0].
   const C_add = {
     side: true,
     lang: "c",
@@ -649,40 +550,54 @@
     ],
   };
 
-  // Level 4. A logical error: line 6 needs ~mask (the correct output is 1A 1). 0x80 << 1 is 0 in a uint8_t; 255 + 1 wraps around to 0.
+  // Missing lines 4 and 5: the element keeps the rest of the division by 60. The second repetition uses the new value of t[1], 60.
+  const C_time = {
+    side: true,
+    missing: [3, 4],
+    lang: "c",
+    code: ["int t[3] = {75, 59, 1};", "int i = 0;", "while (i < 2) {", "    t[i + 1] += t[i] / 60;", "    t[i] = t[i] % 60;", "    i++;", "}", "printf(\"%d %d\\n\", t[2], t[1]);", "printf(\"%d\\n\", t[0]);"],
+    steps: [
+      { line: 0, set: { "t[0]": "75", "t[1]": "59", "t[2]": "1" } },
+      { line: 1, set: { i: "0" } },
+      { line: 2, test: "true" },
+      { line: 3, set: { "t[1]": "60" } },
+      { line: 4, set: { "t[0]": "15" } },
+      { line: 5, set: { i: "1" } },
+      { line: 2, test: "true" },
+      { line: 3, set: { "t[2]": "2" } },
+      { line: 4, set: { "t[1]": "0" } },
+      { line: 5, set: { i: "2" } },
+      { line: 2, test: "false" },
+      { line: 7, print: "2 0" },
+      { line: 8, print: "15" },
+    ],
+  };
+
+  // Missing lines 6 and 8: AND with the inverted mask clears one bit. 0x80 << 1 is 0 in a uint8_t; 255 + 1 wraps around to 0.
   const C_bits = {
     side: true,
+    missing: [5, 7],
     lang: "c",
-    code: ["uint8_t reg = 0x5A;", "uint8_t mask = 0x20;", "uint8_t n = 254;", "while (mask != 0) {", "    if (reg & mask) {", "        reg &= mask;", "    }", "    mask = mask << 1;", "    n++;", "}", "printf(\"%02X %d\\n\", reg, n);"],
+    code: ["uint8_t reg = 0x5A;", "uint8_t mask = 0x40;", "uint8_t n = 254;", "while (mask != 0) {", "    if (reg & mask) {", "        reg &= ~mask;", "    }", "    mask = mask << 1;", "    n++;", "}", "printf(\"%02X %d\\n\", reg, n);"],
     steps: [
       { line: 0, set: { reg: "0x5A" } },
-      { line: 1, set: { mask: "0x20" } },
+      { line: 1, set: { mask: "0x40" } },
       { line: 2, set: { n: "254" } },
       { line: 3, test: "true" },
-      { line: 4, test: "false" },
-      { line: 7, set: { mask: "0x40" } },
-      { line: 8, set: { n: "255" } },
-      { line: 3, test: "true" },
       { line: 4, test: "true" },
-      { line: 5, set: { reg: "0x40" } },
+      { line: 5, set: { reg: "0x1A" } },
       { line: 7, set: { mask: "0x80" } },
-      { line: 8, set: { n: "0" } },
+      { line: 8, set: { n: "255" } },
       { line: 3, test: "true" },
       { line: 4, test: "false" },
       { line: 7, set: { mask: "0x00" } },
-      { line: 8, set: { n: "1" } },
+      { line: 8, set: { n: "0" } },
       { line: 3, test: "false" },
-      { line: 10, print: "40 1" },
+      { line: 10, print: "1A 0" },
     ],
   };
   /* ---------- end of the generated traces ---------- */
 
-  // the task text of a trace challenge (Lesson 15). In this file, TRACE is the codeTrace helper.
-  const TASK = "Complete the trace table on paper. The first row is complete.<br>1. Before the trace, write the output that you expect. Then complete the rows in order.";
-  // the extra task line of a program that is beside the table (side layout)
-  const SIDE = "<br>2. In the column Line, write the number of the line that runs. In the column Condition, write true or false.";
-  // the same line for a program that tests no condition
-  const LINE = "<br>2. In the column Line, write the number of the line that runs.";
   // side: the program is beside the table, and a blank row does not show which line runs
   // given: the number of rows that are complete (default 1)
   const CH = (trace, given) => W("traceTable", { trace, blank: true, given: given || 1, showCode: !!trace.side, hideLines: !!trace.side });
@@ -3258,7 +3173,7 @@ int main(void) {
               "#define names pins and bits; const lookup tables map numbers to bit patterns.",
               "static keeps a local value between calls; enum names states; a struct can describe a group of registers.",
             ]),
-            NEXT("<b>Trace challenges</b>. Ten programs to trace by hand. They use the rules of all lessons of this chapter."),
+            NEXT("<b>Trace challenges</b>. Eight programs to trace by hand. They use the rules of all lessons of this chapter."),
           ] },
           { kind: "exercise", title: "Determine the output: a static variable", blocks: [
             HIDE(RUN(`#include <stdio.h>
@@ -3309,132 +3224,17 @@ int main(void) {
       {
         id: "trace",
         title: "Trace challenges",
-        sub: "Ten programs to execute by hand, in four levels.",
+        sub: "Eight programs to trace on paper: the value of every variable and the output, line by line.",
         keywords: "trace table trace the code execute by hand line condition loop switch array string struct pointer bit challenge",
         deck: [
-          { kind: "overview", title: "Trace challenges", blocks: [
-            T("Each program has at least one line that is easy to trace wrongly."),
-            L([
-              "Write one row for each line that runs, with its number in the column <b>Line</b>. A line with only <code>}</code>, <code>} else {</code>, or <code>do {</code> gets no row.",
-              "Column <b>Condition</b>: write true or false on each <code>if</code>, <code>else if</code>, <code>while</code>, and <code>for</code> line. A value that is not 0 is true.",
-              "A counter that a <code>for</code> line declares does not exist after its loop: write <code>–</code>.",
-              "Write a double as <code>7.0</code> and a char as <code>'F'</code>. An array has a column for each element, and a struct for each member.",
-              "The row of a call line holds the parameters, such as <code>v (cut)</code>. They disappear on the last line of the function. Then the call line gets a second row when it stores or displays a value.",
-            ], "Rules of a trace", true),
-          ] },
-          { kind: "concept", title: "The four levels", blocks: [
-            T("Each level uses only the lessons that it names. A level can be done when its lessons are complete."),
-            TB(["Level", "Lessons", "Programs", "Subject"], [
-              ["1", "1 to 4", "1 and 2", "<code>/</code> and <code>%</code> with int, casts, <code>++</code>, compound assignment, char values"],
-              ["2", "5 and 6", "3 to 5", "<code>else if</code>, <code>switch</code> without <code>break</code>, the three loops, <code>break</code> and <code>continue</code>"],
-              ["3", "7 to 10", "6 to 8", "an array with an index, a string and <code>'\\0'</code>, copies of arguments and structs"],
-              ["4", "11 to 13", "9 and 10", "a pointer parameter, bit operations, wrap-around, and a logical error"],
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 1: an average", blocks: [
-            T(TASK),
-            CH(C_average),
-          ], answer: [
-            L([
-              "Line 3: <code>29 / 4</code> is int / int → <code>7</code>. The decimal part is lost before the value is stored: <code>7.0</code>. Line 5: <code>1 / 4</code> → <code>0</code>, so <code>avg</code> stays 7.0.",
-              "Line 6: the cast makes <code>sum</code> a double before the division: <code>29.0 / 4</code> → <code>7.25</code>. Line 9: the division in the parentheses comes first: <code>29 / 14</code> → <code>2</code>, then <code>2.0</code>.",
-              "Line 7: the cast comes before <code>*</code>: <code>(int) 7.25</code> → <code>7</code>, then <code>7 * 2</code> → <code>14</code>.",
-              "Line 8: left to right: <code>29 / 14</code> → <code>2</code>, then <code>2 * 14</code> → <code>28</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 1: n, k, and c", blocks: [
-            T(TASK),
-            CH(C_update),
-          ], answer: [
-            L([
-              "Line 3: <code>14 / 4</code> → <code>3</code>. Line 4: <code>n *= n + 1</code> is <code>n = n * (n + 1)</code>: <code>3 * 4</code> → <code>12</code>.",
-              "Line 5: <code>n++</code> gives the old value: <code>k</code> receives 12, then <code>n</code> becomes 13. Line 8: <code>++n</code> adds 1 first: <code>n</code> is 5, and <code>k</code> is <code>5 * 2</code>.",
-              "Line 6: <code>13 % 5</code> → <code>3</code>, so <code>k</code> is 9. Line 7: <code>13 % 9</code> → <code>4</code>.",
-              "Line 10: <code>'A'</code> is 65, and 65 + 5 is 70, the code of <code>'F'</code>. Line 12 displays the same value with <code>%c</code> and with <code>%d</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: a battery charger", blocks: [
-            T(TASK + SIDE),
-            CH(C_charge),
-          ], answer: [
-            L([
-              "First repetition: line 9 is a separate <code>if</code>. It is tested after the chain, with the new value of <code>step</code>: <code>40 &gt; 30</code> is true, so <code>step</code> becomes 35.",
-              "Second repetition: <code>40 &lt; 40</code> is false, so line 6 is tested: <code>40 &lt; 70</code> is true. Line 9: <code>30 &gt; 30</code> is false.",
-              "Third repetition: <code>70 &lt; 40</code> and <code>70 &lt; 70</code> are false. The chain has no <code>else</code>: no block runs, and <code>step</code> keeps the value 30.",
-              "The loop ends when line 3 tests <code>100 &lt; 90</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: four modes", blocks: [
-            T(TASK + SIDE + "<br>3. The line <code>switch (mode) {</code> also gets a row. It changes no variable."),
-            CH(C_modes),
-          ], answer: [
-            L([
-              "The block of <code>do</code> runs before the first test. Line 11 tests the condition after each repetition.",
-              "mode 4: no case matches, so <code>default</code> runs: 1. mode 3: line 5 has no <code>break</code>, so line 6 runs as well: 1 + 8 + 4 → 13.",
-              "The <code>break</code> of line 6 leaves the switch, not the loop: line 10 runs next. mode 2 starts at line 6: 17.",
-              "mode 1: line 7 has no <code>break</code>, so line 8 runs as well: 17 + 2 + 1 → 20. Then <code>mode</code> is 0, and the loop ends.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: rows and columns", blocks: [
-            T(TASK + SIDE),
-            CH(C_grid),
-          ], answer: [
-            L([
-              "r = 1: line 10 adds <code>1 * 1</code>. Then <code>c</code> is 2: <code>2 &gt; 1</code> is true, and <code>break</code> ends only the inner loop. Line 2 runs next.",
-              "r = 2: <code>continue</code> jumps to the update <code>r++</code> of line 2. Lines 6 to 11 do not run.",
-              "r = 3: the inner loop starts again with <code>c = 1</code>. Line 10 adds 3, then 6: <code>sum</code> is 10. The inner loop ends without <code>break</code>, when <code>3 &lt;= 2</code> is false.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: seconds, minutes, hours", blocks: [
-            T(TASK + SIDE + "<br>3. The array <code>t</code> holds a time: seconds in <code>t[0]</code>, minutes in <code>t[1]</code>, hours in <code>t[2]</code>. Write in one sentence what lines 3 to 7 do with the time."),
-            CH(C_time),
-          ], answer: [
-            L([
-              "Lines 3 to 7 carry: each element keeps the rest of the division by 60, and the whole part moves to the next element. 1 h 59 min 75 s becomes 2 h 0 min 15 s.",
-              "Second repetition, line 4: <code>t[1]</code> is already 60, not 59. <code>60 / 60</code> → <code>1</code> is added to <code>t[2]</code>. Line 5: <code>60 % 60</code> → <code>0</code>.",
-              "The first loop ends when <code>i</code> is 2: line 4 uses the index <code>i + 1</code>, and index 3 does not exist.",
-              "The second loop starts with <code>i</code> = 2, the last index, and ends when <code>i</code> is −1. Line 9 has no <code>\\n</code>: the three values are on one output line.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: a sensor code", blocks: [
-            T(TASK + SIDE),
-            CH(C_cut),
-          ], answer: [
-            L([
-              "Line 6 stores <code>'\\0'</code> in <code>s[2]</code>. The loop does not end there: line 10 moves to index 3, and <code>s[3]</code> is still <code>'K'</code>.",
-              "The loop ends at <code>s[4]</code>, the <code>'\\0'</code> of the original text. <code>i</code> is then 4, and <code>n</code> is 3: T, 2, and K.",
-              "Line 12: <code>%s</code> displays the characters up to the first <code>'\\0'</code>: <code>T2</code>. The array still holds <code>'K'</code> at index 3.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: two boxes", blocks: [
-            T(TASK + LINE),
-            CH(C_boxes),
-          ], answer: [
-            L([
-              "Line 8: <code>b</code> receives a copy of every member of <code>a</code>. After line 8, a change of <code>b</code> does not change <code>a</code>.",
-              "Line 9: <code>v</code> receives a copy of <code>a.w</code>. Line 3 changes only <code>v</code>: <code>a.w</code> stays 9, and <code>b.w</code> receives the result 7.",
-              "Line 10: the function returns 2, but line 10 does not store the result: <code>b.h</code> stays 4.",
-              "Line 11: <code>9 - 7 + 4</code> → <code>6</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: the function add", blocks: [
-            T(TASK + LINE + "<br>3. In the column <code>p (add)</code>, write the address that <code>p</code> holds, for example <code>&amp;t[1]</code>."),
-            CH(C_add),
-          ], answer: [
-            L([
-              "Line 7: <code>p</code> receives the address of <code>t[1]</code>, and <code>n</code> a copy of <code>t[0]</code>. Line 2 changes <code>t[1]</code> through <code>p</code>: 4 + 3 → 7. Line 3 changes only the copy: <code>t[0]</code> stays 3.",
-              "Line 8: the name <code>t</code> is the address of <code>t[0]</code>, so <code>t[0]</code> becomes 3 + 7 → 10.",
-              "Line 9: <code>n</code> receives the value 7 before the function runs, and <code>*p</code> is <code>t[1]</code>: 7 + 7 → 14. Line 3 does not set <code>t[1]</code> to 0: <code>n</code> is a separate variable.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: the first wrong value", blocks: [
-            T("The program must clear the bits 5, 6, and 7 of <code>reg</code>, and keep the other bits. <code>n</code> is an 8-bit counter: it adds 1 in each repetition. The correct output is <code>1A 1</code>.<br>1. Complete the trace table on paper. The first row is complete. Write <code>reg</code> and <code>mask</code> in hexadecimal.<br>2. In the column Line, write the number of the line that runs. In the column Condition, write true or false.<br>3. Write the number of the line with the first wrong value, and the corrected line."),
-            CH(C_bits),
-          ], answer: [
-            T("Line 6 has the first wrong value, in the second repetition: <code>0x5A &amp; 0x40</code> → <code>0x40</code>. AND with the mask keeps only bit 6 and clears all other bits. AND with the inverted mask clears only bit 6: <code>0x1A</code>."),
-            CODE("reg &= ~mask;", null, "line 6, corrected"),
-            T("Line 8, third repetition: <code>0x80 &lt;&lt; 1</code> is 0x100, and a uint8_t keeps only the low 8 bits: <code>0x00</code>, so the loop ends. Line 9, second repetition: 255 + 1 wraps around to 0."),
-          ] },
+          { kind: "exercise", title: "An average", blocks: [CH(C_average)] },
+          { kind: "exercise", title: "A battery charger", blocks: [CH(C_charge)] },
+          { kind: "exercise", title: "Three modes", blocks: [CH(C_modes)] },
+          { kind: "exercise", title: "Rows and columns", blocks: [CH(C_grid)] },
+          { kind: "exercise", title: "Two boxes", blocks: [CH(C_boxes)] },
+          { kind: "exercise", title: "The function add", blocks: [CH(C_add, 2)] },
+          { kind: "exercise", title: "Seconds, minutes, hours", blocks: [T("Write lines 4 and 5 of the program."), CH(C_time)], answer: [CODE("t[i + 1] += t[i] / 60;\nt[i] = t[i] % 60;", null, "lines 4 and 5", "c")] },
+          { kind: "exercise", title: "Eight bits", blocks: [T("Write lines 6 and 8 of the program."), CH(C_bits)], answer: [CODE("    reg &= ~mask;\nmask = mask << 1;", null, "lines 6 and 8", "c")] },
         ],
       },
 

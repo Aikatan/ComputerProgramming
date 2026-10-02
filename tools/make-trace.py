@@ -30,6 +30,10 @@ The programs of a chapter are in tools/traces/tNN.py, in the list TRACES. Each e
             traceTable). Use it for every program with a branch, a loop, or a
             function. Without it, each row of the table shows its line of code.
     about   one line for the comment above the constant                        (optional)
+    missing a line number, or a list of two or three: the "missing lines"       (optional)
+            exercise. The table is complete, and these lines of the program are
+            empty boxes for the students to write
+    show_files False: the files are not shown on the slide                     (optional)
 
 The tool runs the program line by line (sys.settrace) and writes one step for each line that
 runs, in the format of js/widgets.js (codeTrace, traceTable):
@@ -348,6 +352,11 @@ def step_js(step):
     return "{ " + ", ".join(parts) + " }"
 
 
+def missing_lines(entry):
+    m = entry.get("missing")
+    return [] if not m else ([m] if isinstance(m, int) else list(m))
+
+
 def trace_js(entry, result, indent="  "):
     rows = []
     if entry.get("about"):
@@ -361,6 +370,14 @@ def trace_js(entry, result, indent="  "):
         return "\n".join(rows)
     if entry.get("side"):
         rows.append(indent + "  side: true,")
+    if entry.get("missing"):
+        lines = missing_lines(entry)
+        if not all(1 <= n <= len(result["code"]) for n in lines):
+            sys.exit(entry["name"] + ": missing must be line numbers of the program")
+        rows.append(indent + "  missing: [" + ", ".join(str(n - 1) for n in lines) + "],")
+    if entry.get("files") and entry.get("show_files", True):
+        shown = ", ".join("{ name: " + js(k) + ", text: " + js(v.rstrip("\n")) + " }" for k, v in entry["files"].items())
+        rows.append(indent + "  files: [" + shown + "],")
     if entry.get("lang"):
         rows.append(indent + "  lang: " + js(entry["lang"]) + ",")
     rows.append(indent + "  code: [" + ", ".join(js(ln) for ln in result["code"]) + "],")
@@ -413,7 +430,7 @@ def fit(entry, result):
     lines = [ln for s in steps if "print" in s for ln in s["print"].splitlines()]
     filled = sum(max(CHAR * len(k) + 21, CHAR * n + 41) for k, n in values.items()) + max([60] + [CHAR * len(ln) + 21 for ln in lines])
     test = 137 if any("test" in s for s in steps) else 0
-    table = test + max(blank, filled)
+    table = test + (filled if entry.get("missing") else max(blank, filled))   # a missing-line table has no empty boxes
     if entry.get("side"):
         panel = CHAR * max(len(ln) for ln in code) + 98
         width = panel + 20 + 64 + table
@@ -427,6 +444,11 @@ def fit(entry, result):
         width = 77 + CHAR * (longest + 1) + 21 + table
         note = "inline: code column " + str(round(CHAR * (longest + 1) + 21)) + " px + other columns " + str(round(77 + table)) + " px"
     verdict = "fits" if width <= SLIDE else "TOO WIDE by " + str(round(width - SLIDE)) + " px (code lines or values will wrap)"
+    if len(steps) > 20:
+        verdict += "; TOO LONG: " + str(len(steps)) + " rows (20 at most, about 12 is best)"
+    for n in missing_lines(entry):
+        ran = sum(1 for st in steps if st["line"] == n - 1)
+        verdict += "; missing line " + str(n) + " (" + str(ran) + " rows): " + code[n - 1].strip()
     return "width at 1280x720: about " + str(round(width)) + " of " + str(SLIDE) + " px, " + verdict + " (" + note + ")"
 
 

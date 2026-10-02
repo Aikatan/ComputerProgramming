@@ -336,7 +336,7 @@
   };
 
   /* ---------- trace challenges (generated: edit tools/traces/t03.py, then run "python tools/make-trace.py t03") ---------- */
-  // Level 1. A bool is a stored value: ok stays True after volt changes. < at a limit; 13.0 == 13.
+  // A bool is a stored value: ok stays True after volt changes. < at a limit; 13.0 == 13.
   const C_battery = {
     code: ["volt = 11.5", "low = volt < 11.5", "ok = 11.5 <= volt < 13", "volt = volt + 1.5", "high = volt >= 13", "same = volt == 13", "low = low or not ok", "print(ok and high, same)"],
     steps: [
@@ -351,7 +351,7 @@
     ],
   };
 
-  // Level 1. not, then and, then or; parentheses; or stops at the first True, so line 6 does not divide.
+  // not, then and, then or; parentheses; or stops at the first True, so line 6 does not divide.
   const C_logic = {
     code: ["x = 6", "y = 0", "p = x > 5 or y > 5 and x < 3", "q = (x > 5 or y > 5) and x < 3", "p = not q or p and y > 0", "q = y == 0 or x / y > 2", "p = not (p and q) or bool(y)", "print(p, q)"],
     steps: [
@@ -366,7 +366,7 @@
     ],
   };
 
-  // Level 2. The same condition in lines 3 and 10: an elif chain runs one block; a separate if is checked again.
+  // The same condition in lines 3 and 10: an elif chain runs one block; a separate if is checked again.
   const C_tank = {
     side: true,
     code: ["level = 45", "drain = False", "if level >= 80 or drain:", "    level = level - 30", "elif level >= 40 and not drain:", "    level = level + 40", "    drain = True", "elif level >= 20:", "    level = 0", "if level >= 80 or drain:", "    level = level - 30", "if not drain or level > 50:", "    drain = False", "print(level, drain)"],
@@ -385,7 +385,7 @@
     ],
   };
 
-  // Level 2. Line 4 is True for every mode (2 is truthy); 0 is falsy; the else belongs to the if of line 4.
+  // Line 4 is True for every mode (2 is truthy); 0 is falsy; the else belongs to the if of line 4.
   const C_mode = {
     side: true,
     code: ["code = 0", "mode = 3", "state = \"X\"", "if mode == 1 or 2:", "    if code and mode > 2:", "        state = \"R\"", "    elif not code:", "        code = mode % 2", "    if code:", "        state = state + \"!\"", "else:", "    state = \"S\"", "print(state, code)"],
@@ -403,9 +403,71 @@
     ],
   };
 
-  // Level 3. range(14, 2, -4) gives 14, 10, 6: the stop value 2 is excluded. After the loop, k is 6.
+  // A while condition with or: the loop continues while one side is True. 60 > 60 and 40 > 40 are False.
+  const C_fan = {
+    side: true,
+    code: ["temp = 80", "fan = 2", "while temp > 60 or fan < 3:", "    temp = temp - 10 * fan", "    if not temp > 40:", "        fan = fan + 1", "print(temp, fan)"],
+    steps: [
+      { line: 0, set: { temp: "80" } },
+      { line: 1, set: { fan: "2" } },
+      { line: 2, test: "True" },
+      { line: 3, set: { temp: "60" } },
+      { line: 4, test: "False" },
+      { line: 2, test: "True" },
+      { line: 3, set: { temp: "40" } },
+      { line: 4, test: "True" },
+      { line: 5, set: { fan: "3" } },
+      { line: 2, test: "False" },
+      { line: 6, print: "40 3" },
+    ],
+  };
+
+  // continue, pass, and break in one loop. The else of line 7 belongs to the if; break skips the else of the loop (line 10).
+  const C_control = {
+    side: true,
+    code: ["total = 0", "for n in range(2, 6):", "    if n % 2 == 0 and total < 3:", "        continue", "    elif n == 3 or total > 5:", "        pass", "    else:", "        break", "    total = total + n", "else:", "    total = -1", "print(n, total)"],
+    steps: [
+      { line: 0, set: { total: "0" } },
+      { line: 1, set: { n: "2" } },
+      { line: 2, test: "True" },
+      { line: 3 },
+      { line: 1, set: { n: "3" } },
+      { line: 2, test: "False" },
+      { line: 4, test: "True" },
+      { line: 5 },
+      { line: 8, set: { total: "3" } },
+      { line: 1, set: { n: "4" } },
+      { line: 2, test: "False" },
+      { line: 4, test: "False" },
+      { line: 7 },
+      { line: 11, print: "4 3" },
+    ],
+  };
+
+  // range(1, 4, 2) gives 1 and 3. break ends only the inner loop and skips its else; range(4, 4) is empty, and the else runs.
+  const C_rows = {
+    side: true,
+    code: ["for i in range(1, 4, 2):", "    for j in range(i + 1, 4):", "        if i * j % 2 == 1 and j > 2:", "            break", "        print(i, j)", "    else:", "        print(\"row\", i, \"ends\")", "print(i, j)"],
+    steps: [
+      { line: 0, set: { i: "1" } },
+      { line: 1, set: { j: "2" } },
+      { line: 2, test: "False" },
+      { line: 4, print: "1 2" },
+      { line: 1, set: { j: "3" } },
+      { line: 2, test: "True" },
+      { line: 3 },
+      { line: 0, set: { i: "3" } },
+      { line: 1 },
+      { line: 6, print: "row 3 ends" },
+      { line: 0 },
+      { line: 7, print: "3 3" },
+    ],
+  };
+
+  // Missing lines 4 and 6: total grows by k (10, then 6). range(14, 2, -4) gives 14, 10, 6; after the loop, k is 6.
   const C_range = {
     side: true,
+    missing: [3, 5],
     code: ["total = 0", "for k in range(14, 2, -4):", "    if k % 3 == 0 or 8 < k <= 12:", "        total = total + k", "    else:", "        total = total - 1", "print(k, total)"],
     steps: [
       { line: 0, set: { total: "0" } },
@@ -422,147 +484,8 @@
       { line: 6, print: "6 15" },
     ],
   };
-
-  // Level 3. A while condition with or: the loop continues while one side is True. 60 > 60 is False.
-  const C_fan = {
-    side: true,
-    code: ["temp = 70", "fan = 1", "while temp > 60 or fan < 3:", "    temp = temp - 10 * fan", "    if not temp > 50:", "        fan = fan + 1", "print(temp, fan)"],
-    steps: [
-      { line: 0, set: { temp: "70" } },
-      { line: 1, set: { fan: "1" } },
-      { line: 2, test: "True" },
-      { line: 3, set: { temp: "60" } },
-      { line: 4, test: "False" },
-      { line: 2, test: "True" },
-      { line: 3, set: { temp: "50" } },
-      { line: 4, test: "True" },
-      { line: 5, set: { fan: "2" } },
-      { line: 2, test: "True" },
-      { line: 3, set: { temp: "30" } },
-      { line: 4, test: "True" },
-      { line: 5, set: { fan: "3" } },
-      { line: 2, test: "False" },
-      { line: 6, print: "30 3" },
-    ],
-  };
-
-  // Level 3. A heater with two limits: four iterations, four different paths. 70 < 70 is False.
-  const C_heater = {
-    side: true,
-    code: ["temp = 78", "on = True", "for t in range(4):", "    if on and temp >= 80:", "        on = False", "    elif not on and temp < 70:", "        on = True", "    if on:", "        temp = temp + 4", "    else:", "        temp = temp - 12", "print(temp, on)"],
-    steps: [
-      { line: 0, set: { temp: "78" } },
-      { line: 1, set: { on: "True" } },
-      { line: 2, set: { t: "0" } },
-      { line: 3, test: "False" },
-      { line: 5, test: "False" },
-      { line: 7, test: "True" },
-      { line: 8, set: { temp: "82" } },
-      { line: 2, set: { t: "1" } },
-      { line: 3, test: "True" },
-      { line: 4, set: { on: "False" } },
-      { line: 7, test: "False" },
-      { line: 10, set: { temp: "70" } },
-      { line: 2, set: { t: "2" } },
-      { line: 3, test: "False" },
-      { line: 5, test: "False" },
-      { line: 7, test: "False" },
-      { line: 10, set: { temp: "58" } },
-      { line: 2, set: { t: "3" } },
-      { line: 3, test: "False" },
-      { line: 5, test: "True" },
-      { line: 6, set: { on: "True" } },
-      { line: 7, test: "True" },
-      { line: 8, set: { temp: "62" } },
-      { line: 2 },
-      { line: 11, print: "62 True" },
-    ],
-  };
-
-  // Level 4. pass, continue, and break in one loop; break skips the else of the loop.
-  const C_control = {
-    side: true,
-    code: ["total = 0", "for n in range(1, 5):", "    if n == 1:", "        pass", "    elif n % 2 == 0 and total < 4:", "        continue", "    if total > 3 or n == 5:", "        break", "    total = total + n", "else:", "    total = -1", "print(n, total)"],
-    steps: [
-      { line: 0, set: { total: "0" } },
-      { line: 1, set: { n: "1" } },
-      { line: 2, test: "True" },
-      { line: 3 },
-      { line: 6, test: "False" },
-      { line: 8, set: { total: "1" } },
-      { line: 1, set: { n: "2" } },
-      { line: 2, test: "False" },
-      { line: 4, test: "True" },
-      { line: 5 },
-      { line: 1, set: { n: "3" } },
-      { line: 2, test: "False" },
-      { line: 4, test: "False" },
-      { line: 6, test: "False" },
-      { line: 8, set: { total: "4" } },
-      { line: 1, set: { n: "4" } },
-      { line: 2, test: "False" },
-      { line: 4, test: "False" },
-      { line: 6, test: "True" },
-      { line: 7 },
-      { line: 11, print: "4 4" },
-    ],
-  };
-
-  // Level 4. break ends only the inner loop and skips its else; the else runs after a normal end, also for an empty range.
-  const C_rows = {
-    side: true,
-    code: ["for i in range(1, 4):", "    for j in range(i + 1, 4):", "        if i * j % 2 == 1 and j > 2:", "            break", "        print(i, j)", "    else:", "        print(\"row\", i, \"ends\")", "print(i, j)"],
-    steps: [
-      { line: 0, set: { i: "1" } },
-      { line: 1, set: { j: "2" } },
-      { line: 2, test: "False" },
-      { line: 4, print: "1 2" },
-      { line: 1, set: { j: "3" } },
-      { line: 2, test: "True" },
-      { line: 3 },
-      { line: 0, set: { i: "2" } },
-      { line: 1, set: { j: "3" } },
-      { line: 2, test: "False" },
-      { line: 4, print: "2 3" },
-      { line: 1 },
-      { line: 6, print: "row 2 ends" },
-      { line: 0, set: { i: "3" } },
-      { line: 1 },
-      { line: 6, print: "row 3 ends" },
-      { line: 0 },
-      { line: 7, print: "3 3" },
-    ],
-  };
-
-  // Level 4. Line 5 does not stop for d = 0 (and stops at the first False); line 9 stops with a ZeroDivisionError.
-  const C_divide = {
-    side: true,
-    code: ["n = 9", "d = 3", "while True:", "    d = d - 1", "    if d != 0 and n % d != 0:", "        continue", "    if d < 0:", "        break", "    print(d, n // d)", "print(\"End\")"],
-    steps: [
-      { line: 0, set: { n: "9" } },
-      { line: 1, set: { d: "3" } },
-      { line: 2, test: "True" },
-      { line: 3, set: { d: "2" } },
-      { line: 4, test: "True" },
-      { line: 5 },
-      { line: 2, test: "True" },
-      { line: 3, set: { d: "1" } },
-      { line: 4, test: "False" },
-      { line: 6, test: "False" },
-      { line: 8, print: "1 9" },
-      { line: 2, test: "True" },
-      { line: 3, set: { d: "0" } },
-      { line: 4, test: "False" },
-      { line: 6, test: "False" },
-      { line: 8, print: "ZeroDivisionError" },
-    ],
-  };
   /* ---------- end of the generated traces ---------- */
 
-  // the task text of a trace challenge (Lesson 8)
-  const TRACE = "Complete the trace table on paper. The first row is complete.<br>1. Before the trace, write the output that you expect. Then complete the rows in order.";
-  // the extra task line of a program that is beside the table (side layout)
-  const SIDE = "<br>2. In the column Line, write the number of the line that runs. In the column Condition, write True or False.";
   // side: the program is beside the table, and a blank row does not show which line runs
   // given: the number of rows that are complete (default 1)
   const CH = (trace, given) => W("traceTable", { trace, blank: true, given: given || 1, showCode: !!trace.side, hideLines: !!trace.side });
@@ -1389,7 +1312,7 @@
               "The else block of a loop runs only when the loop ends without break.",
               "A flag variable records what a loop found. An if after the loop uses it.",
             ]),
-            NEXT("<b>Trace challenges</b>. Ten programs to trace by hand. They use the rules of all lessons of this chapter."),
+            NEXT("<b>Trace challenges</b>. Eight programs to trace by hand. They use the rules of all lessons of this chapter."),
           ] },
           { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
             [T("Find the output of the program on paper.<br>1. Write the output.<br>2. Count the values in the output.")],
@@ -1428,135 +1351,17 @@
       {
         id: "trace",
         title: "Trace challenges",
-        sub: "Ten programs to execute by hand, in four levels.",
+        sub: "Eight programs to trace on paper: the value of every variable and the output, line by line.",
         keywords: "trace table trace the code execute by hand line condition branch loop iteration challenge",
         deck: [
-          { kind: "overview", title: "Trace challenges", blocks: [
-            T("Each program in this lesson has at least one line that is easy to trace wrongly."),
-            L([
-              "Write one row for each line that runs. A line that is skipped gets no row.",
-              "Column <b>Line</b>, when the program is beside the table: write the number of the line that runs. A condition or a loop decides which line is next.",
-              "Column <b>Condition</b>: on an <code>if</code>, <code>elif</code>, or <code>while</code> line, write True or False. A truthy value counts as True.",
-              "A <code>for</code> line gets a row each time it runs. It runs one last time when no value is left: that row changes nothing.",
-              "Write the values as in Topic 02: every variable after the line, text in quotes, and the output exactly as the screen displays it.",
-            ], "Rules of a trace", true),
-          ] },
-          { kind: "concept", title: "The four levels", blocks: [
-            T("Each level uses only the lessons that it names. A level can be done when its lessons are complete."),
-            TB(["Level", "Lessons", "Programs", "Subject"], [
-              ["1", "1 and 2", "1 and 2", "comparisons, <code>not</code> / <code>and</code> / <code>or</code>, short-circuit"],
-              ["2", "3", "3 and 4", "<code>if</code> / <code>elif</code> / <code>else</code>, nested if, a value as a condition"],
-              ["3", "4 and 5", "5 to 7", "<code>range()</code> with a step, <code>while</code> with <code>or</code>, decisions in a loop"],
-              ["4", "6 and 7", "8 to 10", "loop control, nested loops, and a program that stops"],
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 1: a battery check", blocks: [
-            T(TRACE),
-            CH(C_battery),
-          ], answer: [
-            L([
-              "Line 2: <code>11.5 &lt; 11.5</code> is False. Line 3: both comparisons of the chain are True.",
-              "Line 4 changes <code>volt</code>, but <code>ok</code> keeps the value True: line 3 is not evaluated again. So <code>ok and high</code> is True in line 8.",
-              "Line 6: <code>13.0 == 13</code> is True. Line 7: <code>not</code> first: <code>False or False</code> → False.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 1: p and q", blocks: [
-            T(TRACE),
-            CH(C_logic),
-          ], answer: [
-            L([
-              "Line 3: <code>and</code> first: <code>True or (False and False)</code> → True. Line 4: the parentheses first: <code>True and False</code> → False.",
-              "Line 5: <code>not</code>, then <code>and</code>, then <code>or</code>: <code>True or (True and False)</code> → True.",
-              "Line 6: <code>y == 0</code> is True, so <code>or</code> stops. <code>x / y</code> is not evaluated: no ZeroDivisionError.",
-              "Line 7: <code>not (True and True)</code> → False, and <code>bool(0)</code> → False: <code>False or False</code> → False.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: a tank", blocks: [
-            T(TRACE + SIDE),
-            CH(C_tank),
-          ], answer: [
-            L([
-              "Line 5: <code>True and not False</code> → True, so lines 6 and 7 run. Line 8 is not checked, although <code>85 &gt;= 20</code> is True: one block of the chain has already run.",
-              "Line 10 has the same condition as line 3. Line 10 is a separate <code>if</code>: it is checked with the new values, and it is True.",
-              "Line 12: <code>not</code> first: <code>not True</code> → False. Then <code>False or 55 &gt; 50</code> → True.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: mode and code", blocks: [
-            T(TRACE + SIDE),
-            CH(C_mode),
-          ], answer: [
-            L([
-              "Line 4: <code>mode == 1</code> is False, but <code>2</code> alone is truthy: the condition counts as True for every value of <code>mode</code>. The correct condition is <code>mode == 1 or mode == 2</code>.",
-              "Line 5: <code>code</code> is 0, a falsy value, so <code>and</code> stops: the condition counts as False. Line 7: <code>not 0</code> → True.",
-              "Line 9 is a separate <code>if</code>: it is checked. <code>code</code> is now 1, a truthy value.",
-              "The <code>else</code> of line 11 belongs to the <code>if</code> of line 4, so line 12 does not run.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: counting down", blocks: [
-            T(TRACE + SIDE),
-            CH(C_range),
-          ], answer: [
-            L([
-              "<code>range(14, 2, -4)</code> gives 14, 10, and 6. The next value is 2, the stop value: it is excluded.",
-              "k = 14: <code>14 % 3 == 0</code> is False, and <code>8 &lt; 14 &lt;= 12</code> is False: the else block runs. k = 6: <code>6 % 3 == 0</code> is True, so <code>or</code> stops.",
-              "The fourth row of line 2 changes nothing: no value is left. In line 7, <code>k</code> keeps its last value, 6.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: a fan", blocks: [
-            T(TRACE + SIDE),
-            CH(C_fan),
-          ], answer: [
-            L([
-              "Second check of line 3: <code>60 &gt; 60</code> is False, but <code>fan &lt; 3</code> is True. With <code>or</code>, the loop continues while at least one side is True.",
-              "Line 5: the comparison first, then <code>not</code>: <code>not 50 &gt; 50</code> → <code>not False</code> → True.",
-              "Line 4 uses the current value of <code>fan</code>: the third iteration subtracts 20.",
-              "The loop ends when both sides are False: <code>30 &gt; 60</code> and <code>3 &lt; 3</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: a heater", blocks: [
-            T(TRACE + SIDE),
-            CH(C_heater),
-          ], answer: [
-            L([
-              "t = 0: line 4 is <code>True and False</code>. Line 6: <code>not on</code> is False, so <code>and</code> stops. The heater stays on.",
-              "t = 1: line 4 is True, so line 6 is not checked. Line 8 is a separate <code>if</code>: it uses the new value of <code>on</code>, False.",
-              "t = 2: <code>70 &lt; 70</code> is False: the heater stays off. t = 3: <code>58 &lt; 70</code> is True: line 7 runs.",
-              "Line 3 runs a fifth time: no value is left, and the loop ends.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: loop control", blocks: [
-            T(TRACE + SIDE),
-            CH(C_control),
-          ], answer: [
-            L([
-              "n = 1: <code>pass</code> does nothing: lines 7 and 9 still run.",
-              "n = 2: <code>continue</code> skips lines 7 to 9. The next row is line 2.",
-              "n = 4: <code>4 % 2 == 0</code> is True, but <code>4 &lt; 4</code> is False: no <code>continue</code>. Line 7: <code>4 &gt; 3</code> is True: <code>break</code>.",
-              "The loop ends with <code>break</code>, so its else block (line 11) is skipped.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: two loops", blocks: [
-            T(TRACE + SIDE),
-            CH(C_rows),
-          ], answer: [
-            L([
-              "i = 1, j = 3: <code>3 % 2 == 1</code> and <code>3 &gt; 2</code> are True. <code>break</code> ends only the inner loop and skips its else block. The next row is line 1.",
-              "i = 2: the inner loop ends without <code>break</code>, so its else block (line 7) runs.",
-              "i = 3: <code>range(4, 4)</code> is empty. Line 2 runs once and changes nothing. No <code>break</code>: the else block runs.",
-              "Line 8: <code>j</code> keeps its last value, 3.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: the program stops", blocks: [
-            T("The program stops with an error message before its last line.<br>1. Complete the trace table on paper. The first row is complete.<br>2. In the column Line, write the number of the line that runs. In the column Condition, write True or False.<br>3. In the last row, write the name of the error in the column Output."),
-            CH(C_divide),
-          ], answer: [
-            L([
-              "d = 2: <code>9 % 2</code> is 1, so the condition of line 5 is True: <code>continue</code> returns to line 3.",
-              "d = 0: line 5 does not stop. <code>d != 0</code> is False, so <code>and</code> stops: <code>n % d</code> is not evaluated.",
-              "Line 7: <code>0 &lt; 0</code> is False: no <code>break</code>.",
-              "Line 9 stops with a <b>ZeroDivisionError</b>: <code>9 // 0</code>. Lines 8 and 10 never run.",
-            ]),
-          ] },
+          { kind: "exercise", title: "A battery check", blocks: [CH(C_battery)] },
+          { kind: "exercise", title: "Order of operators", blocks: [CH(C_logic)] },
+          { kind: "exercise", title: "A tank", blocks: [CH(C_tank)] },
+          { kind: "exercise", title: "Mode and code", blocks: [CH(C_mode)] },
+          { kind: "exercise", title: "A fan", blocks: [CH(C_fan)] },
+          { kind: "exercise", title: "Loop control", blocks: [CH(C_control)] },
+          { kind: "exercise", title: "Two loops", blocks: [CH(C_rows)] },
+          { kind: "exercise", title: "Counting down", blocks: [T("Write lines 4 and 6 of the program."), CH(C_range)], answer: [CODE("total = total + k\ntotal = total - 1", null, "lines 4 and 6")] },
         ],
       },
 

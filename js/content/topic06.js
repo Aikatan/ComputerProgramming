@@ -141,7 +141,7 @@
   };
 
   /* ---------- trace challenges (generated: edit tools/traces/t06.py, then run "python tools/make-trace.py t06") ---------- */
-  // Level 1. strip() without assignment, find() on the old text, find() gives -1, index -1.
+  // strip() without assignment, find() on the old text, find() gives -1, index -1.
   const C_message = {
     code: ["msg = \" Temp:25C \"", "msg.strip()", "pos = msg.find(\":\")", "msg = msg.strip().lower()", "num = msg[pos:-1]", "low = msg.find(\"T\")", "unit = msg[low]", "print(msg[:pos], num[::-1])", "print(unit, num.isdigit())"],
     steps: [
@@ -157,10 +157,10 @@
     ],
   };
 
-  // Level 1. A loop over the characters: '.' is not a digit; ch + unit and unit + ch; a chain of methods.
+  // A loop over the characters: '.' is not a digit; ch + unit puts the character in front; a chain of methods.
   const C_unit = {
     side: true,
-    code: ["num = \"\"", "unit = \"\"", "for ch in \"3.5kW\":", "    if ch.isdigit():", "        num = num + ch", "    elif ch in \"kMG\":", "        unit = ch + unit", "    else:", "        unit = unit + ch", "print(num, unit[::-1])", "print(unit.lower().find(\"W\"))"],
+    code: ["num = \"\"", "unit = \"\"", "for ch in \"3.5k\":", "    if ch.isdigit():", "        num = num + ch", "    else:", "        unit = ch + unit", "print(num, unit.upper().find(\"k\"))"],
     steps: [
       { line: 0, set: { num: "''" } },
       { line: 1, set: { unit: "''" } },
@@ -169,26 +169,19 @@
       { line: 4, set: { num: "'3'" } },
       { line: 2, set: { ch: "'.'" } },
       { line: 3, test: "False" },
-      { line: 5, test: "False" },
-      { line: 8, set: { unit: "'.'" } },
+      { line: 6, set: { unit: "'.'" } },
       { line: 2, set: { ch: "'5'" } },
       { line: 3, test: "True" },
       { line: 4, set: { num: "'35'" } },
       { line: 2, set: { ch: "'k'" } },
       { line: 3, test: "False" },
-      { line: 5, test: "True" },
       { line: 6, set: { unit: "'k.'" } },
-      { line: 2, set: { ch: "'W'" } },
-      { line: 3, test: "False" },
-      { line: 5, test: "False" },
-      { line: 8, set: { unit: "'k.W'" } },
       { line: 2 },
-      { line: 9, print: "35 W.k" },
-      { line: 10, print: "-1" },
+      { line: 7, print: "35 -1" },
     ],
   };
 
-  // Level 2. insert and remove move the elements; append adds a list as one element; pop returns it.
+  // insert and remove move the elements; append adds a list as one element; pop returns it.
   const C_levels = {
     code: ["levels = [4, 9, 6]", "levels.insert(1, levels[-1])", "levels.remove(6)", "top = levels.pop(1)", "levels.append([top, 1])", "n = len(levels)", "last = levels.pop()", "levels.extend(last)", "del levels[n - 4]", "print(levels, n)"],
     steps: [
@@ -205,7 +198,7 @@
     ],
   };
 
-  // Level 2. Two names for one list, a slice is a copy, sort() returns None, a new list for an old name.
+  // Two names for one list, a slice is a copy, sort() returns None, a new list for an old name.
   const C_names = {
     code: ["data = [7, 3]", "view = data", "saved = data[:]", "view.append(5)", "saved.insert(0, data[-1])", "res = view.sort()", "view = view[1:]", "view[0] = saved[0] * 2", "data.reverse()", "print(data[0], view[0])", "print(res)"],
     steps: [
@@ -223,35 +216,7 @@
     ],
   };
 
-  // Level 2. The loop variable does not change the list; index -1 when i is 0; a changed element is used again.
-  const C_loops = {
-    side: true,
-    code: ["amp = [2, 5, 3]", "step = []", "for a in amp:", "    a = a * len(step)", "    step.append(a)", "for i in range(len(amp)):", "    amp[i] = step[i] + amp[i - 1]", "print(sum(amp))"],
-    steps: [
-      { line: 0, set: { amp: "[2, 5, 3]" } },
-      { line: 1, set: { step: "[]" } },
-      { line: 2, set: { a: "2" } },
-      { line: 3, set: { a: "0" } },
-      { line: 4, set: { step: "[0]" } },
-      { line: 2, set: { a: "5" } },
-      { line: 3, set: { a: "5" } },
-      { line: 4, set: { step: "[0, 5]" } },
-      { line: 2, set: { a: "3" } },
-      { line: 3, set: { a: "6" } },
-      { line: 4, set: { step: "[0, 5, 6]" } },
-      { line: 2 },
-      { line: 5, set: { i: "0" } },
-      { line: 6, set: { amp: "[3, 5, 3]" } },
-      { line: 5, set: { i: "1" } },
-      { line: 6, set: { amp: "[3, 8, 3]" } },
-      { line: 5, set: { i: "2" } },
-      { line: 6, set: { amp: "[3, 8, 14]" } },
-      { line: 5 },
-      { line: 7, print: "25" },
-    ],
-  };
-
-  // Level 3. Packing, unpacking, a list made from a tuple is a copy, (x) is not a tuple, a slice of a tuple.
+  // Packing, unpacking, a list made from a tuple is a copy, (x) is not a tuple, a slice of a tuple.
   const C_limits = {
     code: ["lim = 2, 8", "low, high = lim", "low, high = high - low, low", "vals = list(lim)", "vals[0] = low", "one = (vals[1])", "lim = lim[:1]", "print(lim, one, high in lim)"],
     steps: [
@@ -266,7 +231,7 @@
     ],
   };
 
-  // Level 3. get() adds no key, an existing key keeps its place, in tests the keys, pop() and popitem().
+  // get() adds no key, an existing key keeps its place, in tests the keys, pop() and popitem().
   const C_stock = {
     code: ["stock = {\"R\": 5, \"C\": 2}", "n = stock.get(\"L\", 9)", "stock[\"C\"] = stock[\"R\"] + n", "stock[\"L\"] = stock.pop(\"R\")", "found = 5 in stock", "key, n = stock.popitem()", "stock[key] = len(stock)", "print(stock[\"L\"], n, found)"],
     steps: [
@@ -281,36 +246,7 @@
     ],
   };
 
-  // Level 3. An unnamed program: a histogram. A dictionary keeps the order in which its keys were added.
-  const C_bins = {
-    side: true,
-    code: ["bins = {}", "for t in [24, 31, 27, 9]:", "    b = t // 10", "    bins[b] = bins.get(b, 0) + 1", "for b, n in bins.items():", "    print(b * 10, \"*\" * n)"],
-    steps: [
-      { line: 0, set: { bins: "{}" } },
-      { line: 1, set: { t: "24" } },
-      { line: 2, set: { b: "2" } },
-      { line: 3, set: { bins: "{2: 1}" } },
-      { line: 1, set: { t: "31" } },
-      { line: 2, set: { b: "3" } },
-      { line: 3, set: { bins: "{2: 1, 3: 1}" } },
-      { line: 1, set: { t: "27" } },
-      { line: 2, set: { b: "2" } },
-      { line: 3, set: { bins: "{2: 2, 3: 1}" } },
-      { line: 1, set: { t: "9" } },
-      { line: 2, set: { b: "0" } },
-      { line: 3, set: { bins: "{2: 2, 3: 1, 0: 1}" } },
-      { line: 1 },
-      { line: 4, set: { b: "2", n: "2" } },
-      { line: 5, print: "20 **" },
-      { line: 4, set: { b: "3", n: "1" } },
-      { line: 5, print: "30 *" },
-      { line: 4, set: { b: "0", n: "1" } },
-      { line: 5, print: "0 *" },
-      { line: 4 },
-    ],
-  };
-
-  // Level 4. A set stores a value once, an operator returns a new set, discard() of a missing element, set().
+  // A set stores a value once, an operator returns a new set, discard() of a missing element, set().
   const C_pins = {
     code: ["pins = [3, 5, 3, 1]", "used = set(pins)", "free = {2, 3, 4} - used", "used | free", "free.add(len(used))", "used.discard(4)", "both = used & free", "used = used - both", "both = used & free", "print(len(used), both)"],
     steps: [
@@ -327,33 +263,28 @@
     ],
   };
 
-  // Level 4. 2 stays in the set, so the loop does not end; remove() of a missing element stops with a KeyError.
-  const C_stop = {
+  // Missing lines 3 and 4: counting with get(). A new key starts at 0, and an existing key keeps its place.
+  const C_bins = {
     side: true,
-    code: ["todo = {1, 2, 3}", "done = []", "n = 3", "while len(todo) > 0:", "    todo.remove(n)", "    done.append(n)", "    n = n - 2", "print(done)"],
+    missing: [2, 3],
+    code: ["bins = {}", "for t in [24, 9, 27]:", "    b = t // 10", "    bins[b] = bins.get(b, 0) + 1", "print(bins)"],
     steps: [
-      { line: 0, set: { todo: "{1, 2, 3}" } },
-      { line: 1, set: { done: "[]" } },
-      { line: 2, set: { n: "3" } },
-      { line: 3, test: "True" },
-      { line: 4, set: { todo: "{1, 2}" } },
-      { line: 5, set: { done: "[3]" } },
-      { line: 6, set: { n: "1" } },
-      { line: 3, test: "True" },
-      { line: 4, set: { todo: "{2}" } },
-      { line: 5, set: { done: "[3, 1]" } },
-      { line: 6, set: { n: "-1" } },
-      { line: 3, test: "True" },
-      { line: 4, print: "KeyError" },
+      { line: 0, set: { bins: "{}" } },
+      { line: 1, set: { t: "24" } },
+      { line: 2, set: { b: "2" } },
+      { line: 3, set: { bins: "{2: 1}" } },
+      { line: 1, set: { t: "9" } },
+      { line: 2, set: { b: "0" } },
+      { line: 3, set: { bins: "{2: 1, 0: 1}" } },
+      { line: 1, set: { t: "27" } },
+      { line: 2, set: { b: "2" } },
+      { line: 3, set: { bins: "{2: 2, 0: 1}" } },
+      { line: 1 },
+      { line: 4, print: "{2: 2, 0: 1}" },
     ],
   };
   /* ---------- end of the generated traces ---------- */
 
-  // the task text of a trace challenge (Lesson 7)
-  const TRACE = "Complete the trace table on paper. The first row is complete.<br>1. Before the trace, write the output that you expect. Then complete the rows in order.";
-  // the extra task lines of a challenge with the program beside the table (side)
-  const LINE = "<br>2. In the column Line, write the number of the line that runs.";
-  const COND = " In the column Condition, write True or False.";
   // side: the program is beside the table, and a blank row does not show which line runs
   // given: the number of rows that are complete (default 1)
   const CH = (trace, given) => W("traceTable", { trace, blank: true, given: given || 1, showCode: !!trace.side, hideLines: !!trace.side });
@@ -1096,7 +1027,7 @@
               "<code>list(set(a_list))</code> removes duplicates; the order is lost.",
               "Sets or lists: a list keeps the order and the duplicates and has indexes, for values in order such as readings over time. A set has no order, no duplicates, and no index, for unique values, membership checks, and comparing two groups.",
             ]),
-            NEXT("<b>Trace challenges</b>. Ten programs to trace by hand. They use the rules of all lessons of this chapter."),
+            NEXT("<b>Trace challenges</b>. Eight programs to trace by hand. They use the rules of all lessons of this chapter."),
           ] },
           { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
             [T("Write the output of each <code>print()</code> statement on paper.")],
@@ -1121,131 +1052,17 @@
       {
         id: "trace",
         title: "Trace challenges",
-        sub: "Ten programs to execute by hand, in four levels.",
+        sub: "Eight programs to trace on paper: the value of every variable and the output, line by line.",
         keywords: "trace table trace the code execute by hand variable values output challenge string list tuple dictionary set",
         deck: [
-          { kind: "overview", title: "Trace challenges", blocks: [
-            T("A <b>trace</b> executes a program by hand, one line at a time. Each program in this lesson has at least one line that is easy to trace wrongly."),
-            L([
-              "Write one row for each line that runs. A line in a loop gets a new row each time it runs.",
-              "After each line, write the value of every variable and the output of the line. Write <code>–</code> for a variable that does not exist yet.",
-              "Write each value as Python displays it: a string <code>'ok'</code>, a list <code>[4, 9]</code>, a tuple <code>(4, 9)</code> or <code>(4,)</code>, a dictionary <code>{'a': 1}</code>, a set <code>{1, 2}</code> or <code>set()</code>. In a set, write the smallest element first.",
-              "When the program is beside the table, write the number of the line that runs in the column <b>Line</b>. A <code>for</code> line gets one more row when the loop ends.",
-              "On an <code>if</code>, <code>elif</code>, or <code>while</code> line, write True or False in the column <b>Condition</b>. An <code>else:</code> line gets no row.",
-            ], "Rules of a trace", true),
-          ] },
-          { kind: "concept", title: "The four levels", blocks: [
-            T("Each level uses only the lessons that it names. A level can be done when its lessons are complete."),
-            TB(["Level", "Lessons", "Programs", "Subject"], [
-              ["1", "1", "1 and 2", "slices, <code>strip()</code>, <code>find()</code>, a loop over the characters"],
-              ["2", "2 and 3", "3 to 5", "list methods, two names for one list, loops over a list"],
-              ["3", "4 and 5", "6 to 8", "tuples, dictionary methods, counting with a dictionary"],
-              ["4", "6", "9 and 10", "sets, and a program that stops"],
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 1: a temperature message", blocks: [
-            T(TRACE + "<br>2. The text in line 1 starts with one space and ends with one space."),
-            CH(C_message),
-          ], answer: [
-            L([
-              "Line 2 changes nothing: <code>strip()</code> returns a new string, and the program does not store it. Line 3 counts the space at the start: <code>pos</code> is 5.",
-              "Line 5 uses 5 as an index of the new text: <code>msg[5:-1]</code> → <code>'25'</code>. Line 8: <code>msg[:5]</code> includes the colon.",
-              "Line 6: the text has no <code>\"T\"</code> after <code>lower()</code>, and <code>find()</code> is case-sensitive: -1. Line 7: index -1 is the last character.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 1: a number and a unit", blocks: [
-            T(TRACE + LINE + COND),
-            CH(C_unit),
-          ], answer: [
-            L([
-              "<code>'.'</code> is not a digit: lines 4 and 6 are False, and line 9 adds it to <code>unit</code>. <code>num</code> becomes <code>'35'</code>, not <code>'3.5'</code>.",
-              "Line 7 puts the character in front: <code>'k' + '.'</code>. Line 9 puts the character at the end: <code>'k.' + 'W'</code>.",
-              "Line 11: <code>lower()</code> is applied first: <code>'k.w'</code>. <code>find()</code> is case-sensitive, so <code>\"W\"</code> is not found: -1.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: tank levels", blocks: [
-            T(TRACE),
-            CH(C_levels),
-          ], answer: [
-            L([
-              "Line 2 inserts the last element, 6, at index 1: 9 and 6 move right. Line 3 removes only the first 6.",
-              "Line 5: <code>append()</code> adds the list <code>[9, 1]</code> as one element, so <code>n</code> is 3. Line 7: <code>pop()</code> returns that list.",
-              "Line 8: <code>extend()</code> adds each element of <code>last</code>. Line 9: <code>n - 4</code> is -1, so <code>del</code> removes the last element.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: data, view, and saved", blocks: [
-            T(TRACE),
-            CH(C_names),
-          ], answer: [
-            L([
-              "Line 2 makes no copy: <code>view</code> is a second name for the list of <code>data</code>. Lines 4 and 6 change this list, so both names show the change.",
-              "Line 3: a slice is a new list, so <code>saved</code> is a copy. Line 6: <code>sort()</code> returns <code>None</code>.",
-              "Line 7: the slice is a new list, and <code>view</code> is now a name for it. Line 8 does not change <code>data</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: two loops", blocks: [
-            T(TRACE + LINE),
-            CH(C_loops),
-          ], answer: [
-            L([
-              "Line 4 gives a new value to the loop variable <code>a</code>. The list <code>amp</code> does not change. <code>len(step)</code> is 0, then 1, then 2.",
-              "Line 7 with i = 0: <code>amp[i - 1]</code> is <code>amp[-1]</code>, the last element: 0 + 3 → 3.",
-              "Line 7 with i = 1 and i = 2: <code>amp[i - 1]</code> is the element that the iteration before it changed: 5 + 3 → 8, then 6 + 8 → 14.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: two limits", blocks: [
-            T(TRACE),
-            CH(C_limits),
-          ], answer: [
-            L([
-              "Line 1: values separated by commas form a tuple. Line 3 evaluates the right side first: <code>(6, 2)</code>.",
-              "Line 4: <code>list(lim)</code> is a new list. Line 5 changes the list, and the tuple stays <code>(2, 8)</code>.",
-              "Line 6: parentheses without a comma do not make a tuple: <code>one</code> is the integer 8.",
-              "Line 7: a slice of a tuple is a tuple. A tuple with one element is displayed with a comma: <code>(2,)</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: parts in stock", blocks: [
-            T(TRACE),
-            CH(C_stock),
-          ], answer: [
-            L([
-              "Line 2: <code>get()</code> returns the default 9. It does not add the key <code>\"L\"</code>.",
-              "Line 3 replaces the value of an existing key. Line 4: <code>pop()</code> removes the pair of <code>\"R\"</code> and returns 5; the new pair goes to the end.",
-              "Line 5: <code>in</code> tests the keys. 5 is a value, not a key: False.",
-              "Line 6: <code>popitem()</code> removes the last pair, <code>('L', 5)</code>. Line 7: <code>len(stock)</code> is 1.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: a program without a name", blocks: [
-            T(TRACE + LINE + "<br>3. Write in one sentence what the program displays."),
-            CH(C_bins),
-          ], answer: [
-            L([
-              "The program counts the readings in groups of ten: 20 to 29, 30 to 39, and 0 to 9. It displays one star for each reading of a group.",
-              "Line 4: <code>get()</code> gives 0 for a new key, and a pair is added. For the reading 27, the key 2 exists: its value 1 is replaced by 2.",
-              "Line 3: <code>9 // 10</code> → <code>0</code>. The key 0 is added last, so line 5 gives it last: a dictionary keeps the order in which its keys were added.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: pins in use", blocks: [
-            T(TRACE),
-            CH(C_pins),
-          ], answer: [
-            L([
-              "Line 2: a set stores each value once: <code>{1, 3, 5}</code>. Line 5: <code>len(used)</code> is 3, not 4.",
-              "Line 4 changes nothing: <code>|</code> returns a new set, and the program does not store it.",
-              "Line 6 changes nothing: 4 is not an element of <code>used</code>, and <code>discard()</code> causes no error.",
-              "Line 9: the two sets have no common element. An empty set is displayed as <code>set()</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: the program stops", blocks: [
-            T("The program stops with an error message before its last line.<br>1. Complete the trace table on paper. The first row is complete.<br>2. In the column Line, write the number of the line that runs. In the column Condition, write True or False.<br>3. In the last row, write the name of the error in the column Output."),
-            CH(C_stop),
-          ], answer: [
-            L([
-              "Line 5 changes the set in place: <code>{1, 2}</code>, then <code>{2}</code>. Line 7 gives <code>n</code> the values 1 and -1, so 2 is never removed.",
-              "The set still has one element, so line 4 is True a third time.",
-              "Line 5 stops with a <b>KeyError</b>: -1 is not an element of the set. Lines 6 to 8 do not run. <code>discard()</code> does not stop the program.",
-            ]),
-          ] },
+          { kind: "exercise", title: "A temperature message", blocks: [CH(C_message)] },
+          { kind: "exercise", title: "A number and a unit", blocks: [CH(C_unit)] },
+          { kind: "exercise", title: "Tank levels", blocks: [CH(C_levels)] },
+          { kind: "exercise", title: "Data, view, and saved", blocks: [CH(C_names)] },
+          { kind: "exercise", title: "Two limits", blocks: [CH(C_limits)] },
+          { kind: "exercise", title: "Parts in stock", blocks: [CH(C_stock)] },
+          { kind: "exercise", title: "Pins in use", blocks: [CH(C_pins)] },
+          { kind: "exercise", title: "Temperature groups", blocks: [T("Write lines 3 and 4 of the program."), CH(C_bins)], answer: [CODE("b = t // 10\nbins[b] = bins.get(b, 0) + 1", null, "lines 3 and 4")] },
         ],
       },
 

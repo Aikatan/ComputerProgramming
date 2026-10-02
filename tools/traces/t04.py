@@ -1,6 +1,6 @@
 """Trace challenges of Topic 04 (Lesson 5). Build with: python tools/make-trace.py t04
 
-Seven flowcharts (flow=...) and three pseudocode texts (display=...). The traced program is
+Six flowcharts (flow=...) and two pseudocode texts (display=...); the last one has a missing line. The traced program is
 the Python form of the chart or of the pseudocode: t02-t03 material only (no lists, no def).
 
 A flowchart: each line of the program is one shape (the shape ids are those of the chart
@@ -11,8 +11,7 @@ END FOR, so that both texts have the same line numbers.
 """
 
 TRACES = [
-    # ---------------- Level 1: Lesson 1 (sequence) ----------------
-    dict(name="C_swap", about="Level 1. A sequence: three processes exchange two values without a third variable.",
+    dict(name="C_swap", about="A sequence: three processes exchange two values without a third variable.",
          inputs=["3", "8"], echo=False, flow={1: "i1", 2: "i2", 3: "p1", 4: "p2", 5: "p3", 6: "d"}, code='''
 a = int(input())
 b = int(input())
@@ -21,9 +20,7 @@ b = a - b
 a = a - b
 print(a, b)
 '''),
-
-    # ---------------- Level 2: Lesson 2 (decisions) ----------------
-    dict(name="C_cost", about="Level 2. Two decisions in a row: the second one tests the value that the first one changed.",
+    dict(name="C_cost", about="Two decisions in a row: the second one tests the value that the first one changed.",
          inputs=["520"], echo=False, flow={1: "i", 2: "q1", 3: "p1", 4: "q2", 5: "p2", 6: "d"}, code='''
 cost = int(input())
 if cost > 500:
@@ -32,26 +29,15 @@ if cost > 480:
     cost = cost - 20
 print(cost)
 '''),
-    dict(name="C_range", about="Level 2. A decision on the True exit of a decision; the input is exactly on the limit.",
-         inputs=["14"], echo=False, flow={1: "a", 2: "i", 3: "q1", 4: "q2", 5: "p", 6: "d"}, code='''
-s = 0
-v = int(input())
-if v > 11:
-    if v < 14:
-        s = 1
-print(s)
-'''),
-
-    # ---------------- Level 3: Lesson 3 (loops) ----------------
-    dict(name="C_double", about="Level 3. The update comes before DISPLAY: a value that fails the test is displayed.",
+    dict(name="C_double", about="The update comes before DISPLAY: a value that fails the test is displayed.",
          flow={1: "a", 2: "q", 3: "b", 4: "d"}, code='''
 x = 1
 while x < 8:
     x = x * 2
     print(x)
 '''),
-    dict(name="C_count", about="Level 3. A loop that repeats an input, with a decision inside: 30 is not above 30.",
-         inputs=["28", "35", "30", "41", "0"], echo=False,
+    dict(name="C_count", about="A loop that repeats an input, with a decision inside: 30 is not above 30.",
+         inputs=["28", "35", "30", "0"], echo=False,
          flow={1: "a", 2: "i1", 3: "q1", 4: "q2", 5: "c", 6: "i2", 7: "d"}, code='''
 n = 0
 t = int(input())
@@ -61,7 +47,7 @@ while t != 0:
     t = int(input())
 print(n)
 '''),
-    dict(name="C_break", about="Level 3. Two exits of a loop: the break exit is taken before the loop test fails.",
+    dict(name="C_break", about="Two exits of a loop: the break exit is taken before the loop test fails.",
          flow={1: "a", 2: "q1", 3: "q2", 4: None, 5: "b", 6: "d"}, code='''
 x = 50
 while x < 100:
@@ -70,23 +56,21 @@ while x < 100:
     x = x + 15
 print(x)
 '''),
-    dict(name="C_nest", about="Level 3. A loop inside a loop: the inner counter starts again, and its limit is the outer counter.",
+    dict(name="C_nest", about="A loop inside a loop: the inner counter starts again, and its limit is the outer counter. In the first outer pass the inner loop does not run.",
          flow={1: "a", 2: "q1", 3: "c", 4: "q2", 5: "d", 6: "v", 7: "u"}, code='''
 i = 1
 while i < 3:
     j = 1
-    while j <= i:
+    while j < i:
         print(i * j)
         j = j + 1
     i = i + 1
 '''),
-
-    # ---------------- Level 4: Lesson 4 (pseudocode) ----------------
-    dict(name="C_chain", about="Level 4. FOR with IF / ELSE IF: 6 passes the first condition, so ELSE IF is not tested.",
+    dict(name="C_chain", about="FOR with IF / ELSE IF: 6 passes the first condition, so ELSE IF is not tested.",
          side=True, inputs=["6"], echo=False, display='''
 INPUT n
 SET total TO 0
-FOR i FROM 1 TO n
+FOR i FROM 3 TO n
     IF i % 2 == 0 THEN
         SET total TO total + i
     ELSE IF i % 3 == 0 THEN
@@ -97,7 +81,7 @@ DISPLAY total
 ''', code='''
 n = int(input())
 total = 0
-for i in range(1, n + 1):
+for i in range(3, n + 1):
     if i % 2 == 0:
         total = total + i
     elif i % 3 == 0:
@@ -106,9 +90,9 @@ for i in range(1, n + 1):
 # END FOR
 print(total)
 '''),
-    dict(name="C_level", about="Level 4. WHILE with IF / ELSE: the branch changes during the loop, and the last pass goes below the limit.",
-         side=True, display='''
-SET level TO 100
+    dict(name="C_level", about="Missing lines 5 and 7 (the ELSE branch). WHILE with IF / ELSE: the branch changes during the loop, and the last pass goes below the limit.",
+         side=True, missing=[5, 7], display='''
+SET level TO 70
 SET count TO 0
 WHILE level > 20
     IF level > 60 THEN
@@ -121,7 +105,7 @@ END WHILE
 DISPLAY count
 DISPLAY level
 ''', code='''
-level = 100
+level = 70
 count = 0
 while level > 20:
     if level > 60:
@@ -133,23 +117,5 @@ while level > 20:
 # END WHILE
 print(count)
 print(level)
-'''),
-    dict(name="C_doses", about="Level 4. A logical error: the condition of line 3 allows a dose that the bottle does not hold.",
-         side=True, display='''
-SET volume TO 300
-SET doses TO 0
-WHILE volume > 0
-    SET volume TO volume - 120
-    INCREMENT doses BY 1
-END WHILE
-DISPLAY doses
-''', code='''
-volume = 300
-doses = 0
-while volume > 0:
-    volume = volume - 120
-    doses = doses + 1
-# END WHILE
-print(doses)
 '''),
 ]

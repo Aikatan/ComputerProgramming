@@ -100,10 +100,10 @@
   };
 
   /* ---------- trace challenges (generated: edit tools/traces/t07.py, then run "python tools/make-trace.py t07") ---------- */
-  // Level 1. x gets 3 values and y gets 2: plt.plot(x, y) stops with a ValueError.
+  // The lists of a line plot: x gets a value in each iteration, y only for a reading above 0.
   const C_points = {
     side: true,
-    code: ["raw = [21, -1, 26]", "x = []", "y = []", "for i in range(3):", "    x.append(i * 2)", "    if raw[i] > 0:", "        y.append(raw[i])", "print(x)", "print(y)"],
+    code: ["raw = [21, -1]", "x = []", "y = []", "for i in range(2):", "    x.append(i * 2)", "    if raw[i] > 0:", "        y.append(raw[i])", "print(x)", "print(y)"],
     steps: [
       { line: 0 },
       { line: 1, set: { x: "[]" } },
@@ -115,45 +115,13 @@
       { line: 3, set: { i: "1" } },
       { line: 4, set: { x: "[0, 2]" } },
       { line: 5, test: "False" },
-      { line: 3, set: { i: "2" } },
-      { line: 4, set: { x: "[0, 2, 4]" } },
-      { line: 5, test: "True" },
-      { line: 6, set: { y: "[21, 26]" } },
       { line: 3 },
-      { line: 7, print: "[0, 2, 4]" },
-      { line: 8, print: "[21, 26]" },
+      { line: 7, print: "[0, 2]" },
+      { line: 8, print: "[21]" },
     ],
   };
 
-  // Level 1. The bin counts of plt.hist(data, bins=3): a value on a bin edge, and the largest value.
-  const C_bins = {
-    side: true,
-    code: ["counts = [0, 0, 0]", "for v in [13, 16, 10, 14]:", "    i = (v - 10) // 2", "    if i == 3:", "        i = 2", "    counts[i] += 1", "print(counts)"],
-    steps: [
-      { line: 0, set: { counts: "[0, 0, 0]" } },
-      { line: 1, set: { v: "13" } },
-      { line: 2, set: { i: "1" } },
-      { line: 3, test: "False" },
-      { line: 5, set: { counts: "[0, 1, 0]" } },
-      { line: 1, set: { v: "16" } },
-      { line: 2, set: { i: "3" } },
-      { line: 3, test: "True" },
-      { line: 4, set: { i: "2" } },
-      { line: 5, set: { counts: "[0, 1, 1]" } },
-      { line: 1, set: { v: "10" } },
-      { line: 2, set: { i: "0" } },
-      { line: 3, test: "False" },
-      { line: 5, set: { counts: "[1, 1, 1]" } },
-      { line: 1, set: { v: "14" } },
-      { line: 2, set: { i: "2" } },
-      { line: 3, test: "False" },
-      { line: 5, set: { counts: "[1, 1, 2]" } },
-      { line: 1 },
-      { line: 6, print: "[1, 1, 2]" },
-    ],
-  };
-
-  // Level 2. Line 4 completes, line 5 fails, line 6 is skipped; the second except block matches.
+  // Line 4 completes, line 5 fails, line 6 is skipped; the second except block matches.
   const C_count = {
     side: true,
     code: ["total = 30", "count = 0", "try:", "    count = int(input(\"Count: \"))", "    total = total / (count - 3)", "    count = count + 1", "except ValueError:", "    total = -1", "except ZeroDivisionError:", "    total = total + count", "print(total, count)"],
@@ -170,7 +138,7 @@
     ],
   };
 
-  // Level 2. No error: else, then finally. The same statement fails later; except Exception matches.
+  // No error: else, then finally. The same statement fails later; except Exception matches.
   const C_volts = {
     side: true,
     code: ["cells = 4", "volts = 12", "try:", "    volts = volts / cells", "except ZeroDivisionError:", "    volts = 0", "else:", "    cells = cells - 4", "finally:", "    volts = volts + 1", "try:", "    volts = volts / cells", "except Exception:", "    print(volts, cells)"],
@@ -188,170 +156,119 @@
     ],
   };
 
-  // Level 2. The key exists, the index does not: IndexError. else is skipped, finally runs.
-  const C_pins = {
-    side: true,
-    code: ["pins = {\"led\": 2, \"fan\": 5}", "levels = [0, 1, 1]", "state = -1", "try:", "    pin = pins[\"fan\"]", "    state = levels[pin]", "except KeyError:", "    print(\"no pin\")", "except IndexError:", "    print(\"no level\")", "else:", "    state = state + 1", "finally:", "    print(pin, state)"],
-    steps: [
-      { line: 0 },
-      { line: 1 },
-      { line: 2, set: { state: "-1" } },
-      { line: 3 },
-      { line: 4, set: { pin: "5" } },
-      { line: 5 },
-      { line: 6 },
-      { line: 8 },
-      { line: 9, print: "no level" },
-      { line: 13, print: "5 -1" },
-    ],
-  };
-
-  // Level 3. The loop continues after each handled error; r keeps the value of the last valid text.
+  // A try statement in a loop: after the handled error, r keeps the value of the text before it, and the loop continues.
   const C_texts = {
     side: true,
-    code: ["total = 0", "r = 1", "for text in [\"8\", \"x\", \"0\", \"4\"]:", "    try:", "        r = int(text)", "        total = total + 24 // r", "    except ValueError:", "        total = total + r", "    except ZeroDivisionError:", "        r = 2", "print(total, r)"],
+    code: ["total = 0", "for text in [\"8\", \"x\", \"2\"]:", "    try:", "        r = int(text)", "        total = total + 24 // r", "    except ValueError:", "        total = total + r", "print(total, r)"],
     steps: [
       { line: 0, set: { total: "0" } },
-      { line: 1, set: { r: "1" } },
-      { line: 2, set: { text: "'8'" } },
-      { line: 3 },
-      { line: 4, set: { r: "8" } },
-      { line: 5, set: { total: "3" } },
-      { line: 2, set: { text: "'x'" } },
-      { line: 3 },
-      { line: 4 },
-      { line: 6 },
-      { line: 7, set: { total: "11" } },
-      { line: 2, set: { text: "'0'" } },
-      { line: 3 },
-      { line: 4, set: { r: "0" } },
-      { line: 5 },
-      { line: 6 },
-      { line: 8 },
-      { line: 9, set: { r: "2" } },
-      { line: 2, set: { text: "'4'" } },
-      { line: 3 },
-      { line: 4, set: { r: "4" } },
-      { line: 5, set: { total: "17" } },
+      { line: 1, set: { text: "'8'" } },
       { line: 2 },
-      { line: 10, print: "17 4" },
+      { line: 3, set: { r: "8" } },
+      { line: 4, set: { total: "3" } },
+      { line: 1, set: { text: "'x'" } },
+      { line: 2 },
+      { line: 3 },
+      { line: 5 },
+      { line: 6, set: { total: "11" } },
+      { line: 1, set: { text: "'2'" } },
+      { line: 2 },
+      { line: 3, set: { r: "2" } },
+      { line: 4, set: { total: "23" } },
+      { line: 1 },
+      { line: 7, print: "23 2" },
     ],
   };
 
-  // Level 3. else and finally in a loop. The third error matches no except block: finally runs, then the program stops.
+  // else and finally in a loop. The first error matches the except block; the second matches none: finally runs, then the program stops.
   const C_stock = {
     side: true,
-    code: ["stock = {\"r1\": 5, \"c1\": 0}", "used = 0", "for part in [\"r1\", \"d1\", \"c1\"]:", "    try:", "        n = 10 // stock[part]", "    except KeyError:", "        print(\"no\", part)", "    else:", "        used = used + n", "    finally:", "        print(part, n)", "print(\"used\", used)"],
+    code: ["stock = {\"r1\": 5, \"c1\": 0}", "for part in [\"d1\", \"c1\"]:", "    try:", "        n = 10 // stock[part]", "    except KeyError:", "        n = 0", "    else:", "        print(\"ok\", n)", "    finally:", "        print(part, n)", "print(\"end\")"],
     steps: [
       { line: 0 },
-      { line: 1, set: { used: "0" } },
-      { line: 2, set: { part: "'r1'" } },
-      { line: 3 },
-      { line: 4, set: { n: "2" } },
-      { line: 8, set: { used: "2" } },
-      { line: 10, print: "r1 2" },
-      { line: 2, set: { part: "'d1'" } },
+      { line: 1, set: { part: "'d1'" } },
+      { line: 2 },
       { line: 3 },
       { line: 4 },
-      { line: 5 },
-      { line: 6, print: "no d1" },
-      { line: 10, print: "d1 2" },
-      { line: 2, set: { part: "'c1'" } },
+      { line: 5, set: { n: "0" } },
+      { line: 9, print: "d1 0" },
+      { line: 1, set: { part: "'c1'" } },
+      { line: 2 },
       { line: 3 },
       { line: 4 },
-      { line: 5 },
-      { line: 10, print: "c1 2\nZeroDivisionError" },
+      { line: 9, print: "c1 0\nZeroDivisionError" },
     ],
   };
 
-  // Level 4. An error passes through two functions to the try statement of the main program.
+  // An error passes through two functions to the try statement of the main program.
   const C_chain = {
     side: true,
-    code: ["def cell(c):", "    return 12 // c", "def show(n):", "    v = cell(n)", "    print(\"cell\", v)", "    return v", "total = 0", "try:", "    total += show(4)", "    total += show(0)", "    total += show(2)", "except ZeroDivisionError:", "    total = total - 1", "print(total)"],
+    code: ["def cell(c):", "    return 12 // c", "def show(n):", "    v = cell(n)", "    print(\"cell\", v)", "    return v", "total = show(4)", "try:", "    total += show(0)", "    total += show(2)", "except ZeroDivisionError:", "    total = total - 1", "print(total)"],
     steps: [
       { line: 0 },
       { line: 2 },
-      { line: 6, set: { total: "0" } },
-      { line: 7 },
-      { line: 8, set: { "n (show)": "4" } },
+      { line: 6, set: { "n (show)": "4" } },
       { line: 3, set: { "c (cell)": "4" } },
       { line: 1, unset: ["c (cell)"], set: { "v (show)": "3" } },
       { line: 4, print: "cell 3" },
       { line: 5, unset: ["n (show)", "v (show)"], set: { total: "3" } },
-      { line: 9, set: { "n (show)": "0" } },
+      { line: 7 },
+      { line: 8, set: { "n (show)": "0" } },
       { line: 3, set: { "c (cell)": "0" } },
       { line: 1, unset: ["c (cell)"] },
       { line: 3, unset: ["n (show)"] },
-      { line: 11 },
-      { line: 12, set: { total: "2" } },
-      { line: 13, print: "2" },
+      { line: 10 },
+      { line: 11, set: { total: "2" } },
+      { line: 12, print: "2" },
     ],
   };
 
-  // Level 4. 20 > 20 is False; raise ends the function, so level keeps 30. The loop continues after the handled error.
+  // Missing lines 3 and 4: the raise statement. The except line gives the type, and the output gives the message.
   const C_step = {
     side: true,
-    code: ["def step(v):", "    if v > 20:", "        raise ValueError(\"high\")", "    return v + 10", "level = 10", "while level < 40:", "    try:", "        level = step(level)", "    except ValueError as e:", "        print(e, level)", "        level = level * 2", "print(level)"],
+    missing: [2, 3],
+    code: ["def step(v):", "    if v > 20:", "        raise ValueError(\"high\")", "    return v + 10", "level = 20", "try:", "    level = step(level)", "    level = step(level)", "    level = step(level)", "except ValueError as e:", "    print(e, level)", "    level = level * 2", "print(level)"],
     steps: [
       { line: 0 },
-      { line: 4, set: { level: "10" } },
-      { line: 5, test: "True" },
-      { line: 6 },
-      { line: 7, set: { "v (step)": "10" } },
-      { line: 1, test: "False" },
-      { line: 3, unset: ["v (step)"], set: { level: "20" } },
-      { line: 5, test: "True" },
-      { line: 6 },
-      { line: 7, set: { "v (step)": "20" } },
+      { line: 4, set: { level: "20" } },
+      { line: 5 },
+      { line: 6, set: { "v (step)": "20" } },
       { line: 1, test: "False" },
       { line: 3, unset: ["v (step)"], set: { level: "30" } },
-      { line: 5, test: "True" },
-      { line: 6 },
       { line: 7, set: { "v (step)": "30" } },
       { line: 1, test: "True" },
       { line: 2, unset: ["v (step)"] },
-      { line: 8 },
-      { line: 9, print: "high 30" },
-      { line: 10, set: { level: "60" } },
-      { line: 5, test: "False" },
-      { line: 11, print: "60" },
+      { line: 9 },
+      { line: 10, print: "high 30" },
+      { line: 11, set: { level: "60" } },
+      { line: 12, print: "60" },
     ],
   };
 
-  // Level 4. The function handles its own error; assert passes twice, then stops the program on line 9.
-  const C_assert = {
+  // Missing lines 3 and 5: the return of the except block. The function handles its own error; the second assert fails.
+  const C_checks = {
     side: true,
-    code: ["def num(t):", "    try:", "        return int(t)", "    except ValueError:", "        return 0", "total = 0", "for text in [\"5\", \"2a\", \"-3\"]:", "    n = num(text)", "    assert n >= 0, \"negative\"", "    total = total + n", "print(total)"],
+    missing: [2, 4],
+    code: ["def num(t):", "    try:", "        return int(t)", "    except ValueError:", "        return 0", "first = num(\"2a\")", "last = num(\"-3\")", "try:", "    assert first >= 0, \"first\"", "    assert last >= 0, \"last\"", "    print(first + last)", "except AssertionError as e:", "    print(\"bad\", e)"],
     steps: [
       { line: 0 },
-      { line: 5, set: { total: "0" } },
-      { line: 6, set: { text: "'5'" } },
-      { line: 7, set: { "t (num)": "'5'" } },
-      { line: 1 },
-      { line: 2, unset: ["t (num)"], set: { n: "5" } },
-      { line: 8 },
-      { line: 9, set: { total: "5" } },
-      { line: 6, set: { text: "'2a'" } },
-      { line: 7, set: { "t (num)": "'2a'" } },
+      { line: 5, set: { "t (num)": "'2a'" } },
       { line: 1 },
       { line: 2 },
       { line: 3 },
-      { line: 4, unset: ["t (num)"], set: { n: "0" } },
-      { line: 8 },
-      { line: 9, set: { total: "5" } },
-      { line: 6, set: { text: "'-3'" } },
-      { line: 7, set: { "t (num)": "'-3'" } },
+      { line: 4, unset: ["t (num)"], set: { first: "0" } },
+      { line: 6, set: { "t (num)": "'-3'" } },
       { line: 1 },
-      { line: 2, unset: ["t (num)"], set: { n: "-3" } },
-      { line: 8, print: "AssertionError" },
+      { line: 2, unset: ["t (num)"], set: { last: "-3" } },
+      { line: 7 },
+      { line: 8 },
+      { line: 9 },
+      { line: 11 },
+      { line: 12, print: "bad last" },
     ],
   };
   /* ---------- end of the generated traces ---------- */
 
-  // the task text of a trace challenge (Lesson 5)
-  const TRACE = "Complete the trace table on paper. The first row is complete.<br>1. Before the trace, write the output that you expect. Then complete the rows in order.";
-  // rows: "two" or "three": the first rows hold no value (a def line, or a list that has no column)
-  const TRACE_ROWS = (rows) => TRACE.replace("The first row is", "The first " + rows + " rows are");
   // side: the program is beside the table, and a blank row does not show which line runs
   // given: the number of rows that are complete (default 1)
   const CH = (trace, given) => W("traceTable", { trace, blank: true, given: given || 1, showCode: !!trace.side, hideLines: !!trace.side });
@@ -734,7 +651,7 @@
               "The caller handles it with try and except; <code>as e</code> gives the message.",
               "<code>assert condition, \"message\"</code> raises an AssertionError when the condition is False.",
             ]),
-            NEXT("<b>Trace challenges</b>. Ten programs to trace by hand. They use the rules of all lessons of this chapter."),
+            NEXT("<b>Trace challenges</b>. Eight programs to trace by hand. They use the rules of all lessons of this chapter."),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
             T(PAPER),
@@ -759,127 +676,17 @@
       {
         id: "trace",
         title: "Trace challenges",
-        sub: "Ten programs to execute by hand, in four levels.",
+        sub: "Eight programs to trace on paper: the value of every variable and the output, line by line.",
         keywords: "trace table trace the code execute by hand variable values output challenge try except else finally raise assert",
         deck: [
-          { kind: "overview", title: "Trace challenges", blocks: [
-            T("A <b>trace</b> executes a program by hand, one line at a time. Each program in this lesson has at least one line that is easy to trace wrongly. The program is beside the table."),
-            L([
-              "Write one row for each line that runs, with its number in the column <b>Line</b>. A <code>for</code> line gets a row each time it runs, also when the loop ends.",
-              "On an <code>if</code> or <code>while</code> line, write True or False in the column <b>Condition</b>.",
-              "A <code>try:</code> line gets a row. An <code>except</code> line gets a row only when Python tests it after an error. The lines <code>else:</code> and <code>finally:</code> get no row.",
-              "Functions are traced as in Topic 05. The row of a call holds the parameters, such as <code>v (step)</code>. On the row where the function ends, its variables disappear (<code>–</code>); the same row holds the value that the call line stores.",
-              "After each line, write the value of every variable and the output of the line. If the program stops with an error, write the name of the error in the column <b>Output</b> of the last row.",
-            ], "Rules of a trace", true),
-          ] },
-          { kind: "concept", title: "The four levels", blocks: [
-            T("Each level uses only the lessons that it names. A level can be done when its lessons are complete."),
-            TB(["Level", "Lessons", "Programs", "Subject"], [
-              ["1", "1 and 2", "1 and 2", "the data of a line plot and of a histogram"],
-              ["2", "3", "3 to 5", "<code>try</code>, several <code>except</code> blocks, <code>else</code>, <code>finally</code>"],
-              ["3", "3", "6 and 7", "a try statement inside a loop"],
-              ["4", "4", "8 to 10", "errors in functions, <code>raise</code>, <code>assert</code>, and a program that stops"],
-            ]),
-            T("A trace table cannot show a chart. The programs of Level 1 build the lists that a chart receives, and the task asks one question about the chart."),
-          ] },
-          { kind: "exercise", title: "Level 1: the points of a line plot", blocks: [
-            T(TRACE_ROWS("two") + "<br>2. The list <code>raw</code> does not change, so the table has no column for <code>raw</code>.<br>3. After line 9, the program calls <code>plt.plot(x, y)</code>. Write the number of points that the call draws."),
-            CH(C_points, 2),
-          ], answer: [
-            T("Line 5 runs in every iteration, but line 7 runs only when line 6 is True. For the reading <code>-1</code>, line 6 is False: <code>x</code> gets 3 values, and <code>y</code> gets 2 values."),
-            T("<code>plt.plot(x, y)</code> needs the same number of values in x and y. With 3 and 2 values, the program stops with a ValueError: the call draws no point. With line 5 inside the if block, x is <code>[0, 4]</code>, and the plot has 2 points."),
-          ] },
-          { kind: "exercise", title: "Level 1: the bins of a histogram", blocks: [
-            T(TRACE + "<br>2. <code>counts</code> holds the bar heights of <code>plt.hist([13, 16, 10, 14], bins=3)</code>. Write the values that are in the last bin."),
-            CH(C_bins),
-          ], answer: [
-            L([
-              "The values go from 10 to 16, so each of the 3 bins is 2 wide. Line 3 computes the index of the bin: <code>(13 - 10) // 2</code> → <code>1</code>.",
-              "16 gives the index 3, which does not exist. The largest value belongs to the last bin: lines 4 and 5 change the index to 2.",
-              "14 is on a bin edge. It belongs to the bin on its right: index 2. The last bin holds 16 and 14, so the third bar is the highest.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: a count from the keyboard", blocks: [
-            T(TRACE + "<br>2. Test input: 3."),
-            CH(C_count),
-          ], answer: [
-            L([
-              "Line 4 completes: <code>count</code> is 3. Line 5 fails with a ZeroDivisionError, <code>30 / 0</code>. The assignment does not happen: <code>total</code> keeps 30.",
-              "The rest of the try block is skipped: line 6 does not run, so <code>count</code> stays 3.",
-              "Python tests the except lines from top to bottom. Line 7 does not match; line 9 matches. Line 10: <code>30 + 3</code> → <code>33</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: two try statements", blocks: [
-            T(TRACE),
-            CH(C_volts),
-          ], answer: [
-            L([
-              "Line 4: <code>/</code> gives a float, <code>3.0</code>. No error occurred: the except block is skipped, the else block runs (line 8), and then the finally block (line 10).",
-              "Line 12 is the same statement as line 4, but <code>cells</code> is now 0: a ZeroDivisionError. <code>volts</code> keeps <code>4.0</code>.",
-              "<code>except Exception</code> matches every error type, so line 14 runs.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: a pin and its level", blocks: [
-            T(TRACE_ROWS("three") + "<br>2. The dictionary <code>pins</code> and the list <code>levels</code> do not change, so the table has no column for them."),
-            CH(C_pins, 3),
-          ], answer: [
-            L([
-              'Line 5 completes: the key <code>"fan"</code> exists, so <code>pin</code> is 5.',
-              "Line 6 fails: <code>levels</code> has the indexes 0 to 2. An index outside a list raises an IndexError, not a KeyError. <code>state</code> keeps <code>-1</code>.",
-              "Line 7 does not match; line 9 matches. An error occurred, so the else block is skipped. The finally block runs last: <code>5 -1</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: four texts", blocks: [
-            T(TRACE),
-            CH(C_texts),
-          ], answer: [
-            L([
-              '<code>"x"</code>: line 5 fails with a ValueError. <code>r</code> keeps 8, the value of iteration 1. Line 6 is skipped. Line 8: <code>3 + 8</code> → <code>11</code>.',
-              '<code>"0"</code>: line 5 completes, so <code>r</code> is 0. Line 6 fails with a ZeroDivisionError: <code>total</code> keeps 11. Line 7 does not match; line 9 matches.',
-              'After a handled error, the loop continues with the next text. <code>"4"</code>: <code>11 + 24 // 4</code> → <code>17</code>.',
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: three parts", blocks: [
-            T(TRACE_ROWS("two") + "<br>2. The dictionary <code>stock</code> does not change, so the table has no column for <code>stock</code>."),
-            CH(C_stock, 2),
-          ], answer: [
-            L([
-              '<code>"r1"</code>: no error occurs. The else block runs (line 9), and then the finally block (line 11).',
-              '<code>"d1"</code>: the key does not exist: a KeyError. <code>n</code> keeps 2. The except block runs, and then the finally block: <code>d1 2</code>.',
-              '<code>"c1"</code>: <code>10 // 0</code> raises a ZeroDivisionError. Line 6 does not match, so the error is not handled. The finally block still runs. Then the program stops: line 12 does not run.',
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: two functions", blocks: [
-            T(TRACE_ROWS("three") + "<br>2. An error can end a function on the line of a call. Write one more row for that line: the variables of the function disappear on that row."),
-            CH(C_chain, 3),
-          ], answer: [
-            L([
-              "<code>show(0)</code>: line 2 fails with a ZeroDivisionError. <code>cell</code> has no try statement: the function ends at once and returns no value.",
-              "The error passes to line 4 of <code>show</code>, which has no try statement either: <code>show</code> ends on line 4. Lines 5 and 6 do not run.",
-              "The error passes to line 10, inside the try block: <code>total</code> keeps 3, and line 11 is skipped. Line 12 matches. Line 13: <code>3 - 1</code> → <code>2</code>.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: steps of 10", blocks: [
-            T(TRACE_ROWS("two")),
-            CH(C_step, 2),
-          ], answer: [
-            L([
-              "Iteration 2: <code>20 &gt; 20</code> is False, so line 4 returns 30.",
-              "Iteration 3: <code>30 &gt; 20</code> is True. <code>raise</code> ends the function without a return value, so line 8 stores nothing: <code>level</code> keeps 30.",
-              "Line 9 matches. Line 10 displays the message of the error and the level: <code>high 30</code>. Line 11: <code>30 * 2</code> → <code>60</code>.",
-              "The error is handled, so the loop continues: line 6 tests <code>60 &lt; 40</code>, which is False.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: the program stops", blocks: [
-            T("The program stops with an error message before its last line.<br>1. Complete the trace table on paper. The first two rows are complete.<br>2. In the column Line, write the number of the line that runs.<br>3. In the last row, write the name of the error in the column Output."),
-            CH(C_assert, 2),
-          ], answer: [
-            L([
-              '<code>"2a"</code>: line 3 fails with a ValueError. The function handles its own error: line 5 returns 0. The main program receives a value, not an error.',
-              "Line 9 with 0: <code>0 &gt;= 0</code> is True, so nothing happens.",
-              '<code>"-3"</code>: <code>int("-3")</code> is valid: <code>-3</code>. Line 9: <code>-3 &gt;= 0</code> is False: an <b>AssertionError</b>. No try statement handles the error: the program stops, and lines 10 and 11 do not run.',
-            ]),
-          ] },
+          { kind: "exercise", title: "Points of a plot", blocks: [CH(C_points, 2)] },
+          { kind: "exercise", title: "A count", blocks: [T("Test input: 3."), CH(C_count)] },
+          { kind: "exercise", title: "Cells and volts", blocks: [CH(C_volts)] },
+          { kind: "exercise", title: "Three texts", blocks: [CH(C_texts)] },
+          { kind: "exercise", title: "Two parts", blocks: [CH(C_stock, 2)] },
+          { kind: "exercise", title: "Two functions", blocks: [CH(C_chain, 3)] },
+          { kind: "exercise", title: "Three steps", blocks: [T("Write lines 3 and 4 of the program."), CH(C_step)], answer: [CODE("    raise ValueError(\"high\")\nreturn v + 10", null, "lines 3 and 4")] },
+          { kind: "exercise", title: "Two checks", blocks: [T("Write lines 3 and 5 of the program."), CH(C_checks)], answer: [CODE("return int(t)\nreturn 0", null, "lines 3 and 5")] },
         ],
       },
 

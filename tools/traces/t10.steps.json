@@ -61,89 +61,12 @@
   "error": null,
   "dropped": 1
  },
- "C_update": {
-  "steps": [
-   {
-    "line": 0,
-    "set": {
-     "n": "9"
-    }
-   },
-   {
-    "line": 1,
-    "set": {
-     "n": "14"
-    }
-   },
-   {
-    "line": 2,
-    "set": {
-     "n": "3"
-    }
-   },
-   {
-    "line": 3,
-    "set": {
-     "n": "12"
-    }
-   },
-   {
-    "line": 4,
-    "set": {
-     "n": "13",
-     "k": "12"
-    }
-   },
-   {
-    "line": 5,
-    "set": {
-     "k": "9"
-    }
-   },
-   {
-    "line": 6,
-    "set": {
-     "n": "4"
-    }
-   },
-   {
-    "line": 7,
-    "set": {
-     "n": "5",
-     "k": "10"
-    }
-   },
-   {
-    "line": 8,
-    "set": {
-     "c": "'A'"
-    }
-   },
-   {
-    "line": 9,
-    "set": {
-     "c": "'F'"
-    }
-   },
-   {
-    "line": 10,
-    "print": "5 10"
-   },
-   {
-    "line": 11,
-    "print": "F 70"
-   }
-  ],
-  "output": "5 10\nF 70\n",
-  "error": null,
-  "dropped": 1
- },
  "C_charge": {
   "steps": [
    {
     "line": 0,
     "set": {
-     "level": "5"
+     "level": "35"
     }
    },
    {
@@ -179,34 +102,6 @@
    {
     "line": 11,
     "set": {
-     "level": "40"
-    }
-   },
-   {
-    "line": 2,
-    "test": "true"
-   },
-   {
-    "line": 3,
-    "test": "false"
-   },
-   {
-    "line": 5,
-    "test": "true"
-   },
-   {
-    "line": 6,
-    "set": {
-     "step": "30"
-    }
-   },
-   {
-    "line": 8,
-    "test": "false"
-   },
-   {
-    "line": 11,
-    "set": {
      "level": "70"
     }
    },
@@ -224,7 +119,13 @@
    },
    {
     "line": 8,
-    "test": "false"
+    "test": "true"
+   },
+   {
+    "line": 9,
+    "set": {
+     "step": "30"
+    }
    },
    {
     "line": 11,
@@ -250,7 +151,7 @@
    {
     "line": 0,
     "set": {
-     "mode": "4"
+     "mode": "3"
     }
    },
    {
@@ -263,34 +164,15 @@
     "line": 3
    },
    {
-    "line": 7,
-    "set": {
-     "sum": "1"
-    }
-   },
-   {
-    "line": 9,
-    "set": {
-     "mode": "3"
-    }
-   },
-   {
-    "line": 10,
-    "test": "true"
-   },
-   {
-    "line": 3
-   },
-   {
     "line": 4,
     "set": {
-     "sum": "9"
+     "sum": "8"
     }
    },
    {
     "line": 5,
     "set": {
-     "sum": "13"
+     "sum": "12"
     }
    },
    {
@@ -309,7 +191,7 @@
    {
     "line": 5,
     "set": {
-     "sum": "17"
+     "sum": "16"
     }
    },
    {
@@ -328,13 +210,13 @@
    {
     "line": 6,
     "set": {
-     "sum": "19"
+     "sum": "18"
     }
    },
    {
     "line": 7,
     "set": {
-     "sum": "20"
+     "sum": "19"
     }
    },
    {
@@ -349,12 +231,12 @@
    },
    {
     "line": 11,
-    "print": "0 20"
+    "print": "0 19"
    }
   ],
-  "output": "0 20\n",
+  "output": "0 19\n",
   "error": null,
-  "dropped": 7
+  "dropped": 4
  },
  "C_grid": {
   "steps": [
@@ -425,64 +307,9 @@
    },
    {
     "line": 1,
-    "test": "true",
+    "test": "false",
     "set": {
      "r": "3"
-    }
-   },
-   {
-    "line": 2,
-    "test": "false"
-   },
-   {
-    "line": 5,
-    "test": "true",
-    "set": {
-     "c": "1"
-    }
-   },
-   {
-    "line": 6,
-    "test": "false"
-   },
-   {
-    "line": 9,
-    "set": {
-     "sum": "4"
-    }
-   },
-   {
-    "line": 5,
-    "test": "true",
-    "set": {
-     "c": "2"
-    }
-   },
-   {
-    "line": 6,
-    "test": "false"
-   },
-   {
-    "line": 9,
-    "set": {
-     "sum": "10"
-    }
-   },
-   {
-    "line": 5,
-    "test": "false",
-    "set": {
-     "c": "3"
-    }
-   },
-   {
-    "line": 1,
-    "test": "false",
-    "unset": [
-     "c"
-    ],
-    "set": {
-     "r": "4"
     }
    },
    {
@@ -490,245 +317,10 @@
     "unset": [
      "r"
     ],
-    "print": "10"
+    "print": "1"
    }
   ],
-  "output": "10\n",
-  "error": null,
-  "dropped": 1
- },
- "C_time": {
-  "steps": [
-   {
-    "line": 0,
-    "set": {
-     "t[0]": "75",
-     "t[1]": "59",
-     "t[2]": "1"
-    }
-   },
-   {
-    "line": 1,
-    "set": {
-     "i": "0"
-    }
-   },
-   {
-    "line": 2,
-    "test": "true"
-   },
-   {
-    "line": 3,
-    "set": {
-     "t[1]": "60"
-    }
-   },
-   {
-    "line": 4,
-    "set": {
-     "t[0]": "15"
-    }
-   },
-   {
-    "line": 5,
-    "set": {
-     "i": "1"
-    }
-   },
-   {
-    "line": 2,
-    "test": "true"
-   },
-   {
-    "line": 3,
-    "set": {
-     "t[2]": "2"
-    }
-   },
-   {
-    "line": 4,
-    "set": {
-     "t[1]": "0"
-    }
-   },
-   {
-    "line": 5,
-    "set": {
-     "i": "2"
-    }
-   },
-   {
-    "line": 2,
-    "test": "false"
-   },
-   {
-    "line": 7,
-    "test": "true"
-   },
-   {
-    "line": 8,
-    "print": "2 ",
-    "end": ""
-   },
-   {
-    "line": 9,
-    "set": {
-     "i": "1"
-    }
-   },
-   {
-    "line": 7,
-    "test": "true"
-   },
-   {
-    "line": 8,
-    "print": "0 ",
-    "end": ""
-   },
-   {
-    "line": 9,
-    "set": {
-     "i": "0"
-    }
-   },
-   {
-    "line": 7,
-    "test": "true"
-   },
-   {
-    "line": 8,
-    "print": "15 ",
-    "end": ""
-   },
-   {
-    "line": 9,
-    "set": {
-     "i": "-1"
-    }
-   },
-   {
-    "line": 7,
-    "test": "false"
-   },
-   {
-    "line": 11,
-    "print": ""
-   }
-  ],
-  "output": "2 0 15 \n",
-  "error": null,
-  "dropped": 1
- },
- "C_cut": {
-  "steps": [
-   {
-    "line": 0,
-    "set": {
-     "s": "\"T2-K\""
-    }
-   },
-   {
-    "line": 1,
-    "set": {
-     "n": "0"
-    }
-   },
-   {
-    "line": 2,
-    "set": {
-     "i": "0"
-    }
-   },
-   {
-    "line": 3,
-    "test": "true"
-   },
-   {
-    "line": 4,
-    "test": "false"
-   },
-   {
-    "line": 7,
-    "set": {
-     "n": "1"
-    }
-   },
-   {
-    "line": 9,
-    "set": {
-     "i": "1"
-    }
-   },
-   {
-    "line": 3,
-    "test": "true"
-   },
-   {
-    "line": 4,
-    "test": "false"
-   },
-   {
-    "line": 7,
-    "set": {
-     "n": "2"
-    }
-   },
-   {
-    "line": 9,
-    "set": {
-     "i": "2"
-    }
-   },
-   {
-    "line": 3,
-    "test": "true"
-   },
-   {
-    "line": 4,
-    "test": "true"
-   },
-   {
-    "line": 5,
-    "set": {
-     "s": "\"T2\""
-    }
-   },
-   {
-    "line": 9,
-    "set": {
-     "i": "3"
-    }
-   },
-   {
-    "line": 3,
-    "test": "true"
-   },
-   {
-    "line": 4,
-    "test": "false"
-   },
-   {
-    "line": 7,
-    "set": {
-     "n": "3"
-    }
-   },
-   {
-    "line": 9,
-    "set": {
-     "i": "4"
-    }
-   },
-   {
-    "line": 3,
-    "test": "false"
-   },
-   {
-    "line": 11,
-    "print": "T2 3 4"
-   }
-  ],
-  "output": "T2 3 4\n",
+  "output": "1\n",
   "error": null,
   "dropped": 1
  },
@@ -883,6 +475,83 @@
   "error": null,
   "dropped": 1
  },
+ "C_time": {
+  "steps": [
+   {
+    "line": 0,
+    "set": {
+     "t[0]": "75",
+     "t[1]": "59",
+     "t[2]": "1"
+    }
+   },
+   {
+    "line": 1,
+    "set": {
+     "i": "0"
+    }
+   },
+   {
+    "line": 2,
+    "test": "true"
+   },
+   {
+    "line": 3,
+    "set": {
+     "t[1]": "60"
+    }
+   },
+   {
+    "line": 4,
+    "set": {
+     "t[0]": "15"
+    }
+   },
+   {
+    "line": 5,
+    "set": {
+     "i": "1"
+    }
+   },
+   {
+    "line": 2,
+    "test": "true"
+   },
+   {
+    "line": 3,
+    "set": {
+     "t[2]": "2"
+    }
+   },
+   {
+    "line": 4,
+    "set": {
+     "t[1]": "0"
+    }
+   },
+   {
+    "line": 5,
+    "set": {
+     "i": "2"
+    }
+   },
+   {
+    "line": 2,
+    "test": "false"
+   },
+   {
+    "line": 7,
+    "print": "2 0"
+   },
+   {
+    "line": 8,
+    "print": "15"
+   }
+  ],
+  "output": "2 0\n15\n",
+  "error": null,
+  "dropped": 1
+ },
  "C_bits": {
   "steps": [
    {
@@ -894,7 +563,7 @@
    {
     "line": 1,
     "set": {
-     "mask": "0x20"
+     "mask": "0x40"
     }
    },
    {
@@ -909,32 +578,12 @@
    },
    {
     "line": 4,
-    "test": "false"
-   },
-   {
-    "line": 7,
-    "set": {
-     "mask": "0x40"
-    }
-   },
-   {
-    "line": 8,
-    "set": {
-     "n": "255"
-    }
-   },
-   {
-    "line": 3,
-    "test": "true"
-   },
-   {
-    "line": 4,
     "test": "true"
    },
    {
     "line": 5,
     "set": {
-     "reg": "0x40"
+     "reg": "0x1A"
     }
    },
    {
@@ -946,7 +595,7 @@
    {
     "line": 8,
     "set": {
-     "n": "0"
+     "n": "255"
     }
    },
    {
@@ -966,7 +615,7 @@
    {
     "line": 8,
     "set": {
-     "n": "1"
+     "n": "0"
     }
    },
    {
@@ -975,10 +624,10 @@
    },
    {
     "line": 10,
-    "print": "40 1"
+    "print": "1A 0"
    }
   ],
-  "output": "40 1\n",
+  "output": "1A 0\n",
   "error": null,
   "dropped": 1
  }

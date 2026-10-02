@@ -1,21 +1,23 @@
 # Trace challenges
 
-Each chapter with programs has a lesson **"Trace challenges"** (`id: "trace"`). It is placed after the last content lesson and before "Chapter practice". The lecturer uses it at the end of a class: the students trace a program on paper, and the lecturer reveals the rows of the table in instructor mode.
+Each chapter with programs has a lesson **"Trace challenges"** (`id: "trace"`). It is placed after the last content lesson and before "Chapter practice". The lecturer uses it at the end of a class: the students trace a program on paper, and the lecturer reveals the rows of the table in instructor mode. The lesson is eight exercise slides, with no introduction.
 
 `js/content/topic02.js` (Lesson 9) with `tools/traces/t02.py` is the reference. Copy its patterns.
 
-## What the lecturer asked for (2026-10-02)
+## What the lecturer asked for (2026-10-02, revised 2026-10-03)
 
-- Ten programs for each chapter, harder than the trace exercises inside the lessons.
-- The programs train **accuracy in the content of the chapter**: each program applies rules that the chapter teaches, and has at least one line that students often trace wrongly (a "trap"). The trap is a rule of the chapter, never a trick outside it.
-- There is no limit on the number of rows. A long trace is welcome when every part of it is interesting: a loop where the values change in a new way, a branch that goes another way, a call that returns to another line. A long trace that repeats the same step many times is boring: reduce the number of iterations.
-- The lesson is in levels. Each level names the lessons that it uses, so that a level can be done at the end of the class that finishes those lessons. A program of a level uses only statements taught up to the last lesson of the level (and in earlier chapters).
+- **Eight programs** for each chapter, harder than the trace exercises inside the lessons, in order from easy to difficult.
+- The programs train **accuracy in the content of the chapter**: each program applies rules that the chapter teaches, and has at least one line that students often trace wrongly. That line uses a rule of the chapter, never a trick outside it.
+- **Length:** 8 to 16 rows, about 12 for a harder program. Never more than 20 rows. A loop has 2 to 4 iterations, and each iteration shows something new.
+- **Direct questions only.** The students find the values and the output. There is no "find the error" question: no "first wrong value", no "corrected line", no program with a bug to repair.
+- **One or two "missing lines" questions** in each chapter (`missing=[4, 6]`): the table is complete, and two or three lines of the program are empty boxes. The students write the lines from the values of their rows. Choose lines that their rows fix without doubt, and that need thought about the chapter's rules (a branch, a return, a conversion, a method call), not a single plain operator. They are the last programs of the lesson.
+- **The slides are minimal.** This is a lecture deck: no overview slide, no slide about levels, no rules of a trace (the lecturer shows one trace in class), no level in the title, no explanation of the answer.
 
 ## Files
 
 | File | Content |
 |---|---|
-| `tools/traces/tNN.py` | the ten programs of chapter NN, in the list `TRACES` |
+| `tools/traces/tNN.py` | the eight programs of chapter NN, in the list `TRACES` |
 | `tools/make-trace.py` | runs each program line by line and writes the trace objects into the topic file |
 | `js/content/topicNN.js` | the generated block (between two marker comments), and the lesson that uses it |
 
@@ -48,7 +50,7 @@ The tool prints an estimate after each trace ("width at 1280x720: about … px, 
 - Code lines: 30 characters or fewer is safe. A longer line costs 13 px for each character.
 - Side layout: the program has 14 lines or fewer.
 - Variables: each one is a column of at least 102 px. A long value makes its column wider in every row: a list `[24, 18, 20]` needs about 200 px. Use short lists (3 or 4 small numbers) and short strings, and at most 4 or 5 variables. `hide=["name"]` removes a column that teaches nothing.
-- Rows: any number, but see "boring" above. More than about 30 rows is rarely worth it.
+- Rows: 20 at most (the tool reports "TOO LONG"), 8 to 16 preferred.
 - Output: short lines (a long line makes the Output column wide).
 
 ## The program
@@ -58,27 +60,25 @@ The tool prints an estimate after each trace ("width at 1280x720: about … px, 
 - Simple engineering data where it is natural (voltage, current, temperature, sensor readings, battery level, tank level). The context must not make the trace harder. Short abstract names (`a`, `b`, `n`) are acceptable in a puzzle about operators.
 - Descriptive `snake_case` names, kept short because of the width.
 - `input()`: give the typed lines in `inputs=[...]`, and state them in the task text ("Test input: 12 and 5.").
-- Each challenge is harder than the one before it inside its level, and the levels follow the order of the lessons.
+- The programs follow the order of the lessons of the chapter, and each one is a little harder than the one before it.
 - Do not reuse a program that the chapter already shows (an example, an exercise, a practice problem), and do not give away a practice problem of the chapter.
-- At least one challenge of the last level contains an error for the students to find: a logical error (the task gives the correct result; the students name the line with the first wrong value), or a program that stops (`error="name"`; the students find the line that stops and name the error), when the chapter or an earlier one has taught the error.
-- One or two challenges may be "a program without a name": the task also asks what the program computes.
+- A program may stop with an error that the chapter teaches (`error="name"`): the last row then has the name of the error in the column Output. Use it at most once in a chapter, and only when the students can find the line by tracing. It needs no extra task text.
 
 ## The lesson in the topic file
 
 Copy the structure of Lesson 9 of `topic02.js`:
 
-1. Above `App.registerTopic`: the two marker comments (the tool fills the block between them), the constant `TRACE` (the common task text), and the helper `CH`.
-2. The lesson `{ id: "trace", title: "Trace challenges", sub, keywords, deck: [...] }`, placed directly before the lesson "Chapter practice".
-3. Slide 1, `kind: "overview"`: one sentence about the lesson, and the ordered list "Rules of a trace" (5 items or fewer). From Topic 03 on, the rules say how to fill the column Line (side layout) and the column Condition.
-4. Slide 2, `kind: "concept"`, "The levels": a table Level / Lessons / Programs / Subject.
-5. Ten slides, `kind: "exercise"`, with the title `"Level N: short name"`, no `part`, the blocks `[T(task), CH(C_name)]`, and `answer: [...]`.
-   - `CH(C_name, 3)` keeps the first three rows complete (the default is one row). Use it when the first rows hold no value, for example the `def` lines of a program with functions; say the number in the task text.
-   - The title must not give away the trap.
-   - The task: `TRACE`, plus numbered lines for the test input or an extra question. An error challenge has its own task text.
-   - `answer` (shown only in instructor mode by "Show answer"): one to four short sentences or list items that name the trap and the rule behind it, with the line numbers. It does not repeat the table.
-6. The summary slide of the lesson before it: its "Next lesson" note names **Trace challenges**. Update the lesson order in the header comment of the file and in `intro`, and the number in the comment banner of "Chapter practice".
+1. Above `App.registerTopic`: the two marker comments (the tool fills the block between them) and the helper `CH`.
+2. The lesson `{ id: "trace", title: "Trace challenges", sub, keywords, deck: [...] }`, placed directly before the lesson "Chapter practice". `sub` is the only instruction of the lesson (it is on the cover slide): "Eight programs to trace on paper: the value of every variable and the output, line by line."
+3. The deck has **eight slides and nothing else**, each `{ kind: "exercise", title, blocks: [...] }`:
+   - `title`: a short name of the program, with a capital letter ("Two tanks"). No level, no number, and nothing that gives away the difficult line.
+   - `blocks`: `[CH(C_name)]`. Add one line of text before it only when the students need a fact that the slide does not show: `T("Test input: 12 and 5.")`. A file that the program reads is shown by the table itself (the tool passes `files` on), not described in a sentence.
+   - A "missing lines" slide: `[T("Write lines 4 and 6 of the program."), CH(C_name)]` and `answer: [CODE("line 4
+line 6", null, "lines 4 and 6")]`. No other slide has `answer`: the revealed table is the answer.
+   - `CH(C_name, 3)` keeps the first three rows complete (the default is one row). Use it when the first rows hold no value, for example the `def` lines of a program with functions.
+4. The summary slide of the lesson before it: its "Next lesson" note names **Trace challenges** ("Eight programs to trace by hand."). The lesson order in the header comment of the file and in `intro` names the lesson.
 
-Wording: follow `CHAPTER-IMPROVEMENT-PROMPT.md` §2 (simple, direct, formal; no em-dash; no rhetorical questions) and §5 "Wording of instructions" (one plain task sentence, then numbered requirements; the students are not native speakers of English). Write code as single-quoted JS strings when it contains double quotes; escape `<` in HTML.
+Wording, where text is needed: follow `CHAPTER-IMPROVEMENT-PROMPT.md` §2 and §5 "Wording of instructions". Write code as single-quoted JS strings when it contains double quotes; escape `<` in HTML.
 
 ## After editing
 

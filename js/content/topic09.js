@@ -164,109 +164,60 @@
   const PROGRAM_MODIFY = [P_VALID, P_READ, P_STATS, P_REPORT, P_MAIN("30.2\\n28.9\\n-99\\n31.5\\n", "fault\\n27.4\\n33.0\\n")].join("\n\n");
 
   /* ---------- trace challenges (generated: edit tools/traces/t09.py, then run "python tools/make-trace.py t09") ---------- */
-  // Level 1. Halving with >=: the loop also runs for n = 1, and 3 // 2 is 1.
+  // Halving with >=: the loop also runs for n = 1. 7 // 2 is 3, 3 // 2 is 1, and 1 // 2 is 0.
   const C_halve = {
     side: true,
-    code: ["n = 12", "count = 0", "while n >= 1:", "    count = count + 1", "    n = n // 2", "print(\"Count:\", count)"],
+    code: ["n = 7", "count = 0", "while n >= 1:", "    count = count + 1", "    n = n // 2", "print(\"Count:\", count)"],
     steps: [
-      { line: 0, set: { n: "12" } },
+      { line: 0, set: { n: "7" } },
       { line: 1, set: { count: "0" } },
       { line: 2, test: "True" },
       { line: 3, set: { count: "1" } },
-      { line: 4, set: { n: "6" } },
-      { line: 2, test: "True" },
-      { line: 3, set: { count: "2" } },
       { line: 4, set: { n: "3" } },
       { line: 2, test: "True" },
-      { line: 3, set: { count: "3" } },
+      { line: 3, set: { count: "2" } },
       { line: 4, set: { n: "1" } },
       { line: 2, test: "True" },
-      { line: 3, set: { count: "4" } },
+      { line: 3, set: { count: "3" } },
       { line: 4, set: { n: "0" } },
       { line: 2, test: "False" },
-      { line: 5, print: "Count: 4" },
+      { line: 5, print: "Count: 3" },
     ],
   };
 
-  // Level 1. The inner range depends on i: 3 + 2 + 1 + 0 steps, not 4 x 4. For i = 3 the inner loop is empty.
-  const C_pairs = {
+  // Linear search with break: the search stops at the first match, after 2 comparisons. The for line does not run again.
+  const C_linear = {
     side: true,
-    code: ["n = 4", "pairs = 0", "for i in range(n):", "    for j in range(i + 1, n):", "        pairs = pairs + 1", "print(\"Pairs:\", pairs)"],
-    steps: [
-      { line: 0, set: { n: "4" } },
-      { line: 1, set: { pairs: "0" } },
-      { line: 2, set: { i: "0" } },
-      { line: 3, set: { j: "1" } },
-      { line: 4, set: { pairs: "1" } },
-      { line: 3, set: { j: "2" } },
-      { line: 4, set: { pairs: "2" } },
-      { line: 3, set: { j: "3" } },
-      { line: 4, set: { pairs: "3" } },
-      { line: 3 },
-      { line: 2, set: { i: "1" } },
-      { line: 3, set: { j: "2" } },
-      { line: 4, set: { pairs: "4" } },
-      { line: 3, set: { j: "3" } },
-      { line: 4, set: { pairs: "5" } },
-      { line: 3 },
-      { line: 2, set: { i: "2" } },
-      { line: 3, set: { j: "3" } },
-      { line: 4, set: { pairs: "6" } },
-      { line: 3 },
-      { line: 2, set: { i: "3" } },
-      { line: 3 },
-      { line: 2 },
-      { line: 5, print: "Pairs: 6" },
-    ],
-  };
-
-  // Level 2. A search that continues keeps the last match; a search with break stops at the first match.
-  const C_match = {
-    side: true,
-    code: ["codes = [8, 22, 22, 15]", "last = -1", "for i in range(len(codes)):", "    if codes[i] == 22:", "        last = i", "first = -1", "for i in range(len(codes)):", "    if codes[i] == 22:", "        first = i", "        break", "print(first, last)"],
+    code: ["codes = [8, 22, 15, 22]", "pos = -1", "steps = 0", "for i in range(len(codes)):", "    steps = steps + 1", "    if codes[i] == 22:", "        pos = i", "        break", "print(pos, steps)"],
     steps: [
       { line: 0 },
-      { line: 1, set: { last: "-1" } },
-      { line: 2, set: { i: "0" } },
-      { line: 3, test: "False" },
-      { line: 2, set: { i: "1" } },
-      { line: 3, test: "True" },
-      { line: 4, set: { last: "1" } },
-      { line: 2, set: { i: "2" } },
-      { line: 3, test: "True" },
-      { line: 4, set: { last: "2" } },
-      { line: 2, set: { i: "3" } },
-      { line: 3, test: "False" },
-      { line: 2 },
-      { line: 5, set: { first: "-1" } },
-      { line: 6, set: { i: "0" } },
-      { line: 7, test: "False" },
-      { line: 6, set: { i: "1" } },
-      { line: 7, test: "True" },
-      { line: 8, set: { first: "1" } },
-      { line: 9 },
-      { line: 10, print: "1 2" },
+      { line: 1, set: { pos: "-1" } },
+      { line: 2, set: { steps: "0" } },
+      { line: 3, set: { i: "0" } },
+      { line: 4, set: { steps: "1" } },
+      { line: 5, test: "False" },
+      { line: 3, set: { i: "1" } },
+      { line: 4, set: { steps: "2" } },
+      { line: 5, test: "True" },
+      { line: 6, set: { pos: "1" } },
+      { line: 7 },
+      { line: 8, print: "1 2" },
     ],
   };
 
-  // Level 2. Binary search, target present: low moves, high moves, then low == high and one element is left.
+  // Binary search, target present: low moves, then (3 + 4) // 2 is 3. mid is an index, and the program compares ids[mid].
   const C_binary = {
     side: true,
-    code: ["ids = [4, 9, 13, 17, 22, 28]", "low = 0", "high = len(ids) - 1", "while low <= high:", "    mid = (low + high) // 2", "    if ids[mid] == 17:", "        print(\"Found at\", mid)", "        break", "    elif ids[mid] < 17:", "        low = mid + 1", "    else:", "        high = mid - 1", "if low > high:", "    print(\"Not found\")"],
+    code: ["ids = [4, 9, 13, 17, 22]", "low = 0", "high = len(ids) - 1", "while low <= high:", "    mid = (low + high) // 2", "    if ids[mid] == 17:", "        print(\"Found at\", mid)", "        break", "    elif ids[mid] < 17:", "        low = mid + 1", "    else:", "        high = mid - 1", "if low > high:", "    print(\"Not found\")"],
     steps: [
       { line: 0 },
       { line: 1, set: { low: "0" } },
-      { line: 2, set: { high: "5" } },
+      { line: 2, set: { high: "4" } },
       { line: 3, test: "True" },
       { line: 4, set: { mid: "2" } },
       { line: 5, test: "False" },
       { line: 8, test: "True" },
       { line: 9, set: { low: "3" } },
-      { line: 3, test: "True" },
-      { line: 4, set: { mid: "4" } },
-      { line: 5, test: "False" },
-      { line: 8, test: "False" },
-      { line: 11, set: { high: "3" } },
       { line: 3, test: "True" },
       { line: 4, set: { mid: "3" } },
       { line: 5, test: "True" },
@@ -276,202 +227,127 @@
     ],
   };
 
-  // Level 2. Binary search, target absent: the loop ends when low is greater than high.
+  // Binary search, target absent: high moves, then low moves. The loop ends when low is greater than high.
   const C_absent = {
     side: true,
-    code: ["ids = [3, 8, 12, 17, 21, 26]", "low = 0", "high = len(ids) - 1", "while low <= high:", "    mid = (low + high) // 2", "    if ids[mid] == 10:", "        print(\"Found at\", mid)", "        break", "    elif ids[mid] < 10:", "        low = mid + 1", "    else:", "        high = mid - 1", "if low > high:", "    print(\"Not found\")"],
+    code: ["ids = [3, 8, 12, 17]", "low = 0", "high = len(ids) - 1", "while low <= high:", "    mid = (low + high) // 2", "    if ids[mid] == 5:", "        print(\"Found at\", mid)", "        break", "    elif ids[mid] < 5:", "        low = mid + 1", "    else:", "        high = mid - 1", "if low > high:", "    print(\"Not found\")"],
     steps: [
       { line: 0 },
       { line: 1, set: { low: "0" } },
-      { line: 2, set: { high: "5" } },
+      { line: 2, set: { high: "3" } },
       { line: 3, test: "True" },
-      { line: 4, set: { mid: "2" } },
+      { line: 4, set: { mid: "1" } },
       { line: 5, test: "False" },
       { line: 8, test: "False" },
-      { line: 11, set: { high: "1" } },
+      { line: 11, set: { high: "0" } },
       { line: 3, test: "True" },
       { line: 4, set: { mid: "0" } },
       { line: 5, test: "False" },
       { line: 8, test: "True" },
       { line: 9, set: { low: "1" } },
-      { line: 3, test: "True" },
-      { line: 4, set: { mid: "1" } },
-      { line: 5, test: "False" },
-      { line: 8, test: "True" },
-      { line: 9, set: { low: "2" } },
       { line: 3, test: "False" },
       { line: 12, test: "True" },
       { line: 13, print: "Not found" },
     ],
   };
 
-  // Level 2. An error: low = mid keeps the element mid, so low, high, and mid stop changing. The counter step ends the loop.
-  const C_stuck = {
-    side: true,
-    code: ["ids = [4, 9, 13, 17]", "low = 0", "high = len(ids) - 1", "step = 0", "while low <= high and step < 4:", "    step = step + 1", "    mid = (low + high) // 2", "    if ids[mid] == 17:", "        print(\"Found at\", mid)", "        break", "    elif ids[mid] < 17:", "        low = mid", "    else:", "        high = mid - 1"],
-    steps: [
-      { line: 0 },
-      { line: 1, set: { low: "0" } },
-      { line: 2 },
-      { line: 3, set: { step: "0" } },
-      { line: 4, test: "True" },
-      { line: 5, set: { step: "1" } },
-      { line: 6, set: { mid: "1" } },
-      { line: 7, test: "False" },
-      { line: 10, test: "True" },
-      { line: 11, set: { low: "1" } },
-      { line: 4, test: "True" },
-      { line: 5, set: { step: "2" } },
-      { line: 6, set: { mid: "2" } },
-      { line: 7, test: "False" },
-      { line: 10, test: "True" },
-      { line: 11, set: { low: "2" } },
-      { line: 4, test: "True" },
-      { line: 5, set: { step: "3" } },
-      { line: 6, set: { mid: "2" } },
-      { line: 7, test: "False" },
-      { line: 10, test: "True" },
-      { line: 11, set: { low: "2" } },
-      { line: 4, test: "True" },
-      { line: 5, set: { step: "4" } },
-      { line: 6, set: { mid: "2" } },
-      { line: 7, test: "False" },
-      { line: 10, test: "True" },
-      { line: 11, set: { low: "2" } },
-      { line: 4, test: "False" },
-    ],
-  };
-
-  // Level 3. Pass 1 and pass 2 as two loops: 3 comparisons, then 2. A swap with t takes three lines.
-  const C_passes = {
-    side: true,
-    code: ["a = [2, 4, 1, 3]", "n = len(a)", "for j in range(n - 1):", "    if a[j] > a[j + 1]:", "        t = a[j]", "        a[j] = a[j + 1]", "        a[j + 1] = t", "for j in range(n - 2):", "    if a[j] > a[j + 1]:", "        t = a[j]", "        a[j] = a[j + 1]", "        a[j + 1] = t", "print(a)"],
-    steps: [
-      { line: 0, set: { a: "[2, 4, 1, 3]" } },
-      { line: 1 },
-      { line: 2, set: { j: "0" } },
-      { line: 3, test: "False" },
-      { line: 2, set: { j: "1" } },
-      { line: 3, test: "True" },
-      { line: 4, set: { t: "4" } },
-      { line: 5, set: { a: "[2, 1, 1, 3]" } },
-      { line: 6, set: { a: "[2, 1, 4, 3]" } },
-      { line: 2, set: { j: "2" } },
-      { line: 3, test: "True" },
-      { line: 4, set: { t: "4" } },
-      { line: 5, set: { a: "[2, 1, 3, 3]" } },
-      { line: 6, set: { a: "[2, 1, 3, 4]" } },
-      { line: 2 },
-      { line: 7, set: { j: "0" } },
-      { line: 8, test: "True" },
-      { line: 9, set: { t: "2" } },
-      { line: 10, set: { a: "[1, 1, 3, 4]" } },
-      { line: 11, set: { a: "[1, 2, 3, 4]" } },
-      { line: 7, set: { j: "1" } },
-      { line: 8, test: "False" },
-      { line: 7 },
-      { line: 12, print: "[1, 2, 3, 4]" },
-    ],
-  };
-
-  // Level 3. Bubble sort with nested loops: i counts the passes from 1, and pass i compares n - i pairs. Pass 2 runs although the list is sorted.
+  // Bubble sort with nested loops: i counts the passes from 1, and pass i compares n - i pairs. Pass 2 runs although the list is sorted.
   const C_bubble = {
     side: true,
-    code: ["a = [3, 1, 2]", "n = len(a)", "for i in range(1, n):", "    for j in range(n - i):", "        if a[j] > a[j + 1]:", "            t = a[j]", "            a[j] = a[j + 1]", "            a[j + 1] = t", "print(a)"],
+    code: ["a = [4, 9, 6]", "n = len(a)", "for i in range(1, n):", "    for j in range(n - i):", "        if a[j] > a[j + 1]:", "            t = a[j]", "            a[j] = a[j + 1]", "            a[j + 1] = t", "print(a)"],
     steps: [
-      { line: 0, set: { a: "[3, 1, 2]" } },
+      { line: 0, set: { a: "[4, 9, 6]" } },
       { line: 1 },
       { line: 2, set: { i: "1" } },
       { line: 3, set: { j: "0" } },
-      { line: 4, test: "True" },
-      { line: 5 },
-      { line: 6, set: { a: "[1, 1, 2]" } },
-      { line: 7, set: { a: "[1, 3, 2]" } },
+      { line: 4, test: "False" },
       { line: 3, set: { j: "1" } },
       { line: 4, test: "True" },
       { line: 5 },
-      { line: 6, set: { a: "[1, 2, 2]" } },
-      { line: 7, set: { a: "[1, 2, 3]" } },
+      { line: 6, set: { a: "[4, 6, 6]" } },
+      { line: 7, set: { a: "[4, 6, 9]" } },
       { line: 3 },
       { line: 2, set: { i: "2" } },
       { line: 3, set: { j: "0" } },
       { line: 4, test: "False" },
       { line: 3 },
       { line: 2 },
-      { line: 8, print: "[1, 2, 3]" },
+      { line: 8, print: "[4, 6, 9]" },
     ],
   };
 
-  // Level 4. Two list searches: break ends only the inner loop; an absent name costs n comparisons.
-  const C_lookup = {
+  // Two functions: each call runs line 2 or line 5, then the program continues after the call. 1 <= 7 <= 5 is False; / gives a float.
+  const C_valid = {
     side: true,
-    code: ["names = [\"pump\", \"fan\", \"lamp\"]", "volts = [220, 110, 12]", "steps = 0", "for q in [\"fan\", \"led\"]:", "    for i in range(len(names)):", "        steps = steps + 1", "        if names[i] == q:", "            print(q, volts[i])", "            break", "print(\"Steps:\", steps)"],
-    steps: [
-      { line: 0 },
-      { line: 1 },
-      { line: 2, set: { steps: "0" } },
-      { line: 3, set: { q: "'fan'" } },
-      { line: 4, set: { i: "0" } },
-      { line: 5, set: { steps: "1" } },
-      { line: 6, test: "False" },
-      { line: 4, set: { i: "1" } },
-      { line: 5, set: { steps: "2" } },
-      { line: 6, test: "True" },
-      { line: 7, print: "fan 110" },
-      { line: 8 },
-      { line: 3, set: { q: "'led'" } },
-      { line: 4, set: { i: "0" } },
-      { line: 5, set: { steps: "3" } },
-      { line: 6, test: "False" },
-      { line: 4, set: { i: "1" } },
-      { line: 5, set: { steps: "4" } },
-      { line: 6, test: "False" },
-      { line: 4, set: { i: "2" } },
-      { line: 5, set: { steps: "5" } },
-      { line: 6, test: "False" },
-      { line: 4 },
-      { line: 3 },
-      { line: 9, print: "Steps: 5" },
-    ],
-  };
-
-  // Level 4. Two functions: the second log has no valid reading, so mean() divides by zero. Line 5 stops; line 13 called it.
-  const C_logs = {
-    side: true,
-    code: ["def valid(v):", "    return 1 <= v <= 5", "", "def mean(a):", "    return sum(a) / len(a)", "", "logs = [[5, 7], [0, 9]]", "for log in logs:", "    kept = []", "    for r in log:", "        if valid(r):", "            kept.append(r)", "    print(mean(kept))"],
+    code: ["def valid(v):", "    return 1 <= v <= 5", "", "def mean(a):", "    return sum(a) / len(a)", "", "kept = []", "for r in [5, 7]:", "    if valid(r):", "        kept.append(r)", "print(mean(kept))"],
     steps: [
       { line: 0 },
       { line: 3 },
-      { line: 6 },
-      { line: 7, set: { log: "[5, 7]" } },
-      { line: 8, set: { kept: "[]" } },
-      { line: 9, set: { r: "5" } },
-      { line: 10, test: "True" },
+      { line: 6, set: { kept: "[]" } },
+      { line: 7, set: { r: "5" } },
+      { line: 8, test: "True" },
       { line: 1 },
-      { line: 11, set: { kept: "[5]" } },
-      { line: 9, set: { r: "7" } },
-      { line: 10, test: "False" },
+      { line: 9, set: { kept: "[5]" } },
+      { line: 7, set: { r: "7" } },
+      { line: 8, test: "False" },
       { line: 1 },
-      { line: 9 },
-      { line: 12 },
+      { line: 7 },
+      { line: 10 },
       { line: 4, print: "5.0" },
-      { line: 7, set: { log: "[0, 9]" } },
-      { line: 8, set: { kept: "[]" } },
-      { line: 9, set: { r: "0" } },
-      { line: 10, test: "False" },
+    ],
+  };
+
+  // Missing lines 6 and 11: low = mid + 1. Its two rows: mid is 1 and low becomes 2; mid is 2 and low becomes 3.
+  const C_low = {
+    side: true,
+    missing: [5, 10],
+    code: ["temps = [15, 18, 22]", "low = 0", "high = len(temps) - 1", "pos = -1", "while low <= high:", "    mid = (low + high) // 2", "    if temps[mid] == 25:", "        pos = mid", "        break", "    elif temps[mid] < 25:", "        low = mid + 1", "    else:", "        high = mid - 1", "print(\"Position:\", pos)"],
+    steps: [
+      { line: 0 },
+      { line: 1, set: { low: "0" } },
+      { line: 2, set: { high: "2" } },
+      { line: 3, set: { pos: "-1" } },
+      { line: 4, test: "True" },
+      { line: 5, set: { mid: "1" } },
+      { line: 6, test: "False" },
+      { line: 9, test: "True" },
+      { line: 10, set: { low: "2" } },
+      { line: 4, test: "True" },
+      { line: 5, set: { mid: "2" } },
+      { line: 6, test: "False" },
+      { line: 9, test: "True" },
+      { line: 10, set: { low: "3" } },
+      { line: 4, test: "False" },
+      { line: 13, print: "Position: -1" },
+    ],
+  };
+
+  // Missing lines 6 and 7: a[j] = a[j + 1], the second line of a swap with t. Its two rows: a[0] gets the value of a[1]; a[2] gets the value of a[3].
+  const C_swap = {
+    side: true,
+    missing: [5, 6],
+    code: ["a = [5, 2, 9, 3]", "n = len(a)", "for j in range(n - 1):", "    if a[j] > a[j + 1]:", "        t = a[j]", "        a[j] = a[j + 1]", "        a[j + 1] = t", "print(a)"],
+    steps: [
+      { line: 0, set: { a: "[5, 2, 9, 3]" } },
       { line: 1 },
-      { line: 9, set: { r: "9" } },
-      { line: 10, test: "False" },
-      { line: 1 },
-      { line: 9 },
-      { line: 12 },
-      { line: 4, print: "ZeroDivisionError" },
+      { line: 2, set: { j: "0" } },
+      { line: 3, test: "True" },
+      { line: 4, set: { t: "5" } },
+      { line: 5, set: { a: "[2, 2, 9, 3]" } },
+      { line: 6, set: { a: "[2, 5, 9, 3]" } },
+      { line: 2, set: { j: "1" } },
+      { line: 3, test: "False" },
+      { line: 2, set: { j: "2" } },
+      { line: 3, test: "True" },
+      { line: 4, set: { t: "9" } },
+      { line: 5, set: { a: "[2, 5, 3, 3]" } },
+      { line: 6, set: { a: "[2, 5, 3, 9]" } },
+      { line: 2 },
+      { line: 7, print: "[2, 5, 3, 9]" },
     ],
   };
   /* ---------- end of the generated traces ---------- */
 
-  // the task text of a trace challenge (Lesson 8). first: the complete rows, when more than one row is complete
-  const TRACE_CH = (first) => "Complete the trace table on paper. " + (first || "The first row is") + " complete.<br>1. Before the trace, write the output that you expect. Then complete the rows in order.";
   // side: the program is beside the table, and a blank row does not show which line runs
   // given: the number of rows that are complete (default 1)
   const CH = (trace, given) => W("traceTable", { trace, blank: true, given: given || 1, showCode: !!trace.side, hideLines: !!trace.side });
@@ -1385,7 +1261,7 @@
               "A traceback has one frame for the main program and one for each call that has not ended. Read from the bottom: the error, its line, then the call that led there.",
               "The main program is short: it calls the functions and passes each result to the next one.",
             ]),
-            NEXT("<b>Trace challenges</b>. Ten programs to trace by hand. They use the rules of all lessons of this chapter."),
+            NEXT("<b>Trace challenges</b>. Eight programs to trace by hand. They use the rules of all lessons of this chapter."),
           ] },
           { kind: "exercise", title: "Complete missing code", blocks: [
             PQ("Complete the function <code>statistics()</code>.<br>1. The function returns a dictionary with the keys readings, minimum, maximum, and average.<br>2. Round the average to 2 decimals.",
@@ -1406,125 +1282,17 @@
       {
         id: "trace",
         title: "Trace challenges",
-        sub: "Ten programs to execute by hand, in four levels.",
+        sub: "Eight programs to trace on paper: the value of every variable and the output, line by line.",
         keywords: "trace table trace the code execute by hand line condition loop steps linear search binary search bubble sort challenge",
         deck: [
-          { kind: "overview", title: "Trace challenges", blocks: [
-            T("A <b>trace</b> executes a program by hand, one line at a time. Each program in this lesson has at least one line that is easy to trace wrongly."),
-            L([
-              "Write one row for each line that runs. In the column <b>Line</b>, write the number of the line.",
-              "<code>if</code>, <code>elif</code>, <code>while</code>: write True or False in the column <b>Condition</b>. A line with only <code>else:</code> gets no row.",
-              "A <code>for</code> line gets a row each time it runs. It runs one last time when no value is left: no variable changes.",
-              "After each line, write the value of every variable: a list in full, and <code>–</code> for a variable that does not exist yet.",
-              "Write the output of a line exactly as the screen displays it.",
-            ], "Rules of a trace", true),
-          ] },
-          { kind: "concept", title: "The four levels", blocks: [
-            T("Each level uses only the lessons that it names. A level can be done when its lessons are complete."),
-            TB(["Level", "Lessons", "Programs", "Subject"], [
-              ["1", "1 and 2", "1 and 2", "counting steps: halving, and a loop inside a loop"],
-              ["2", "3", "3 to 6", "linear search, binary search, and a search with an error"],
-              ["3", "4", "7 and 8", "swaps, two passes, and bubble sort with nested loops"],
-              ["4", "5 to 7", "9 and 10", "the cost of a list search, and a program of functions that stops"],
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 1: halving", blocks: [
-            T(TRACE_CH() + "<br>2. Write the output of the program for <code>n = 24</code>."),
-            CH(C_halve),
-          ], answer: [
-            L([
-              "Line 3 uses <code>&gt;=</code>: the loop also runs when n is 1. It runs 4 times: 3 halvings from 12 down to 1, and one more.",
-              "Line 5: <code>3 // 2</code> → <code>1</code>, and <code>1 // 2</code> → <code>0</code>.",
-              "For n = 24, the output is <code>Count: 5</code>. Doubling n adds one step: O(log n).",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 1: a loop inside a loop", blocks: [
-            T(TRACE_CH() + "<br>2. Write the output of the program for <code>n = 10</code>."),
-            CH(C_pairs),
-          ], answer: [
-            L([
-              "The inner range starts at <code>i + 1</code>: line 5 runs 3, 2, 1, and 0 times. The total is 6, not 4 × 4.",
-              "For i = 3, <code>range(4, 4)</code> is empty: line 4 runs once, and j keeps the value 3.",
-              "For n = 10, the output is <code>Pairs: 45</code>: 9 + 8 + … + 1 = n(n − 1) / 2. The fastest-growing term is n²: O(n²).",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: two linear searches", blocks: [
-            T(TRACE_CH("The first two rows are") + "<br>2. The list <code>codes</code> does not change: the list has no column."),
-            CH(C_match, 2),
-          ], answer: [
-            L([
-              "Lines 3 to 5 have no <code>break</code>: the loop compares all 4 elements. Line 5 runs twice, so <code>last</code> is 1, then 2: the last match.",
-              "Line 10 ends the second loop at the first match, after 2 comparisons. Line 7 does not run again, and i keeps the value 1.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: binary search for 17", blocks: [
-            T(TRACE_CH("The first two rows are") + "<br>2. The list <code>ids</code> does not change: the list has no column."),
-            CH(C_binary, 2),
-          ], answer: [
-            L([
-              "Line 5: <code>(0 + 5) // 2</code> → <code>2</code>, because <code>//</code> rounds down. Then <code>(3 + 5) // 2</code> → <code>4</code>: mid is an index of the whole list.",
-              "Lines 6 and 9 compare the element <code>ids[mid]</code>, not the index: 13, then 22, then 17.",
-              "In iteration 3, low and high are both 3. <code>3 &lt;= 3</code> is True: one element is left, and it is the target.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: binary search for 10", blocks: [
-            T(TRACE_CH("The first two rows are") + "<br>2. The list <code>ids</code> does not change: the list has no column."),
-            CH(C_absent, 2),
-          ], answer: [
-            L([
-              "Iteration 1: <code>ids[2]</code> is 12. Lines 6 and 9 are both False, so line 12 runs: high is 1.",
-              "Iterations 2 and 3: 3 and 8 are less than 10, so low is 1, then 2. In iteration 3, low and high are both 1.",
-              "Then <code>2 &lt;= 1</code> is False: no element is left, and the loop ends without <code>break</code>. Line 13 is True only when the target is absent.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 2: a binary search with an error", blocks: [
-            T("The program must display <code>Found at 3</code>, but it displays nothing. The counter <code>step</code> ends the loop after 4 iterations.<br>1. Complete the trace table on paper. The first two rows are complete.<br>2. The list <code>ids</code> and the variable <code>high</code> have no column. <code>high</code> is always 3.<br>3. Write the number of the line with the error, and the corrected line."),
-            CH(C_stuck, 2),
-          ], answer: [
-            T("Line 12 has the error: <code>low = mid</code> keeps the element mid in the range. In iterations 3 and 4, low and mid stay at 2: the range does not become smaller. Without the counter <code>step</code>, the loop never ends. With the corrected line, iteration 3 has low = 3 and mid = 3: <code>Found at 3</code>."),
-            CODE("        low = mid + 1", null, "line 12, corrected"),
-          ] },
-          { kind: "exercise", title: "Level 3: two passes", blocks: [
-            T(TRACE_CH() + "<br>2. The variable <code>n</code> has no column: <code>n</code> is always 4."),
-            CH(C_passes),
-          ], answer: [
-            L([
-              "A swap takes three lines. After line 6, the list holds one value twice: [2, 1, 1, 3]. Line 7 stores the value that line 5 saved in t.",
-              "Pass 1 (lines 3 to 7) makes 3 comparisons. After the swap at j = 1, the value 4 is compared again at j = 2: the largest value moves to the end.",
-              "Pass 2 (lines 8 to 12) makes only 2 comparisons: <code>range(n - 2)</code> gives 0 and 1, because the last element is in its final place.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 3: bubble sort", blocks: [
-            T(TRACE_CH() + "<br>2. The variables <code>n</code> and <code>t</code> have no column. <code>n</code> is always 3."),
-            CH(C_bubble),
-          ], answer: [
-            L([
-              "Line 3: <code>range(1, 3)</code> gives 1 and 2. Here i is the number of the pass, and a list of 3 elements needs 2 passes.",
-              "Line 4: pass i compares n − i pairs: <code>range(2)</code>, then <code>range(1)</code>. The result is the same as <code>range(n - 1 - i)</code> with i from 0.",
-              "The list is sorted after pass 1. Pass 2 still runs, and its comparison is False: bubble sort always makes n − 1 passes.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: device voltages", blocks: [
-            T(TRACE_CH("The first three rows are") + "<br>2. The lists <code>names</code> and <code>volts</code> do not change: the lists have no column."),
-            CH(C_lookup, 3),
-          ], answer: [
-            L([
-              "\"fan\" is at index 1: 2 comparisons. Line 9 ends only the inner loop. Then line 4 takes the next name.",
-              "\"led\" is absent: the inner loop compares all 3 names, and line 5 runs a fourth time. Nothing is displayed for \"led\".",
-              "Two searches need 5 comparisons: a list search is O(n) for each name. A dictionary with the names as keys needs one lookup for each name.",
-            ]),
-          ] },
-          { kind: "exercise", title: "Level 4: the program stops", blocks: [
-            T("The program stops with an error message.<br>1. Complete the trace table on paper. The first four rows are complete.<br>2. The list <code>logs</code> and the parameters <code>v</code> and <code>a</code> have no column.<br>3. In the last row, write the name of the error in the column Output.<br>4. Write the number of the line of the main program that called the function."),
-            CH(C_logs, 4),
-          ], answer: [
-            L([
-              "First log: <code>1 &lt;= 5 &lt;= 5</code> is True, so 5 is kept; 7 is not valid. <code>mean([5])</code> is <code>5 / 1</code> → <code>5.0</code>: <code>/</code> gives a float.",
-              "Line 9 runs again for the second log: <code>kept</code> is empty again. 0 and 9 are not valid.",
-              "Line 5 stops with a <b>ZeroDivisionError</b>: <code>len([])</code> is 0. Line 13 of the main program called <code>mean</code>: the traceback has these two frames.",
-              "The main program must call <code>mean</code> only when <code>kept</code> has at least one reading (Lesson 7).",
-            ]),
-          ] },
+          { kind: "exercise", title: "Halving", blocks: [CH(C_halve)] },
+          { kind: "exercise", title: "Linear search", blocks: [CH(C_linear, 2)] },
+          { kind: "exercise", title: "Binary search for 17", blocks: [CH(C_binary, 2)] },
+          { kind: "exercise", title: "Binary search for 5", blocks: [CH(C_absent, 2)] },
+          { kind: "exercise", title: "Bubble sort", blocks: [CH(C_bubble)] },
+          { kind: "exercise", title: "Valid readings", blocks: [CH(C_valid, 3)] },
+          { kind: "exercise", title: "Binary search for 25", blocks: [T("Write lines 6 and 11 of the program."), CH(C_low)], answer: [CODE("mid = (low + high) // 2\n    low = mid + 1", null, "lines 6 and 11")] },
+          { kind: "exercise", title: "One pass", blocks: [T("Write lines 6 and 7 of the program."), CH(C_swap)], answer: [CODE("a[j] = a[j + 1]\na[j + 1] = t", null, "lines 6 and 7")] },
         ],
       },
 

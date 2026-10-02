@@ -6,39 +6,21 @@
   "post": "    return 0;\n}"
  },
  {
-  "name": "C_update",
-  "pre": "#include <stdio.h>\nint main(void) {",
-  "code": "\nint n = 9;\nn += 5;\nn /= 4;\nn *= n + 1;\nint k = n++;\nk -= n % 5;\nn %= k;\nk = ++n * 2;\nchar c = 'A';\nc = c + n;\nprintf(\"%d %d\\n\", n, k);\nprintf(\"%c %d\\n\", c, c);\n",
-  "post": "    return 0;\n}"
- },
- {
   "name": "C_charge",
   "pre": "#include <stdio.h>\nint main(void) {",
-  "code": "\nint level = 5;\nint step = 0;\nwhile (level < 90) {\n    if (level < 40) {\n        step = 40;\n    } else if (level < 70) {\n        step = 30;\n    }\n    if (step > 30) {\n        step -= 5;\n    }\n    level += step;\n}\nprintf(\"%d %d\\n\", level, step);\n",
+  "code": "\nint level = 35;\nint step = 0;\nwhile (level < 90) {\n    if (level < 40) {\n        step = 40;\n    } else if (level < 70) {\n        step = 30;\n    }\n    if (step > 30) {\n        step -= 5;\n    }\n    level += step;\n}\nprintf(\"%d %d\\n\", level, step);\n",
   "post": "    return 0;\n}"
  },
  {
   "name": "C_modes",
   "pre": "#include <stdio.h>\nint main(void) {",
-  "code": "\nint mode = 4;\nint sum = 0;\ndo {\n    switch (mode) {\n        case 3: sum += 8;\n        case 2: sum += 4; break;\n        case 1: sum += 2;\n        default: sum += 1;\n    }\n    mode--;\n} while (mode > 0);\nprintf(\"%d %d\\n\", mode, sum);\n",
+  "code": "\nint mode = 3;\nint sum = 0;\ndo {\n    switch (mode) {\n        case 3: sum += 8;\n        case 2: sum += 4; break;\n        case 1: sum += 2;\n        default: sum += 1;\n    }\n    mode--;\n} while (mode > 0);\nprintf(\"%d %d\\n\", mode, sum);\n",
   "post": "    return 0;\n}"
  },
  {
   "name": "C_grid",
   "pre": "#include <stdio.h>\nint main(void) {",
-  "code": "\nint sum = 0;\nfor (int r = 1; r <= 3; r++) {\n    if (r == 2) {\n        continue;\n    }\n    for (int c = 1; c <= 2; c++) {\n        if (c > r) {\n            break;\n        }\n        sum += r * c;\n    }\n}\nprintf(\"%d\\n\", sum);\n",
-  "post": "    return 0;\n}"
- },
- {
-  "name": "C_time",
-  "pre": "#include <stdio.h>\nint main(void) {",
-  "code": "\nint t[3] = {75, 59, 1};\nint i = 0;\nwhile (i < 2) {\n    t[i + 1] += t[i] / 60;\n    t[i] = t[i] % 60;\n    i++;\n}\nwhile (i >= 0) {\n    printf(\"%d \", t[i]);\n    i--;\n}\nprintf(\"\\n\");\n",
-  "post": "    return 0;\n}"
- },
- {
-  "name": "C_cut",
-  "pre": "#include <stdio.h>\nint main(void) {",
-  "code": "\nchar s[] = \"T2-K\";\nint n = 0;\nint i = 0;\nwhile (s[i] != '\\0') {\n    if (s[i] == '-') {\n        s[i] = '\\0';\n    } else {\n        n++;\n    }\n    i++;\n}\nprintf(\"%s %d %d\\n\", s, n, i);\n",
+  "code": "\nint sum = 0;\nfor (int r = 1; r <= 2; r++) {\n    if (r == 2) {\n        continue;\n    }\n    for (int c = 1; c <= 2; c++) {\n        if (c > r) {\n            break;\n        }\n        sum += r * c;\n    }\n}\nprintf(\"%d\\n\", sum);\n",
   "post": "    return 0;\n}"
  },
  {
@@ -54,9 +36,15 @@
   "post": ""
  },
  {
+  "name": "C_time",
+  "pre": "#include <stdio.h>\nint main(void) {",
+  "code": "\nint t[3] = {75, 59, 1};\nint i = 0;\nwhile (i < 2) {\n    t[i + 1] += t[i] / 60;\n    t[i] = t[i] % 60;\n    i++;\n}\nprintf(\"%d %d\\n\", t[2], t[1]);\nprintf(\"%d\\n\", t[0]);\n",
+  "post": "    return 0;\n}"
+ },
+ {
   "name": "C_bits",
   "pre": "#include <stdio.h>\n#include <stdint.h>\nint main(void) {",
-  "code": "\nuint8_t reg = 0x5A;\nuint8_t mask = 0x20;\nuint8_t n = 254;\nwhile (mask != 0) {\n    if (reg & mask) {\n        reg &= mask;\n    }\n    mask = mask << 1;\n    n++;\n}\nprintf(\"%02X %d\\n\", reg, n);\n",
+  "code": "\nuint8_t reg = 0x5A;\nuint8_t mask = 0x40;\nuint8_t n = 254;\nwhile (mask != 0) {\n    if (reg & mask) {\n        reg &= ~mask;\n    }\n    mask = mask << 1;\n    n++;\n}\nprintf(\"%02X %d\\n\", reg, n);\n",
   "post": "    return 0;\n}",
   "hex": [
    "reg",

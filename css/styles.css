@@ -1254,6 +1254,15 @@ body.slide-mode .instr-dialog, body.slide-mode .instr-title, body.slide-mode .in
 .tt-has-chart .tt-grid { grid-template-columns: auto minmax(0, 1fr); }
 @container (max-width: 900px) { .tt-has-chart .tt-grid { grid-template-columns: minmax(0, 1fr); } }
 .ttab td.tt-code .tt-box { min-width: 6em; }
+/* the left column of a table with its program: the files that the program reads, then the program */
+.tt-left { min-width: 0; }
+.tt-file { margin: 0 0 8px; }
+.tt-outer > .tt-file { max-width: 520px; }
+.tt-file-name { font-family: ui-monospace, monospace; font-weight: 700; color: var(--text-dim); }
+.tt-file-text { margin: 0; line-height: 1.4; white-space: pre; }
+.slide .tt-file-name, .slide .tt-file-text { font-size: 24px; }
+/* the missing line of a "missing line" exercise */
+.tt-box.tt-miss { min-width: 9em; min-height: 1.2em; border-color: var(--accent); }
 /* beside a program or a chart the table is narrow: a smaller Output box */
 .tt-has-code .ttab td.tt-out .tt-box { min-width: 4em; }
 .ttab tr.tt-reveal td { background: rgba(59,201,164,.16); }
@@ -1266,7 +1275,7 @@ body.slide-mode .instr-dialog, body.slide-mode .instr-title, body.slide-mode .in
   .slide .ttab-wrap.tt-long { overflow-x: clip; }   /* a scroll container would stop position: sticky */
   .slide .tt-long .ttab thead th { position: sticky; top: calc(56px + var(--slide-head-h, 0px)); z-index: 2; box-shadow: 0 -1px 0 var(--border), 0 1px 0 var(--border); }
   .slide:has(.tt-long) .slide-head { position: sticky; top: 56px; z-index: 3; margin: 0; padding: 2px 0 8px; background: var(--bg); }
-  .slide:has(.tt-long) .tt-src { position: sticky; top: calc(56px + var(--slide-head-h, 0px) + 8px); }
+  .slide:has(.tt-long) .tt-left { position: sticky; top: calc(56px + var(--slide-head-h, 0px) + 8px); }
 }
 .slide .ttab tbody tr { scroll-margin: 190px 0 84px; }
 .ttab td.tt-test { white-space: nowrap; }
