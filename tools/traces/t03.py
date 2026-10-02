@@ -24,7 +24,7 @@ p = x > 5 or y > 5 and x < 3
 q = (x > 5 or y > 5) and x < 3
 p = not q or p and y > 0
 q = y == 0 or x / y > 2
-p = not (p and q) or bool(y)
+p = not (p and q) or y != 0
 print(p, q)
 '''),
     dict(name="C_tank", about="The same condition in lines 3 and 10: an elif chain runs one block; a separate if is checked again.", side=True, code='''

@@ -276,24 +276,24 @@
     ],
   };
 
-  // Two functions: each call runs line 2 or line 5, then the program continues after the call. 1 <= 7 <= 5 is False; / gives a float.
+  // A function that returns True or False, called in a loop: only valid readings are added and counted.
   const C_valid = {
     side: true,
-    code: ["def valid(v):", "    return 1 <= v <= 5", "", "def mean(a):", "    return sum(a) / len(a)", "", "kept = []", "for r in [5, 7]:", "    if valid(r):", "        kept.append(r)", "print(mean(kept))"],
+    code: ["def valid(v):", "    return 1 <= v <= 5", "", "total = 0", "count = 0", "for r in [5, 7]:", "    if valid(r):", "        total = total + r", "        count = count + 1", "print(total / count)"],
     steps: [
       { line: 0 },
-      { line: 3 },
-      { line: 6, set: { kept: "[]" } },
-      { line: 7, set: { r: "5" } },
-      { line: 8, test: "True" },
-      { line: 1 },
-      { line: 9, set: { kept: "[5]" } },
-      { line: 7, set: { r: "7" } },
-      { line: 8, test: "False" },
-      { line: 1 },
-      { line: 7 },
-      { line: 10 },
-      { line: 4, print: "5.0" },
+      { line: 3, set: { total: "0" } },
+      { line: 4, set: { count: "0" } },
+      { line: 5, set: { r: "5" } },
+      { line: 6, test: "True", set: { "v (valid)": "5" } },
+      { line: 1, unset: ["v (valid)"] },
+      { line: 7, set: { total: "5" } },
+      { line: 8, set: { count: "1" } },
+      { line: 5, set: { r: "7" } },
+      { line: 6, test: "False", set: { "v (valid)": "7" } },
+      { line: 1, unset: ["v (valid)"] },
+      { line: 5 },
+      { line: 9, print: "5.0" },
     ],
   };
 

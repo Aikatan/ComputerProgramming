@@ -353,7 +353,7 @@
 
   // not, then and, then or; parentheses; or stops at the first True, so line 6 does not divide.
   const C_logic = {
-    code: ["x = 6", "y = 0", "p = x > 5 or y > 5 and x < 3", "q = (x > 5 or y > 5) and x < 3", "p = not q or p and y > 0", "q = y == 0 or x / y > 2", "p = not (p and q) or bool(y)", "print(p, q)"],
+    code: ["x = 6", "y = 0", "p = x > 5 or y > 5 and x < 3", "q = (x > 5 or y > 5) and x < 3", "p = not q or p and y > 0", "q = y == 0 or x / y > 2", "p = not (p and q) or y != 0", "print(p, q)"],
     steps: [
       { line: 0, set: { x: "6" } },
       { line: 1, set: { y: "0" } },

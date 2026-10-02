@@ -2,7 +2,8 @@
 
 Python level: print, variables, int / float / str / bool, arithmetic, input, strings.
 No if, loops, lists, or functions. Each program has one line that is easy to trace wrongly.
-Eight programs, in the order of the lessons; the last two have a missing line.
+Seven programs with basic statements only (no method, no slice), in the order of the lessons;
+the last two have missing lines.
 """
 
 TRACES = [
@@ -38,7 +39,6 @@ a = a % b + d ** 2
 c = c * b - d
 b = -b ** 2 + a // 3
 print(a, b, c)
-print(type(c), round(c / 3, 2))
 '''),
     dict(name="C_digits_text", about="Text digits are joined; numbers are added. int() removes the fraction.", inputs=["12", "5"], code='''
 a = input("A: ")
@@ -50,29 +50,13 @@ text = text * n
 total = total + len(text)
 print(text, total)
 '''),
-    dict(name="C_code", about="Slices, str() and *, and a method call that changes nothing.", code='''
-code = "TMP36-A"
-left = code[:3].lower()
-num = int(code[3:5])
-num = num // 10 + num % 10
-tag = code[-1] + str(num) * 2
-code = left + "-" + tag
-code.upper()
-print(code, len(code))
-'''),
-    dict(name="C_report", about="The whole chapter in one program: input, slices, conversion, arithmetic, reassignment, sep.", inputs=["12.5V2A"], code='''
-msg = input("Data: ")
-value = float(msg[:4])
-value = value * int(msg[-2])
-value = value * 90 / 60
-whole = int(value)
-value = value - whole
-tag = msg[4] + msg[-1]
-tag = tag.lower() + str(whole)
-whole = whole % 10 * len(tag)
-print(tag, value, sep=":")
-print("=" * (whole // 10))
-print(whole)
+    dict(name="C_code", about="Indexes of a string: the last index is n - 1. Text digits are converted before they are added.", code='''
+code = "TMP36"
+n = len(code)
+last = code[n - 1]
+num = int(code[3]) + int(last)
+tag = code[0] + str(num)
+print(tag, n)
 '''),
     dict(name="C_coins", missing=[3, 4], about="Missing lines 3 and 4: the same variable keeps the rest of the division.", code='''
 amount = 87
