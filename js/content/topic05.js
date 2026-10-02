@@ -19,6 +19,8 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
+  // the expected output of a paper exercise: the answer of the slide (instructor mode)
+  const OUT = (text) => CODE(text, null, "output", "text");
 
   /* ---------- traces ---------- */
   const T_line = {
@@ -44,6 +46,23 @@
       { line: 2, note: "return sends 24 back. The local variables disappear.", unset: ["v (power)", "i (power)", "p (power)"] },
       { line: 4, note: "The call is replaced by 24, which is stored in result.", set: { result: "24" } },
       { line: 5, note: "result is displayed. The local variables existed only during the call. Result check: 12 × 2 = 24.", print: "Power = 24 W" },
+    ],
+  };
+
+  // exercise "Trace the code": two calls; the result of the first call is an argument of the second call.
+  // One row for each line that runs (the 8 lines of a real line-by-line run), so that the blank table fits on
+  // one slide: the row of return also holds the value that the call line stores (x, then y).
+  const T_area = {
+    code: ["def area(w, h):", "    a = w * h", "    return a", "", "x = area(3, 4)", "y = area(x, 2)", "print(x, y)"],
+    steps: [
+      { line: 0, note: "def creates the function <code>area</code> with the parameters w and h." },
+      { line: 4, note: "Call area(3, 4): the parameters receive the arguments.", set: { "w (area)": "3", "h (area)": "4" } },
+      { line: 1, note: "3 * 4 → 12, stored in the local variable a.", set: { "a (area)": "12" } },
+      { line: 2, note: "return sends 12 back, and the local variables disappear. Line 5 stores 12 in x.", unset: ["w (area)", "h (area)", "a (area)"], set: { x: "12" } },
+      { line: 5, note: "Call area(x, 2): w receives the value of x, 12.", set: { "w (area)": "12", "h (area)": "2" } },
+      { line: 1, note: "12 * 2 → 24, stored in the local variable a.", set: { "a (area)": "24" } },
+      { line: 2, note: "return sends 24 back, and the local variables disappear. Line 6 stores 24 in y.", unset: ["w (area)", "h (area)", "a (area)"], set: { y: "24" } },
+      { line: 6, note: "x and y are displayed. Result check: 3 × 4 = 12 and 12 × 2 = 24.", print: "12 24" },
     ],
   };
 
@@ -205,10 +224,10 @@
             ]),
             NEXT("<b>Parameters and return values</b>. A function can receive values and send a result back."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of the program on paper.<br>1. Count how many times each line of the program runs.<br>2. Then run the program.<br>3. Compare the output with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T("Write the output of the program on paper, line by line.<br>First, count how many times each line of the program runs.")],
             [RUN('def beep():\n    print("beep")\n\nprint("start")\nbeep()\nbeep()\nprint("end")')],
-          ] },
+          ], answer: [OUT("start\nbeep\nbeep\nend")] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("The program stops with a NameError.<br>Change the order of the lines, so that the program displays the target output.",
               "Hello", 'greet()\n\ndef greet():\n    print("Hello")\n', null, "The function is called before it is defined: move the call below the definition."),
@@ -312,9 +331,9 @@
             ]),
             NEXT("<b>Arguments</b>. Arguments can be given by position or by name, and parameters can have default values."),
           ] },
-          { kind: "exercise", title: "Trace the code", cols: [
-            [T("Trace the program on paper.<br>1. Write the value of each variable after each line runs.<br>2. Then run the program with <b>Step Run</b>.<br>3. Compare the values with your answer.")],
-            [RUN("def area(w, h):\n    a = w * h\n    return a\n\nx = area(3, 4)\ny = area(x, 2)\nprint(x, y)")],
+          { kind: "exercise", title: "Trace the code", blocks: [
+            T("Complete the trace table on paper. The first row is complete: write the other rows."),
+            W("traceTable", { trace: T_area, blank: true, given: 1 }),
           ] },
           { kind: "exercise", title: "Complete the code", blocks: [
             PQ("Complete the function, so that it returns the current I = V ÷ R.",
@@ -417,10 +436,10 @@
             ]),
             NEXT("<b>Variable scope</b>. Which variables a function can see and change."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each call of <code>show()</code> on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T("Write the output of each call of <code>show()</code> on paper.")],
             [RUN('def show(a, b=5, c="V"):\n    print(a + b, c)\n\nshow(1)\nshow(1, 2)\nshow(1, c="A")\nshow(b=10, a=0)')],
-          ] },
+          ], answer: [OUT("6 V\n3 V\n6 A\n10 V")] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("Line 1 of the program causes a SyntaxError.<br>Correct line 1, so that the program displays the target output.",
               "Fan 110 V", 'def motor(voltage=220, name):\n    print(name, voltage, "V")\n\nmotor("Fan", 110)\n', null, "A parameter with a default value must come after the parameters without one: def motor(name, voltage=220):"),
@@ -526,14 +545,14 @@
             ]),
             NEXT("<b>Nested calls and recursion</b>. A function can call another function, or itself."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of the program on paper.<br>1. Decide for each <code>n</code> in the program: local variable or global variable.<br>2. Then run the program.<br>3. Compare the output with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T("Write the output of the program on paper, line by line.<br>First, decide for each <code>n</code> in the program: local variable or global variable.")],
             [RUN('n = 3\n\ndef test():\n    n = 7\n    print("inside:", n)\n\ntest()\nprint("outside:", n)')],
-          ] },
-          { kind: "exercise", title: "Determine the output: global", cols: [
-            [T("Write the output of the program on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
+          ], answer: [OUT("inside: 7\noutside: 3")] },
+          { kind: "exercise", title: "Determine the output: global", answerCol: 0, cols: [
+            [T("Write the output of the program on paper, line by line.")],
             [RUN("count = 0\ndef add_one():\n    global count\n    count = count + 1\nadd_one()\nadd_one()\nprint(count)")],
-          ] },
+          ], answer: [OUT("2")] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("Line 5 of the program causes a NameError.<br>Correct the program, so that it displays the target output.<br>1. In the function <code>add()</code>, add a statement that returns <code>total</code>.<br>2. In line 4 of the program, store the returned value in the variable <code>total</code>.",
               "Total = 30", 'def add(a, b):\n    total = a + b\n\nadd(10, 20)\nprint("Total =", total)\n', null, "The variable total is local to add(): write return total in the function, and total = add(10, 20) in line 4."),
@@ -618,14 +637,16 @@
             ]),
             NEXT("<b>Modules</b>. Functions can be stored in a file and used in other programs."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of the program on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T("Write the output of the program on paper, line by line.")],
             [RUN("def square(x):\n    return x * x\n\ndef sum_squares(a, b):\n    return square(a) + square(b)\n\nprint(sum_squares(3, 4))")],
-          ] },
-          { kind: "exercise", title: "Trace the recursion", cols: [
-            [T("Complete the table on paper.<br>1. <b>Waits for</b>: write the call that each call waits for.<br>2. <b>Returns</b>: write the value that each call returns.<br>3. Then run the program to check the value that <code>power2(3)</code> returns."),
-              TB(["Call", "Waits for", "Returns"], [["power2(3)", "", ""], ["power2(2)", "", ""], ["power2(1)", "", ""], ["power2(0)", "", ""]], null, "center")],
+          ], answer: [OUT("25")] },
+          { kind: "exercise", title: "Trace the recursion", answerCol: 0, cols: [
+            [T("Complete the table on paper.<br>1. <b>Waits for</b>: write the call that each call waits for.<br>2. <b>Returns</b>: write the value that each call returns."),
+              { type: "table", hideOnAnswer: true, head: ["Call", "Waits for", "Returns"], rows: [["power2(3)", "", ""], ["power2(2)", "", ""], ["power2(1)", "", ""], ["power2(0)", "", ""]], cls: "center" }],
             [RUN("def power2(n):\n    if n == 0:\n        return 1\n    return 2 * power2(n - 1)\n\nprint(power2(3))")],
+          ], answer: [
+            TB(["Call", "Waits for", "Returns"], [["power2(3)", "power2(2)", "8"], ["power2(2)", "power2(1)", "4"], ["power2(1)", "power2(0)", "2"], ["power2(0)", "no call (base case)", "1"]], null, "center"),
           ] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("The program stops with a RecursionError.<br>Correct the recursive call in line 4, so that the program displays the target output.",
@@ -715,10 +736,10 @@
             ]),
             NEXT("<b>Chapter practice</b>. Complete problems solved with functions."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of the program on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T("Write the output of the program on paper, line by line.")],
             [RUN("import math\nfrom math import floor\n\nprint(math.ceil(4.2))\nprint(floor(4.8))\nprint(math.pow(3, 2))")],
-          ] },
+          ], answer: [OUT("5\n4\n9.0")] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("The program stops with a NameError in line 3.<br>Correct line 3, so that the program displays the target output.",
               "4.0", "from math import sqrt\n\nprint(math.sqrt(16))\n", null, "After from math import sqrt, the name math is not defined: call sqrt(16) without math."),

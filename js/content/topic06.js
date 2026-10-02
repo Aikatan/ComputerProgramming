@@ -19,6 +19,8 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
+  // the expected output of a paper exercise: the answer of the slide (instructor mode)
+  const OUT = (text) => CODE(text, null, "output", "text");
 
   /* ---------- traces ---------- */
   const T_build = {
@@ -242,14 +244,14 @@
             ]),
             NEXT("<b>Lists</b>. A list stores several values of any type in one variable."),
           ] },
-          { kind: "exercise", title: "Determine the output: slicing", cols: [
-            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
+          { kind: "exercise", title: "Determine the output: slicing", answerCol: 0, cols: [
+            [T("Write the output of each <code>print()</code> statement on paper.")],
             [RUN('s = "Programming"\nprint(s[::-1])\nprint(s[-4:])\nprint(s[2:100])\nprint(s[::3])')],
-          ] },
-          { kind: "exercise", title: "Determine the output: methods", cols: [
-            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
+          ], answer: [OUT("gnimmargorP\nming\nogramming\nPgmn")] },
+          { kind: "exercise", title: "Determine the output: methods", answerCol: 0, cols: [
+            [T("Write the output of each <code>print()</code> statement on paper.")],
             [RUN('s = "  a-b-c  "\nprint(s.strip())\nprint(s.find("b"))\nprint(s.find("z"))\nprint(s.count("-"))')],
-          ] },
+          ], answer: [OUT("a-b-c\n4\n-1\n2")] },
           { kind: "exercise", title: "Write a program: find a character", blocks: [
             PQ("Write a program that reads an e-mail address and displays the index of \"@\".<br>1. Use the prompt <code>E-mail: </code>.<br>2. When the address has no \"@\", display <code>not found</code>.<br>Test input: user.name@kmutnb.ac.th.",
               "E-mail: user.name@kmutnb.ac.th\n9", "# Write your program here\n", ["user.name@kmutnb.ac.th"], "Store email.find(\"@\") in pos: find() returns -1 when the address has no \"@\"."),
@@ -366,10 +368,10 @@
             ]),
             NEXT("<b>List methods</b>. Methods add, remove, and reorder the elements of a list."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T("Write the output of each <code>print()</code> statement on paper.")],
             [RUN("nums = [10, 20, 30, 40, 50]\nprint(nums[1])\nprint(nums[-2])\nprint(nums[1:3])\nprint(nums[::2])")],
-          ] },
+          ], answer: [OUT("20\n40\n[20, 30]\n[10, 30, 50]")] },
           { kind: "exercise", title: "Complete the code", blocks: [
             PQ("Complete line 2, so that the program displays the average of the readings.",
               "21.5", "readings = [20, 22, 21, 23]\naverage = \nprint(average)\n", null, "average = sum(readings) / len(readings)"),
@@ -505,10 +507,10 @@
             ]),
             NEXT("<b>Tuples</b>. A tuple stores ordered values like a list, but it cannot be changed."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T("Write the output of each <code>print()</code> statement on paper.")],
             [RUN("a = [5, 7]\na.append(9)\na.insert(0, 1)\nprint(a)\nx = a.pop()\nprint(x, a)\na.remove(7)\nprint(a)")],
-          ] },
+          ], answer: [OUT("[1, 5, 7, 9]\n9 [1, 5, 7]\n[1, 5]")] },
           { kind: "exercise", title: "Write a program: a filtered list", blocks: [
             PQ("Complete the program, so that it displays a list of the readings above 25.<br>1. Line 3 of the program: write a loop over the list <code>readings</code>.<br>2. In the loop, use <code>append()</code> to add each reading above 25 to the list <code>high</code>.",
               "[26, 30, 28]", "readings = [24, 26, 25, 30, 28, 22]\nhigh = []\n# Write the loop here\nprint(high)\n", null, "if r > 25: high.append(r)"),
@@ -610,10 +612,10 @@
             ]),
             NEXT("<b>Dictionaries</b>. Values stored under names (keys) instead of positions."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T("Write the output of each <code>print()</code> statement on paper.")],
             [RUN("point = (4, 7, 2)\nprint(point[1], point[-1])\nprint(point[:2])\nprint(len(point), 7 in point)\nx, y, z = point\nprint(x + y + z)\nsingle = (9,)\nprint(single, len(single))")],
-          ] },
+          ], answer: [OUT("7 2\n(4, 7)\n3 True\n13\n(9,) 1")] },
           { kind: "exercise", title: "Complete the code: swap two values", blocks: [
             PQ("Complete line 3, so that the values of first and second are swapped in one statement.",
               "fan pump", 'first = "pump"\nsecond = "fan"\nfirst, second = \nprint(first, second)\n', null, "first, second = second, first"),
@@ -781,10 +783,10 @@
             ]),
             NEXT("<b>Sets</b>. A set stores unique values without order, like the keys of a dictionary without their values."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T("Write the output of each <code>print()</code> statement on paper.")],
             [RUN('d = {"a": 1, "b": 2}\nprint(d.get("a", 0))\nprint(d.get("c", 0))\nprint(d.get("c"))\nd["c"] = 5\nprint(len(d), d.pop("a"))')],
-          ] },
+          ], answer: [OUT("1\n0\nNone\n3 1")] },
           { kind: "exercise", title: "Correct the error", blocks: [
             PQ("The program stops with a KeyError in line 2.<br>Correct line 2, so that the program displays the target output.<br>1. Use <code>get()</code> to read the value of the key <code>\"current\"</code>.<br>2. When the key does not exist, the value is 0.",
               "0", 'device = {"name": "Pump", "voltage": 220}\nprint(device["current"])\n', null, 'The key "current" does not exist, so use get() with the default 0: print(device.get("current", 0))'),
@@ -878,10 +880,10 @@
             ]),
             NEXT("<b>Chapter practice</b>. Complete problems that combine the data structures of this chapter."),
           ] },
-          { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output of each <code>print()</code> statement on paper.<br>1. Then run the program.<br>2. Compare the output with your answer.")],
+          { kind: "exercise", title: "Determine the output", answerCol: 0, cols: [
+            [T("Write the output of each <code>print()</code> statement on paper.")],
             [RUN("s = {4, 2, 4, 1, 2}\nprint(len(s))\ns.add(3)\ns.add(4)\nprint(s)\ns.discard(9)\nprint(2 in s, 9 not in s)\nt = {1, 5}\nprint(s & t, s - t)")],
-          ] },
+          ], answer: [OUT("3\n{1, 2, 3, 4}\nTrue True\n{1} {2, 3, 4}")] },
           { kind: "exercise", title: "Complete the code: common values", blocks: [
             PQ("Complete line 3, so that the program displays the fault codes that appear in both weeks.",
               "{3, 4}", "week1 = [1, 3, 4, 3]\nweek2 = [3, 6, 4]\ncommon = \nprint(common)\n", null, "common = set(week1) & set(week2)"),

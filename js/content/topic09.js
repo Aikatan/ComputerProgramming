@@ -19,6 +19,15 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
+  /* exercise slides (instructor mode, see CHAPTER-IMPROVEMENT-PROMPT.md §6):
+     RUNS: a program that the students must run themselves.
+     HIDE: the block is hidden while the answer of its slide is shown.
+     OUT : the expected output of a "Determine the output" exercise, for `answer`. */
+  const RUNS = (code, title, inputs) => Object.assign(RUN(code, title, inputs), { studentRun: true });
+  const HIDE = (block) => Object.assign({}, block, { hideOnAnswer: true });
+  const OUT = (text) => CODE(text, null, "output", "text");
+  const PAPER = "Write the output of the program on paper, line by line.";
+  const TRACE = "Complete the trace table on paper. The first row is complete.";
 
   /* ---------- traces ---------- */
   const T_max = {
@@ -264,12 +273,8 @@
             NEXT("<b>Growth rates and Big-O</b>. How the number of steps grows with n, and how to describe it."),
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. The first row is done. The next exercise checks your table."),
+            T(TRACE),
             W("traceTable", { trace: T_exMin, blank: true, given: 1 }),
-          ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [T("Run the program with <b>Step Run</b>. Compare the variables after each line with your table.")],
-            [RUN(T_exMin.code.join("\n"))],
           ] },
           { kind: "exercise", title: "Correct an error", blocks: [
             PQ("The program displays <code>Lowest: 0</code>, but the lowest reading is 18. Correct the error, so that the program displays the target output.",
@@ -416,9 +421,9 @@
             NEXT("<b>Searching</b>. Linear search, O(n), and binary search, O(log n)."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program, and compare its output with your answer.")],
+            [T(PAPER)],
             [RUN("count = 0\nfor i in range(4):\n    for j in range(3):\n        count = count + 1\nprint(count)")],
-          ] },
+          ], answerCol: 0, answer: [OUT("12")] },
           { kind: "exercise", title: "Complete missing code", blocks: [
             PQ("Replace line 4 of the program with the statement that halves n.<br>The program then displays how many times 64 is halved until n is 1.",
               "Halvings: 6", 'n = 64\nhalvings = 0\nwhile n > 1:\n    n = 1  # replace this line\n    halvings = halvings + 1\nprint("Halvings:", halvings)', null, "Use integer division: n = n // 2."),
@@ -566,20 +571,18 @@
             ]),
             NEXT("<b>Sorting</b>. Bubble sort, O(n²), and Python's built-in sort, O(n log n)."),
           ] },
-          { kind: "exercise", title: "Determine the output", blocks: [
-            T("Write the output on paper. Then run the program, and compare its output with your answer."),
-            RUN("def linear_search(data, target):\n    for i in range(len(data)):\n        if data[i] == target:\n            return i\n    return -1\ncodes = [4, 9, 4, 7]\nprint(linear_search(codes, 4))\nprint(linear_search(codes, 7))"),
-          ] },
+          { kind: "exercise", title: "Determine the output", cols: [
+            [T(PAPER)],
+            [RUN("def linear_search(data, target):\n    for i in range(len(data)):\n        if data[i] == target:\n            return i\n    return -1\ncodes = [4, 9, 4, 7]\nprint(linear_search(codes, 4))\nprint(linear_search(codes, 7))")],
+          ], answerCol: 0, answer: [OUT("0\n3")] },
           { kind: "exercise", title: "Complete the iteration table", blocks: [
-            T("The binary search function searches the list [2, 5, 8, 12, 16, 23, 38, 56, 72, 91] for 72.<br>Complete rows 2 and 3 of the table on paper. The next exercise checks your table."),
-            TB(["Iteration", "low", "high", "mid", "data[mid]", "Decision"], [
+            T("The binary search function searches the list [2, 5, 8, 12, 16, 23, 38, 56, 72, 91] for 72.<br>Complete rows 2 and 3 of the table on paper."),
+            HIDE(TB(["Iteration", "low", "high", "mid", "data[mid]", "Decision"], [
               ["1", "0", "9", "4", "16", "16 &lt; 72: low = 5"],
               ["2", "", "", "", "", ""],
               ["3", "", "", "", "", ""],
-            ], null, "center"),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
-            T("Compare your table with the correct one."),
+            ], null, "center")),
+          ], answer: [
             TB(["Iteration", "low", "high", "mid", "data[mid]", "Decision"], [
               ["1", "0", "9", "4", "16", "16 &lt; 72: low = 5"],
               ["2", "5", "9", "7", "56", "56 &lt; 72: low = 8"],
@@ -727,17 +730,13 @@
             NEXT("<b>Choosing a data structure</b>. Lists and dictionaries, and the cost of their operations."),
           ] },
           { kind: "exercise", title: "Trace the code", blocks: [
-            T("Complete the trace table on paper. The first row is done. The next exercise checks your table."),
+            T(TRACE),
             W("traceTable", { trace: T_exPass, blank: true, given: 1 }),
           ] },
-          { kind: "exercise", title: "Check your trace", cols: [
-            [T("Run the program with <b>Step Run</b>. Compare the variables after each line with your table.")],
-            [RUN(T_exPass.code.join("\n"))],
-          ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            T("The program displays the list after each pass. Write the three lines of the output on paper. Then run the program, and compare its output with your answer."),
-            RUN("a = [4, 3, 2, 1]\nn = len(a)\nfor i in range(n - 1):\n    for j in range(n - 1 - i):\n        if a[j] > a[j + 1]:\n            a[j], a[j + 1] = a[j + 1], a[j]\n    print(a)"),
-          ] },
+            T("The program displays the list after each pass. Write the three lines of the output on paper."),
+            HIDE(RUN("a = [4, 3, 2, 1]\nn = len(a)\nfor i in range(n - 1):\n    for j in range(n - 1 - i):\n        if a[j] > a[j + 1]:\n            a[j], a[j + 1] = a[j + 1], a[j]\n    print(a)")),
+          ], answer: [OUT("[3, 2, 1, 4]\n[2, 1, 3, 4]\n[1, 2, 3, 4]")] },
           { kind: "exercise", title: "Modify a program", blocks: [
             PQ("Change the program, so that it sorts the list in descending order.",
               "[5, 4, 2, 1]", BUBBLE, null, "Swap when a[j] < a[j + 1]."),
@@ -841,9 +840,9 @@
             NEXT("<b>Writing efficient Python</b>. Measuring time, avoiding repeated work, and lookup tables."),
           ] },
           { kind: "exercise", title: "Determine the output", blocks: [
-            T("Write the output on paper. Then run the program, and compare its output with your answer."),
-            RUN('codes = {"E1": "overheat", "E2": "low battery"}\nprint("E2" in codes)\nprint("E3" in codes)\nprint("overheat" in codes)\nprint(codes["E1"])'),
-          ] },
+            T(PAPER),
+            HIDE(RUN('codes = {"E1": "overheat", "E2": "low battery"}\nprint("E2" in codes)\nprint("E3" in codes)\nprint("overheat" in codes)\nprint(codes["E1"])')),
+          ], answer: [OUT("True\nFalse\nFalse\noverheat")] },
           { kind: "exercise", title: "Complete missing code", blocks: [
             PQ("Complete line 5 of the program. The loop must build the dictionary <code>volts</code> from the lists <code>names</code> and <code>values</code>.",
               "110", 'names = ["pump", "fan", "heater"]\nvalues = [220, 110, 230]\nvolts = {}\nfor i in range(len(names)):\n    \nprint(volts["fan"])', null, "Store each value under its name: volts[names[i]] = values[i]."),
@@ -958,17 +957,17 @@
             ]),
             NEXT("<b>Developing a larger program</b>. The programs so far are short. A longer program is built from functions that are written and tested one at a time."),
           ] },
-          { kind: "exercise", title: "Determine the output", blocks: [
-            T("Write the output on paper. Then run the program, and compare its output with your answer."),
-            RUN('memo = {}\ndef square(n):\n    if n not in memo:\n        print("computing", n)\n        memo[n] = n * n\n    return memo[n]\nprint(square(4))\nprint(square(4))'),
-          ] },
+          { kind: "exercise", title: "Determine the output", cols: [
+            [T(PAPER)],
+            [RUN('memo = {}\ndef square(n):\n    if n not in memo:\n        print("computing", n)\n        memo[n] = n * n\n    return memo[n]\nprint(square(4))\nprint(square(4))')],
+          ], answerCol: 0, answer: [OUT("computing 4\n16\n16")] },
           { kind: "exercise", title: "Modify a program: repeated work", blocks: [
             PQ("The program computes <code>max(readings)</code> in every iteration. Change the program, so that <code>max()</code> runs only once.<br>The output must stay the same as the target output.",
               "0.8\n1.0\n0.6", "readings = [4, 5, 3]\nfor r in readings:\n    print(r / max(readings))", null, "Store the result before the loop: peak = max(readings)."),
           ] },
           { kind: "exercise", title: "Modify a program: NumPy", cols: [
             [T("Compare the time of a loop with the time of NumPy.<br>1. Run the program.<br>2. Replace lines 5 to 8 (the loop that computes the average) with <code>average = arr.mean()</code>.<br>3. Run the program again, and compare the two times.<br>The times differ on each run.")],
-            [RUN("import time\nimport numpy as np\narr = np.array(list(range(1000000)))\nstart = time.perf_counter()\ntotal = 0\nfor i in range(1000000):\n    total = total + i\naverage = total / 1000000\nelapsed = time.perf_counter() - start\nprint(average, round(elapsed, 4))")],
+            [RUNS("import time\nimport numpy as np\narr = np.array(list(range(1000000)))\nstart = time.perf_counter()\ntotal = 0\nfor i in range(1000000):\n    total = total + i\naverage = total / 1000000\nelapsed = time.perf_counter() - start\nprint(average, round(elapsed, 4))")],
           ] },
           { kind: "exercise", title: "Write a program: join()", blocks: [
             PQ("Use <code>join()</code> to build the text <code>21.5, 22.0, 23.1</code> from the list <code>readings</code>. Then display the text.",

@@ -17,6 +17,14 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
+  /* exercise slides (instructor mode, see CHAPTER-IMPROVEMENT-PROMPT.md §6):
+     RUNS: a program that the students write and run themselves (a chart cannot be checked automatically).
+     HIDE: the block is hidden while the answer of its slide is shown.
+     OUT : the expected output of a "Determine the output" exercise, for `answer`. */
+  const RUNS = (code, title, inputs) => Object.assign(RUN(code, title, inputs), { studentRun: true });
+  const HIDE = (block) => Object.assign({}, block, { hideOnAnswer: true });
+  const OUT = (text) => CODE(text, null, "output", "text");
+  const PAPER = "Write the output of the program on paper, line by line.";
 
   /* ---------- traces ---------- */
   const T_try = {
@@ -198,11 +206,11 @@
           { kind: "exercise", title: "Write a program: a labelled plot", blocks: [
             T("Write a program that draws a line plot of the battery level over time.<br>1. Use these values: minutes 0, 10, 20, 30 and battery levels 100, 82, 65, 47.<br>2. Add the x-axis label \"Time (min)\" and the y-axis label \"Battery (%)\".<br>3. Add a title."),
             T("Expected chart: one blue line through 4 points. The line falls from 100 at 0 min to 47 at 30 min."),
-            RUN("import matplotlib.pyplot as plt\n\n# Write your program here\n"),
+            RUNS("import matplotlib.pyplot as plt\n\n# Write your program here\n"),
           ] },
           { kind: "exercise", title: "Modify the plot", cols: [
             [T("Change line 5 of the program: <code>plt.plot(x, y)</code>.<br>1. Change the color of the line to green.<br>2. Change the line style to dotted.<br>3. Add a square marker at each point.<br>Expected chart: one green dotted line with a square at each of the 4 points.")],
-            [RUN('import matplotlib.pyplot as plt\n\nx = [1, 2, 3, 4]\ny = [3, 5, 4, 6]\nplt.plot(x, y)\nplt.show()')],
+            [RUNS('import matplotlib.pyplot as plt\n\nx = [1, 2, 3, 4]\ny = [3, 5, 4, 6]\nplt.plot(x, y)\nplt.show()')],
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which function adds the names of the lines to a chart?", choices: ["plt.title()", "plt.legend()", "plt.xlabel()", "plt.grid()"], answer: 1, explain: "legend() displays the label of each line." },
@@ -284,14 +292,13 @@
           ] },
           { kind: "exercise", title: "Choose the chart", blocks: [
             T("Write the best chart type for each data set on paper."),
-            TB(["Data", "Chart"], [
+            HIDE(TB(["Data", "Chart"], [
               ["The power consumption of 5 departments", ""],
               ["The motor temperature every minute for one hour", ""],
               ["200 measured cable lengths", ""],
               ["Speed and fuel consumption of 30 test drives", ""],
-            ]),
-          ] },
-          { kind: "exercise", title: "Check your table", blocks: [
+            ])),
+          ], answer: [
             TB(["Data", "Chart", "Reason"], [
               ["The power consumption of 5 departments", "bar chart", "named groups are compared"],
               ["The motor temperature every minute for one hour", "line plot", "a value changes over time"],
@@ -301,11 +308,11 @@
           ] },
           { kind: "exercise", title: "Write a program: a bar chart", cols: [
             [T("Write a program that draws a bar chart of the monthly production.<br>1. Use these values: Jan 120, Feb 135, Mar 128 units.<br>2. Add a y-axis label.<br>3. Add a title.<br>Expected chart: three bars with heights 120, 135, 128.")],
-            [RUN("import matplotlib.pyplot as plt\n\n# Write your program here\n")],
+            [RUNS("import matplotlib.pyplot as plt\n\n# Write your program here\n")],
           ] },
           { kind: "exercise", title: "Write a program: a histogram", cols: [
             [T("Complete the program, so that it draws a histogram of the test scores in the list <code>scores</code>.<br>Use 3 bins.<br>Expected chart: three bars with heights 2, 5, 3.")],
-            [RUN("import matplotlib.pyplot as plt\n\nscores = [55, 62, 68, 70, 71,\n          75, 78, 80, 85, 92]\n# Write the histogram here\n")],
+            [RUNS("import matplotlib.pyplot as plt\n\nscores = [55, 62, 68, 70, 71,\n          75, 78, 80, 85, 92]\n# Write the histogram here\n")],
           ] },
           { kind: "check", title: "Check", blocks: [QZ([
             { q: "Which chart shows how many values fall into each interval?", choices: ["bar", "scatter", "hist", "plot"], answer: 2, explain: "A histogram counts values per interval (bin)." },
@@ -394,12 +401,15 @@
             NEXT("<b>raise and assert</b>. Errors inside functions, and errors that a program creates on purpose."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program, and compare its output with your answer.")],
+            [T(PAPER)],
             [RUN('values = [4, 8]\ntry:\n    print(values[1])\n    print(values[5])\n    print("end of try")\nexcept IndexError:\n    print("bad index")')],
-          ] },
+          ], answerCol: 0, answer: [OUT("8\nbad index")] },
           { kind: "exercise", title: "Determine the output: else", cols: [
-            [T("Determine the output of the program.<br>1. Decide which blocks of the try statement run.<br>2. Write the output on paper.<br>3. Run the program, and compare its output with your answer.")],
+            [T("Determine the output of the program.<br>1. Decide which blocks of the try statement run.<br>2. Write the output on paper, line by line.")],
             [RUN('try:\n    x = int("25")\nexcept ValueError:\n    print("error")\nelse:\n    print("ok", x)\nfinally:\n    print("end")')],
+          ], answerCol: 0, answer: [
+            T("The try block, the else block, and the finally block run. The except block is skipped."),
+            OUT("ok 25\nend"),
           ] },
           { kind: "exercise", title: "Write a program: safe division", blocks: [
             PQ("Write a program that reads two integers and displays a / b.<br>1. Use the prompts <code>a: </code> and <code>b: </code>.<br>2. For a ValueError, display \"Not a number\".<br>3. For a ZeroDivisionError, display \"Cannot divide by zero\".<br>Test input: 7 and 0.",
@@ -469,10 +479,10 @@
             ]),
             NEXT("<b>Chapter practice</b>. Complete problems with charts and error handling."),
           ] },
-          { kind: "exercise", title: "Determine the output on paper, then run", blocks: [
-            T("Write the output on paper. Then run the program, and compare its output with your answer."),
-            RUN('def check_age(age):\n    if age < 0:\n        raise ValueError("age cannot be negative")\n    return age\ntry:\n    print(check_age(20))\n    print(check_age(-1))\nexcept ValueError as e:\n    print("Error:", e)'),
-          ] },
+          { kind: "exercise", title: "Determine the output", blocks: [
+            T(PAPER),
+            HIDE(RUN('def check_age(age):\n    if age < 0:\n        raise ValueError("age cannot be negative")\n    return age\ntry:\n    print(check_age(20))\n    print(check_age(-1))\nexcept ValueError as e:\n    print("Error:", e)')),
+          ], answer: [OUT("20\nError: age cannot be negative")] },
           { kind: "exercise", title: "Write a function with raise", blocks: [
             PQ("Write the function <code>set_speed(rpm)</code>. Then call the function.<br>1. The function raises <code>ValueError(\"speed too high\")</code> when rpm is above 3000.<br>2. Otherwise, the function returns rpm.<br>3. Call <code>set_speed(3500)</code> inside try.<br>4. In except, display \"Error:\" and the error message.",
               "Error: speed too high", "# Write your program here\n", null, 'Use except ValueError as e: and then print("Error:", e).'),
@@ -550,7 +560,7 @@
           ] },
           { kind: "exercise", part: "Problem 4", title: "Problem 4: write the program", cols: [
             [T("Write the program of Problem 4.<br>Expected chart: one line through 4 points, with a circle at each point. The line rises from 1.2 A at 500 rpm to 3.7 A at 2000 rpm.")],
-            [RUN("import matplotlib.pyplot as plt\n\n# Write your program here\n")],
+            [RUNS("import matplotlib.pyplot as plt\n\n# Write your program here\n")],
           ] },
           { kind: "summary", title: "Chapter summary", blocks: [
             TB(["Lesson", "Key rule"], [

@@ -18,6 +18,10 @@
   const QZ = (items) => ({ type: "quiz", items });
   const NEXT = (html) => N(html, "Next lesson");
   const IPO = (rows) => TB(["Step", "Result"], rows);
+  /* "Determine the output" exercises (instructor mode, see CHAPTER-IMPROVEMENT-PROMPT.md §6):
+     PAPER is the task text; OUT is the expected output, for the `answer` of the slide. */
+  const OUT = (text) => CODE(text, null, "output", "text");
+  const PAPER = "Write the output of the program on paper, line by line.";
 
   /* ---------- traces ---------- */
   const FILE_STEPS = [
@@ -152,8 +156,11 @@
             NEXT("<b>File modes, errors, and folders</b>. Appending, creating, missing files, and the os module."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program, and compare its output with your answer.")],
+            [T(PAPER)],
             [RUN('with open("t.txt", "w") as f:\n    f.write("one\\ntwo\\nthree\\n")\nwith open("t.txt") as f:\n    print(f.read(5))\n    print(f.readline())\n    print(len(f.readlines()))')],
+          ], answerCol: 0, answer: [
+            OUT("one\nt\nwo\n\n1"),
+            T("Line 4 of the output is empty: <code>readline()</code> returns <code>\"wo\\n\"</code>, and <code>print()</code> adds a line break."),
           ] },
           { kind: "exercise", title: "Write a program: save and count", blocks: [
             PQ("Write a program that writes three words into a file and counts the lines.<br>1. Write pump, fan, and heater into \"names.txt\", one word on each line.<br>2. Read the file, and display the number of lines.",
@@ -242,8 +249,11 @@
             NEXT("<b>CSV files</b>. Tables stored as text, one row per line."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program, and compare its output with your answer.")],
+            [T(PAPER)],
             [RUN('with open("m.txt", "w") as f:\n    f.write("A\\n")\nwith open("m.txt", "a") as f:\n    f.write("B\\n")\nwith open("m.txt", "w") as f:\n    f.write("C\\n")\nwith open("m.txt") as f:\n    print(f.read())')],
+          ], answerCol: 0, answer: [
+            OUT("C\n\n"),
+            T("Line 2 of the output is empty: <code>read()</code> returns <code>\"C\\n\"</code>, and <code>print()</code> adds a line break."),
           ] },
           { kind: "exercise", title: "Write a program: a log file", blocks: [
             PQ("Write a program that creates a file, adds two lines, and displays the file.<br>1. Create \"events.txt\" with the line <code>boot</code>.<br>2. Use mode \"a\" to add the line <code>ready</code> and the line <code>stop</code>.<br>3. Display the content of the file.",
@@ -425,9 +435,9 @@
             NEXT("<b>NumPy arrays</b>. Fast calculations on many numbers at once."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program, and compare its output with your answer.")],
+            [T(PAPER)],
             [RUN('import json\ntext = \'{"id": 7, "tags": ["a", "b"]}\'\nd = json.loads(text)\nprint(d["id"] * 2)\nprint(d["tags"][1])\nprint(len(d))')],
-          ] },
+          ], answerCol: 0, answer: [OUT("14\nb\n2")] },
           { kind: "exercise", title: "Write a program: update a JSON file", blocks: [
             PQ("Complete the program. Lines 2 and 3 already save settings in \"cfg.json\".<br>1. Load the settings from the file.<br>2. Change \"speed\" to 5.<br>3. Save the settings in the file again.<br>4. Load the settings again, and display the speed.",
               "5", 'import json\nwith open("cfg.json", "w") as f:\n    json.dump({"mode": "auto", "speed": 3}, f)\n# Write your program here\n', null, 'Use cfg = json.load(f) to load, cfg["speed"] = 5 to change, and json.dump(cfg, f) to save.'),
@@ -539,9 +549,9 @@
             NEXT("<b>pandas DataFrames</b>. Tables with named columns."),
           ] },
           { kind: "exercise", title: "Determine the output", cols: [
-            [T("Write the output on paper.<br>Then run the program, and compare its output with your answer.")],
+            [T(PAPER)],
             [RUN("import numpy as np\na = np.array([2, 4, 6, 8])\nprint(a / 2)\nprint(a[1:3])\nprint(a.shape)\nprint(np.mean(a))")],
-          ] },
+          ], answerCol: 0, answer: [OUT("[1. 2. 3. 4.]\n[4 6]\n(4,)\n5.0")] },
           { kind: "exercise", title: "Write a program: power of each device", blocks: [
             PQ("Write a program that computes the power of three devices with NumPy arrays.<br>1. Use these values: voltages 12, 24, 230 and currents 2, 0.5, 0.1.<br>2. Display the array of the powers.<br>3. Display the total of the powers.",
               "[24. 12. 23.]\n59.0", "import numpy as np\n# Write your program here\n", null, "Multiply the two arrays: p = v * i. Use np.sum(p) for the total."),
