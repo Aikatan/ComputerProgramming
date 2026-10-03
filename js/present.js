@@ -31,7 +31,7 @@
   function buildDeckSlides(rec) {
     const L = rec.lesson, kick = App.deckKickers(L);
     const slides = [{ cover: true, map: true, kicker: App.lessonPos(rec), title: L.title, sub: L.sub, blocks: [] }];
-    L.deck.forEach((s, n) => slides.push({ authored: true, kind: s.kind, part: s.part, kicker: kick[n], title: s.title, blocks: s.blocks || [], cols: s.cols, answer: s.answer, answerCol: s.answerCol }));
+    L.deck.forEach((s, n) => slides.push({ authored: true, kind: s.kind, part: s.part, kicker: kick[n], title: s.title, blocks: s.blocks || [], cols: s.cols, colw: s.colw, top: s.top, answer: s.answer, answerCol: s.answerCol }));
     return slides;
   }
 
@@ -59,10 +59,13 @@
     if (s.map) { el.appendChild(chapterMap(rec)); return el; }
     if (s.authored) {
       let colEls = null;
+      (s.top || []).forEach((b) => el.appendChild(render1(b, s)));   // full width, above the columns
       if (s.cols) {
         const left = h("div", { class: "slide-col" }); s.cols[0].forEach((b) => left.appendChild(render1(b, s)));
         const right = h("div", { class: "slide-col" }); (s.cols[1] || []).forEach((b) => right.appendChild(render1(b, s)));
-        el.appendChild(h("div", { class: "slide-split" }, left, right));
+        const split = h("div", { class: "slide-split" }, left, right);
+        if (s.colw) { split.style.setProperty("--col-a", s.colw[0] + "fr"); split.style.setProperty("--col-b", s.colw[1] + "fr"); }
+        el.appendChild(split);
         colEls = [left, right];
       } else s.blocks.forEach((b) => el.appendChild(render1(b, s)));
       // Instructor controls sit beside the kicker, so that they add no height to the slide:

@@ -64,6 +64,8 @@
         return staticExampleReadonly(b);
       case "table":
         return tableBlock(b);
+      case "image":
+        return imageBlock(b);
       case "quiz":
         return quizBlock(b.items, b.start || 0);
       default:
@@ -140,6 +142,32 @@
       b.caption ? h("div", { class: "dtab-cap", html: b.caption }) : null, table);
   }
 
+  // A raster figure on a light plate. The picture holds no text: numbered marks name its
+  // parts, and the slide explains each number in a list beside the figure.
+  // cfg: { src (below img/), v?, alt, w, h (pixels of the file), marks?: [{ n, x, y, tx?, ty? }]
+  //        (x, y: % of the picture; tx, ty: the point that the mark names, joined to it by
+  //        a line, for a part that the mark would hide), caption?, rest? (px: the height of
+  //        the other blocks above and below the figure on its slide) }
+  function imageBlock(b) {
+    const marks = b.marks || [], far = marks.filter((m) => m.tx != null);
+    const SVG = "http://www.w3.org/2000/svg";
+    const lines = document.createElementNS(SVG, "svg");
+    lines.setAttribute("class", "fig-lines"); lines.setAttribute("viewBox", "0 0 100 100"); lines.setAttribute("preserveAspectRatio", "none"); lines.setAttribute("aria-hidden", "true");
+    ["fl-a", "fl-b"].forEach((cls) => far.forEach((m) => {
+      const ln = document.createElementNS(SVG, "line");
+      ln.setAttribute("x1", m.x); ln.setAttribute("y1", m.y); ln.setAttribute("x2", m.tx); ln.setAttribute("y2", m.ty); ln.setAttribute("class", cls);
+      lines.appendChild(ln);
+    }));
+    const frame = h("div", { class: "fig-frame", style: "--fig-ar:" + (b.w / b.h).toFixed(4) },
+      h("img", { src: "img/" + b.src + "?v=" + (b.v || 1), alt: b.alt || "", width: b.w, height: b.h, decoding: "async" }),
+      far.length ? lines : null,
+      ...far.map((m) => h("span", { class: "fig-dot", style: "left:" + m.tx + "%;top:" + m.ty + "%" })),
+      ...marks.map((m) => h("span", { class: "vsm-mark fig-mark", style: "left:" + m.x + "%;top:" + m.y + "%" }, String(m.n))));
+    const fig = h("figure", { class: "fig" }, frame, b.caption ? h("figcaption", { class: "fig-cap", html: b.caption }) : null);
+    if (b.rest) fig.style.setProperty("--fig-rest", b.rest + "px");
+    return fig;
+  }
+
   function quizBlock(items, start) {
     const wrap = h("div");
     items.forEach((q, qi) => {
@@ -173,7 +201,8 @@
   App.renderQuizItem = function (q) { return quizBlock([q]); };
 
   /* ---- authored decks (lesson.deck) ----
-     deck: [{ kind, part?, title, blocks? , cols?:[[left blocks],[right blocks]] }]
+     deck: [{ kind, part?, title, blocks? , cols?:[[left blocks],[right blocks]], colw?:[a, b], top?:[blocks] }]
+     top: blocks at full width above the two columns. colw: the ratio of the column widths.
      Shared by the slide view (present.js) and the scroll view below. */
   const KIND = { overview: "Overview", concept: "Concept", problem: "Problem", code: "Example",
     visual: "Illustration", trace: "Trace table", summary: "Summary", exercise: "Exercise", check: "Check" };
@@ -188,7 +217,7 @@
     });
   };
   App.deckBlocks = function (s) {
-    return s.cols ? s.cols[0].concat(s.cols[1] || []) : (s.blocks || []);
+    return (s.top || []).concat(s.cols ? s.cols[0].concat(s.cols[1] || []) : (s.blocks || []));
   };
   App.lessonPos = function (rec) {
     return "Lesson " + (rec.li + 1) + " of " + rec.topic.lessons.length;
@@ -239,7 +268,7 @@
       const ans = App.slideAnswer(s, sec);
       if (ans) {
         // answerCol: 0 puts the answer after the blocks of the left column
-        const last = s.cols && s.answerCol === 0 ? nodes[s.cols[0].length - 1] : null;
+        const last = s.cols && s.answerCol === 0 ? nodes[(s.top || []).length + s.cols[0].length - 1] : null;
         if (last) last.after(ans.box); else sec.appendChild(ans.box);
         if (ans.btn) { const head = h("div", { class: "deck-sec-head" }); kicker.replaceWith(head); head.append(kicker, ans.btn); }
       }

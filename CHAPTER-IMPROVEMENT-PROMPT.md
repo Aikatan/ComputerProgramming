@@ -145,12 +145,24 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 
 ### Animation and visibility
 - **Animation** only explains execution: the current line, changing values, a condition's result and the chosen branch, loop iterations, accumulated values. It is never decoration.
+  - A **scene** (§6 "Scenes") extends this rule to hardware: it shows how a mechanism works (a value on the bus, a head that moves to a track, a capacitor that loses its charge). Every motion in a scene shows a real action of the mechanism.
 - **No repeated slides.** A slide never shows again what the previous slide showed (a trace table after its `codeTrace`, a table of values after the `ptrViz` steps, a trace of the numbers a concept table already computed).
 - **Nothing is hidden:**
   - Not allowed: show-more, accordions or `deepdive`, `tabs`, hidden code, hover-only content, and guess-before-teaching beats (`predict`).
   - Allowed: normal slide navigation, and feedback after an exercise attempt (the quiz explanation, the Check result, a hint after a wrong answer).
   - **One exception: the answer of an exercise** (the lecturer's rule, 2026-10-02). The students see only the task. The answer is on the same slide, and only instructor mode shows it (§6 "Instructor mode").
   - No answer slide follows an exercise: no "Check your table", "Check your trace", or "Model answer" slide.
+
+### Pictures and scenes (the lecturer's request, 2026-10-03; t01 is the reference)
+A chapter that explains physical parts or mechanisms needs pictures: a slide of text alone is not enough.
+- **Where a picture goes:**
+  - on the overview slide of a lesson: `top` (the text) and `cols` (the subtopics left, the picture right)
+  - on its own `visual` slide before the table that explains the parts: the picture with numbered marks, and the names in an ordered list beside it
+  - in place of a weak table or text card, when a diagram carries the same content (a hierarchy, a stack of levels, a chain of units)
+- **A picture holds no text.** Names are HTML at 24px: numbered marks on the picture and a list beside it. A mark that would hide a small part stands beside it, joined by a line (`tx`, `ty`).
+- **Raster pictures** are generated with `tools/make-images.py` (§7 "Pictures"): a clean technical illustration, one style for the whole course, on the light plate `#f2f4f7` in both themes. Look at every picture before it is used: correct parts, no text, no logo. A real photograph is used only when the generator cannot draw the part correctly; it needs a credit and a compatible licence.
+- **A scene** replaces a row of text boxes when the subject is a mechanism. It is stepped with Next and the keys, each step moves smoothly, and Play runs all steps. Its notes follow the screen-fit rule: two lines or fewer (about 100 characters).
+- **No repetition:** when a scene shows a fact, the table after it states the fact in a few words only (the scene explains, the table is the reference).
 
 ### Type and layout
 | Size | Used for |
@@ -182,6 +194,8 @@ Later examples use a runnable `example` with 2–3 short `annot` notes.
 | Summary | 5 items or fewer, or a table of 4 rows or fewer |
 | Check | 2 questions, short options, one-sentence explanations |
 | `flowchart` | 6 rows or fewer, with 2 decisions or fewer. A chart wider than about 550px gets its own slide (not a half column). A traced chart places its panel beside it. |
+| Scene (`animStepper`) | Alone on its slide: a stage of 1140×350 units or flatter. With a two-line text on the slide: 1140×270 and `rest: 456`. Notes of two lines or fewer. One scene per slide. |
+| `image` | Alone in a column: no limit to set (its height follows the screen). Under a `top` text: `rest` = the height of that text in px (about 88 for two lines, 124 for three); add 42 for a `caption`. With marks: `colw: [5, 3]`, the list on the right. |
 
 ## 5. Exercises
 
@@ -262,6 +276,8 @@ An instruction is the prompt of a `practiceq`, the task text of an exercise slid
 - **`kind`:** overview, concept, problem, code, visual, trace, summary, exercise, or check. It sets the kicker label; exercises are numbered automatically.
 - **`part`:** the subtopic name. It appears in the kicker, the bottom bar, the outline, and the scroll view.
 - **Layout:** `blocks` stack; `cols` makes two columns, which stack below 900px.
+  - `colw: [a, b]`: the ratio of the two column widths (default `[1, 1]`), for example `[5, 3]` for a picture and its list.
+  - `top: [blocks]`: blocks at full width above the two columns of a `cols` slide.
 - **`answer`:** optional; an array of blocks (the same block types as `blocks`). It is rendered on the same slide, hidden. In instructor mode the slide has a "Show answer" / "Hide answer" button beside the kicker. Leaving the slide hides the answer again.
 - **`hideOnAnswer: true`:** a flag on any block of the slide. The block is hidden while the answer is shown.
 - **`answerCol`:** on a `cols` slide the answer is placed full width below the two columns. `answerCol: 0` (left) or `1` (right) places it at the end of that column: use the column of the block with `hideOnAnswer`.
@@ -280,13 +296,17 @@ An instruction is the prompt of a `practiceq`, the task text of an exercise slid
 - `text`
 - `note` (`title`, `variant`)
 - `list` (`title`, `ordered`)
-- `table` (`head`, `rows`, `caption`, `cls:"center"`). Mark valid/invalid with `<span class='t-yes'>…</span>` and `<span class='t-no'>…</span>`.
+- `table` (`head`, `rows`, `caption`, `cls:"center"`; `cls:"keep1"`: the first column is never wrapped). Mark valid/invalid with `<span class='t-yes'>…</span>` and `<span class='t-no'>…</span>`.
 - `code`: read-only (`code`, `output`, `caption`, `lang:"text"`)
 - `example`: runnable (`annot:[{c,e}]`, `inputs`)
 - `livecode` (`title`, `inputs`, `studentRun`). On a slide of `kind: "exercise"` it shows the program read-only, without Run and Step Run; instructor mode shows the buttons. `studentRun: true` keeps the buttons for the students. On other slides it is not changed.
 - `practiceq` (`prompt`, `expected`, `starter`, `inputs`, `hint`)
 - `quiz` (`items`); question text accepts `` `code` ``
 - `widget` (`name`, `config`)
+- `image`: a raster figure from `img/` on a light plate.
+  - `src` (below `img/`, for example `"t01/hdd-inside.webp"`), `v` (raise it when the file changes), `alt`, `w`, `h` (the pixel size of the file: required, the space is reserved before the file loads)
+  - `marks: [{ n, x, y, tx, ty }]`: numbered marks; `x`, `y` in % of the picture. `tx`, `ty` (optional): the point that the mark names; a line joins them.
+  - `caption`; `rest` (px): the height of the other blocks above and below the figure on its slide.
 
 ### Trace object
 ```js
@@ -336,10 +356,38 @@ An instruction is the prompt of a `practiceq`, the task text of an exercise slid
   - `fileFlow`, `csvFlow`, `jsonFlow`, `arrayOp`, `dfFilter` (t08)
   - `searchViz`, `bubbleViz` (t09). `bigOViz` is no longer used: it animates numbers, not execution. Growth is shown with tables and a Matplotlib plot.
   - `ptrViz` (t10). `pyToC` is no longer used (it hid all but one comparison at a time), nor are `buildPipeline`, `heapViz`, and `arrViz`: t10 shows the build steps and the array addresses as tables.
-  - `cpuCycle`, `cycleFlow`, `powerToggle`, `seekViz` (`seek`, `latency` in ms), `levelDrop` (t01)
+  - t01 (`js/scenes-t01.js`): the scenes `sceneCycle`, `sceneStored`, `sceneDatapath`, `scenePower`, `sceneRamCell`, `sceneRom`, `sceneSeek` (`seek`, `latency` in ms), `sceneGates`, `sceneAsm`, `sceneLevels`; the static diagrams `unitChain`, `memPyramid`, `levelStack`; and `App.tbIcon(name)`, a small icon for a table cell (table `cls: "keep1"`: the first column is never wrapped). `cpuCycle`, `cycleFlow`, `powerToggle`, `seekViz` and `levelDrop` are no longer used: the scenes replace them.
   - `vscodeMap` (t00): a static sketch of the VS Code window with numbered parts
 - **Values shown as balls** use the shared colours: int blue, float teal, str amber, bool purple, None grey (`bt-int` … `bt-none`).
 - **New widgets:** follow the same visual language. A new stepping widget also needs a static equivalent.
+
+### Scenes (`js/scenes.js`: `App.widgets.animStepper`)
+A scene keeps one stage for all its steps: SVG shapes plus HTML labels. A step changes the pose of some parts, and the engine tweens between the poses.
+```js
+App.widgets.sceneX = function (cfg) {
+  return App.widgets.animStepper({ w: 1140, h: 350, label: "what the picture shows",
+    build(S) {                                   // draw the stage; this pose is the base (before step 1)
+      S.add(rect(20, 40, 300, 200, "sn-box"));   // a static shape
+      S.text("Memory", 170, 20, "b");            // a static label (HTML)
+      S.part("arm", g("sn-armg", ...), { x: 372, y: 250, r: -120 });   // a shape that moves
+      S.label("pc", "1", 565, 128, { cls: "mono b" });                 // a label that changes
+      S.token("tok", "25 °C", 150, 128, { state: "raw", o: 0 });       // a value that travels
+    },
+    steps: [{ note: cfg.notes[0], phases: [
+      { set: { tok: { o: 1 } }, dur: 300 },                                   // phases run in order
+      { set: { tok: { x: 430 } }, via: { tok: [[150, 286], [430, 286]] }, dur: 900 },
+    ] }] });
+};
+```
+- **Coordinates** are the units of the stage (`w` × `h`) for shapes and labels. The shapes scale with the stage. The labels do not scale: they are HTML at the text size of the slide, so **never draw text in the SVG**. Leave about 15% of free width around a label.
+- **A pose:** `x`, `y`, `r` (degrees), `s` (scale), `o` (opacity), `cls`, `text`, and any other number, which the part's `apply(node, pose)` draws (a fill level, a line length). Numbers tween; `cls` and `text` change at the start of the phase.
+- **A step** is reached instantly by Prev, by arriving backwards, and with reduced motion: its end pose is the base plus the `set` of every phase up to it. Keep all state in poses; then the instant pose and the played pose are equal.
+- **Arriving on the slide** plays step 1 from the base pose.
+- **`loops: [fn(S, dt, step)]`:** continuous motion that is true to the mechanism (a platter that rotates all the time). It runs only while the scene is on the screen. `after(S, step, instant)` puts loop-driven shapes in a consistent place after a jump.
+- **`static: true`** (with `still: n`): the static equivalent: the still frame of step n and all notes as a list, with no controls.
+- **Helpers** (`App.sceneKit`): `sv`, `g`, `rect`, `line`, `circle`, `path`; `fly(id, from, to, { text, cls, via, dur, keep })` (a token appears, travels, and disappears), `pop(id, text, cls)` (a label shows a new text and grows for a moment), `wait(ms, set)`, `chips(names, current)`, and `ICON`.
+- **Classes:** `sn-…` in `css/scenes.css`. Colours come from the theme variables, so both themes work. (`av-…` belongs to the array widget.)
+- **Text of a scene** (notes, names, captions) is passed in `config` from the topic file.
 
 ### Flowchart object (the `flowchart` widget)
 ```js
@@ -412,6 +460,14 @@ An instruction is the prompt of a `practiceq`, the task text of an exercise slid
 - Flowcharts (`flow`), pseudocode (`display`), and C programs (`lang: "c"`, with `tools/c-trace.js`) use the same tool. `tools/traces/README.md` describes the lesson, the layouts, and the width limits.
 - Audit helper (local, not committed): `.claude/tmp/trace-audit.js`, `await __bad("tNN.trace")`.
 
+### Pictures
+- The prompts are in `tools/images/tNN.json`: one shared `style` and one `prompt` per picture. They are committed, so that a picture can be generated again.
+- `python tools/make-images.py gen tNN name [reference.png]` generates one master with the Codex CLI (`codex exec`, image generation). Give the first accepted master as the reference of the others: the style stays the same.
+- Look at the master: correct parts, no text, no logo, a plain background. Generate again if it fails (three attempts, then use a photograph with a credit).
+- `python tools/make-images.py build tNN [name]` writes `img/tNN/name.webp` (1200×800 or smaller, 150 KB or less) and prints `w` and `h` for the `image` block.
+- The masters (PNG, about 2 MB each) stay in `.claude/tmp/img-src/tNN/` and are not committed.
+- Place the marks with a grid over the picture (10% lines), then check them on the slide.
+
 ### Verify in the browser preview (`.claude/launch.json` → "compro-static")
 1. **Hidden pane:** a hidden preview pane pauses animation frames, so editors are not created. Run `window.requestAnimationFrame = (cb) => setTimeout(() => cb(performance.now()), 16)` in the page before measuring. The local helper `.claude/tmp/audit.js` (not committed) sets this and defines `__audit2(topic)` (the slide audit below), `__endAudit(topic)` (every step of every trace), and `__hs(topic)` (horizontal scroll).
 2. **Slide audit.** At 1280×720, 1536×864, and 1920×1080, walk every slide (`App._deckNav.next()`, ~120 ms each) and check:
@@ -424,6 +480,8 @@ An instruction is the prompt of a `practiceq`, the task text of an exercise slid
 3. **Examples:** run every `example` and `livecode` with `App.py.run(code, {inputs, sink})`. The output must match the notes.
 4. **Exercises:** run a reference solution for every `practiceq`. Its output must equal `expected` (trailing spaces and blank edge lines ignored).
 5. **Traces:** step each `codeTrace` with its buttons and the arrow keys, and compare its values and output with a real run of the program.
+   - **Scenes:** the local helper `.claude/tmp/dev.js` (not committed) defines `__animAudit(topic)`: it plays every step of every scene and reports a step that is too tall, a label outside the stage, and a scene that is still moving. A hidden pane slows the timers down, so the helper moves the clock itself (`widget._advance(ms)`); `__show(hash, step, ms)` stops a scene at one moment for a picture. Look at every scene in both themes, and at the scroll view.
+   - **Pictures:** the slide audit also reports an `image` without `alt` and a file that did not load.
 6. **Scroll view:** every slide appears as a section.
    - **Instructor mode:** check the exercises with the mode off and on (`App.setInstructor(true)` in the console). Off: no answer, no Run on the programs of exercise slides, no reveal buttons. On: run the slide audit again (it also steps every blank trace table), and show every answer once: the slide must still fit.
 7. **Console and theme:** no console errors; light-theme contrast is sufficient.

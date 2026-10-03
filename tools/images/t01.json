@@ -1,0 +1,33 @@
+{
+  "style": "Clean technical illustration for an engineering textbook. Isometric three-quarter view from above. Smooth flat shading with soft gradients and thin dark outlines. Muted palette: slate grey, steel blue and teal, with circuit-board green and small amber and gold accents. Plain uniform very light grey background (#f2f4f7) with a soft contact shadow under the object. Absolutely no text, no letters, no numbers, no labels, no arrows, no callouts, no logos, no brand names, no watermark, no people, no hands. The subject is centred and fully inside the frame with a generous empty margin on all sides. Landscape format, 3:2.",
+  "images": [
+    {
+      "name": "hdd-inside",
+      "prompt": "A 3.5-inch hard disk drive with its top cover removed, so that the inside is visible. Clearly visible and well separated from each other: a stack of shiny silver circular platters that fills most of the case; the round spindle motor hub in the centre of the platters; one triangular actuator arm that reaches from a pivot in the corner over the platter surface; a tiny read/write head at the tip of the arm, above the platter; the voice coil magnet assembly behind the pivot. The drive floats a short distance above its separate green controller circuit board with a few black chips and a connector (exploded view), so that the board is clearly visible below one edge of the metal case."
+    },
+    {
+      "name": "ssd-inside",
+      "prompt": "A 2.5-inch SATA solid state drive, opened. The flat metal cover floats above it (exploded view). Inside the shallow case lies one green circuit board with no moving parts. On the board, clearly visible and well separated: one square controller chip near the connector end; a neat group of four identical larger black rectangular NAND flash memory chips; a few tiny surface components. At one short end of the board is the flat SATA edge connector with gold contacts."
+    },
+    {
+      "name": "hdd-ssd",
+      "prompt": "Two closed storage drives side by side on a flat surface, both complete and not opened. On the left: a 3.5-inch hard disk drive, a thick grey metal box with a blank silver top plate and screws in the corners. On the right: a thin 2.5-inch solid state drive, a slim dark flat rectangular case, clearly smaller and thinner than the hard disk drive. A clear gap between the two drives."
+    },
+    {
+      "name": "computer-system",
+      "prompt": "A complete desktop computer system on a plain desk surface: a flat monitor on a stand with a blank dark screen, a tower case standing beside it, a keyboard and a mouse in front of the monitor, and a small printer at the side. The five items are clearly separated from each other."
+    },
+    {
+      "name": "pc-inside",
+      "prompt": "A desktop computer shown with its parts spread out so that each is clearly visible and well separated. In the front left: a keyboard and a mouse. In the centre: a large motherboard lying flat, with one square processor chip in its socket near the middle, two long memory modules standing upright in their slots beside the processor, and one small flat M.2 solid state drive lying on the board near the lower edge. At the back right: a flat monitor on a stand with a blank dark screen."
+    },
+    {
+      "name": "cpu-chip",
+      "prompt": "One desktop computer processor chip: a square green substrate with a square brushed-metal heat spreader on top, with a blank surface. The chip floats a short distance above a square processor socket on a small piece of dark motherboard; the socket shows a fine regular grid of gold contact points and an open retention lever."
+    },
+    {
+      "name": "ram-rom",
+      "prompt": "Two computer memory parts side by side with a clear gap between them. On the left: one long thin DDR memory module, a green circuit board with a row of eight identical small black rectangular chips and a row of gold contacts along its lower edge. On the right: one old EPROM memory chip in a long ceramic dual in-line package with two rows of metal legs and a small round transparent quartz window in the middle of its top, through which a tiny silicon die is visible."
+    }
+  ]
+}

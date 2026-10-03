@@ -1,0 +1,185 @@
+/* ============================================================
+   scenes.css - animated scenes (js/scenes.js, js/scenes-t01.js)
+   and static diagrams.
+   A scene has one stage: SVG shapes plus HTML labels. The shapes
+   scale with the stage; the labels keep the text size of the slide
+   (24px), so no text is ever scaled.
+   ============================================================ */
+:root { --sn-on-accent: #00131f; }
+[data-theme="light"] { --sn-on-accent: #fff; }
+
+/* ---- stage, labels, tokens ---- */
+.sn-wrap { overflow-x: auto; overflow-y: hidden; }
+.sn-stage { position: relative; width: 100%; min-width: 620px; aspect-ratio: var(--sn-ar); margin: 0 auto; container-type: inline-size; }
+.slide .sn-stage { width: min(100%, calc((100vh - var(--sn-rest, 366px)) * var(--sn-ar))); min-width: 1000px; }
+.sn-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.sn-ov { position: absolute; inset: 0; font-size: clamp(11px, 2.1cqw, 24px); pointer-events: none; }
+.slide .sn-ov { font-size: 24px; }
+.sn-label { position: absolute; white-space: nowrap; line-height: 1.2; }
+.sn-label.b { font-weight: 700; }
+.sn-label.dim { color: var(--text-dim); }
+.sn-label.mono, .sn-token { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+.sn-label.hot { color: var(--accent); font-weight: 700; }
+.sn-label.good { color: var(--accent-2); font-weight: 700; }
+.sn-label.bad { color: var(--danger); font-weight: 700; }
+[data-theme="light"] .sn-label.good { color: #087f5b; }
+.sn-label.onbit { color: #06121d; }
+.sn-token { font-weight: 700; padding: .12em .6em; border-radius: 999px; background: var(--accent); color: var(--sn-on-accent); box-shadow: 0 3px 12px rgba(0,0,0,.35); }
+.sn-token.sq { border-radius: 8px; }
+.sn-token.raw { background: var(--warn); color: #111; }
+.sn-token.info { background: var(--accent-2); color: #06121d; }
+.sn-token.ghost { background: var(--bg-3); color: var(--text-dim); box-shadow: none; outline: 2px dashed var(--border); }
+
+/* ---- note and controls ---- */
+.sn-foot { display: flex; align-items: center; gap: 14px; margin-top: 10px; flex-wrap: wrap; }
+.sn-note { flex: 1 1 320px; min-height: 2.8em; line-height: 1.4; display: flex; align-items: center; padding: 2px 12px; border-left: 3px solid var(--accent); background: var(--bg-2); border-radius: 0 8px 8px 0; }
+.sn-ctrl { flex: 0 0 auto; flex-wrap: nowrap; }
+.sn-play { min-width: 5.4em; }
+.sn-count { font-family: ui-monospace, monospace; color: var(--text-dim); min-width: 4em; text-align: right; white-space: nowrap; }
+.sn-notes { margin: 10px 0 0; padding-left: 1.6em; }
+.slide .sn-note, .slide .sn-count, .slide .sn-notes li { font-size: 24px; }
+
+/* ---- shared shapes ---- */
+.sn-card { fill: var(--bg-2); stroke: var(--border); stroke-width: 2; transition: fill .35s, stroke .35s, filter .35s, opacity .35s; }
+.on > .sn-card { stroke: var(--accent); stroke-width: 3; fill: color-mix(in srgb, var(--accent) 14%, var(--bg-2)); filter: drop-shadow(0 0 10px color-mix(in srgb, var(--accent) 55%, transparent)); }
+.done > .sn-card { opacity: .55; }
+.sn-ic { fill: none; stroke: var(--text); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; transition: stroke .3s; }
+.sn-ic.on { stroke: var(--accent); }
+.sn-ic-core { fill: color-mix(in srgb, var(--accent) 35%, transparent); stroke: var(--accent); }
+.sn-ic-hot { stroke: var(--danger); stroke-width: 6; }
+.sn-ic-hotfill { fill: var(--danger); stroke: none; }
+.sn-ic-key { fill: var(--text-dim); stroke: none; }
+.sn-rail { stroke: var(--border); stroke-width: 4; stroke-linecap: round; }
+.sn-railfill { stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+.sn-node { fill: var(--bg-3); stroke: var(--text-dim); stroke-width: 3; }
+.sn-chev path { fill: none; stroke: var(--text-dim); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; transition: stroke .35s; }
+.sn-chev.on path { stroke: var(--accent); }
+.sn-box { fill: var(--bg-2); stroke: var(--border); stroke-width: 2; }
+.sn-box2 { fill: color-mix(in srgb, var(--bg-2) 55%, var(--bg-3)); }
+.sn-cell { fill: var(--code-bg); stroke: var(--border); stroke-width: 2; transition: fill .3s, stroke .3s; }
+.on > .sn-cell { stroke: var(--accent-2); stroke-width: 3; fill: color-mix(in srgb, var(--accent-2) 18%, var(--code-bg)); }
+.sn-bus { stroke: var(--text-dim); stroke-width: 10; stroke-linecap: round; opacity: .55; }
+.sn-bus-on { stroke: var(--accent); stroke-width: 10; stroke-linecap: round; stroke-dasharray: 16 12; animation: snFlowBus .7s linear infinite; }
+@keyframes snFlowBus { to { stroke-dashoffset: -28; } }
+.sn-wire { fill: none; stroke: var(--text-dim); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; opacity: .7; }
+.sn-wire-on { stroke: var(--accent); stroke-width: 4; opacity: 1; stroke-dasharray: 10 8; animation: snFlow .6s linear infinite; }
+@keyframes snFlow { to { stroke-dashoffset: -18; } }
+.sn-pulse { fill: var(--accent-2); filter: drop-shadow(0 0 6px var(--accent-2)); }
+.sn-dash { stroke: var(--text-dim); stroke-width: 2; stroke-dasharray: 7 7; }
+.sn-chips { display: flex; gap: 8px; }
+.sn-chip { padding: .1em .5em; border-radius: 8px; border: 2px solid var(--border); color: var(--text-dim); background: var(--bg-2); font-weight: 700; }
+.sn-chip.on { border-color: var(--accent); background: var(--accent); color: var(--sn-on-accent); }
+
+/* ---- sceneSeek: HDD and SSD ---- */
+.sn-case { fill: var(--bg-2); stroke: var(--border); stroke-width: 3; }
+.sn-platter { fill: color-mix(in srgb, var(--text-dim) 30%, var(--bg-2)); stroke: var(--text-dim); stroke-width: 2; }
+.sn-track { fill: none; stroke: color-mix(in srgb, var(--text) 40%, transparent); stroke-width: 1.5; stroke-dasharray: 5 7; }
+.sn-shine { fill: none; stroke: color-mix(in srgb, var(--text) 55%, transparent); stroke-width: 5; stroke-linecap: round; }
+.sn-sector { fill: none; stroke: var(--warn); stroke-width: 15; transition: stroke .3s; }
+.sn-sector.read { stroke: var(--accent-2); }
+.sn-hub { fill: var(--bg-3); stroke: var(--text-dim); stroke-width: 3; }
+.sn-hubdot { fill: var(--text-dim); }
+.sn-coil { fill: var(--bg-3); stroke: var(--text-dim); stroke-width: 2; }
+.sn-arm { fill: var(--accent); stroke: color-mix(in srgb, var(--accent) 60%, #000); stroke-width: 1.5; stroke-linejoin: round; }
+.sn-pivot { fill: var(--bg-3); stroke: var(--accent); stroke-width: 4; }
+.sn-head { fill: var(--text); stroke: var(--accent); stroke-width: 3; transition: fill .3s; }
+.sn-armg.on .sn-head { fill: var(--accent-2); stroke: var(--accent-2); filter: drop-shadow(0 0 6px var(--accent-2)); }
+.sn-board { fill: color-mix(in srgb, var(--accent-2) 12%, var(--bg-2)); stroke: color-mix(in srgb, var(--accent-2) 45%, var(--border)); stroke-width: 3; }
+.sn-chipbody { fill: var(--bg-3); }
+.sn-bar { fill: var(--bg-2); stroke: var(--border); stroke-width: 1.5; }
+.sn-bar-seek { fill: var(--warn); }
+.sn-bar-lat { fill: var(--accent); }
+.sn-bar-ssd { fill: var(--accent-2); }
+
+/* ---- scenePower: RAM and ROM ---- */
+.sn-sw { fill: var(--bg-2); stroke: var(--text-dim); stroke-width: 3; transition: fill .3s, stroke .3s; }
+.on > .sn-sw { fill: var(--accent-2); stroke: var(--accent-2); }
+.sn-knob { fill: var(--text); stroke: var(--bg); stroke-width: 2; }
+.sn-power { fill: none; stroke: var(--text-dim); stroke-width: 5; stroke-linejoin: round; stroke-linecap: round; opacity: .5; transition: stroke .3s, opacity .3s; }
+.sn-powerg.on .sn-power { stroke: var(--accent-2); opacity: 1; stroke-dasharray: 12 9; animation: snFlowPower .6s linear infinite; }
+@keyframes snFlowPower { to { stroke-dashoffset: -21; } }
+.sn-pins rect { fill: var(--text-dim); }
+.sn-chipbox { fill: var(--bg-2); stroke: var(--text-dim); stroke-width: 2.5; }
+.sn-charge { fill: color-mix(in srgb, var(--accent-2) 38%, transparent); }
+.sn-charge.rom { fill: color-mix(in srgb, var(--accent) 34%, transparent); transition: fill .3s; }
+.sn-charge.rom.on { fill: color-mix(in srgb, var(--accent) 60%, transparent); }
+
+/* ---- sceneRamCell: DRAM and SRAM ---- */
+.sn-tank { fill: var(--code-bg); stroke: var(--border); stroke-width: 1.5; }
+.sn-chargeq { fill: color-mix(in srgb, var(--accent) 72%, transparent); }
+.sn-plate { stroke: var(--text); stroke-width: 7; stroke-linecap: round; }
+.sn-drip { fill: var(--accent); }
+.sn-gatefill path, .sn-gatefill circle { fill: var(--bg-2); }
+
+/* ---- sceneRom: PROM, EPROM, EEPROM ---- */
+.sn-window { fill: color-mix(in srgb, var(--text) 9%, transparent); stroke: var(--text-dim); stroke-width: 2; stroke-dasharray: 3 5; }
+.sn-bit { fill: var(--code-bg); stroke: var(--border); stroke-width: 2; stroke-dasharray: 5 4; transition: fill .3s, stroke .3s; }
+.one > .sn-bit { fill: var(--accent-2); stroke: var(--accent-2); stroke-dasharray: none; }
+.zero > .sn-bit { fill: var(--bg-3); stroke: var(--text-dim); stroke-dasharray: none; }
+.hot > .sn-bit { stroke: var(--warn); stroke-width: 4; stroke-dasharray: none; fill: color-mix(in srgb, var(--warn) 25%, var(--code-bg)); }
+.sn-uvbeam { fill: color-mix(in srgb, #b197fc 45%, transparent); }
+.sn-uvlamp { fill: #b197fc; stroke: #7950f2; stroke-width: 2; }
+.sn-lock { stroke: var(--warn); }
+.sn-zap { fill: var(--warn); stroke: none; }
+
+/* ---- sceneGates ---- */
+.sn-sigw { stroke: var(--text-dim); stroke-width: 5; stroke-linecap: round; opacity: .6; transition: stroke .3s, opacity .3s; }
+.sn-sigw.one { stroke: var(--accent-2); opacity: 1; }
+.sn-gate path, .sn-gate circle { fill: var(--bg-2); stroke: var(--text); stroke-width: 3; stroke-linejoin: round; transition: fill .25s, stroke .25s; }
+.sn-gate.on path, .sn-gate.on circle { stroke: var(--accent); fill: color-mix(in srgb, var(--accent) 24%, var(--bg-2)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sn-stage * { transition: none !important; animation: none !important; }
+}
+
+/* ============================================================
+   static diagrams
+   ============================================================ */
+
+/* unitChain: 8 bits = 1 byte, then x 1024 for each larger unit */
+.uc-top { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; margin-bottom: 18px; }
+.uc-bits { display: flex; gap: 6px; }
+.uc-bit { display: inline-flex; align-items: center; justify-content: center; width: 2em; height: 2.2em; border: 2px solid var(--border); border-radius: 8px;
+  background: var(--code-bg); font-family: ui-monospace, monospace; font-weight: 700; color: var(--text-dim); }
+.uc-bit.one { background: var(--accent-2); border-color: var(--accent-2); color: #06121d; }
+.uc-dim { color: var(--text-dim); }
+.uc-chain { display: flex; align-items: stretch; flex-wrap: wrap; row-gap: 10px; }
+.uc-unit { flex: 1 1 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 6px; border: 2px solid var(--border); border-radius: 12px; background: var(--bg-2); }
+.uc-unit span { color: var(--text-dim); }
+.uc-arrow { flex: 0 0 auto; align-self: center; padding: 0 8px; color: var(--accent); font-weight: 700; white-space: nowrap; }
+.uc-arrow::after { content: " \2192"; }
+.slide .uc, .slide .uc * { font-size: 24px; }
+
+/* memPyramid: the memory hierarchy */
+.mp { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; align-items: stretch; }
+.mp-side { display: flex; flex-direction: column; align-items: center; justify-content: space-between; color: var(--text-dim); }
+.mp-arrow { flex: 1; width: 5px; margin: 6px 0; border-radius: 3px; background: linear-gradient(var(--accent), var(--accent-2)); }
+.mp-tiers { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.mp-tier { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 7px 14px; border-radius: 10px; white-space: nowrap;
+  border: 2px solid color-mix(in srgb, var(--accent) 60%, var(--border)); background: color-mix(in srgb, var(--accent) 16%, var(--bg-2)); }
+.mp-tier.nv { border-color: color-mix(in srgb, var(--accent-2) 60%, var(--border)); background: color-mix(in srgb, var(--accent-2) 16%, var(--bg-2)); }
+.mp-tier span { color: var(--text-dim); }
+.mp-tier .mp-size { color: var(--text); font-family: ui-monospace, monospace; }
+.mp-key { display: flex; flex-direction: column; gap: 6px; }
+.mp-brace { display: flex; align-items: center; padding-left: 12px; border-left: 5px solid var(--accent); border-radius: 3px; }
+.mp-brace.nv { border-left-color: var(--accent-2); }
+.slide .mp, .slide .mp * { font-size: 24px; }
+@container slide (max-width: 900px) { .mp { grid-template-columns: minmax(0, 1fr); } .mp-side, .mp-key { flex-direction: row; } .mp-tier { width: 100% !important; white-space: normal; flex-wrap: wrap; } }
+
+/* levelStack: the levels of a computer system, in two groups */
+.ls { display: flex; flex-direction: column; gap: 8px; }
+.ls-group { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 10px; }
+.ls-side { display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 700; text-align: center; padding: 4px 8px; border: 2px solid var(--accent); background: color-mix(in srgb, var(--accent) 20%, var(--bg-2)); }
+.ls-group.hw .ls-side { border-color: var(--accent-2); background: color-mix(in srgb, var(--accent-2) 20%, var(--bg-2)); }
+.ls-rows { display: flex; flex-direction: column; gap: 4px; }
+.ls-row { display: grid; grid-template-columns: 1.6em 11em minmax(0, 1fr); align-items: center; gap: 10px; padding: 3px 12px; border-radius: 8px; background: var(--bg-2); border: 1px solid var(--border); border-left: 5px solid var(--accent); }
+.ls-group.hw .ls-row { border-left-color: var(--accent-2); }
+.ls-n { font-family: ui-monospace, monospace; font-weight: 800; }
+.ls-parts { color: var(--text-dim); }
+.slide .ls, .slide .ls * { font-size: 24px; }
+@container slide (max-width: 900px) { .ls-group { grid-template-columns: minmax(0, 1fr); } .ls-row { grid-template-columns: 1.6em minmax(0, 1fr); } .ls-parts { grid-column: 2; } }
+
+/* a small icon in a table cell (App.tbIcon) */
+.tb-icon { width: 44px; height: 33px; vertical-align: middle; margin: -4px 10px -2px 0; fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+/* table class "keep1": the first column is never wrapped (an icon and its name, a short name) */
+.dtab.keep1 td:first-child, .dtab.keep1 th:first-child { white-space: nowrap; }

@@ -18,24 +18,9 @@
   const NEXT = (html) => N(html, "Next lesson");
   const HIDE = (b) => Object.assign(b, { hideOnAnswer: true });   // the block is hidden while the answer of its slide is shown
   const OUT = (text) => ({ type: "code", code: text, caption: "output", lang: "text" });   // the expected output, in the answer of a slide
-
-  /* ---------- trace: three assembly instructions through the instruction cycle ----------
-     The code lines are assembly, not Python. Addresses are the line numbers 1 to 3.
-     IR is shown as plain text (type "obj"), not as a Python string. */
-  const IR = (text) => ({ v: text, t: "obj" });
-  const T_cycle = {
-    code: ["LOAD R1, 12", "LOAD R2, 30", "ADD R1, R2"],
-    steps: [
-      { line: -1, note: "The program is in memory at addresses 1 to 3. The PC holds address 1.", set: { PC: "1" } },
-      { line: 0, note: "Fetch: the IR receives the instruction at address 1. The PC increases by 1.", set: { IR: IR("LOAD R1, 12"), PC: "2" } },
-      { line: 0, note: "Decode: load the value 12 into R1. Execute and store: R1 holds 12.", set: { R1: "12" } },
-      { line: 1, note: "Fetch: the IR receives the instruction at address 2. The PC increases by 1.", set: { IR: IR("LOAD R2, 30"), PC: "3" } },
-      { line: 1, note: "Decode: load the value 30 into R2. Execute and store: R2 holds 30.", set: { R2: "30" } },
-      { line: 2, note: "Fetch: the IR receives the instruction at address 3. The PC increases by 1.", set: { IR: IR("ADD R1, R2"), PC: "4" } },
-      { line: 2, note: "Decode: add R2 to R1. Execute: the ALU adds 12 + 30. Store: R1 holds 42.", set: { R1: "42" } },
-      { line: -1, note: "No instruction is left. R1 holds 42. Result check: 12 + 30 = 42." },
-    ],
-  };
+  // a figure from img/t01/ (made by tools/make-images.py). opts: { marks: [{ n, x, y }] in % of the picture, rest }
+  const IMG = (name, alt, opts) => Object.assign({ type: "image", src: "t01/" + name + ".webp", alt, w: 1200, h: 800 }, opts);
+  const IC = App.tbIcon;   // a small icon in a table cell (scenes-t01.js)
 
   App.registerTopic({
     id: "t01",
@@ -52,9 +37,11 @@
         slides: "01:4–13",
         keywords: "computer definition input processing storage output data information processing cycle hardware stored program bus address software input device output device system software application software operating system",
         deck: [
-          { kind: "overview", title: "Computer, hardware, and software", blocks: [
+          { kind: "overview", title: "Computer, hardware, and software", top: [
             T("A <b>computer</b> is an electronic device that processes and stores information. It performs calculations, changes data, and executes instructions to complete a task.<br>A computer system has two parts: <b>hardware</b> and <b>software</b>."),
-            L(["The four functions of a computer", "Hardware", "The stored program", "Input and output devices", "Software", "A program uses the four functions"], "Subtopics in this lesson", true),
+          ], cols: [
+            [L(["The four functions of a computer", "Hardware", "The stored program", "Input and output devices", "Software", "A program uses the four functions"], "Subtopics in this lesson", true)],
+            [IMG("computer-system", "A desktop computer system: a monitor, a tower case, a printer, a keyboard, and a mouse", { rest: 124 })],
           ] },
           { kind: "concept", part: "The four functions", title: "The four functions of a computer", blocks: [
             TB(["Function", "Meaning"], [
@@ -67,11 +54,11 @@
             T("The four functions usually occur in this order. Together they form the <b>information processing cycle</b>:<br>input → processing → storage → output."),
           ] },
           { kind: "visual", part: "The four functions", title: "The cycle for one temperature reading", blocks: [
-            W("cycleFlow", { title: "Input → Processing → Storage → Output", stages: [
-              { name: "Input", data: "25 °C", note: "A temperature sensor sends the value 25 °C to the computer." },
-              { name: "Processing", data: "25 °C → 77 °F", note: "The CPU executes instructions that convert the value: 25 × 9 ÷ 5 + 32 = 77." },
-              { name: "Storage", data: "77 °F saved", note: "The result is saved in memory or on a disk for later use." },
-              { name: "Output", data: "77 °F shown", note: "The monitor displays the result to the user." },
+            W("sceneCycle", { raw: "25 °C", info: "77 °F", stages: [
+              { name: "Input", device: "sensor", note: "<b>Input.</b> A temperature sensor sends the value 25 °C to the computer." },
+              { name: "Processing", device: "CPU", note: "<b>Processing.</b> The CPU converts the value: 25 × 9 ÷ 5 + 32 = 77." },
+              { name: "Storage", device: "memory or disk", note: "<b>Storage.</b> The result is saved in memory or on a disk for later use." },
+              { name: "Output", device: "monitor", note: "<b>Output.</b> The monitor displays the result to the user." },
             ] }),
           ] },
           { kind: "concept", part: "Hardware", title: "Hardware: the tangible parts", blocks: [
@@ -83,36 +70,49 @@
               ["Output devices", "present the results of the processing", "monitor, printer"],
             ]),
           ] },
+          { kind: "visual", part: "Hardware", title: "The four groups in one computer", colw: [5, 3], cols: [
+            [IMG("pc-inside", "A keyboard and a mouse, a motherboard with a CPU, two RAM modules and an SSD, and a monitor", { marks: [
+              { n: 1, x: 24, y: 66 }, { n: 1, x: 50, y: 88 }, { n: 2, x: 47, y: 46 }, { n: 3, x: 60, y: 38 }, { n: 3, x: 52, y: 65 }, { n: 4, x: 76, y: 27 },
+            ] })],
+            [L([
+              "<b>Input devices</b>: the keyboard and the mouse",
+              "<b>Processing unit</b>: the CPU",
+              "<b>Memory and storage devices</b>: the RAM modules and the SSD",
+              "<b>Output device</b>: the monitor",
+            ], null, true)],
+          ] },
           { kind: "concept", part: "The stored program", title: "The stored program", blocks: [
             L([
               "The instructions of a program and its data are both stored in memory (RAM) as binary numbers: sequences of 0 and 1.",
               "Each location in memory has a number: its <b>address</b>.",
               "The CPU fetches the instructions from memory, one after another, and executes them.",
             ]),
-            W("diagram", { layout: "row", boxes: [
-              { title: "CPU", body: "executes the instructions" },
-              { title: "Bus", body: "carries instructions and data between the parts" },
-              { title: "RAM", body: "holds the running program and its data" },
-              { title: "Storage", body: "keeps the program file when the power is off" },
-              { title: "I/O devices", body: "input and output: keyboard, monitor" },
+          ] },
+          { kind: "visual", part: "The stored program", title: "A program in the computer", blocks: [
+            W("sceneStored", { rows: ["1011 0001", "1011 0010", "0000 0011", "0000 1100"], notes: [
+              "<b>Storage</b> keeps the program file when the power is off. To run, the program is loaded into RAM.",
+              "<b>RAM</b> holds the running program and its data as binary numbers. Each location has an address.",
+              "<b>The bus</b> carries instructions and data between the parts.",
+              "<b>The CPU</b> executes the instructions, one after another.",
+              "<b>Input and output devices:</b> the keyboard sends the input, and the monitor shows the output.",
             ] }),
           ] },
           { kind: "concept", part: "Input and output devices", title: "Input and output devices", cols: [
             [T("An <b>input device</b> enters data into a computer system."),
               TB(["Input device", "Enters"], [
-                ["Keyboard", "text and commands"],
-                ["Mouse", "pointing and clicking"],
-                ["Scanner", "paper documents, in digital form"],
-                ["Microphone", "sound"],
-                ["Webcam", "video"],
-              ])],
+                [IC("keyboard") + "Keyboard", "text and commands"],
+                [IC("mouse") + "Mouse", "pointing and clicking"],
+                [IC("scanner") + "Scanner", "paper documents, in digital form"],
+                [IC("microphone") + "Microphone", "sound"],
+                [IC("webcam") + "Webcam", "video"],
+              ], null, "keep1")],
             [T("An <b>output device</b> presents the results to the user."),
               TB(["Output device", "Presents"], [
-                ["Monitor", "text and images"],
-                ["Printer", "paper copies of documents"],
-                ["Speakers", "sound"],
-                ["Projector", "the display, enlarged on a surface"],
-              ])],
+                [IC("monitor") + "Monitor", "text and images"],
+                [IC("printer") + "Printer", "paper copies of documents"],
+                [IC("speakers") + "Speakers", "sound"],
+                [IC("projector") + "Projector", "the display, enlarged on a surface"],
+              ], null, "keep1")],
           ] },
           { kind: "concept", part: "Software", title: "Software: the instructions", blocks: [
             T("<b>Software</b> is the intangible part of a computer system: the instructions that tell the hardware which tasks to perform."),
@@ -192,9 +192,11 @@
         slides: "01:11",
         keywords: "cpu central processing unit alu arithmetic logic unit control unit cu register program counter pc instruction register ir clock speed ghz mhz fetch decode execute store instruction cycle",
         deck: [
-          { kind: "overview", title: "The CPU and the instruction cycle", blocks: [
+          { kind: "overview", title: "The CPU and the instruction cycle", top: [
             T("The <b>central processing unit</b> (CPU) is the component that performs most of the processing in a computer. It executes the instructions of a program, one instruction after another."),
-            L(["The parts of the CPU", "The instruction cycle", "The CPU executes a program"], "Subtopics in this lesson", true),
+          ], cols: [
+            [L(["The parts of the CPU", "The instruction cycle", "The CPU executes a program"], "Subtopics in this lesson", true)],
+            [IMG("cpu-chip", "A CPU chip above its socket on a motherboard", { rest: 88 })],
           ] },
           { kind: "concept", part: "The parts of the CPU", title: "ALU, control unit, and registers", blocks: [
             TB(["Part", "Function"], [
@@ -215,7 +217,20 @@
             ], "The instruction cycle", true),
             T("The CPU repeats this cycle for every instruction of a program.<br>The <b>clock speed</b> sets how fast the cycle runs: 3 GHz is 3 thousand million clock cycles per second. A 16 MHz microcontroller is much slower."),
           ] },
-          { kind: "code", part: "The instruction cycle", title: "Three instructions through the cycle", blocks: [W("codeTrace", T_cycle)] },
+          { kind: "visual", part: "The instruction cycle", title: "Three instructions through the cycle", blocks: [
+            W("sceneDatapath", { code: ["LOAD R1, 12", "LOAD R2, 30", "ADD R1, R2"], notes: [
+              "The program is in memory at addresses 1 to 3. The PC holds address 1.",
+              "<b>Fetch.</b> The IR receives the instruction at address 1. The PC increases by 1.",
+              "<b>Decode:</b> load the value 12 into R1. <b>Execute and store:</b> R1 holds 12.",
+              "<b>Fetch.</b> The IR receives the instruction at address 2. The PC increases by 1.",
+              "<b>Decode:</b> load the value 30 into R2. <b>Execute and store:</b> R2 holds 30.",
+              "<b>Fetch.</b> The IR receives the instruction at address 3. The PC increases by 1.",
+              "<b>Decode.</b> The control unit interprets the instruction: add R2 to R1.",
+              "<b>Execute.</b> The ALU adds the values of R1 and R2: 12 + 30 = 42.",
+              "<b>Store.</b> The result is written to R1. R1 holds 42.",
+              "No instruction is left. R1 holds 42. Result check: 12 + 30 = 42.",
+            ] }),
+          ] },
           { kind: "concept", part: "The CPU executes a program", title: "Every calculation runs in the ALU", blocks: [
             L([
               "One Python statement is translated into many machine instructions (Lesson 5).",
@@ -294,9 +309,11 @@
         slides: "01:14–26",
         keywords: "memory primary secondary tertiary bit byte kb mb gb tb units ram random access rom volatile non-volatile dram sram refresh flip-flop cache prom eprom eeprom flash bios firmware",
         deck: [
-          { kind: "overview", title: "Memory: RAM and ROM", blocks: [
+          { kind: "overview", title: "Memory: RAM and ROM", top: [
             T("<b>Memory</b> stores data and instructions, temporarily or permanently. The CPU exchanges data with memory for every instruction, so a computer cannot operate without memory."),
-            L(["Classes of storage: primary, secondary, and tertiary", "RAM", "ROM", "Volatile and non-volatile memory", "Types of RAM: DRAM and SRAM", "Types of ROM: PROM, EPROM, and EEPROM"], "Subtopics in this lesson", true),
+          ], colw: [5, 4], cols: [
+            [L(["Classes of storage: primary, secondary, and tertiary", "RAM", "ROM", "Volatile and non-volatile memory", "Types of RAM: DRAM and SRAM", "Types of ROM: PROM, EPROM, and EEPROM"], "Subtopics in this lesson", true)],
+            [IMG("ram-rom", "A RAM module, and a ROM chip with a round window", { rest: 130, caption: "A RAM module and a ROM chip (an EPROM)" })],
           ] },
           { kind: "concept", part: "Classes of storage", title: "Primary, secondary, and tertiary storage", blocks: [
             TB(["Class", "Properties", "Examples"], [
@@ -308,14 +325,9 @@
             T("This lesson explains primary memory: RAM and ROM."),
           ] },
           { kind: "concept", part: "Classes of storage", title: "Units of memory and storage size", blocks: [
-            TB(["Unit", "Size"], [
-              ["bit", "one binary digit: 0 or 1"],
-              ["byte", "8 bits"],
-              ["KB (kilobyte)", "1024 bytes"],
-              ["MB (megabyte)", "1024 KB"],
-              ["GB (gigabyte)", "1024 MB"],
-              ["TB (terabyte)", "1024 GB"],
-            ], null, "center"),
+            W("unitChain", { bits: "01000001", byte: "<b>1 byte</b> = 8 bits", bit: "1 bit: one binary digit, 0 or 1", factor: 1024,
+              units: [["byte", ""], ["KB", "kilobyte"], ["MB", "megabyte"], ["GB", "gigabyte"], ["TB", "terabyte"]] }),
+            T("Each unit is 1024 times the unit before it: 1 KB = 1024 bytes, 1 MB = 1024 KB, 1 GB = 1024 MB, 1 TB = 1024 GB."),
             T("Drive manufacturers often use 1000 instead of 1024. Topic 02 explains how values are stored in bits."),
           ] },
           { kind: "concept", part: "RAM", title: "RAM: Random Access Memory", blocks: [
@@ -338,24 +350,44 @@
             ]),
           ] },
           { kind: "visual", part: "Volatile and non-volatile memory", title: "Power off: RAM and ROM", blocks: [
-            W("powerToggle", { title: "RAM and ROM when the power is switched off", ram: ["running program", "unsaved document"], rom: ["BIOS", "firmware"] }),
+            W("scenePower", { ram: ["running program", "unsaved document"], rom: ["BIOS", "firmware"], rest: 456, notes: [
+              "<b>Power on.</b> RAM holds the running program and its data. ROM holds the firmware.",
+              "<b>Power off.</b> The data in RAM is erased. ROM keeps its data.",
+              "<b>Power on again.</b> RAM is empty. ROM still holds the BIOS and the firmware.",
+            ] }),
             T("A running Python program and its values are in RAM. When the power is off, they are lost, unless they were saved to a file on a disk."),
+          ] },
+          { kind: "visual", part: "Types of RAM", title: "DRAM and SRAM: storing one bit", blocks: [
+            W("sceneRamCell", { notes: [
+              "<b>Write a 1.</b> DRAM charges a capacitor. SRAM sets a flip-flop: a circuit that holds one bit.",
+              "<b>DRAM:</b> the capacitor slowly loses its charge. <b>SRAM:</b> the flip-flop holds the bit while it has power.",
+              "<b>Refresh.</b> DRAM reads each bit and writes it again, before the charge is lost.",
+              "DRAM repeats the refresh periodically. SRAM needs no refresh while it is powered.",
+            ] }),
           ] },
           { kind: "concept", part: "Types of RAM", title: "DRAM and SRAM", blocks: [
             TB(["Feature", "DRAM (dynamic RAM)", "SRAM (static RAM)"], [
-              ["Stores each bit in", "a capacitor", "a flip-flop: a circuit that holds one bit"],
-              ["Refresh", "needed periodically: each bit is rewritten, because the capacitor slowly loses its charge", "not needed while powered"],
+              ["Stores each bit in", "a capacitor", "a flip-flop"],
+              ["Refresh", "needed periodically", "not needed while powered"],
               ["Speed and cost", "slower, less expensive", "faster, more expensive"],
               ["Used in", "main memory: DDR4 and DDR5 modules in PCs, laptops, and phones", "CPU caches (L1, L2, L3) and GPUs"],
-            ]),
+            ], null, "keep1"),
             T("A <b>cache</b> is a small, fast memory in the CPU. It keeps copies of the data from RAM that the CPU used recently."),
+          ] },
+          { kind: "visual", part: "Types of ROM", title: "Erasing a ROM", blocks: [
+            W("sceneRom", { names: ["PROM", "EPROM", "EEPROM"], subs: ["programmable ROM", "erasable PROM", "electrically erasable PROM"], notes: [
+              "A program is written into each chip. Every cell stores one bit.",
+              "<b>PROM</b> is programmed once, after manufacturing. It cannot be erased.",
+              "<b>EPROM</b> is erased with ultraviolet (UV) light through its window. Then it is programmed again.",
+              "<b>EEPROM</b> is erased and reprogrammed with electrical signals, also in parts.",
+            ] }),
           ] },
           { kind: "concept", part: "Types of ROM", title: "PROM, EPROM, and EEPROM", blocks: [
             TB(["Type", "Erasing and reprogramming", "Examples"], [
-              ["PROM (programmable ROM)", "programmed once, after manufacturing; cannot be erased", "game cartridges, older embedded systems"],
-              ["EPROM (erasable PROM)", "erased with ultraviolet (UV) light; reprogrammable many times", "older microcontrollers"],
-              ["EEPROM (electrically erasable PROM)", "erased and reprogrammed with electrical signals, also in parts", "modern BIOS chips, embedded systems"],
-            ]),
+              ["PROM", "programmed once; cannot be erased", "game cartridges, older embedded systems"],
+              ["EPROM", "erased with ultraviolet (UV) light; reprogrammable many times", "older microcontrollers"],
+              ["EEPROM", "erased and reprogrammed with electrical signals, also in parts", "modern BIOS chips, embedded systems"],
+            ], null, "keep1"),
             T("Firmware in EEPROM can be updated without removing the chip.<br><b>Flash memory</b> is EEPROM that is erased in blocks. SSDs, USB drives, and memory cards use it."),
           ] },
           { kind: "summary", title: "Summary", blocks: [
@@ -420,9 +452,11 @@
         slides: "01:27–36",
         keywords: "storage secondary hdd hard disk ssd solid state nand flash platter spindle head seek rotational latency rpm access time transfer rate wear usb sd card memory hierarchy",
         deck: [
-          { kind: "overview", title: "Storage devices: HDD and SSD", blocks: [
+          { kind: "overview", title: "Storage devices: HDD and SSD", top: [
             T("<b>Storage devices</b> keep the operating system, programs, data logs, media, and backups when the power is off. The two main technologies are the hard disk drive (HDD) and the solid state drive (SSD)."),
-            L(["Storage devices and their uses", "The hard disk drive (HDD)", "Access and transfer time", "The solid state drive (SSD)", "HDD compared with SSD", "The memory hierarchy"], "Subtopics in this lesson", true),
+          ], cols: [
+            [L(["Storage devices and their uses", "The hard disk drive (HDD)", "Access and transfer time", "The solid state drive (SSD)", "HDD compared with SSD", "The memory hierarchy"], "Subtopics in this lesson", true)],
+            [IMG("hdd-ssd", "A hard disk drive beside a smaller, thinner solid state drive", { rest: 130, caption: "An HDD (left) and an SSD (right)" })],
           ] },
           { kind: "concept", part: "Storage devices and their uses", title: "HDD, SSD, and flash memory devices", blocks: [
             TB(["Device", "How it stores data", "Typical use"], [
@@ -433,14 +467,20 @@
             ]),
             T("Phones and tablets use built-in flash storage (eMMC or UFS)."),
           ] },
+          { kind: "visual", part: "The hard disk drive (HDD)", title: "Inside an HDD", colw: [5, 3], cols: [
+            [IMG("hdd-inside", "A hard disk drive without its cover. Its controller board is shown below the drive.", { marks: [
+              { n: 1, x: 70, y: 29 }, { n: 2, x: 56, y: 23 }, { n: 3, x: 59, y: 41, tx: 54.3, ty: 32.8 }, { n: 4, x: 43, y: 19, tx: 45, ty: 31.6 }, { n: 5, x: 55, y: 74 },
+            ] })],
+            [L(["Platters", "Spindle motor", "Read/write head", "Actuator arm", "Controller board"], "Parts", true)],
+          ] },
           { kind: "concept", part: "The hard disk drive (HDD)", title: "Parts of an HDD", blocks: [
-            TB(["Part", "Function"], [
-              ["Platters", "aluminium or glass disks with a magnetic coating; data is stored in circular tracks, divided into sectors"],
-              ["Spindle motor", "rotates the platters at a constant speed, such as 5400 or 7200 RPM (revolutions per minute)"],
-              ["Read/write head", "reads and writes the bits; it hovers nanometres above the platter"],
-              ["Actuator arm", "moves the head to a track; a voice coil motor drives it precisely"],
-              ["Controller board", "conditions the signals, corrects errors, and connects to the computer (SATA, SAS)"],
-            ]),
+            TB(["No.", "Part", "Function"], [
+              ["1", "Platters", "aluminium or glass disks with a magnetic coating; data is stored in circular tracks, divided into sectors"],
+              ["2", "Spindle motor", "rotates the platters at a constant speed, such as 5400 or 7200 RPM (revolutions per minute)"],
+              ["3", "Read/write head", "reads and writes the bits; it hovers nanometres above the platter"],
+              ["4", "Actuator arm", "moves the head to a track; a voice coil motor drives it precisely"],
+              ["5", "Controller board", "conditions the signals, corrects errors, and connects to the computer (SATA, SAS)"],
+            ], null, "keep1"),
           ] },
           { kind: "concept", part: "The hard disk drive (HDD)", title: "How an HDD reads data", blocks: [
             L([
@@ -466,7 +506,13 @@
             ]),
           ] },
           { kind: "visual", part: "Access and transfer time", title: "Reading one block: HDD and SSD", blocks: [
-            W("seekViz", { title: "", seek: 8, latency: 4 }),
+            W("sceneSeek", { seek: 8, latency: 4 }),
+          ] },
+          { kind: "visual", part: "The solid state drive (SSD)", title: "Inside an SSD", colw: [5, 3], cols: [
+            [IMG("ssd-inside", "A solid state drive without its cover: a circuit board with a controller chip, four flash memory chips, and a connector", { marks: [
+              { n: 1, x: 63, y: 64 }, { n: 2, x: 41, y: 52 }, { n: 3, x: 71, y: 74 },
+            ] })],
+            [L(["Controller chip", "NAND flash memory chips", "Connector to the computer"], "Parts", true)],
           ] },
           { kind: "concept", part: "The solid state drive (SSD)", title: "How an SSD stores and reads data", blocks: [
             L([
@@ -500,13 +546,13 @@
             ], "Use an SSD for")],
           ] },
           { kind: "concept", part: "The memory hierarchy", title: "The memory hierarchy", blocks: [
-            TB(["Level (fastest first)", "Location", "Typical capacity"], [
-              ["Registers", "inside the CPU", "bytes"],
-              ["Cache (SRAM)", "inside the CPU", "MB"],
-              ["Main memory: RAM (DRAM)", "memory modules", "GB"],
-              ["SSD", "drive", "hundreds of GB to TB"],
-              ["HDD", "drive", "TB"],
-            ]),
+            W("memPyramid", { top: "fastest", bottom: "slowest", keyV: "volatile", keyNV: "non-volatile", tiers: [
+              { name: "Registers", where: "inside the CPU", size: "bytes" },
+              { name: "Cache (SRAM)", where: "inside the CPU", size: "MB" },
+              { name: "Main memory: RAM (DRAM)", where: "memory modules", size: "GB" },
+              { name: "SSD", where: "drive", size: "hundreds of GB to TB", nv: true },
+              { name: "HDD", where: "drive", size: "TB", nv: true },
+            ] }),
             T("From top to bottom, the access time and the capacity increase, and the cost per byte decreases.<br>Registers, cache, and RAM are volatile. SSD and HDD are non-volatile."),
           ] },
           { kind: "summary", title: "Summary", blocks: [
@@ -567,15 +613,19 @@
             L(["The seven levels", "Levels 0 to 2: hardware", "Levels 3 and 4: operating system and assembly language", "Levels 5 and 6: high-level language and user", "Translators", "One statement through the levels", "Programs and hardware"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "The seven levels", title: "The seven levels of a computer system", blocks: [
-            TB(["Level", "Name", "Main components"], [
-              ["6", "User", "application programs, user interface"],
-              ["5", "High-level language", "Python, C++, Java; compilers, interpreters"],
-              ["4", "Assembly language", "assembly instructions, assembler"],
-              ["3", "Operating system", "kernel, device drivers"],
-              ["2", "Machine (ISA)", "machine language instructions, registers"],
-              ["1", "Control", "microcode, control unit"],
-              ["0", "Digital logic", "logic gates, flip-flops"],
-            ]),
+            W("levelStack", { groups: [
+              { label: "Software", cls: "sw", rows: [
+                [6, "User", "application programs, user interface"],
+                [5, "High-level language", "Python, C++, Java; compilers, interpreters"],
+                [4, "Assembly language", "assembly instructions, assembler"],
+                [3, "Operating system", "kernel, device drivers"],
+              ] },
+              { label: "Hardware", cls: "hw", rows: [
+                [2, "Machine (ISA)", "machine language instructions, registers"],
+                [1, "Control", "microcode, control unit"],
+                [0, "Digital logic", "logic gates, flip-flops"],
+              ] },
+            ] }),
           ] },
           { kind: "concept", part: "Levels 0 to 2: hardware", title: "Levels 0 to 2: hardware", blocks: [
             L([
@@ -590,6 +640,11 @@
               "The instruction set architecture (ISA): the instructions that the hardware executes directly.",
               "<b>Machine language instructions</b> (binary codes) and <b>registers</b>.",
             ], "Level 2: Machine (ISA)"),
+          ] },
+          { kind: "visual", part: "Levels 0 to 2: hardware", title: "Level 0: logic gates", blocks: [
+            W("sceneGates", { names: ["AND", "OR", "NOT"],
+              captions: ["1 only if both inputs are 1", "1 if at least one input is 1", "the opposite of the input"],
+              note: (a, b, and, or, not) => "Inputs " + a + " and " + b + ": AND gives " + and + ", and OR gives " + or + ". NOT changes " + a + " into " + not + "." }),
           ] },
           { kind: "concept", part: "Levels 3 and 4", title: "Levels 3 and 4: operating system and assembly", blocks: [
             L([
@@ -613,13 +668,17 @@
             ], "Level 6: User"),
           ] },
           { kind: "concept", part: "Translators", title: "Translators: the assembler", blocks: [
-            TB(["Translator", "Translates", "When"], [
-              ["Assembler", "assembly language (Level 4) into machine code (Level 2)", "before the program runs"],
-            ]),
+            W("sceneAsm", { left: "Level 4: assembly language", right: "Level 2: machine code", machine: "Assembler",
+              when: "before the program runs", example: "(an example encoding)", rest: 456,
+              parts: ["ADD", "R1,", "R2"], codes: ["0001", "0001", "0010"], notes: [
+                "An assembly instruction: a short name for the operation (<code>ADD</code>) and its operands.",
+                "The <b>assembler</b> translates each part into a binary code, before the program runs.",
+                "The result is machine code. The CPU executes machine code directly.",
+              ] }),
             T("The translators of Level 5, compilers (for example for C) and interpreters (for example for Python), are explained in Topic 00, Lesson 2."),
           ] },
           { kind: "visual", part: "One statement through the levels", title: 'The statement print("Hi"): Levels 6 to 3', blocks: [
-            W("levelDrop", { title: "Software levels", levels: [
+            W("sceneLevels", { title: "Software levels", rest: 414, levels: [
               { n: 6, name: "User", token: "runs the program", desc: "The user starts the program." },
               { n: 5, name: "High-level language", token: 'print("Hi")', desc: "The Python interpreter reads the statement." },
               { n: 4, name: "Assembly language", token: "CALL write", desc: "The interpreter runs as machine code, for example CALL write." },
@@ -627,7 +686,7 @@
             ] }),
           ] },
           { kind: "visual", part: "One statement through the levels", title: 'The statement print("Hi"): Levels 2 to 0', blocks: [
-            W("levelDrop", { title: "Hardware levels", levels: [
+            W("sceneLevels", { title: "Hardware levels", enter: true, rest: 414, levels: [
               { n: 2, name: "Machine (ISA)", token: "10110100 …", desc: "The CPU executes binary machine instructions with its registers." },
               { n: 1, name: "Control", token: "control signals", desc: "The control unit produces the signals for each instruction." },
               { n: 0, name: "Digital logic", token: "Hi", desc: "Logic gates switch, and the text Hi appears on the screen.", out: true },

@@ -68,15 +68,21 @@ For authors: the content fields (`answer`, `hideOnAnswer`, `studentRun`, `showCo
 ```
 index.html              page shell + script/CDN loading
 css/styles.css          all styling (dark/light themes)
+css/scenes.css          animated scenes and static diagrams
+img/tNN/                raster figures of a chapter (WebP, made by tools/make-images.py)
 js/
   core.js               namespace, content registry, progress, static highlighter, instructor mode
   instructor.js         the instructor login (salt and hash; written by tools/set-instructor-login.py)
   runner.js             Pyodide engine (stdin, stdout, matplotlib capture)
   editor.js             live CodeMirror + Run/Reset block
   widgets.js            interactive visuals (binary, truth table, flowchart, steppers, …)
+  scenes.js             the scene engine (animStepper): one stage, smooth steps, Play
+  scenes-t01.js         the scenes and diagrams of Topic 01
   lesson.js             two-section lesson renderer
   app.js                router, sidebar, home, search, theme
-  content/topic00..08.js  all lesson content (data-driven)
+  content/topic00..10.js  all lesson content (data-driven)
+tools/
+  make-images.py        generates and converts the figures; prompts in tools/images/tNN.json
 ```
 
 ## Editing / adding content

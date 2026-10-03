@@ -489,10 +489,6 @@ body.slide-mode .flow .flbl { font-size: 18px; }
 .sr-item small { display: block; color: var(--text-dim); font-size: 12px; }
 .sr-empty { padding: 14px; color: var(--text-dim); }
 
-.cpu-stage { display:flex; gap:8px; flex-wrap:wrap; }
-.cpu-stage .st { flex:1; min-width:120px; background:var(--bg-2); border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center; font-size:13px; transition: all .3s; }
-.cpu-stage .st.on { border-color: var(--accent); background: rgba(77,171,247,.15); transform: translateY(-3px); }
-.cpu-stage .st b { display:block; color: var(--accent); }
 
 /* try / except / finally flow animation (tryFlow widget) */
 /* one row of buttons (scenarios left, steps right); below it the blocks on the left,
@@ -819,47 +815,6 @@ body.slide-mode .flow .flbl { font-size: 18px; }
 .slide .bv-info, .slide .bv-i, .slide .bv-side { font-size: 24px; }
 .slide .bv-side { padding-top: 44px; }
 
-/* ---- cycleFlow : input -> processing -> storage -> output ---- */
-.cf-row { display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; padding: 6px 2px; }
-.cf-stage { flex: 1; min-width: 110px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-2); padding: 12px; text-align: center; transition: border-color .2s, background .2s; }
-.cf-name { font-family: ui-monospace, monospace; font-weight: 800; }
-.cf-data { font-family: ui-monospace, monospace; color: var(--accent-2); min-height: 1.4em; margin-top: 6px; }
-.cf-active { border-color: var(--accent); background: rgba(77,171,247,.12); }
-.cf-done { opacity: .7; }
-.cf-arrow { align-self: center; color: var(--text-dim); font-weight: 800; }
-.cf-arrow.cf-on { color: var(--accent); }
-.slide .cf-name, .slide .cf-data, .slide .cf-arrow { font-size: 24px; }
-
-/* ---- powerToggle : RAM (volatile) vs ROM (non-volatile) ---- */
-.pt-cols { display: flex; gap: 22px; flex-wrap: wrap; }
-.pt-col { flex: 1; min-width: 160px; }
-.pt-head { font-family: ui-monospace, monospace; font-weight: 800; color: var(--text-dim); margin-bottom: 8px; }
-.pt-cell { font-family: ui-monospace, monospace; font-weight: 700; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-2); padding: 12px; margin-bottom: 8px; min-height: 1.4em; transition: background .2s, border-color .2s; }
-.pt-empty { background: transparent; border-style: dashed; color: var(--text-dim); }
-.slide .pt-head, .slide .pt-cell { font-size: 24px; }
-
-/* ---- seekViz : HDD seek/rotate vs SSD instant ---- */
-.sk-grid { display: flex; gap: 26px; flex-wrap: wrap; }
-.sk-panel { flex: 1; min-width: 210px; text-align: center; }
-.sk-ptitle { font-family: ui-monospace, monospace; font-weight: 700; color: var(--text-dim); margin-bottom: 8px; }
-.sk-svg { width: 100%; max-width: 190px; height: auto; }
-.sk-ssd { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; max-width: 220px; margin: 0 auto; aspect-ratio: 1; }
-.sk-ssd-cell { border: 1px solid var(--border); border-radius: 6px; background: var(--bg-2); }
-.sk-hit { background: var(--accent-2); border-color: var(--accent-2); }
-.sk-time { font-family: ui-monospace, monospace; font-weight: 800; margin-top: 10px; color: var(--accent); }
-.slide .sk-ptitle, .slide .sk-time { font-size: 24px; }
-
-/* ---- levelDrop : a line descending the levels ---- */
-.ld-levels { display: flex; flex-direction: column; gap: 5px; }
-.ld-level { display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-2); padding: 10px 14px; opacity: .5; transition: opacity .2s, border-color .2s, background .2s; }
-.ld-passed { opacity: .78; }
-.ld-active { opacity: 1; border-color: var(--accent); background: rgba(77,171,247,.12); }
-.ld-num { font-family: ui-monospace, monospace; font-weight: 800; color: var(--accent); min-width: 34px; }
-.ld-name { font-weight: 700; flex: 1; }
-.ld-token { font-family: ui-monospace, monospace; background: var(--bg-3); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; color: var(--accent-2); }
-.ld-outtok { background: var(--accent-2); color: #06121d; border-color: var(--accent-2); font-weight: 800; }
-.slide .ld-num, .slide .ld-name, .slide .ld-token { font-size: 24px; }
-
 /* ---- branchViz : if / elif / else ---- */
 .brv-var { font-family: ui-monospace, monospace; font-weight: 800; margin-bottom: 10px; }
 .brv-gates { display: flex; flex-direction: column; gap: 6px; }
@@ -965,7 +920,8 @@ code, kbd, samp { font-family: ui-monospace, "Cascadia Mono", Consolas, monospac
 [data-theme="light"] .tok-builtin { color: #7a4b00; }
 
 .slide { container: slide / inline-size; }
-.slide-split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+/* colw: [a, b] on a slide sets the ratio of the two columns */
+.slide-split { grid-template-columns: minmax(0, var(--col-a, 1fr)) minmax(0, var(--col-b, 1fr)); }
 @container slide (max-width: 900px) { .slide-split { grid-template-columns: minmax(0, 1fr); gap: 16px; } }
 .live { container-type: inline-size; }
 @container (max-width: 700px) { .steprun-grid { grid-template-columns: minmax(0, 1fr); } }
@@ -1186,6 +1142,21 @@ body.slide-mode .deck-stage { min-height: calc(100vh - 56px - 8px - 64px); }
 .vsm-mark { display: inline-flex; align-items: center; justify-content: center; min-width: 1.4em; height: 1.4em; border-radius: 50%;
   background: var(--warn); color: #111; font-weight: 700; font-family: system-ui, sans-serif; margin-left: 6px; }
 .slide .vsm, .slide .vsm * { font-size: 24px; }
+
+/* image block: a raster figure on a light plate (the same plate in both themes), with numbered marks */
+.fig { margin: 8px 0; }
+.fig-frame { position: relative; aspect-ratio: var(--fig-ar); width: min(100%, calc(var(--fig-maxh, 460px) * var(--fig-ar))); margin: 0 auto;
+  background: #f2f4f7; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.fig-frame img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.slide .fig-frame { --fig-maxh: calc(100vh - 262px - var(--fig-rest, 0px)); }
+.fig-mark { position: absolute; margin: 0; transform: translate(-50%, -50%); box-shadow: 0 0 0 2px #111, 0 2px 8px rgba(0,0,0,.45); }
+.fig-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.fig-lines line { vector-effect: non-scaling-stroke; stroke-linecap: round; }
+.fig-lines .fl-a { stroke: #111; stroke-width: 6; }
+.fig-lines .fl-b { stroke: #ffb454; stroke-width: 3; }
+.fig-dot { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: #ffb454; box-shadow: 0 0 0 2px #111; transform: translate(-50%, -50%); }
+.fig-cap { color: var(--text-dim); margin-top: 6px; text-align: center; }
+.slide .fig-cap, .slide .fig-mark { font-size: 24px; }
 
 /* ptrViz, array mode: a row of cells with the marker of the pointer under one of them */
 .pv-array { flex-wrap: nowrap; align-items: flex-start; gap: 14px; }
