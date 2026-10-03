@@ -145,6 +145,7 @@
       cfg.title ? h("div", { class: "widget-title" }, cfg.title) : null, wrap,
       h("div", { class: "sn-foot" }, note, h("div", { class: "w-row sn-ctrl" }, prev, next, play, reset, count)));
     if (cfg.rest) shell.style.setProperty("--sn-rest", cfg.rest + "px");
+    if (cfg.minw) shell.style.setProperty("--sn-minw", cfg.minw + "px");   // a narrow stage (a half column)
 
     let i = 0, tw = null, queue = [], playing = false, hold = 0, vis = true, raf = 0, last = 0, frozen = false;
 

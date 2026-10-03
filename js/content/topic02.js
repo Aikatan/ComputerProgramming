@@ -336,6 +336,15 @@
             ]),
             T("<code>end=\" \"</code> or <code>end=\"\"</code> keeps the next output on the same line."),
           ] },
+          { kind: "visual", part: "sep and end", title: "How sep and end build the output line", blocks: [
+            W("sceneSepEnd", { lines: ['print("A", "B", "C", sep="-", end="!")', 'print("D")'],
+              line1: [["v", "A", 7], ["s", "-", 26], ["v", "B", 12], ["s", "-", 26], ["v", "C", 17], ["s", "!", 35]], line2: [["v", "D", 7]], notes: [
+                "The values are written in order. The first value: <code>A</code>.",
+                "<code>sep=\"-\"</code> is placed <b>between</b> the values: <code>A-B-C</code>.",
+                "<code>end=\"!\"</code> is placed <b>after</b> the last value, instead of a new line.",
+                "The next <code>print()</code> continues the same line. Its default <code>end</code> starts a new line.",
+              ] }),
+          ] },
           { kind: "code", part: "sep and end", title: "Example: sep", blocks: [
             EX('print(29, 9, 2026, sep="/")\nprint("A", "B", "C", sep="")', "changing the separator", [
               { c: 'sep="/"', e: "A slash between the values. Output: <code>29/9/2026</code>" },
@@ -408,6 +417,15 @@
               "<code>=</code> means <i>store</i>. It does not mean <i>is equal to</i>.",
               "A variable must be assigned before it is used.",
             ]),
+          ] },
+          { kind: "visual", part: "Assignment", title: "Right side first, then store", blocks: [
+            W("sceneAssign", { lines: ["total = 7 + 5", "double = total * 2"], a: 7, op1: "+", b: 5, v1: 12, op2: "*", c: 2, v2: 24, notes: [
+              "Line 1: Python evaluates the right side first: <code>7 + 5</code> → <code>12</code>.",
+              "Then it stores <code>12</code> under the name <code>total</code>.",
+              "Line 2: the name <code>total</code> in the right side is replaced by its value, <code>12</code>.",
+              "<code>12 * 2</code> → <code>24</code>.",
+              "<code>24</code> is stored under the name <code>double</code>.",
+            ] }),
           ] },
           { kind: "problem", part: "Assignment", title: "Problem: power of a device", blocks: [
             T("A device operates at 12 V and draws a current of 2 A. The program must display the electrical power of the device."),
@@ -671,15 +689,19 @@
               ["Bits of 13", "0", "0", "0", "0", "1", "1", "0", "1"],
             ], "13 = 8 + 4 + 1, so 13 is <code>00001101</code> in one byte.", "center"),
           ] },
-          { kind: "concept", part: "Converting decimal to binary", title: "Algorithm: decimal to binary", blocks: [
-            L([
+          { kind: "concept", part: "Converting decimal to binary", title: "Algorithm: decimal to binary", cols: [
+            [L([
               "Divide the number by 2. Write down the remainder (0 or 1). The quotient becomes the new number.",
               "Repeat step 1 until the quotient is 0.",
               "Read the remainders from the <b>last</b> to the <b>first</b>.",
-            ], "Algorithm", true),
-            TB(["Number", "Quotient (÷ 2)", "Remainder"], [
-              ["13", "6", "1"], ["6", "3", "0"], ["3", "1", "1"], ["1", "0", "1"],
-            ], "13 in binary: the remainders read upward, 1101.", "center"),
+            ], "Algorithm", true)],
+            [W("sceneBinary", { n: 13, minw: 480, rest: 440, notes: [
+              "13 ÷ 2 = 6, remainder 1.",
+              "The quotient 6 is the new number. 6 ÷ 2 = 3, remainder 0.",
+              "3 ÷ 2 = 1, remainder 1.",
+              "1 ÷ 2 = 0, remainder 1. The quotient is 0: stop.",
+              "Read the remainders upward: 13 in binary is <b>1101</b>.",
+            ] })],
           ] },
           { kind: "visual", part: "Converting decimal to binary", title: "Binary converter", blocks: [
             W("binaryConverter", { value: 13 }),
@@ -697,12 +719,12 @@
             N("The character <code>'7'</code> (code 55) is not the number <code>7</code>. So <code>\"12\" + \"3\"</code> joins characters."),
           ] },
           { kind: "concept", part: "Size of each data type", title: "Each type uses a fixed number of bytes", blocks: [
-            TB(["Type (C)", "Size", "Range or precision"], [
-              ["<code>char</code>", "1 byte", "one character: 8 bits hold codes 0 to 255. ASCII needs only 7 bits (0 to 127)."],
-              ["<code>int</code>", "4 bytes", "about −2.1 billion to +2.1 billion"],
-              ["<code>float</code>", "4 bytes", "about 7 significant digits"],
-              ["<code>double</code>", "8 bytes", "about 15 to 16 significant digits"],
-            ]),
+            W("byteRows", { rows: [
+              { type: "char", n: 1, size: "1 byte", cls: "str", range: "one character: 8 bits hold codes 0 to 255. ASCII needs only 7 bits (0 to 127)." },
+              { type: "int", n: 4, size: "4 bytes", cls: "int", range: "about −2.1 billion to +2.1 billion" },
+              { type: "float", n: 4, size: "4 bytes", cls: "float", range: "about 7 significant digits" },
+              { type: "double", n: 8, size: "8 bytes", cls: "float", range: "about 15 to 16 significant digits" },
+            ] }),
             L([
               "A value outside the range of its type cannot be stored correctly. This is called <b>overflow</b>.",
               "A Python <code>int</code> has no fixed size. It uses more bytes when the number grows.",
@@ -814,6 +836,14 @@
               ["<code>-7 // 2</code>", "<code>-4</code>", "floor division rounds <b>down</b>: −3.5 becomes −4"],
             ]),
           ] },
+          { kind: "visual", part: "Division: /, //, and %", title: "17 // 5 and 17 % 5 as groups", blocks: [
+            W("sceneDivMod", { a: 17, b: 5, notes: [
+              "17 items are put into groups of 5.",
+              "Each full group counts 1. There are three full groups: <code>17 // 5</code> → <code>3</code>.",
+              "Two items are left over. They are the remainder: <code>17 % 5</code> → <code>2</code>.",
+              "Check: 3 × 5 + 2 = 17.",
+            ] }),
+          ] },
           { kind: "code", part: "Division: /, //, and %", title: "Example: minutes to hours and minutes", blocks: [W("codeTrace", T_time)] },
           { kind: "concept", part: "Order of operations", title: "Order of operations", blocks: [
             TB(["Priority", "Operators"], [
@@ -826,18 +856,14 @@
             T("Operators with the same priority are evaluated from left to right. Only <code>**</code> groups from the right: <code>2 ** 3 ** 2</code> → <code>2 ** 9</code> → <code>512</code>."),
             T("<code>**</code> comes before the minus sign: <code>-2 ** 2</code> → <code>-(2 ** 2)</code> → <code>-4</code>. Parentheses change the order."),
           ] },
-          { kind: "concept", part: "Order of operations", title: "Evaluating an expression step by step", blocks: [
-            TB(["Step", "Expression"], [
-              ["Start", "<code>9 // 2 + 9 % 2</code>"],
-              ["1. <code>//</code> and <code>%</code>, left to right", "<code>4 + 1</code>"],
-              ["2. <code>+</code>", "<code>5</code>"],
-            ]),
-            TB(["Step", "Expression"], [
-              ["Start", "<code>(2 + 3) * 4 ** 2</code>"],
-              ["1. parentheses", "<code>5 * 4 ** 2</code>"],
-              ["2. <code>**</code>", "<code>5 * 16</code>"],
-              ["3. <code>*</code>", "<code>80</code>"],
-            ]),
+          { kind: "visual", part: "Order of operations", title: "Evaluating an expression step by step", blocks: [
+            W("sceneExpr", { rows: [["9", "//", "2", "+", "9", "%", "2"], ["(", "2", "+", "3", ")", "*", "4", "**", "2"]], steps: [
+              { row: 0, rule: "1. // and %", reduce: [[0, 3, "4"], [2, 3, "1"]], note: "<code>//</code> and <code>%</code> come before <code>+</code>. Left to right: <code>9 // 2</code> → <code>4</code>, then <code>9 % 2</code> → <code>1</code>." },
+              { row: 0, rule: "2. +", reduce: [[0, 3, "5"]], note: "<code>4 + 1</code> → <code>5</code>." },
+              { row: 1, rule: "1. ( )", reduce: [[0, 5, "5"]], note: "Parentheses first: <code>(2 + 3)</code> → <code>5</code>." },
+              { row: 1, rule: "2. **", reduce: [[2, 3, "16"]], note: "<code>**</code> comes before <code>*</code>: <code>4 ** 2</code> → <code>16</code>." },
+              { row: 1, rule: "3. *", reduce: [[0, 3, "80"]], note: "<code>5 * 16</code> → <code>80</code>." },
+            ] }),
           ] },
           { kind: "concept", part: "Order of operations", title: "Left to right, and a float result", blocks: [
             TB(["Expression", "Evaluation", "Result"], [
@@ -966,6 +992,15 @@
               ["<code>int(\"3.5\")</code>", "error: the text is not a whole number (ValueError)", "none"],
             ]),
             T("Convert the input directly: <code>voltage = float(input(\"Voltage: \"))</code>.<br>Use <code>float()</code> when the value can have a decimal point."),
+          ] },
+          { kind: "visual", part: "Converting text to numbers", title: "From the keyboard to an int", blocks: [
+            W("sceneInput", { code: 'age = int(input("Age: "))', prompt: "Age: ", typed: "19", notes: [
+              "<code>input()</code> displays the prompt and waits for the user.",
+              "The user types <code>1</code> and <code>9</code>, then presses Enter.",
+              "<code>input()</code> returns the typed characters as a <b>str</b>: <code>'19'</code>.",
+              "<code>int()</code> converts the text to the number <code>19</code>, an <b>int</b>.",
+              "The assignment stores <code>19</code> in <code>age</code>.",
+            ] }),
           ] },
           { kind: "code", part: "Converting text to numbers", title: "Example: adding two numbers correctly", blocks: [
             EX('a = int(input("First number: "))\nb = int(input("Second number: "))\nprint("Sum =", a + b)', "test input: 12 and 3", [
@@ -1155,6 +1190,14 @@
             ]),
             CODE('word = "motor"\nword = "M" + word[1:]\nprint(word)', "Motor", "building a new string"),
           ] },
+          { kind: "visual", part: "Strings cannot be changed", title: "A new string, not a changed one", blocks: [
+            W("sceneImmutable", { lines: ['word = "motor"', 'word[0] = "M"', 'word = "M" + word[1:]'], word: "motor", first: "M", notes: [
+              "<code>word</code> refers to the string <code>\"motor\"</code>.",
+              "<code>word[0] = \"M\"</code> tries to change a character: the program stops with a TypeError.",
+              "<code>\"M\" + word[1:]</code> builds a <b>new</b> string from <code>\"M\"</code> and the slice <code>\"otor\"</code>.",
+              "The assignment moves the name <code>word</code> to the new string <code>\"Motor\"</code>. No name refers to the old string.",
+            ] }),
+          ] },
           { kind: "concept", part: "Checking and changing text", title: "in, upper(), lower(), and replace()", blocks: [
             T("A <b>method</b> is a function that belongs to a value and is called with a dot: <code>s.upper()</code>. A function such as <code>len(s)</code> takes the value in its parentheses."),
             TB(["Operation", "Result", "Example with s = \"motor ok\""], [
@@ -1222,11 +1265,11 @@
             L(["Three kinds of error", "Reading an error message", "Common runtime errors", "Finding a logical error"], "Subtopics in this lesson", true),
           ] },
           { kind: "concept", part: "Three kinds of error", title: "Syntax, runtime, and logical errors", blocks: [
-            TB(["Kind", "When it is found", "What happens"], [
-              ["Syntax error", "before the program starts", "The code breaks the rules of Python. No line is executed."],
-              ["Runtime error", "while the program runs", "An operation cannot be performed. The program stops at that line."],
-              ["Logical error", "when the output is checked", "The program runs without a message, but the result is wrong."],
-            ]),
+            W("errorTimeline", { stages: ["The code is written", "Python checks the syntax", "The program runs", "The output is checked"], cards: [
+              { col: 1, cls: "syntax", title: "Syntax error", text: "The code breaks the rules of Python. No line is executed." },
+              { col: 2, cls: "runtime", title: "Runtime error", text: "An operation cannot be performed. The program stops at that line." },
+              { col: 3, cls: "logic", title: "Logical error", text: "No message, but the result is wrong." },
+            ] }),
             T("Topic 00, Lesson 4, shows syntax errors and their messages. This lesson continues with runtime errors and logical errors."),
           ] },
           { kind: "code", part: "Three kinds of error", title: "Example: a runtime error", blocks: [
@@ -1237,13 +1280,13 @@
             ]),
           ] },
           { kind: "concept", part: "Reading an error message", title: "Reading an error message", blocks: [
-            CODE('Traceback (most recent call last):\n  File "<program>", line 4, in <module>\n    resistance = voltage / current\n                 ~~~~~~~~^~~~~~~~~\nZeroDivisionError: division by zero', null, "error message of the previous example", "text"),
+            W("codeMarks", { caption: "error message of the previous example", lines: ["Traceback (most recent call last):", '  File "<program>", line 4, in <module>', "    resistance = voltage / current", "                 ~~~~~~~~^~~~~~~~~", "ZeroDivisionError: division by zero"], marks: { 4: 1, 1: 2, 3: 3 } }),
             L([
               "Read the <b>last line</b> first: it names the error (Topic 00).",
               "<code>Traceback</code> starts the error message. The line <code>File \"&lt;program&gt;\", line 4</code> gives the <b>line number</b> of the statement that failed. <code>in &lt;module&gt;</code> means the main program.",
               "The source line follows. The marker <code>^</code> points to the part that failed: here, the division.",
               "Correct that line, or the earlier line that gave a variable its wrong value.",
-            ]),
+            ], null, true),
           ] },
           { kind: "concept", part: "Common runtime errors", title: "Common runtime errors", blocks: [
             TB(["Error", "Cause", "Correction"], [
